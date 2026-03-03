@@ -100,6 +100,7 @@ export default function StudentResultPage() {
   }, [attemptId, user, token, fetchLeaderboard]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchResult();
     
     // Poll if grading is in progress
