@@ -8,7 +8,7 @@ import { useRouter, usePathname } from "next/navigation";
 
 interface DashboardLayoutProps {
   children: ReactNode;
-  allowedRoles: ("admin" | "teacher" | "student" | "super_admin")[];
+  allowedRoles: ("admin" | "teacher" | "student" | "superadmin" | "parent")[];
 }
 
 export function DashboardLayoutBase({ children, allowedRoles }: DashboardLayoutProps) {

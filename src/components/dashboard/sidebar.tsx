@@ -36,15 +36,20 @@ const studentLinks = [
   { name: "Support", href: "/student/support", icon: HelpCircle },
 ];
 
+const parentLinks = [
+  { name: "Wards Overview", href: "/parent", icon: Users },
+];
+
 export function Sidebar() {
   const pathname = usePathname();
   const { user } = useAuth();
 
   if (!user) return null;
 
-  const links = user.role === "admin" ? adminLinks : 
-                user.role === "teacher" ? teacherLinks : 
-                studentLinks;
+  let links = studentLinks;
+  if (user.role === "admin" || user.role === "superadmin") links = adminLinks;
+  else if (user.role === "teacher") links = teacherLinks;
+  else if (user.role === "parent") links = parentLinks;
 
   return (
     <div className="flex h-full w-64 flex-col border-r bg-zinc-50/50 dark:bg-zinc-900/50">

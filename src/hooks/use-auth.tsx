@@ -14,7 +14,7 @@ type User = {
   id: string;
   name: string;
   email: string;
-  role: "admin" | "teacher" | "student" | "super_admin";
+  role: "admin" | "teacher" | "student" | "superadmin" | "parent";
   tenant_id: string;
 };
 
