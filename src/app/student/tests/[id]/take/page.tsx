@@ -28,65 +28,56 @@ export default function TestTakingPage() {
   const [selectedOption, setSelectedOption] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Add token and tenant info for correct API context
+  const getAuthOptions = useCallback(() => {
+    const token = typeof window !== 'undefined' ? localStorage.getItem("token") : null;
+    const hostname = typeof window !== 'undefined' ? window.location.hostname : '';
+    const isLocal = hostname.includes('localhost') || hostname.includes('127.0.0.1');
+    const rootDomain = isLocal ? 'localhost' : 'testmaster.in';
+    const tenant = hostname && hostname.split('.')[0] !== rootDomain ? hostname.split('.')[0] : undefined;
+    return { token: token || undefined, tenant };
+  }, []);
+
   const handleSubmitTest = useCallback(async () => {
     setIsSubmitting(true);
     try {
       await api(`/student/attempts/${attemptId}/submit`, {
         method: "POST",
+        ...getAuthOptions()
       });
       router.push(`/student/tests/${testId}/result?attempt=${attemptId}`);
     } catch (err) {
       console.error("Failed to submit test:", err);
+      // In a real app we might show a toast, but navigating to result page to finalize UI anyway
       router.push(`/student/tests/${testId}/result?attempt=${attemptId}`);
     } finally {
       setIsSubmitting(false);
     }
-  }, [attemptId, testId, router]);
+  }, [attemptId, testId, router, getAuthOptions]);
 
   useEffect(() => {
     async function fetchNextQuestion() {
       setIsLoading(true);
       try {
-        const response = await api(`/student/tests/${testId}/questions?attempt=${attemptId}`);
+        const response = await api(`/student/tests/${testId}/questions?attempt=${attemptId}`, getAuthOptions());
         if (response.data?.question) {
            setQuestion(response.data.question);
-        } else if (response.finished) {
+        } else if (response.data?.finished) {
            // Test is finished, auto-submit
            handleSubmitTest();
         } else {
-           // Fallback for mock demo
-           setQuestion({
-             id: "q1",
-             type: "multiple_choice",
-             content: { text: "What is the derivative of x^2?" },
-             options: [
-               { id: "A", text: "2x" },
-               { id: "B", text: "x" },
-               { id: "C", text: "x^2" },
-               { id: "D", text: "2" },
-             ]
-           });
+           setQuestion(null);
         }
       } catch (err) {
         console.error("Failed to fetch questions:", err);
-        setQuestion({
-             id: "q1",
-             type: "multiple_choice",
-             content: { text: "What is the derivative of x^2?" },
-             options: [
-               { id: "A", text: "2x" },
-               { id: "B", text: "x" },
-               { id: "C", text: "x^2" },
-               { id: "D", text: "2" },
-             ]
-           });
+        setQuestion(null);
       } finally {
         setIsLoading(false);
       }
     }
 
     fetchNextQuestion();
-  }, [testId, attemptId, handleSubmitTest]);
+  }, [testId, attemptId, handleSubmitTest, getAuthOptions]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -109,39 +100,28 @@ export default function TestTakingPage() {
     try {
       await api(`/student/attempts/${attemptId}/answers`, {
         method: "POST",
+        ...getAuthOptions(),
         body: JSON.stringify({
            question_id: question.id,
-           answer: selectedOption,
+           selected_options: [selectedOption],
         })
       });
-      // For mock purposes, just simulate advancing
-      setQuestion({
-             id: "q2",
-             type: "multiple_choice",
-             content: { text: "What is the integral of 2x?" },
-             options: [
-               { id: "A", text: "x^2 + C" },
-               { id: "B", text: "2x^2 + C" },
-               { id: "C", text: "x + C" },
-               { id: "D", text: "2 + C" },
-             ]
-      });
+      
+      // Clear selection and fetch next real question after save
       setSelectedOption("");
+      setIsLoading(true);
+      const response = await api(`/student/tests/${testId}/questions?attempt=${attemptId}`, getAuthOptions());
+      if (response.data?.question) {
+         setQuestion(response.data.question);
+      } else if (response.data?.finished) {
+         handleSubmitTest();
+      } else {
+         setQuestion(null);
+      }
+      setIsLoading(false);
+      
     } catch (err) {
       console.error("Failed to save answer:", err);
-      // Mock advancing
-      setQuestion({
-             id: "q2",
-             type: "multiple_choice",
-             content: { text: "What is the integral of 2x?" },
-             options: [
-               { id: "A", text: "x^2 + C" },
-               { id: "B", text: "2x^2 + C" },
-               { id: "C", text: "x + C" },
-               { id: "D", text: "2 + C" },
-             ]
-      });
-      setSelectedOption("");
     }
   };
   const formatTime = (seconds: number) => {

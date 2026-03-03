@@ -1,12 +1,57 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, GraduationCap, BookOpen, TrendingUp } from "lucide-react";
+import { Users, GraduationCap, BookOpen, Activity } from "lucide-react";
+import { api } from "@/lib/api";
+import { useAuth } from "@/hooks/use-auth";
+
+interface DashboardStats {
+  total_teachers: number;
+  total_students: number;
+  total_tests: number;
+  total_attempts: number;
+}
 
 export default function AdminDashboard() {
+  const { token, tenantSlug } = useAuth();
+  const [data, setData] = useState<DashboardStats | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchStats() {
+      if (!token) return;
+      
+      try {
+        const response = await api("/admin/analytics/overview", {
+          token,
+          tenant: tenantSlug || undefined
+        });
+        setData(response.data);
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : "Failed to load analytics");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchStats();
+  }, [token, tenantSlug]);
+
+  if (loading) {
+    return <div className="p-8 text-center animate-pulse">Loading tenant statistics...</div>;
+  }
+
+  if (error) {
+    return <div className="p-8 text-center text-red-500">Error: {error}</div>;
+  }
+
   const stats = [
-    { title: "Total Teachers", value: "24", icon: Users, description: "+2 this month" },
-    { title: "Total Students", value: "1,280", icon: GraduationCap, description: "+48 this month" },
-    { title: "Active Batches", value: "32", icon: BookOpen, description: "All active" },
-    { title: "Avg. Performance", value: "72%", icon: TrendingUp, description: "+5% from last month" },
+    { title: "Total Teachers", value: data?.total_teachers || 0, icon: Users, description: "Active educators" },
+    { title: "Total Students", value: data?.total_students || 0, icon: GraduationCap, description: "Enrolled learners" },
+    { title: "Total Tests Built", value: data?.total_tests || 0, icon: BookOpen, description: "Created across all teachers" },
+    { title: "Test Attempts", value: data?.total_attempts || 0, icon: Activity, description: "Total submissions" },
   ];
 
   return (
@@ -28,10 +73,10 @@ export default function AdminDashboard() {
       
       <Card className="col-span-4">
         <CardHeader>
-          <CardTitle>Recent Activity</CardTitle>
+          <CardTitle>Tenant Activity Status</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">No recent activity to show.</p>
+          <p className="text-sm text-muted-foreground">The platform is currently fully operational and serving the local tenant data.</p>
         </CardContent>
       </Card>
     </div>

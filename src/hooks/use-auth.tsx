@@ -1,6 +1,12 @@
 "use client";
 
-import { useState, useEffect, createContext, useContext, ReactNode } from "react";
+import {
+  useState,
+  useEffect,
+  createContext,
+  useContext,
+  ReactNode,
+} from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
 
@@ -15,6 +21,7 @@ type User = {
 type AuthContextType = {
   user: User | null;
   token: string | null;
+  tenantSlug: string | null;
   isLoading: boolean;
   login: (credentials: Record<string, string>) => Promise<void>;
   logout: () => void;
@@ -27,6 +34,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+
+  // Determine tenant right away (safe for SSR)
+  const isBrowser = typeof window !== 'undefined';
+  const hostname = isBrowser ? window.location.hostname : '';
+  const isLocal = hostname.includes('localhost') || hostname.includes('127.0.0.1');
+  const rootDomain = isLocal ? 'localhost' : 'testmaster.in';
+  const tenantSlug = hostname && hostname.split('.')[0] !== rootDomain ? hostname.split('.')[0] : null;
 
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
@@ -46,9 +60,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (credentials: Record<string, string>) => {
     // Determine tenant from hostname
     const hostname = window.location.hostname;
-    const isLocal = hostname.includes('localhost') || hostname.includes('127.0.0.1');
-    const rootDomain = isLocal ? 'localhost' : 'testmaster.in';
-    let tenantSlug = hostname.split('.')[0] === rootDomain ? null : hostname.split('.')[0];
+    const isLocal =
+      hostname.includes("localhost") || hostname.includes("127.0.0.1");
+    const rootDomain = isLocal ? "localhost" : "testmaster.in";
+    let tenantSlug =
+      hostname.split(".")[0] === rootDomain ? null : hostname.split(".")[0];
 
     // Override if user manually provided a workspace slug
     if (credentials.tenant) {
@@ -56,14 +72,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     try {
-      const response = await api("/login", {
+      const response = await api("/tenant/login", {
         method: "POST",
-        body: JSON.stringify({ email: credentials.email, password: credentials.password }),
+        body: JSON.stringify({
+          email: credentials.email,
+          password: credentials.password,
+        }),
         tenant: tenantSlug || undefined,
       });
 
       const { user, token } = response.data;
-      
+
       setUser(user);
       setToken(token);
       localStorage.setItem("token", token);
@@ -98,7 +117,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, isLoading, login, logout }}>
+    <AuthContext.Provider value={{ user, token, tenantSlug, isLoading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

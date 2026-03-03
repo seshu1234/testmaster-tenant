@@ -54,17 +54,22 @@ export default function TestInstructionsPage() {
     setIsStarting(true);
     setError(null);
     try {
+      const token = localStorage.getItem("token");
+      const hostname = typeof window !== 'undefined' ? window.location.hostname : '';
+      const isLocal = hostname.includes('localhost') || hostname.includes('127.0.0.1');
+      const rootDomain = isLocal ? 'localhost' : 'testmaster.in';
+      const tenant = hostname && hostname.split('.')[0] !== rootDomain ? hostname.split('.')[0] : undefined;
+
       const response = await api(`/student/tests/${testId}/start`, {
         method: "POST",
+        token: token || undefined,
+        tenant: tenant
       });
-      // Suppose response contains attempt_id, but the backend is mocked locally.
-      // We will navigate to the take page.
-      router.push(`/student/tests/${testId}/take${response.data?.attempt_id ? `?attempt=${response.data.attempt_id}` : ''}`);
+      
+      router.push(`/student/tests/${testId}/take?attempt=${response.data.attempt_id}`);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Failed to start the test.";
       setError(message);
-      // For demonstration, navigate anyway if backend fails
-      router.push(`/student/tests/${testId}/take?attempt=mock-attempt-1`);
     } finally {
       setIsStarting(false);
     }
