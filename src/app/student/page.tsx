@@ -1,76 +1,29 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookOpen, CheckCircle2, Trophy, Clock } from "lucide-react";
-import { api } from "@/lib/api";
-import { useAuth } from "@/hooks/use-auth";
-
-interface StudentStats {
-  stats: {
-    total_tests_taken: number;
-    average_score_percentage: number;
-  };
-  upcoming_tests: {
-    id: string;
-    title: string;
-    duration_seconds: number;
-    created_at: string;
-  }[];
-  recent_results: {
-    id: string;
-    test: {
-      id: string;
-      title: string;
-    };
-    score: number;
-    percentage: number;
-    created_at: string;
-  }[];
-}
+import { Award, BookOpen, Clock, Zap } from "lucide-react";
 
 export default function StudentDashboard() {
-  const { token, tenantSlug } = useAuth();
-  const [data, setData] = useState<StudentStats | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function fetchDashboard() {
-      if (!token) return;
-      try {
-        const response = await api("/student/dashboard", {
-          token,
-          tenant: tenantSlug || undefined
-        });
-        setData(response.data);
-      } catch (err: unknown) {
-        setError(err instanceof Error ? err.message : "Failed to load dashboard");
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchDashboard();
-  }, [token, tenantSlug]);
-
-  if (loading) return <div className="p-8 text-center animate-pulse">Loading dashboard...</div>;
-  if (error) return <div className="p-8 text-center text-red-500">Error: {error}</div>;
-
   const stats = [
-    { title: "Upcoming Tests", value: data?.upcoming_tests.length || 0, icon: Clock, description: "Assigned to you" },
-    { title: "Completed Tests", value: data?.stats.total_tests_taken || 0, icon: CheckCircle2, description: "Historic attempts" },
-    { title: "Avg. Score", value: `${data?.stats.average_score_percentage || 0}%`, icon: Trophy, description: "Across all tests" },
-    { title: "Total Questions", value: "TBD", icon: BookOpen, description: "Practiced so far" },
+    { title: "Tests Taken", value: "12", icon: BookOpen, description: "Completed attempts" },
+    { title: "Average Score", value: "84%", icon: Zap, description: "Across all subjects" },
+    { title: "Study Streak", value: "5 Days", icon: Clock, description: "Keep it up!" },
+    { title: "Badges", value: "8", icon: Award, description: "Earned this month" },
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 animate-in fade-in duration-500">
+      <div className="flex flex-col gap-2">
+        <h1 className="text-3xl font-bold tracking-tight">Student Dashboard</h1>
+        <p className="text-muted-foreground">Track your progress, take tests, and unlock new achievements.</p>
+      </div>
+
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => (
-          <Card key={stat.title}>
+          <Card key={stat.title} className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-              <stat.icon className="h-4 w-4 text-muted-foreground" />
+              <stat.icon className="h-4 w-4 text-primary" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stat.value}</div>
@@ -79,54 +32,40 @@ export default function StudentDashboard() {
           </Card>
         ))}
       </div>
-      
-      <div className="grid gap-4 md:grid-cols-2">
-        <Card>
+
+      <div className="grid gap-4 md:grid-cols-7">
+        <Card className="col-span-4 border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
           <CardHeader>
-            <CardTitle>Upcoming Assignments</CardTitle>
+            <CardTitle>Upcoming Tests</CardTitle>
           </CardHeader>
           <CardContent>
-            {data?.upcoming_tests.length ? (
-              <ul className="space-y-3">
-                {data.upcoming_tests.map((test) => (
-                  <li key={test.id} className="flex justify-between items-center bg-zinc-50 dark:bg-zinc-900 p-3 rounded-md">
-                    <div>
-                      <span className="font-medium text-sm block">{test.title}</span>
-                      <span className="text-xs text-muted-foreground">{test.duration_seconds / 60} Minutes</span>
-                    </div>
-                    <span className="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-700">
-                      Pending
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-sm text-muted-foreground">No upcoming tests scheduled.</p>
-            )}
+            <div className="space-y-4">
+              {[1, 2].map((i) => (
+                <div key={i} className="flex items-center gap-4 p-4 rounded-xl bg-primary/5 border border-primary/10">
+                  <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-bold">M{i}</div>
+                  <div className="flex-1">
+                    <p className="font-semibold">Mathematics Unit {i + 2}</p>
+                    <p className="text-xs text-muted-foreground">Starts in 2 hours • 45 Questions</p>
+                  </div>
+                  <button className="bg-primary text-white text-sm px-4 py-2 rounded-lg font-medium hover:opacity-90 transition-opacity">Join Lobby</button>
+                </div>
+              ))}
+            </div>
           </CardContent>
         </Card>
-        <Card>
+        
+        <Card className="col-span-3 border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
           <CardHeader>
-            <CardTitle>Recent Performance</CardTitle>
+            <CardTitle>Personalised Insights</CardTitle>
           </CardHeader>
           <CardContent>
-            {data?.recent_results.length ? (
-              <ul className="space-y-3">
-                {data.recent_results.map((result) => (
-                  <li key={result.id} className="flex justify-between items-center bg-zinc-50 dark:bg-zinc-900 p-3 rounded-md">
-                    <div>
-                      <span className="font-medium text-sm block">{result.test.title}</span>
-                      <span className="text-xs text-muted-foreground">{new Date(result.created_at).toLocaleDateString()}</span>
-                    </div>
-                    <span className="text-sm font-bold">
-                      {Math.round(result.percentage)}%
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-sm text-muted-foreground">No recent performance data.</p>
-            )}
+            <div className="space-y-4">
+              <div className="p-3 rounded-lg bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-900/30 text-sm">
+                <p className="font-medium text-orange-800 dark:text-orange-400">Focus Area: Algebra</p>
+                <p className="text-orange-700/80 dark:text-orange-400/80 mt-1">You missed 3 questions on quadratic equations in the last test.</p>
+              </div>
+              <button className="w-full text-sm font-medium p-2 rounded-md border border-primary text-primary hover:bg-primary/5 transition-colors">Review Week Spots</button>
+            </div>
           </CardContent>
         </Card>
       </div>

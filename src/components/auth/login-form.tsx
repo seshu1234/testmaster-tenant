@@ -20,7 +20,7 @@ import { useState } from "react";
 const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
-  tenant: z.string().optional(),
+  role: z.enum(["admin", "teacher", "student", "parent"]),
 });
 
 export function LoginForm() {
@@ -33,6 +33,7 @@ export function LoginForm() {
     defaultValues: {
       email: "",
       password: "",
+      role: "student",
     },
   });
 
@@ -50,19 +51,41 @@ export function LoginForm() {
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="w-full max-w-md mx-auto shadow-xl border-none bg-white/80 backdrop-blur-md dark:bg-zinc-900/80">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold text-center">Login to your account</CardTitle>
+        <CardTitle className="text-3xl font-bold text-center tracking-tight">Welcome Back</CardTitle>
+        <p className="text-center text-muted-foreground text-sm">Sign in to your TestMaster account</p>
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+            <FormField
+              control={form.control}
+              name="role"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Login as</FormLabel>
+                  <FormControl>
+                    <select 
+                      {...field}
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      <option value="student">Student</option>
+                      <option value="teacher">Teacher</option>
+                      <option value="admin">Centre Admin</option>
+                      <option value="parent">Parent</option>
+                    </select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>Email Address</FormLabel>
                   <FormControl>
                     <Input placeholder="name@example.com" {...field} />
                   </FormControl>
@@ -83,24 +106,11 @@ export function LoginForm() {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="tenant"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Workspace Slug (Optional on subdomains)</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g. testacademy" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             {error && (
-              <div className="text-sm font-medium text-destructive">{error}</div>
+              <div className="text-sm font-medium text-destructive bg-destructive/10 p-3 rounded-md">{error}</div>
             )}
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Logging in..." : "Login"}
+            <Button type="submit" className="w-full py-6 text-base font-semibold transition-all hover:scale-[1.02]" disabled={isLoading}>
+              {isLoading ? "Authenticating..." : "Sign In"}
             </Button>
           </form>
         </Form>

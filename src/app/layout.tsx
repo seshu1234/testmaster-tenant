@@ -1,34 +1,64 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import { Providers } from "@/components/providers";
+import './globals.css';
+import { Geist, Geist_Mono } from 'next/font/google';
+import type { Metadata } from 'next';
+import { cookies } from 'next/headers';
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+  variable: '--font-geist-sans',
+  subsets: ['latin'],
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
 });
 
 export const metadata: Metadata = {
-  title: "TestMaster Tenant System",
-  description: "Advanced coaching centre management platform",
+  title: 'TestMaster Tenant',
+  description: 'Advanced coaching centre management platform',
 };
 
-export default function RootLayout({
+// Helper to fetch branding for the current tenant (SSR)
+async function fetchBranding(): Promise<Record<string, string>> {
+  const cookieStore = await cookies();
+  const tenantSlug = cookieStore.get('X-Tenant')?.value || '';
+  if (!tenantSlug) return {};
+  
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/branding`, {
+      headers: {
+        'X-Tenant': tenantSlug,
+      },
+      next: { revalidate: 3600 } // Cache for 1 hour
+    });
+    if (!res.ok) return {};
+    const data = await res.json();
+    return data.data || data;
+  } catch (error) {
+    console.error("Failed to fetch branding:", error);
+    return {};
+  }
+}
+
+export default async function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
+  const branding = await fetchBranding();
+  
+  // Build CSS custom properties
+  const cssVars = Object.entries(branding)
+    .filter(([key]) => typeof branding[key] === 'string' && !key.includes('url'))
+    .reduce((acc, [key, value]) => ({
+      ...acc,
+      [`--${key.replace(/_/g, '-')}`]: value
+    }), {} as React.CSSProperties);
+
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <Providers>{children}</Providers>
+    <html lang="en" style={cssVars}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        {children}
       </body>
     </html>
   );

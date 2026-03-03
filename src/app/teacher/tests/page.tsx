@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, Clock, Activity } from "lucide-react";
@@ -17,7 +18,8 @@ interface Test {
 }
 
 export default function TeacherTestsPage() {
-  const { token, tenantSlug } = useAuth();
+  const router = useRouter();
+  const { token, user } = useAuth();
   const [tests, setTests] = useState<Test[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -26,9 +28,9 @@ export default function TeacherTestsPage() {
     async function fetchTests() {
       if (!token) return;
       try {
-         const response = await api("/teacher/tests", {
+         const response = await api("/v1/teacher/tests", {
             token,
-            tenant: tenantSlug || undefined
+            tenant: user?.tenant_id || undefined
          });
          setTests(response.data);
       } catch (err: unknown) {
@@ -38,25 +40,28 @@ export default function TeacherTestsPage() {
       }
     }
     fetchTests();
-  }, [token, tenantSlug]);
+  }, [token, user]);
 
   const handleCreateTest = async () => {
      try {
-         const response = await api("/teacher/tests", {
+         const response = await api("/v1/teacher/tests", {
              method: "POST",
              token: token || undefined,
-             tenant: tenantSlug || undefined,
+             tenant: user?.tenant_id || undefined,
              body: JSON.stringify({
                  title: "New Custom Assessment",
-                 description: "Edit this description...",
+                 description: "Enter a brief overview of this test...",
                  duration_seconds: 3600,
                  settings: {}
              })
          });
-         // In a real app we'd navigate to the test builder. For now, add to list.
-         setTests([response.data, ...tests]);
+         
+         if (response.success) {
+           router.push(`/teacher/tests/${response.data.id}/build`);
+         }
      } catch(err) {
          console.error(err);
+         setError("Failed to create test. Please try again.");
      }
   };
 

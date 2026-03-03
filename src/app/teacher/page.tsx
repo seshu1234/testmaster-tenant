@@ -1,67 +1,29 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, GraduationCap, CheckCircle2, Clock } from "lucide-react";
-import { api } from "@/lib/api";
-import { useAuth } from "@/hooks/use-auth";
-
-interface TeacherStats {
-  stats: {
-    total_tests_created: number;
-    total_questions_banked: number;
-    active_student_attempts: number;
-  };
-  recent_tests: {
-    id: string;
-    title: string;
-    status: string;
-    created_at: string;
-  }[];
-}
+import { BookOpen, Users, CheckCircle, Clock } from "lucide-react";
 
 export default function TeacherDashboard() {
-  const { token, tenantSlug } = useAuth();
-  const [data, setData] = useState<TeacherStats | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function fetchDashboard() {
-      if (!token) return;
-      try {
-        const response = await api("/teacher/dashboard", {
-          token,
-          tenant: tenantSlug || undefined
-        });
-        setData(response.data);
-      } catch (err: unknown) {
-        setError(err instanceof Error ? err.message : "Failed to load dashboard");
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchDashboard();
-  }, [token, tenantSlug]);
-
-  if (loading) return <div className="p-8 text-center animate-pulse">Loading dashboard...</div>;
-  if (error) return <div className="p-8 text-center text-red-500">Error: {error}</div>;
-
   const stats = [
-    { title: "My Tests", value: data?.stats.total_tests_created || 0, icon: FileText, description: "Total tests created" },
-    { title: "Questions Banked", value: data?.stats.total_questions_banked || 0, icon: CheckCircle2, description: "Available for tests" },
-    { title: "Active Attempts", value: data?.stats.active_student_attempts || 0, icon: Clock, description: "Students testing now" },
-    { title: "Avg. Class Score", value: "TBD", icon: GraduationCap, description: "Requires calculation" },
+    { title: "My Batches", value: "4", icon: Users, description: "Active student groups" },
+    { title: "Questions Created", value: "128", icon: BookOpen, description: "In your bank" },
+    { title: "Tests Scheduled", value: "3", icon: Clock, description: "Upcoming this week" },
+    { title: "Tests Graded", value: "45", icon: CheckCircle, description: "Total evaluations" },
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 animate-in fade-in duration-500">
+      <div className="flex flex-col gap-2">
+        <h1 className="text-3xl font-bold tracking-tight">Teacher Dashboard</h1>
+        <p className="text-muted-foreground">Manage your questions, tests, and monitor student performance.</p>
+      </div>
+
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => (
-          <Card key={stat.title}>
+          <Card key={stat.title} className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-              <stat.icon className="h-4 w-4 text-muted-foreground" />
+              <stat.icon className="h-4 w-4 text-primary" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stat.value}</div>
@@ -70,38 +32,35 @@ export default function TeacherDashboard() {
           </Card>
         ))}
       </div>
-      
-      <div className="grid gap-4 md:grid-cols-2">
-        <Card>
+
+      <div className="grid gap-4 md:grid-cols-7">
+        <Card className="col-span-4 border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
           <CardHeader>
-            <CardTitle>Recent Tests Created</CardTitle>
+            <CardTitle>Recent Tests</CardTitle>
           </CardHeader>
           <CardContent>
-            {data?.recent_tests.length ? (
-              <ul className="space-y-3">
-                {data.recent_tests.map((test) => (
-                  <li key={test.id} className="flex justify-between items-center bg-zinc-50 dark:bg-zinc-900 p-3 rounded-md">
-                    <div>
-                      <span className="font-medium text-sm block">{test.title}</span>
-                      <span className="text-xs text-muted-foreground">{new Date(test.created_at).toLocaleDateString()}</span>
-                    </div>
-                    <span className={`text-xs px-2 py-1 rounded-full ${test.status === 'published' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
-                      {test.status}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-sm text-muted-foreground">No recent tests found.</p>
-            )}
+            <div className="space-y-4">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="flex items-center gap-4 p-3 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">T{i}</div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">Unit Test {i}: Mathematics</p>
+                    <p className="text-xs text-muted-foreground">Scheduled for tomorrow</p>
+                  </div>
+                  <div className="text-xs font-medium text-primary">View Details</div>
+                </div>
+              ))}
+            </div>
           </CardContent>
         </Card>
-        <Card>
+        
+        <Card className="col-span-3 border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
           <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
+            <CardTitle>AI Insights</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted-foreground">Shortcuts for Test Building and Data import will appear here.</p>
+            <p className="text-sm text-muted-foreground mb-4">Your students are performing exceptionally well in Calculus but need more practice in Geometry.</p>
+            <button className="w-full text-sm font-medium p-2 rounded-md bg-primary text-white hover:opacity-90 transition-opacity">Generate Practice Questions</button>
           </CardContent>
         </Card>
       </div>

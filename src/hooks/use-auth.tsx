@@ -15,7 +15,7 @@ type User = {
   name: string;
   email: string;
   role: "admin" | "teacher" | "student" | "superadmin" | "parent";
-  tenant_id: string;
+  tenant_id?: string;
 };
 
 type AuthContextType = {
@@ -29,54 +29,53 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Helper to set cookie
+const setCookie = (name: string, value: string, days = 7) => {
+  const expires = new Date(Date.now() + days * 864e5).toUTCString();
+  document.cookie = `${name}=${value}; expires=${expires}; path=/; SameSite=Lax`;
+};
+
+// Helper to get cookie
+const getCookie = (name: string) => {
+  return document.cookie.split('; ').find(row => row.startsWith(`${name}=`))?.split('=')[1];
+};
+
+// Helper to delete cookie
+const deleteCookie = (name: string) => {
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+};
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
-  // Determine tenant right away (safe for SSR)
   const isBrowser = typeof window !== 'undefined';
   const hostname = isBrowser ? window.location.hostname : '';
   const isLocal = hostname.includes('localhost') || hostname.includes('127.0.0.1');
   const rootDomain = isLocal ? 'localhost' : 'testmaster.in';
-  const tenantSlug = hostname && hostname.split('.')[0] !== rootDomain ? hostname.split('.')[0] : null;
+  const tenantSlug = hostname && !hostname.includes(rootDomain) ? hostname.split('.')[0] : null;
 
   useEffect(() => {
-    const savedToken = localStorage.getItem("token");
+    const savedToken = getCookie("auth_token");
     const savedUser = localStorage.getItem("user");
 
-    const timer = setTimeout(() => {
-      if (savedToken && savedUser) {
-        setToken(savedToken);
-        setUser(JSON.parse(savedUser));
-      }
-      setIsLoading(false);
-    }, 0);
-
-    return () => clearTimeout(timer);
+    if (savedToken && savedUser) {
+      setToken(savedToken);
+      setUser(JSON.parse(savedUser));
+    }
+    setIsLoading(false);
   }, []);
 
   const login = async (credentials: Record<string, string>) => {
-    // Determine tenant from hostname
-    const hostname = window.location.hostname;
-    const isLocal =
-      hostname.includes("localhost") || hostname.includes("127.0.0.1");
-    const rootDomain = isLocal ? "localhost" : "testmaster.in";
-    let tenantSlug =
-      hostname.split(".")[0] === rootDomain ? null : hostname.split(".")[0];
-
-    // Override if user manually provided a workspace slug
-    if (credentials.tenant) {
-      tenantSlug = credentials.tenant;
-    }
-
     try {
-      const response = await api("/tenant/login", {
+      const response = await api("/login", {
         method: "POST",
         body: JSON.stringify({
           email: credentials.email,
           password: credentials.password,
+          role: credentials.role || 'student',
         }),
         tenant: tenantSlug || undefined,
       });
@@ -85,23 +84,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       setUser(user);
       setToken(token);
-      localStorage.setItem("token", token);
+      
+      // Store in cookies for middleware/SSR
+      setCookie("auth_token", token);
+      setCookie("user_role", user.role);
+      
+      // Store user object in localStorage for client-side UI
       localStorage.setItem("user", JSON.stringify(user));
 
       // Redirect based on role
-      switch (user.role) {
-        case "admin":
-          router.push("/admin");
-          break;
-        case "teacher":
-          router.push("/teacher");
-          break;
-        case "student":
-          router.push("/student");
-          break;
-        default:
-          router.push("/");
-      }
+      const routes = {
+        admin: "/admin",
+        teacher: "/teacher",
+        student: "/student",
+        parent: "/parent",
+        superadmin: "/dashboard", // Should normally be on superadmin repo
+      };
+      
+      router.push(routes[user.role as keyof typeof routes] || "/");
     } catch (error) {
       console.error("Login failed:", error);
       throw error;
@@ -111,7 +111,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = () => {
     setUser(null);
     setToken(null);
-    localStorage.removeItem("token");
+    deleteCookie("auth_token");
+    deleteCookie("user_role");
     localStorage.removeItem("user");
     router.push("/login");
   };

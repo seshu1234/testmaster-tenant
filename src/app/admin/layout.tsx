@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
-    <DashboardLayoutBase allowedRoles={["admin", "super_admin"]}>
+    <DashboardLayoutBase allowedRoles={["admin", "superadmin"]}>
       {children}
     </DashboardLayoutBase>
   );
