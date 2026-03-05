@@ -40,7 +40,7 @@ export default function QuestionsPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [importOpen, setImportOpen] = useState(false);
-  const { user, token } = useAuth();
+  const { user, token, tenantSlug } = useAuth();
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -48,7 +48,7 @@ export default function QuestionsPage() {
       try {
         const response = await api(`/v1/teacher/questions`, {
           token,
-          tenant: user.tenant_id,
+          tenant: tenantSlug || undefined,
         });
         if (response.success) {
           setQuestions(response.data.data || []);
@@ -61,7 +61,7 @@ export default function QuestionsPage() {
     };
 
     fetchQuestions();
-  }, [user, token]);
+  }, [user, token, tenantSlug]);
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty.toLowerCase()) {
@@ -188,7 +188,7 @@ export default function QuestionsPage() {
                                 const response = await api(`/v1/teacher/ai/generate-explanation/${q.id}`, {
                                     method: "POST",
                                     token,
-                                    tenant: user.tenant_id
+                                    tenant: tenantSlug || undefined
                                 });
                                 if (response.success) {
                                     alert("AI Explanation generated and saved to this question!");

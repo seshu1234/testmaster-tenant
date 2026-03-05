@@ -42,7 +42,7 @@ interface QuestionStat {
 export default function TeacherResultsPage() {
   const params = useParams();
   const router = useRouter();
-  const { user, token } = useAuth();
+  const { user, token, tenantSlug } = useAuth();
   const testId = params.id as string;
 
   const [summary, setSummary] = useState<AnalyticsSummary | null>(null);
@@ -53,7 +53,7 @@ export default function TeacherResultsPage() {
     const fetchAnalytics = async () => {
       if (!user || !token) return;
       try {
-        const response = await api(`/teacher/tests/${testId}/analytics`, { token, tenant: user.tenant_id });
+        const response = await api(`/v1/teacher/tests/${testId}/analytics`, { token, tenant: tenantSlug || undefined });
         if (response.success) {
           setSummary(response.data.summary);
           setQuestions(response.data.questions);
@@ -65,7 +65,7 @@ export default function TeacherResultsPage() {
       }
     };
     fetchAnalytics();
-  }, [testId, user, token]);
+  }, [testId, user, token, tenantSlug]);
 
   if (isLoading) return <div className="p-20 text-center animate-pulse tracking-tighter text-zinc-400 font-black uppercase">Decrypting Performance Data...</div>;
 

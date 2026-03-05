@@ -59,7 +59,7 @@ export default function StudentResultPage() {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
-  const { user, token } = useAuth();
+  const { user, token, tenantSlug } = useAuth();
   
   const testId = params.id as string;
   const attemptId = searchParams.get("attempt");
@@ -72,19 +72,19 @@ export default function StudentResultPage() {
   const fetchLeaderboard = useCallback(async () => {
     if (!user || !token || !testId) return;
     try {
-      const response = await api(`/student/tests/${testId}/leaderboard`, { token, tenant: user.tenant_id });
+      const response = await api(`/student/tests/${testId}/leaderboard`, { token, tenant: tenantSlug || undefined });
       if (response.success) {
         setLeaderboard(response.data);
       }
     } catch (err) {
       console.error("Failed to fetch leaderboard:", err);
     }
-  }, [testId, user, token]);
+  }, [testId, user, token, tenantSlug]);
 
   const fetchResult = useCallback(async () => {
     if (!user || !token || !attemptId) return;
     try {
-      const response = await api(`/student/attempts/${attemptId}/result`, { token, tenant: user.tenant_id });
+      const response = await api(`/student/attempts/${attemptId}/result`, { token, tenant: tenantSlug || undefined });
       
       if (response.status === 'grading_in_progress') {
         setStatus('grading');
@@ -97,7 +97,7 @@ export default function StudentResultPage() {
       console.error("Failed to fetch result:", err);
       setStatus('error');
     }
-  }, [attemptId, user, token, fetchLeaderboard]);
+  }, [attemptId, user, token, tenantSlug, fetchLeaderboard]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect

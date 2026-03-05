@@ -33,7 +33,7 @@ interface GeneratedQuestion {
 
 export default function AiGeneratePage() {
   const router = useRouter();
-  const { user, token } = useAuth();
+  const { user, token, tenantSlug } = useAuth();
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   
@@ -58,7 +58,7 @@ export default function AiGeneratePage() {
       const response = await api("/v1/teacher/ai/generate-questions", {
         method: "POST",
         token,
-        tenant: user.tenant_id,
+        tenant: tenantSlug || undefined,
         body: JSON.stringify({
           subject,
           topic,
@@ -98,7 +98,7 @@ export default function AiGeneratePage() {
       const response = await api("/v1/teacher/questions/bulk", {
         method: "POST",
         token,
-        tenant: user.tenant_id,
+        tenant: tenantSlug || undefined,
         body: JSON.stringify({
           questions: questionsToSave.map(q => ({
             ...q,

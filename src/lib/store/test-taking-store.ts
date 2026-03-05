@@ -32,7 +32,7 @@ export const useTestTakingStore = create<TestState>()(
       currentQuestionId: null,
       answers: {},
       timeLeft: 0,
-      isFullScreen: false,
+      isFullScreen: true,
 
       setTestContext: (testId: string, attemptId: string) => set({ testId, attemptId }),
       

@@ -53,15 +53,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const isBrowser = typeof window !== 'undefined';
   const hostname = isBrowser ? window.location.hostname : '';
-  const isLocal = hostname.includes('localhost') || hostname.includes('127.0.0.1');
-  const rootDomain = isLocal ? 'localhost' : 'testmaster.in';
-  const tenantSlug = hostname && !hostname.includes(rootDomain) ? hostname.split('.')[0] : null;
+  
+  // Extract tenant slug from hostname (e.g., tenant.localhost or tenant.testmaster.in)
+  let initialTenantSlug = null;
+  if (hostname && hostname !== 'localhost' && hostname !== '127.0.0.1') {
+    initialTenantSlug = hostname.split('.')[0];
+  }
+  
+  const tenantSlug = initialTenantSlug;
 
   useEffect(() => {
     const savedToken = getCookie("auth_token");
     const savedUser = localStorage.getItem("user");
 
     if (savedToken && savedUser) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setToken(savedToken);
       setUser(JSON.parse(savedUser));
     }
@@ -70,7 +76,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (credentials: Record<string, string>) => {
     try {
-      const response = await api("/login", {
+      const response = await api("/v1/login", {
         method: "POST",
         body: JSON.stringify({
           email: credentials.email,

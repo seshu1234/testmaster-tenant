@@ -27,7 +27,7 @@ interface TestDetails {
 export default function TestInstructionsPage() {
   const router = useRouter();
   const params = useParams();
-  const { user, token } = useAuth();
+  const { user, token, tenantSlug } = useAuth();
   const testId = params.id as string;
   
   const [test, setTest] = useState<TestDetails | null>(null);
@@ -39,9 +39,9 @@ export default function TestInstructionsPage() {
     async function fetchTestDetails() {
       if (!user || !token) return;
       try {
-        const response = await api(`/v1/student/tests/${testId}`, {
+        const response = await api(`/student/tests/${testId}`, {
           token,
-          tenant: user.tenant_id
+          tenant: tenantSlug || undefined
         });
         setTest(response.data);
       } catch (err: unknown) {
@@ -54,20 +54,20 @@ export default function TestInstructionsPage() {
     if (testId) {
       fetchTestDetails();
     }
-  }, [testId, user, token]);
+  }, [testId, user, token, tenantSlug]);
 
   const handleStartTest = async () => {
     if (!user || !token) return;
     setIsStarting(true);
     setError(null);
     try {
-      const response = await api(`/v1/student/tests/${testId}/start`, {
+      const response = await api(`/student/tests/${testId}/start`, {
         method: "POST",
         token,
-        tenant: user.tenant_id
+        tenant: tenantSlug || undefined
       });
       
-      router.push(`/student/tests/${testId}/take?attempt=${response.data.id}`);
+      router.push(`/student/tests/${testId}/take?attempt=${response.data.attempt_id}`);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Failed to start the test.";
       setError(message);

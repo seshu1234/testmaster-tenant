@@ -21,7 +21,7 @@ interface Test {
 }
 
 export default function StudentTestsPage() {
-  const { user, token } = useAuth();
+  const { user, token, tenantSlug } = useAuth();
   const [tests, setTests] = useState<Test[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -29,9 +29,9 @@ export default function StudentTestsPage() {
     async function fetchTests() {
       if (!user || !token) return;
       try {
-        const response = await api("/v1/student/tests", {
+        const response = await api("/student/tests", {
           token,
-          tenant: user.tenant_id
+          tenant: tenantSlug || undefined
         });
         setTests(response.data || []);
       } catch (error) {
@@ -41,7 +41,7 @@ export default function StudentTestsPage() {
       }
     }
     fetchTests();
-  }, [user, token]);
+  }, [user, token, tenantSlug]);
 
   const getStatusBadge = (status: string) => {
     switch (status) {

@@ -42,7 +42,7 @@ interface AnalyticsData {
 }
 
 export default function TeacherAnalyticsDashboard() {
-  const { user, token } = useAuth();
+  const { user, token, tenantSlug } = useAuth();
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -50,7 +50,7 @@ export default function TeacherAnalyticsDashboard() {
     const fetchAnalytics = async () => {
       if (!user || !token) return;
       try {
-        const response = await api(`/v1/teacher/analytics/overview`, { token, tenant: user.tenant_id });
+        const response = await api(`/v1/teacher/analytics/overview`, { token, tenant: tenantSlug || undefined });
         if (response.success && response.data) {
           setData(response.data);
         }
@@ -62,7 +62,7 @@ export default function TeacherAnalyticsDashboard() {
     };
 
     fetchAnalytics();
-  }, [user, token]);
+  }, [user, token, tenantSlug]);
 
   if (loading) {
     return (

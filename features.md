@@ -1406,3 +1406,1214 @@ Schedule delivery
 Multiple formats (PDF, Excel, CSV, JSON)
 
 White-label reports (for centre admins)
+
+Centre Admin Features & Functionality
+
+1. Dashboard & Overview
+   KPI Cards: View real-time metrics (total students/teachers, tests this month, completion rate, avg score, plan utilization, days until renewal)
+
+Quick Stats Widget: At-a-glance view of centre performance
+
+Recent Activity Feed: Latest test completions, new registrations, alerts
+
+2. Student Management
+   Student Directory: List all students with search, filter, sort
+
+Bulk Operations: Import/export students via Excel/CSV, bulk email, bulk assign to batches
+
+Student Profile: View individual student details, test history, performance trends, attendance
+
+Student Status Management: Activate, suspend, or archive students
+
+Parent Linking: Connect students to parent accounts
+
+Password Reset: Forgot password assistance for students
+
+3. Teacher Management
+   Teacher Directory: List all teachers with roles and contact info
+
+Teacher Assignment: Assign teachers to batches/subjects
+
+Teacher Permissions: Granular controls (who can create tests, use AI, view results)
+
+Teacher Performance Metrics: Tests created, avg student scores, engagement tracking
+
+Teacher Invitations: Send invites with role-based access links
+
+4. Batch & Class Management
+   Batch CRUD: Create, edit, delete batches (e.g., "JEE 2026 Batch A")
+
+Batch Assignment: Assign students and teachers to batches
+
+Batch Transfer: Move students between batches
+
+Subject Configuration: Define subjects per batch
+
+Academic Calendar: Set holidays, exam schedules, term dates
+
+5. Test Management (Oversight Role)
+   View All Tests: See tests created by all teachers
+
+Test Approval Workflow: Optional approval before publishing
+
+Test Templates: Create reusable test templates for teachers
+
+Test Archive: Access historical tests
+
+Test Analytics Summary: Centre-wide test performance metrics
+
+6. Question Bank (Centre-Level)
+   Central Question Repository: View all questions across teachers
+
+Quality Control: Flag/review inappropriate or incorrect questions
+
+Duplicate Detection: Identify and merge duplicate questions
+
+Shared Question Pool: Enable/disable teacher sharing
+
+Question Usage Stats: Most used, highest performing questions
+
+7. Analytics & Reports
+   Student Performance Dashboard: Class averages, score distribution, top/bottom performers
+
+Teacher Effectiveness Dashboard: Compare teacher performance
+
+Batch Comparison: Side-by-side batch performance analysis
+
+Subject Analysis: Weak areas by subject across centre
+
+Trend Analysis: Performance trends over time (weekly/monthly/term)
+
+Custom Report Builder: Create, save, and schedule custom reports
+
+Export Reports: PDF, Excel, CSV formats
+
+Report Scheduling: Auto-generate and email reports daily/weekly/monthly
+
+8. Branding & Customization
+   Colour Palette Selection: Choose from 9 curated palettes
+
+Logo Upload: Upload centre logo (auto-resized for web/mobile)
+
+Favicon Upload: Custom browser tab icon
+
+Login Page Customization: Banner image, welcome message
+
+Email Template Customization: Centre logo in automated emails
+
+Result Card Branding: Custom-branded PDF result cards
+
+White Label Option: Hide "Powered by TestMaster" (Pro plan)
+
+9. Subscription & Billing
+   Plan Overview: Current plan, features, limits
+
+Usage vs Limits: Progress bars for students/teachers/AI credits
+
+Upgrade/Downgrade: Change plan with proration
+
+Payment Methods: Add/update UPI, card, net banking
+
+Invoices: View/download GST invoices
+
+Billing History: Past transactions
+
+Add-on Purchases: Buy additional AI credits, custom domain
+
+Trial Status: Days remaining in trial
+
+Cancellation Flow: Cancel with retention offers
+
+10. AI Features (Oversight)
+    AI Credit Usage: Monitor teacher consumption
+
+Credit Allocation: Distribute credits to teachers
+
+AI Generation Logs: View what was generated and by whom
+
+Quality Feedback: Review AI-generated questions flagged by teachers
+
+Cost Tracking: Approximate cost breakdown (for centre owners)
+
+11. Communication Tools
+    Announcements: Broadcast messages to all students/teachers/parents
+
+Email Campaigns: Send newsletters, reminders, results
+
+WhatsApp Integration: Send test reminders and results (future)
+
+In-App Notifications: System-wide alerts
+
+Push Notifications: Mobile/web push for urgent updates
+
+12. Parent Portal Management
+    Parent Account Approval: Approve/reject parent registration requests
+
+Parent-Student Linking: Manually link or approve links
+
+Parent Access Controls: What parents can see (results only vs full analytics)
+
+Parent Communication: Send bulk emails to parents
+
+Parent Feedback: View parent survey responses
+
+13. User Roles & Permissions
+    Role Management: Admin, Teacher, Student, Parent (default roles)
+
+Custom Roles: Create custom roles (e.g., "Department Head")
+
+Permission Sets: Granular permissions (create test, edit question bank, view results)
+
+Audit Logs: Track who did what and when
+
+14. Security & Compliance
+    Login History: View all user logins with IP, device, location
+
+2FA Enforcement: Require 2FA for admin accounts
+
+Session Management: Force logout of all devices
+
+Data Export: Export all centre data (GDPR compliance)
+
+Activity Logs: Complete audit trail for compliance
+
+15. Support & Help
+    Support Ticket System: Create and track support tickets
+
+Knowledge Base: Access articles, tutorials, FAQs
+
+Feature Request: Submit feature suggestions
+
+Onboarding Checklist: Setup progress tracker
+
+Live Chat: Direct chat with TestMaster support
+
+16. Settings & Configuration
+    Centre Profile: Update centre name, address, contact info
+
+Academic Configuration: Define grading scales, pass percentages
+
+Notification Preferences: Configure email/SMS/push settings
+
+Integrations: Connect with external systems (ERP, CRM)
+
+API Access: Generate/manage API keys for integrations
+
+Data Retention Policies: Configure auto-deletion rules
+
+17. Financial & Business Metrics (For Centre Owners)
+    ROI Calculator: Compare manual testing costs vs platform
+
+Student Lifetime Value: Average revenue per student
+
+Cost Per Test: Platform cost vs manual effort
+
+Referral Program: Track referred centres and credits earned
+
+Expense Tracking: Platform fees + add-ons
+
+Profitability Analysis: By batch/subject
+
+18. Mobile Access
+    Responsive Dashboard: Full functionality on mobile
+
+Quick Actions: Approve, monitor, communicate on-the-go
+
+Push Notifications: Alerts for critical issues
+
+19. Benchmarking & Insights
+    Compare with Similar Centres: Size/location-based benchmarking
+
+Platform-Wide Averages: See how centre compares to all TestMaster users
+
+Best Practices: Recommendations based on top-performing centres
+
+Industry Trends: Seasonal patterns, popular test types
+
+20. Onboarding & Setup
+    Wizard-Based Setup: Step-by-step initial configuration
+
+Sample Data: Option to load sample students/tests
+
+Teacher Invitation Flow: Bulk invite teachers via email
+
+Student Import: Excel/CSV upload template
+
+Quick Start Guide: Interactive tutorial
+TestMaster: Complete Role-Based Features & Functionality
+
+1. SUPER ADMIN FEATURES
+   Access: app.testmaster.in (Platform Owner & TestMaster Team Only)
+
+1.1 Platform Overview Dashboard
+Global KPI Cards: Total tenants, MRR, ARR, active students, tests conducted
+
+Revenue Metrics: MRR by plan, cohort analysis, revenue waterfall, forecast
+
+Growth Metrics: New signups, trial conversions, churn rate, LTV/CAC
+
+Health Scorecard: Red/yellow/green status for all critical metrics
+
+1.2 Tenant Management
+Tenant Directory: Searchable list of all coaching centres
+
+Tenant Details: View complete tenant info (users, tests, usage, subscription)
+
+Tenant Actions: Suspend, activate, impersonate, delete
+
+Bulk Operations: Export tenant data, send bulk emails
+
+Tenant Health Monitoring: Usage patterns, support tickets, payment status
+
+At-Risk Detection: Identify tenants with low engagement or expiring soon
+
+1.3 Subscription & Billing Administration
+Plan Management: Create, edit, price plans (Starter/Growth/Pro)
+
+Override Capabilities: Extend trials, apply credits, adjust limits manually
+
+Invoice Management: View all invoices, manual invoice generation
+
+Refund Processing: Process refunds with reason tracking
+
+Payment Failure Management: Monitor failed payments, retry logic
+
+Revenue Reports: Export financial reports for accounting
+
+1.4 User Management (Platform-Wide)
+Super Admin Team: Add/remove platform administrators
+
+Role & Permissions: Define super admin team roles
+
+Audit Logs: Complete action history across platform
+
+Login Monitoring: Track all super admin access
+
+1.5 AI Usage & Cost Management
+Global AI Dashboard: Total credits used, cost by tenant, feature breakdown
+
+OpenAI Cost Tracking: Real-time cost monitoring, budget alerts
+
+Credit Allocation: Set monthly credit limits per tenant
+
+Abuse Detection: Flag unusual AI usage patterns
+
+Model Configuration: Switch AI models (GPT-4o mini vs full)
+
+1.6 Feature Flags & Platform Configuration
+Feature Toggle: Enable/disable features globally or per tenant
+
+Maintenance Mode: Platform-wide maintenance with custom message
+
+Environment Management: Staging/production configuration
+
+Announcements: Broadcast messages to all tenants
+
+Changelog: Publish platform updates visible to all
+
+1.7 Technical Monitoring
+System Health: API latency, error rates, queue depth, worker utilization
+
+Database Metrics: Connection count, slow queries, size
+
+Cache Performance: Redis hit rates, memory usage
+
+CDN Analytics: Bandwidth, cache hit ratio, edge performance
+
+Third-Party Status: OpenAI, Ably, Resend, Railway health
+
+1.8 Support Operations
+Support Ticket Queue: View all tenant tickets
+
+Ticket Assignment: Assign to super admin team members
+
+Response Time Tracking: SLA monitoring
+
+CSAT/NPS Scores: Platform-wide satisfaction metrics
+
+Knowledge Base Management: Edit help center content
+
+1.9 Security & Compliance
+Security Dashboard: Failed login attempts, suspicious activity
+
+Data Export Requests: GDPR compliance tracking
+
+Penetration Test Scheduling: Track security audits
+
+Compliance Reports: Generate platform compliance docs
+
+1.10 Analytics & Insights
+Platform-Wide Analytics: Usage patterns, peak times, popular features
+
+Cohort Retention: Tenant retention by signup month
+
+Conversion Funnels: Visit → Signup → Trial → Paid
+
+Benchmarking: Compare tenant performance
+
+Custom Reports: Build platform-wide custom reports
+
+2. CENTRE ADMIN FEATURES
+   Access: {tenant}.testmaster.in/admin
+
+2.1 Centre Dashboard
+KPI Cards: Total students/teachers, tests this month, completion rate, avg score
+
+Quick Stats: Active vs inactive users, pending invites
+
+Recent Activity: Latest test completions, new registrations
+
+Plan Status: Usage vs limits, days until renewal
+
+Alerts: Low credits, expiring soon, suspicious activity
+
+2.2 Student Management
+Student Directory: Search, filter, sort all students
+
+Student CRUD: Add, edit, suspend, delete students
+
+Bulk Import/Export: Excel/CSV upload with template
+
+Bulk Operations: Batch assign, email, status change
+
+Student Profile: View details, test history, performance trends
+
+Parent Linking: Connect/manage parent accounts
+
+Password Management: Reset passwords, force change
+
+Attendance Tracking: Monitor test participation
+
+2.3 Teacher Management
+Teacher Directory: List all teachers with roles
+
+Teacher CRUD: Add, edit, suspend teachers
+
+Bulk Invitations: Send registration links via email
+
+Role Assignment: Assign permissions (test creation, AI access, etc.)
+
+Teacher Performance: Tests created, student scores, engagement
+
+Subject Assignment: Link teachers to subjects/batches
+
+Activity Monitoring: Last login, test activity
+
+2.4 Batch & Class Management
+Batch CRUD: Create, edit, delete batches (e.g., "JEE 2026 Batch A")
+
+Batch Assignment: Bulk assign students to batches
+
+Teacher Assignment: Assign teachers to batches
+
+Subject Configuration: Define subjects per batch
+
+Batch Transfer: Move students between batches
+
+Academic Calendar: Set holidays, exam schedules
+
+Batch Analytics: Performance comparison across batches
+
+2.5 Test Management (Oversight)
+All Tests View: See tests created by all teachers
+
+Test Approval: Optional approval workflow before publishing
+
+Test Templates: Create templates for teachers
+
+Test Archive: Access historical tests
+
+Test Analytics: Centre-wide test metrics
+
+Schedule Management: View all scheduled tests
+
+Test Monitoring: Live view of ongoing tests
+
+2.6 Question Bank Management
+Central Repository: View all questions across teachers
+
+Quality Control: Flag/review inappropriate questions
+
+Duplicate Detection: Identify and merge duplicates
+
+Sharing Controls: Enable/disable teacher question sharing
+
+Question Analytics: Most used, highest/lowest performing
+
+Bulk Import/Export: Excel/CSV question management
+
+2.7 Analytics & Reporting
+Student Performance Dashboard: Averages, distribution, top/bottom
+
+Teacher Effectiveness: Compare teacher performance
+
+Batch Comparison: Side-by-side batch analysis
+
+Subject Analysis: Weak areas across centre
+
+Trend Analysis: Performance over time
+
+Custom Report Builder: Drag-drop report creation
+
+Scheduled Reports: Auto-email daily/weekly/monthly
+
+Export Options: PDF, Excel, CSV
+
+2.8 Branding & Customization
+Colour Palette: Choose from 9 curated themes
+
+Logo Upload: Centre logo (auto-resized)
+
+Favicon: Custom browser tab icon
+
+Login Page: Custom banner, welcome message
+
+Email Templates: Centre branding in emails
+
+Result Cards: Branded PDF certificates
+
+White Label: Hide TestMaster branding (Pro plan)
+
+Custom Domain: Centre.com add-on (Pro)
+
+2.9 Subscription & Billing
+Plan Overview: Current plan, features, limits
+
+Usage Dashboard: Progress bars vs limits
+
+Plan Change: Upgrade/downgrade with proration
+
+Payment Methods: Add/update UPI, cards, net banking
+
+Invoice Access: View/download GST invoices
+
+Billing History: Past transactions
+
+Add-ons: Purchase AI credits, custom domain
+
+Trial Status: Days remaining
+
+Cancellation: With retention offers
+
+2.10 Communication Tools
+Announcements: Broadcast to all students/teachers
+
+Email Campaigns: Send newsletters, reminders
+
+WhatsApp Integration: Test reminders, results
+
+In-App Notifications: System alerts
+
+Push Notifications: Mobile/web push
+
+Message History: Track all communications
+
+2.11 Parent Portal Management
+Parent Approvals: Approve/reject parent registrations
+
+Parent Linking: Manual or approve links
+
+Access Controls: What parents can view
+
+Parent Communications: Bulk emails to parents
+
+Parent Feedback: Survey responses
+
+2.12 User Roles & Permissions
+Default Roles: Admin, Teacher, Student, Parent
+
+Custom Roles: Create roles (e.g., "Department Head")
+
+Permission Sets: Granular controls
+
+Audit Logs: Complete action history
+
+2.13 Security
+Login History: User access logs with IP/device
+
+2FA Enforcement: Require two-factor authentication
+
+Session Management: Force logout devices
+
+Data Export: GDPR compliance export
+
+Activity Logs: Complete audit trail
+
+2.14 Settings
+Centre Profile: Name, address, contact info
+
+Academic Configuration: Grading scales, pass %
+
+Notification Preferences: Email/SMS/push settings
+
+Integrations: ERP/CRM connections
+
+API Access: Generate/manage API keys
+
+Data Retention: Auto-deletion rules
+
+2.15 Financial (Centre Owners)
+ROI Calculator: Manual vs digital cost comparison
+
+Student LTV: Average revenue per student
+
+Cost Per Test: Platform cost analysis
+
+Referral Program: Track referred centres
+
+Expense Tracking: Platform fees + add-ons
+
+Profitability: By batch/subject analysis
+
+2.16 Onboarding
+Setup Wizard: Step-by-step configuration
+
+Sample Data: Load demo students/tests
+
+Teacher Invitations: Bulk invite flow
+
+Student Import: Excel upload template
+
+Quick Start Guide: Interactive tutorial
+
+3. TEACHER FEATURES
+   Access: {tenant}.testmaster.in/teacher
+
+3.1 Teacher Dashboard
+KPI Cards: My classes, my students, tests created, pending grading
+
+Class Average: Current vs historical
+
+Upcoming Tests: Schedule view
+
+Quick Actions: Create test, generate questions, monitor live
+
+Recent Results: Latest test outcomes
+
+3.2 Test Builder
+Test Creation Wizard: 6-step guided process
+
+Basic Info: Title, subject, instructions, language
+
+Settings: Duration, marks, negative marking, pass %
+
+Sections: Named sections with time limits
+
+Question Selection: Search bank, filter, drag-drop reorder
+
+Preview Mode: View as student
+
+Save as Draft: Resume later
+
+Publish/Schedule: Set immediate or future dates
+
+3.3 Question Bank Management
+My Questions: Personal question repository
+
+Question CRUD: Create all types (MCQ, T/F, Fill blanks, Match, Short answer)
+
+Rich Text Editor: LaTeX equations, image uploads
+
+Tags: Subject, chapter, topic, difficulty
+
+Bulk Import: Excel/CSV template
+
+Duplicate Detection: Warning on similar questions
+
+Version History: Track edits
+
+Question Analytics: Performance stats per question
+
+3.4 AI Question Generator
+Topic Input: Generate questions by topic
+
+Difficulty Selection: Easy/Medium/Hard mix
+
+Question Types: Choose formats
+
+Quantity: Up to 50 per request
+
+PDF Upload: Extract content for context
+
+Review Flow: Edit inline before saving
+
+Bulk Save: Select which to keep
+
+Credit Tracking: View remaining credits
+
+3.5 AI Explanation Generator
+Single Question: Generate step-by-step solution
+
+Bulk Generation: Entire test explanations
+
+Edit Mode: Modify AI-generated content
+
+Save to Bank: Store with question
+
+Student View: Preview as student sees
+
+3.6 Test Scheduling
+Calendar View: Visual schedule
+
+Batch Assignment: Select batches/individuals
+
+Date/Time Picker: Set start times
+
+Recurring Tests: Daily/weekly/monthly patterns
+
+Reminders: Auto-notify students
+
+Conflicts Check: Avoid overlapping tests
+
+3.7 Live Test Monitoring
+Active Tests List: Real-time status
+
+Live Proctoring Dashboard:
+
+Student grid with status indicators
+
+Progress tracking (% completed)
+
+Time remaining per student
+
+Alert feed (tab switches, fullscreen exits)
+
+Suspicious activity counter
+
+Controls: Force submit, extend time, broadcast message
+
+Real-time Stats: Completion rate, average progress
+
+3.8 Results & Grading
+Results Dashboard: Tests awaiting grading
+
+Manual Grading: For subjective questions
+
+Auto-graded: Instant for objective types
+
+Grade Override: Adjust scores with reason
+
+Bulk Operations: Pass/fail multiple students
+
+Result Publishing: Release to students
+
+Result Cards: Generate branded PDFs
+
+3.9 Student Performance Analytics
+Class Overview: Average scores, distribution
+
+Individual Student View: Detailed history
+
+Top Performers: Leaderboard
+
+At-Risk Students: Declining performance alerts
+
+Subject Weakness Analysis: Topic-level breakdown
+
+Improvement Tracking: Progress over time
+
+Comparative Analytics: Student vs class average
+
+3.10 AI-Powered Insights
+Class Weak Areas: Topics needing focus
+
+Personalized Recommendations: For each student
+
+Predicted Scores: Next test forecast
+
+Question Difficulty Analysis: Easy/Medium/Hard accuracy
+
+Time Management Analysis: Speed vs accuracy
+
+Study Pattern Insights: Peak performance times
+
+3.11 Batch Management
+My Batches: View assigned batches
+
+Batch Details: Student roster, performance
+
+Batch Transfer: Move students
+
+Subject Focus: Per-batch weak areas
+
+Communication: Message entire batch
+
+3.12 Communication
+Student Messaging: Individual/group messages
+
+Announcements: Class-wide notifications
+
+Parent Contact: Message parents (if enabled)
+
+Discussion Forums: Subject-wise Q&A
+
+Doubt Resolution: Answer student questions
+
+3.13 Question Analytics
+Performance by Question: % correct per question
+
+Difficulty Analysis: Actual vs tagged difficulty
+
+Distractor Analysis: Wrong answer patterns
+
+Time Spent: Average per question
+
+Flag Rate: Questions students marked for review
+
+3.14 Resource Management
+Study Materials: Upload notes, videos
+
+Recommended Resources: AI-suggested content
+
+Practice Sets: Create custom practice
+
+Previous Papers: Upload and tag
+
+3.15 Schedule & Calendar
+Teaching Timetable: Class schedule
+
+Test Schedule: Upcoming tests
+
+Reminders: Pending tasks
+
+Holidays: Academic calendar
+
+3.16 Profile & Settings
+Profile Management: Update info, photo
+
+Notification Preferences: Email/push settings
+
+Signature: For result cards
+
+Availability: Office hours for student help
+
+4. STUDENT FEATURES
+   Access: {tenant}.testmaster.in/student
+
+4.1 Student Dashboard
+Welcome Banner: Personalized greeting
+
+KPI Cards: Tests taken, avg score, rank, study streak
+
+Progress Bar: % to next goal/badge
+
+Quick Actions: Enter test lobby, view results
+
+Motivational Messages: AI-generated encouragement
+
+4.2 Upcoming Tests
+Test List: Card view of scheduled tests
+
+Countdown Timers: Days/hours to each test
+
+Status Indicators: Ready, not started, in progress
+
+Actions: Enter lobby, view details, set reminder
+
+Calendar View: Visual schedule
+
+4.3 Test Lobby
+System Check: Browser compatibility, fullscreen support
+
+Instructions: Test rules, marking scheme
+
+Countdown: Pre-test timer
+
+Fullscreen Prompt: Enforce before start
+
+Start Button: Begin when ready
+
+4.4 Test Taking Interface
+Question Display: Clear, readable format
+
+Question Palette:
+
+Color-coded status (answered, flagged, not visited)
+
+Jump to any question
+
+Summary view
+
+Timer: Top-right with color alerts (orange at 10min, red at 5min)
+
+Navigation: Previous/Next buttons
+
+Flag Toggle: Mark for review
+
+Rich Content: LaTeX equations, images
+
+Fullscreen Enforced: Exit tracking
+
+Auto-save: Every 30 seconds (local + cloud)
+
+Offline Mode: IndexedDB backup
+
+Sync Indicator: Shows save status
+
+4.5 Test Submission
+Confirmation Modal: Summary of answered/unanswered/flagged
+
+Final Review: Last chance to change
+
+Auto-submit: On timer end
+
+Submission Acknowledgement: "Calculating results..."
+
+WebSocket Listening: Auto-redirect when ready
+
+4.6 Results & Analysis
+Score Card: Marks, percentage, rank, percentile
+
+Question Review: Your answer vs correct
+
+AI Explanations: Step-by-step solutions
+
+Section Breakdown: Subject-wise performance
+
+Time Analysis: Time spent per question
+
+Comparison: vs class average, vs toppers
+
+Download PDF: Branded result card
+
+Share: Results with parents/teachers
+
+4.7 Performance Analytics
+Score Trend: Line chart of last 10 tests
+
+Subject-wise Radar: Strength/weakness visualization
+
+Difficulty Breakdown: Easy/Medium/Hard accuracy
+
+Time vs Accuracy: Scatter plot analysis
+
+Consistency Score: Performance stability
+
+Improvement Rate: % change over time
+
+Goal Tracking: Progress toward targets
+
+4.8 AI-Powered Insights
+Personalized Recommendations:
+
+Topics to focus on
+
+Practice questions suggested
+
+Video tutorial links
+
+Weak Area Identification: Detailed topic breakdown
+
+Strength Celebration: Topics you excel at
+
+Predicted Score: Next test forecast
+
+Study Tips: AI-generated advice
+
+4.9 Leaderboards
+Multiple Views: Class/Batch/Centre/All
+
+Rank Display: Current position with trend
+
+Neighbors: Students ranked above/below
+
+Score Comparison: Gap to next rank
+
+Badge Indicators: Top performers
+
+Filters: Subject-wise, time period
+
+4.10 Gamification & Achievements
+Badges Earned: Display with details
+
+Next Badges: Progress tracking
+
+Study Streak: 🔥 counter with calendar
+
+Points System: Earn from tests/streaks
+
+Level Progress: Student level (Beginner → Expert)
+
+Rewards: Unlock special features
+
+4.11 Study Streak & Motivation
+Streak Counter: Consecutive days active
+
+Heat Map: Daily activity calendar
+
+Milestones: Celebrate achievements
+
+Motivation Quotes: Daily inspiration
+
+Reminders: Gentle nudges to study
+
+4.12 Question Bank (Personal)
+Bookmarked Questions: Save for later
+
+Mistake Log: Questions answered wrong
+
+AI Explanations: Saved explanations
+
+Practice Sets: Self-created practice
+
+Notes: Personal annotations
+
+4.13 Recommended Tests
+AI Curated Suggestions: Based on weak areas
+
+Popular Tests: What peers are taking
+
+Upcoming Relevant: Syllabus-aligned tests
+
+Practice Drills: Topic-specific quick tests
+
+4.14 Notifications
+Test Reminders: 24h/1h before
+
+Result Ready: Alert when available
+
+New Badge: Achievement unlocked
+
+Teacher Messages: Direct communications
+
+Announcements: Centre-wide updates
+
+4.15 Study Resources
+Video Tutorials: Recommended content
+
+Practice Material: AI-generated worksheets
+
+Previous Papers: Archive access
+
+Formula Sheets: Quick reference
+
+Doubt Resolution: Ask teachers
+
+4.16 Profile & Settings
+Profile Management: Photo, contact info
+
+Parent Connect: Link to parent account
+
+Notification Preferences: Email/push settings
+
+Study Goals: Set weekly targets
+
+Theme Preference: Light/dark mode
+
+Language Preference: English/Hindi (future)
+
+4.17 Parent Connect
+Share Progress: Send report to parent
+
+Parent Messages: View communications
+
+Consent Management: Parent approvals
+
+5. PARENT FEATURES
+   Access: {tenant}.testmaster.in/parent
+
+5.1 Parent Dashboard
+Welcome: Personalized greeting
+
+Child Selector: Toggle between children
+
+KPI Cards: Tests taken, avg score, upcoming tests
+
+Recent Activity: Child's latest tests
+
+Quick Stats: Attendance, performance trend
+
+Notifications: Unread alerts count
+
+5.2 Child Performance Snapshot
+Overall Stats: Tests taken, average score, rank
+
+Study Streak: 🔥 consecutive days
+
+vs Class Average: Comparative visualization
+
+Progress Bar: Term completion %
+
+Last Activity: When child last studied
+
+5.3 Recent Test Results
+Test History: List with dates, scores
+
+Performance Indicators: Good/Warning/Alert colors
+
+Quick View: Score, rank, vs class avg
+
+Drill Down: Click for detailed analysis
+
+Download: Save result cards
+
+5.4 Detailed Result View
+Score Breakdown: Marks, percentage, rank
+
+Subject-wise Performance: Bar chart
+
+Question Review: See answers vs correct
+
+AI Explanations: Review solutions
+
+Teacher Feedback: Comments if any
+
+Time Analysis: Speed per section
+
+Comparison: vs class average
+
+5.5 Performance Trends
+Score Trend Line: Last 3-6 months
+
+Subject Radar: Strength/weakness visualization
+
+Improvement Rate: % change over time
+
+Consistency Chart: Performance stability
+
+Rank Trend: Position over time
+
+Predictive Line: Forecast next tests
+
+5.6 Subject-wise Breakdown
+Subject Cards: Each subject with score
+
+Gap Analysis: vs class average
+
+Topic Deep Dive: Weak areas within subject
+
+Time Investment: Hours spent per subject
+
+Recommendations: Suggested focus areas
+
+5.7 AI-Generated Insights (Parent-Friendly)
+Strengths Summary: Subjects child excels in
+
+Areas for Improvement: Topics needing attention
+
+Study Recommendations: Actionable advice
+
+Prediction: Expected rank improvement
+
+Comparison: vs grade-level benchmarks
+
+Early Warning: Signs of decline
+
+5.8 Upcoming Tests
+Test Schedule: List with dates
+
+Countdown: Days remaining
+
+Subjects: What's being tested
+
+Reminder Setting: Get notified
+
+Calendar View: Visual schedule
+
+5.9 Comparison Dashboard
+vs Class Average: Bar chart comparison
+
+vs Top 10%: Gap analysis
+
+vs Siblings: Multiple children view
+
+Percentile Rank: Where child stands
+
+Benchmarking: vs grade-level expectations
+
+5.10 Notifications
+Result Alerts: When test results are out
+
+Upcoming Reminders: Tests in next 24h
+
+Teacher Messages: Communications
+
+Achievement Alerts: Child earned badge
+
+Attendance Alerts: Missed tests
+
+Decline Alerts: Sudden performance drop
+
+5.11 Communication
+Message Teacher: Direct contact form
+
+Schedule Meeting: Parent-teacher conference booking
+
+Feedback Form: Share concerns
+
+Read Announcements: Centre-wide updates
+
+Reply to Messages: Conversation history
+
+5.12 Report Downloads
+Full Report: Complete performance PDF
+
+Subject Report: Detailed subject analysis
+
+Term Report: Cumulative term summary
+
+Year Overview: Annual progress
+
+Share Options: Email, WhatsApp, print
+
+5.13 Multiple Children View
+Family Dashboard: Side-by-side comparison
+
+Individual Tabs: Switch between children
+
+Combined View: All children overview
+
+Differentiated Needs: Each child's focus areas
+
+Time Investment: Attention distribution
+
+5.14 Payment & Subscription (Optional)
+Fee View: If parent pays directly
+
+Invoice Access: Download receipts
+
+Payment History: Past transactions
+
+Auto-pay Setup: For recurring fees
+
+Plan Details: What's covered
+
+5.15 Settings
+Profile Management: Contact info
+
+Child Linking: Add/remove children
+
+Notification Preferences: What alerts to receive
+
+Communication Preferences: Email/SMS/WhatsApp
+
+Language: English/Hindi (future)
+
+Privacy Settings: Data sharing preferences
+
+5.16 Support
+Help Center: Parent-specific FAQs
+
+Contact Support: Raise tickets
+
+Feedback: Share suggestions
+
+Onboarding Guide: How to use parent portal
+
+Feature Distribution Summary
+Feature Category Super Admin Centre Admin Teacher Student Parent
+Dashboard & KPIs ✅ ✅ ✅ ✅ ✅
+User Management ✅ ✅ Limited Limited ❌
+Test Creation ❌ Oversight ✅ ❌ ❌
+Test Taking ❌ ❌ Monitor ✅ ❌
+Results & Analytics Platform Centre Class Personal Child
+AI Features Cost Mgmt Oversight Create Consume Insights
+Billing/Finance Platform Centre ❌ ❌ Optional
+Communication Broadcast Centre-wide Class Limited With teacher
+Gamification ❌ ❌ ❌ ✅ ❌
+Parent Features ❌ Manage Limited Connect ✅
+Security/Admin Platform Centre Basic Basic Basic
+Branding Platform Centre ❌ ❌ ❌
+This comprehensive feature set ensures each role has exactly what they need to fulfill their responsibilities while maintaining appropriate boundaries and data access levels.
+
+This response is AI-generated, for reference only.

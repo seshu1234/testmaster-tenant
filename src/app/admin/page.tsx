@@ -28,7 +28,7 @@ export default function AdminDashboard() {
           token,
           tenant: tenantSlug || undefined
         });
-        setData(response.data);
+        setData(response.data.overview);
       } catch (err: unknown) {
         setError(err instanceof Error ? err.message : "Failed to load analytics");
       } finally {

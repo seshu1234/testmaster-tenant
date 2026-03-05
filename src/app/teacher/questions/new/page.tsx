@@ -21,7 +21,7 @@ import { RichTextEditor } from "@/components/ui/rich-text-editor";
 
 export default function CreateQuestionPage() {
   const router = useRouter();
-  const { user, token } = useAuth();
+  const { user, token, tenantSlug } = useAuth();
   const [loading, setLoading] = useState(false);
   
   const [type, setType] = useState<string>("mcq_single");
@@ -66,7 +66,7 @@ export default function CreateQuestionPage() {
       const response = await api("/v1/teacher/questions", {
         method: "POST",
         token,
-        tenant: user.tenant_id,
+        tenant: tenantSlug || undefined,
         body: JSON.stringify({
           type,
           title,

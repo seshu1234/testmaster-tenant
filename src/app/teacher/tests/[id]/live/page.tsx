@@ -42,7 +42,7 @@ interface LiveStats {
 export default function TeacherLiveMonitorPage() {
   const params = useParams();
   const router = useRouter();
-  const { user, token } = useAuth();
+  const { user, token, tenantSlug } = useAuth();
   const testId = params.id as string;
 
   const [stats, setStats] = useState<LiveStats | null>(null);
@@ -55,7 +55,7 @@ export default function TeacherLiveMonitorPage() {
   const fetchLiveStats = useCallback(async () => {
     if (!user || !token) return;
     try {
-      const response = await api(`/teacher/tests/${testId}/live`, { token, tenant: user.tenant_id });
+      const response = await api(`/v1/teacher/tests/${testId}/live`, { token, tenant: tenantSlug || undefined });
       if (response.success) {
         setStats(response.data);
       }
@@ -64,15 +64,15 @@ export default function TeacherLiveMonitorPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [testId, user, token]);
+  }, [testId, user, token, tenantSlug]);
 
   const handleForceSubmit = async (attemptId: string, studentId: string) => {
     if (!user || !token || !confirm(`Force submit attempt for student ${studentId}?`)) return;
     try {
-        const response = await api(`/teacher/tests/${testId}/force-submit/${studentId}`, { 
+        const response = await api(`/v1/teacher/tests/${testId}/force-submit/${studentId}`, { 
             method: 'POST', 
             token, 
-            tenant: user.tenant_id 
+            tenant: tenantSlug || undefined 
         });
         if (response.success) {
             fetchLiveStats();
@@ -86,10 +86,10 @@ export default function TeacherLiveMonitorPage() {
     if (!user || !token || !broadcastMessage.trim()) return;
     setIsBroadcasting(true);
     try {
-        const response = await api(`/teacher/tests/${testId}/broadcast`, {
+        const response = await api(`/v1/teacher/tests/${testId}/broadcast`, {
             method: 'POST',
             token,
-            tenant: user.tenant_id,
+            tenant: tenantSlug || undefined,
             body: JSON.stringify({ message: broadcastMessage })
         });
         if (response.success) {

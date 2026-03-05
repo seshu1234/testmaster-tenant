@@ -31,22 +31,36 @@ interface TestDetails {
 export default function StudentLobbyPage() {
   const router = useRouter();
   const params = useParams();
-  const { user, token } = useAuth();
+  const { user, token, tenantSlug } = useAuth();
   const testId = params.id as string;
 
   const [test, setTest] = useState<TestDetails | null>(null);
-  const [checks, setChecks] = useState({
-    fullscreen: false,
-    internet: true,
-    auth: false
-  });
-  const [isReady, setIsReady] = useState(false);
+  // Use a lazy initializer so browser APIs are read on first render (client-side),
+  // avoiding a setState call inside useEffect.
+  const [checks, setChecks] = useState(() => ({
+    fullscreen: typeof document !== 'undefined' && document.documentElement.requestFullscreen !== undefined,
+    internet: typeof navigator !== 'undefined' ? navigator.onLine : true,
+    auth: false,
+  }));
+  const [isStarting, setIsStarting] = useState(false);
+
+  // Derived — no extra state needed
+  const isReady = checks.internet && checks.auth;
+
+  // Re-run all browser checks on demand ("Re-run Diagnostics" button)
+  const runChecks = () => {
+    setChecks(prev => ({
+      ...prev,
+      fullscreen: document.documentElement.requestFullscreen !== undefined,
+      internet: navigator.onLine,
+    }));
+  };
 
   useEffect(() => {
     const fetchDetails = async () => {
       if (!user || !token) return;
       try {
-        const response = await api(`/student/tests/${testId}`, { token, tenant: user.tenant_id });
+        const response = await api(`/student/tests/${testId}`, { token: token || undefined, tenant: tenantSlug || undefined });
         if (response.success) {
           setTest(response.data);
           setChecks(prev => ({ ...prev, auth: true }));
@@ -56,23 +70,26 @@ export default function StudentLobbyPage() {
       }
     };
     fetchDetails();
-  }, [testId, user, token]);
+  }, [testId, user, token, tenantSlug]);
 
-  const runChecks = () => {
-    const isFullscreenSupported = document.documentElement.requestFullscreen !== undefined;
-    setChecks(prev => ({
-      ...prev,
-      fullscreen: isFullscreenSupported,
-      internet: window.navigator.onLine
-    }));
-    
-    if (isFullscreenSupported && window.navigator.onLine && checks.auth) {
-        setIsReady(true);
+  const startTest = async () => {
+    if (isStarting) return;
+    setIsStarting(true);
+    try {
+      const response = await api(`/student/tests/${testId}/start`, {
+        method: "POST",
+        token: token || undefined,
+        tenant: tenantSlug || undefined
+      });
+      if (response.success && response.data?.attempt_id) {
+        router.push(`/student/tests/${testId}/take?attempt=${response.data.attempt_id}`);
+      } else {
+        setIsStarting(false);
+      }
+    } catch (err) {
+      console.error("Failed to start test:", err);
+      setIsStarting(false);
     }
-  };
-
-  const startTest = () => {
-    router.push(`/student/tests/${testId}/take`);
   };
 
   if (!test) return <div className="p-8 text-center animate-pulse">Initializing exam environment...</div>;
@@ -175,7 +192,7 @@ export default function StudentLobbyPage() {
                 >
                     {isReady ? (
                         <>
-                            Enter Test Node
+                            {isStarting ? "Establishing Link..." : "Enter Test Node"}
                             <ArrowRight className="ml-3 h-6 w-6" />
                         </>
                     ) : (
