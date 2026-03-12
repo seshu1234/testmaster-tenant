@@ -2,8 +2,11 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Award, BookOpen, Clock, Zap } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth"; // Assuming useAuth is in this path
+import Image from "next/image";
 
 export default function StudentDashboard() {
+  const { user, branding } = useAuth();
   const stats = [
     { title: "Tests Taken", value: "12", icon: BookOpen, description: "Completed attempts" },
     { title: "Average Score", value: "84%", icon: Zap, description: "Across all subjects" },
@@ -13,9 +16,35 @@ export default function StudentDashboard() {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight">Student Dashboard</h1>
-        <p className="text-muted-foreground">Track your progress, take tests, and unlock new achievements.</p>
+      <div className="relative overflow-hidden rounded-2xl bg-primary px-8 py-12 text-white shadow-xl">
+        <div className="relative z-10 flex flex-col gap-2 max-w-xl">
+          <h1 className="text-4xl font-black tracking-tight leading-tight">
+            {branding?.hero_title || `Welcome Back, ${user?.name?.split(' ')[0] || 'Aspirant'}!`}
+          </h1>
+          <p className="text-primary-foreground/90 text-lg">
+            {branding?.hero_description || "You're doing great! You've completed 85% of your weekly goal. Keep pushing to unlock your next badge."}
+          </p>
+          <div className="mt-4 flex gap-3">
+             <button className="bg-white text-primary font-bold px-6 py-2 rounded-xl text-sm shadow-lg hover:scale-105 transition-transform">Resume Learning</button>
+             <button className="bg-primary-foreground/20 backdrop-blur-md text-white border border-white/20 px-6 py-2 rounded-xl text-sm font-medium">View Plan</button>
+          </div>
+        </div>
+        
+        {branding?.hero_image_url ? (
+            <Image
+                src={branding.hero_image_url} 
+                className="absolute right-0 top-0 h-full w-1/2 object-cover opacity-20 mask-gradient-to-l" 
+                alt="Hero"
+                width={500}
+                height={500}
+            />
+        ) : (
+            <div className="absolute top-0 right-0 p-8 opacity-10">
+                <BookOpen className="w-64 h-64 rotate-12" />
+            </div>
+        )}
+        
+        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

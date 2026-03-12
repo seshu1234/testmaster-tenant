@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Loader2, FileText, CheckCircle, TrendingUp, AlertCircle } from "lucide-react";
+import { Loader2, FileText, CheckCircle, TrendingUp, AlertCircle, Brain, Target, Zap } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { api } from "@/lib/api";
 import {
@@ -13,8 +13,13 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Cell
+  Cell,
+  Radar,
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
 } from "recharts";
+import { Badge } from "@/components/ui/badge";
 
 interface AnalyticsOverview {
   tests_created: number;
@@ -35,10 +40,18 @@ interface SubjectPerformance {
   accuracy: number;
 }
 
+interface WeaknessArea {
+  topic: string;
+  score: number;
+  fullMark: number;
+  recommendation: string;
+}
+
 interface AnalyticsData {
   overview: AnalyticsOverview;
   top_performers: TopPerformer[];
   subject_performance: SubjectPerformance[];
+  weakness_analysis: WeaknessArea[];
 }
 
 export default function TeacherAnalyticsDashboard() {
@@ -81,18 +94,26 @@ export default function TeacherAnalyticsDashboard() {
     );
   }
 
-  const { overview, top_performers, subject_performance } = data;
+  const { overview, top_performers, subject_performance, weakness_analysis } = data;
 
   return (
     <div className="space-y-6 animate-in fade-in zoom-in-95 duration-500 pb-20">
-      <div className="space-y-1">
-        <h1 className="text-3xl font-bold tracking-tight">Class Analytics</h1>
-        <p className="text-muted-foreground">Monitor performance, identify trends, and grade upcoming attempts.</p>
+      <div className="flex justify-between items-end border-b pb-6">
+        <div className="space-y-1">
+          <h1 className="text-3xl font-bold tracking-tight">Class Intelligence</h1>
+          <p className="text-muted-foreground">AI-driven insights into your student performance and growth areas.</p>
+        </div>
+        <div className="flex gap-2">
+           <div className="flex items-center gap-2 px-4 py-2 bg-purple-50 dark:bg-purple-900/10 rounded-xl border border-purple-100 dark:border-purple-900/20">
+              <Brain className="h-4 w-4 text-purple-600" />
+              <span className="text-xs font-bold text-purple-700 uppercase tracking-widest">AI Engine Active</span>
+           </div>
+        </div>
       </div>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card>
+        <Card className="border-none shadow-lg bg-white dark:bg-zinc-900/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Tests Created</CardTitle>
             <FileText className="h-4 w-4 text-muted-foreground" />
@@ -105,7 +126,7 @@ export default function TeacherAnalyticsDashboard() {
           </CardContent>
         </Card>
         
-        <Card>
+        <Card className="border-none shadow-lg bg-white dark:bg-zinc-900/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Avg Class Score</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
@@ -118,7 +139,7 @@ export default function TeacherAnalyticsDashboard() {
           </CardContent>
         </Card>
         
-        <Card>
+        <Card className="border-none shadow-lg bg-white dark:bg-zinc-900/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Needs Grading</CardTitle>
             <CheckCircle className="h-4 w-4 text-amber-500" />
@@ -132,9 +153,9 @@ export default function TeacherAnalyticsDashboard() {
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Subject Performance Chart */}
-        <Card className="col-span-1">
+        <Card className="lg:col-span-2 border-none shadow-xl bg-white dark:bg-zinc-900">
           <CardHeader>
             <CardTitle>Subject Performance</CardTitle>
             <CardDescription>Accuracy percentage grouped by subject area.</CardDescription>
@@ -154,7 +175,7 @@ export default function TeacherAnalyticsDashboard() {
                   />
                   <Tooltip 
                     cursor={{ fill: 'transparent' }}
-                    contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
                   />
                   <Bar dataKey="accuracy" radius={[4, 4, 0, 0]}>
                     {subject_performance.map((entry, index) => (
@@ -165,14 +186,47 @@ export default function TeacherAnalyticsDashboard() {
               </ResponsiveContainer>
             ) : (
               <div className="h-full flex items-center justify-center text-muted-foreground text-sm">
-                No subject data available yet. Data populates as students complete tests.
+                No subject data available yet.
               </div>
             )}
           </CardContent>
         </Card>
 
-        {/* Top Performers */}
-        <Card className="col-span-1">
+        {/* Weakness Radar Chart */}
+        <Card className="border-none shadow-xl bg-zinc-900 text-white overflow-hidden">
+           <CardHeader className="bg-zinc-800/50">
+              <CardTitle className="text-sm font-black uppercase tracking-widest flex items-center gap-2">
+                 <Target className="h-4 w-4 text-primary" />
+                 Weakness Radar
+              </CardTitle>
+           </CardHeader>
+           <CardContent className="h-[300px] flex items-center justify-center pt-6">
+              {weakness_analysis && weakness_analysis.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                   <RadarChart cx="50%" cy="50%" outerRadius="80%" data={weakness_analysis}>
+                      <PolarGrid stroke="#333" />
+                      <PolarAngleAxis dataKey="topic" tick={{ fill: '#999', fontSize: 10 }} />
+                      <Radar
+                        name="Class Score"
+                        dataKey="score"
+                        stroke="var(--primary)"
+                        fill="var(--primary)"
+                        fillOpacity={0.6}
+                      />
+                   </RadarChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="text-zinc-500 text-xs text-center px-8">
+                   Insufficient data for radar mapping. Continue publishing tests to enable AI analysis.
+                </div>
+              )}
+           </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+         {/* Top Performers */}
+         <Card className="border-none shadow-lg bg-white dark:bg-zinc-900">
           <CardHeader>
             <CardTitle>Top Performers</CardTitle>
             <CardDescription>Highest scoring students across recent tests.</CardDescription>
@@ -181,17 +235,17 @@ export default function TeacherAnalyticsDashboard() {
              {top_performers && top_performers.length > 0 ? (
                <div className="space-y-6">
                  {top_performers.map((student, i) => (
-                   <div key={i} className="flex items-center justify-between">
+                   <div key={i} className="flex items-center justify-between p-2 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors">
                      <div className="flex items-center gap-4">
                        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary">
                           {student.name.charAt(0)}
                        </div>
                        <div>
-                         <p className="text-sm font-medium leading-none">{student.name}</p>
-                         <p className="text-sm text-muted-foreground mt-1 line-clamp-1 max-w-[200px]">{student.test_title}</p>
+                         <p className="text-sm font-black text-zinc-800 dark:text-zinc-100">{student.name}</p>
+                         <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{student.test_title}</p>
                        </div>
                      </div>
-                     <div className="font-bold text-lg bg-green-50 text-green-700 dark:bg-green-500/10 dark:text-green-400 px-3 py-1 rounded-full">
+                     <div className="font-black text-lg text-emerald-600 dark:text-emerald-400">
                        {student.percentage}%
                      </div>
                    </div>
@@ -203,6 +257,31 @@ export default function TeacherAnalyticsDashboard() {
                 </div>
              )}
           </CardContent>
+        </Card>
+
+        {/* AI Growth Recommendations */}
+        <Card className="border-none shadow-lg bg-white dark:bg-zinc-900">
+           <CardHeader>
+              <CardTitle className="text-sm font-black uppercase tracking-widest flex items-center gap-2">
+                 <Zap className="h-4 w-4 text-amber-500" />
+                 Growth Recommendations
+              </CardTitle>
+           </CardHeader>
+           <CardContent className="space-y-4">
+              {weakness_analysis && weakness_analysis.length > 0 ? weakness_analysis.slice(0, 3).map((item, i) => (
+                <div key={i} className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-800">
+                   <div className="flex justify-between items-start mb-2">
+                      <span className="text-xs font-black uppercase tracking-tighter text-zinc-400">{item.topic}</span>
+                      <Badge className="bg-amber-100 text-amber-700 border-none text-[8px] font-bold">Action Required</Badge>
+                   </div>
+                   <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{item.recommendation}</p>
+                </div>
+              )) : (
+                <div className="p-8 text-center text-muted-foreground italic text-sm">
+                   AI is currently analyzing response patterns. Recommendations will appear shortly.
+                </div>
+              )}
+           </CardContent>
         </Card>
       </div>
     </div>

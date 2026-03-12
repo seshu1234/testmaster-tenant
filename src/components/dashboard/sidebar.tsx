@@ -7,26 +7,47 @@ import {
   LayoutDashboard,
   Users,
   BookOpen,
-  Settings,
   GraduationCap,
+  Activity,
+  Settings,
+  ShieldCheck,
+  Rocket,
+  Send,
+  Calculator,
+  Fingerprint,
   FileText,
-  HelpCircle
+  HelpCircle,
+  Calendar,
+  FolderOpen,
+  TrendingUp
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
+import Image from "next/image";
 
 const adminLinks = [
   { name: "Overview", href: "/admin", icon: LayoutDashboard },
+  { name: "Setup Wizard", href: "/admin/onboarding", icon: Rocket },
   { name: "Teachers", href: "/admin/teachers", icon: Users },
   { name: "Students", href: "/admin/students", icon: GraduationCap },
   { name: "Batches", href: "/admin/batches", icon: BookOpen },
+  { name: "Test Monitoring", href: "/admin/tests", icon: ShieldCheck },
+  { name: "Question Bank", href: "/admin/questions", icon: Fingerprint },
+  { name: "Communications", href: "/admin/communications", icon: Send },
+  { name: "ROI Calculator", href: "/admin/analytics/financials", icon: Calculator },
+  { name: "Analytics", href: "/admin/analytics", icon: Activity },
   { name: "Settings", href: "/admin/settings", icon: Settings },
 ];
 
 const teacherLinks = [
   { name: "Dashboard", href: "/teacher", icon: LayoutDashboard },
-  { name: "Questions", href: "/teacher/questions", icon: FileText },
-  { name: "Tests", href: "/teacher/tests", icon: BookOpen },
-  { name: "Results", href: "/teacher/results", icon: GraduationCap },
+  { name: "My Classes", href: "/teacher/batches", icon: Users },
+  { name: "Calendar", href: "/teacher/calendar", icon: Calendar },
+  { name: "Question Bank", href: "/teacher/questions", icon: FileText },
+  { name: "Test Builder", href: "/teacher/tests", icon: BookOpen },
+  { name: "Class Analytics", href: "/teacher/analytics", icon: Activity },
+  { name: "Question Insights", href: "/teacher/analytics/question-analytics", icon: TrendingUp },
+  { name: "Communications", href: "/teacher/communications", icon: Send },
+  { name: "Study Materials", href: "/teacher/resources", icon: FolderOpen },
 ];
 
 const studentLinks = [
@@ -42,7 +63,7 @@ const parentLinks = [
 
 export function Sidebar() {
   const pathname = usePathname();
-  const { user } = useAuth();
+  const { user, branding } = useAuth();
 
   if (!user) return null;
 
@@ -55,8 +76,12 @@ export function Sidebar() {
     <div className="flex h-full w-64 flex-col border-r bg-zinc-50/50 dark:bg-zinc-900/50">
       <div className="flex h-16 items-center border-b px-6">
         <Link href="/" className="flex items-center gap-2 font-bold">
-          <GraduationCap className="h-6 w-6" />
-          <span>TestMaster</span>
+          {branding?.logo_url ? (
+             <Image src={branding.logo_url} alt="Logo" className="h-8 w-auto" width={500} height={500} />
+          ) : (
+             <GraduationCap className="h-6 w-6" />
+          )}
+          <span>{branding?.institute_name || branding?.site_title || "TestMaster"}</span>
         </Link>
       </div>
       <nav className="flex-1 space-y-1 p-4">

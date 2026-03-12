@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -44,6 +44,7 @@ interface TestData {
   title: string;
   description: string;
   subject: string;
+  language?: string;
   duration_seconds: number;
   start_at?: string;
   end_at?: string;
@@ -52,6 +53,8 @@ interface TestData {
     passing_percentage: number;
     shuffle_questions: boolean;
     allow_navigation: boolean;
+    marks_per_question?: number;
+    negative_marking?: number;
     [key: string]: unknown;
   };
   sections?: Section[];
@@ -76,35 +79,35 @@ export default function TestBuilderPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    const fetchTest = async () => {
-      if (!user || !token || !id) return;
-      try {
-        const response = await api(`/v1/teacher/tests/${id}`, {
-          token,
-          tenant: user.tenant_id,
+  const fetchTest = useCallback(async () => {
+    if (!user || !token || !id) return;
+    try {
+      const response = await api(`/v1/teacher/tests/${id}`, {
+        token,
+        tenant: user.tenant_id,
+      });
+      if (response.success) {
+        const fetchedTest = response.data;
+        // Merge defaults if settings are empty
+        setTest({
+          ...fetchedTest,
+          settings: fetchedTest.settings || {
+            passing_percentage: 33,
+            shuffle_questions: false,
+            allow_navigation: true
+          }
         });
-        if (response.success) {
-          const fetchedTest = response.data;
-          // Merge defaults if settings are empty
-          setTest({
-            ...fetchedTest,
-            settings: fetchedTest.settings || {
-              passing_percentage: 33,
-              shuffle_questions: false,
-              allow_navigation: true
-            }
-          });
-        }
-      } catch (error) {
-        console.error("Failed to fetch test:", error);
-      } finally {
-        setLoading(false);
       }
-    };
-
-    fetchTest();
+    } catch (error) {
+      console.error("Failed to fetch test:", error);
+    } finally {
+      setLoading(false);
+    }
   }, [id, user, token]);
+
+  useEffect(() => {
+    fetchTest();
+  }, [fetchTest]);
 
   const handleUpdateTest = (updates: Partial<TestData>) => {
     setTest((prev) => ({ ...prev, ...updates }));
@@ -213,7 +216,7 @@ export default function TestBuilderPage() {
         <CardContent>
            {currentStep === 1 && <Step1BasicInfo data={test} onChange={handleUpdateTest} />}
            {currentStep === 2 && <Step2Settings data={test} onChange={handleUpdateTest} />}
-           {currentStep === 3 && <Step3Sections testId={test.id} onUpdate={() => {}} />}
+           {currentStep === 3 && <Step3Sections testId={test.id} onUpdate={fetchTest} />}
            {currentStep === 4 && <Step4Questions testId={test.id} sections={test.sections || []} />}
            {currentStep === 5 && <Step5Schedule data={test} onChange={handleUpdateTest} />}
            {currentStep === 6 && (

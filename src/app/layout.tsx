@@ -59,7 +59,7 @@ export default async function RootLayout({
   return (
     <html lang="en" style={cssVars}>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <AuthProvider>
+        <AuthProvider branding={branding}>
           {children}
         </AuthProvider>
       </body>

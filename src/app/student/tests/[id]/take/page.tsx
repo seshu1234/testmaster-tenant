@@ -18,6 +18,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { INSTRUCTIONS_HTML_1, INSTRUCTIONS_HTML_2 } from "@/lib/test-taking/exam-instructions-data";
+import { SyncWorker } from "@/components/student/sync-worker";
+import { useAbly } from "@/hooks/use-ably";
 
 interface Question {
   id: string;
@@ -62,6 +64,8 @@ export default function TestTakingPage() {
   const [showSidebar, setShowSidebar] = useState(false);
   const [timerAlert, setTimerAlert] = useState<string | null>(null);
   
+  const { publish: publishAbly } = useAbly(`test-${testId}`);
+  
   const startTimeRef = useRef<number>(Date.now());
   const fullscreenAttempted = useRef(false);
 
@@ -92,6 +96,7 @@ export default function TestTakingPage() {
       if (document.hidden && viewState === 'exam') {
         setProctorWarning("Tab switching is detected and logged for the instructor.");
         if (token && user && attemptId) {
+            publishAbly('flag', { type: 'tab_switch', student: user.name });
             api(`/student/attempts/${attemptId}/flag/${testId}`, {
                 method: "POST",
                 token,
@@ -113,11 +118,20 @@ export default function TestTakingPage() {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
     };
-  }, [attemptId, testId, token, user, tenantSlug, store, viewState]);
+  }, [attemptId, testId, token, user, tenantSlug, store, viewState, publishAbly]);
 
   const fetchQuestion = useCallback(
     async (qId?: string) => {
       if (!user || !token || !attemptId) return;
+      
+      const targetQid = qId || question?.id;
+      
+      // Check store first for local unsynced answers
+      if (targetQid && store.answers[targetQid]) {
+          const localAns = store.answers[targetQid];
+          setSelectedOptions(localAns.selectedOptions);
+      }
+
       setIsLoading(true);
       try {
         const url = `/student/tests/${testId}/questions?attempt=${attemptId}${qId ? `&question_id=${qId}` : ""}`;
@@ -127,7 +141,15 @@ export default function TestTakingPage() {
           setFetchError(null);
           setQuestion(response.data.question);
           setGrid(response.data.grid || []);
-          setSelectedOptions(response.data.selected_options || []);
+          
+          // Only overwrite selectedOptions from API if we don't have a newer local unsynced version
+          const apiOptions = response.data.selected_options || [];
+          if (targetQid && store.answers[targetQid] && !store.answers[targetQid].synced) {
+              // Keep local version
+          } else {
+              setSelectedOptions(apiOptions);
+          }
+
           startTimeRef.current = Date.now();
           
           if (response.data.total_seconds) {
@@ -143,7 +165,7 @@ export default function TestTakingPage() {
         setIsLoading(false);
       }
     },
-    [testId, attemptId, user, token, store, tenantSlug],
+    [testId, attemptId, user, token, store, tenantSlug, question?.id],
   );
 
   useEffect(() => {
@@ -190,6 +212,20 @@ export default function TestTakingPage() {
     return () => clearInterval(timer);
   }, [store, handleSubmitTest, viewState]);
 
+  // Real-time ping
+  useEffect(() => {
+    if (viewState !== 'exam' || !user) return;
+    const interval = setInterval(() => {
+        publishAbly('ping', { 
+            attemptId, 
+            studentName: user.name, 
+            progress: Object.keys(store.answers).length / (grid.length || 1),
+            timeLeft: store.timeLeft 
+        });
+    }, 10000);
+    return () => clearInterval(interval);
+  }, [viewState, attemptId, user, store, grid.length, publishAbly]);
+
   const handleSaveAction = async (statusOverride: string, nextQid?: string) => {
     if (!question || !user || !token || !attemptId) return;
 
@@ -200,30 +236,28 @@ export default function TestTakingPage() {
       status = selectedOptions.length > 0 ? "answered" : "not_answered";
     }
 
-    try {
-      setIsLoading(true);
-      await api(`/student/attempts/${attemptId}/answers`, {
-        method: "POST",
-        token,
-        tenant: tenantSlug || undefined,
-        body: JSON.stringify({
-          question_id: question.id,
-          selected_options: selectedOptions,
-          status: status,
-          time_spent: timeSpent,
-        }),
-      });
-
-      store.saveAnswer(question.id, {
+    // Update Local Store (Zustand + Dexie) immediately - NON-BLOCKING
+    store.saveAnswer(question.id, {
         selectedOptions,
         status,
         timeSpent
-      });
+    });
 
-      fetchQuestion(nextQid);
-    } catch (err) {
-      console.error("Save failed:", err);
-      setIsLoading(false);
+    // Real-time progress update
+    publishAbly('progress', {
+        questionId: question.id,
+        status,
+        progress: Object.keys(store.answers).length / (grid.length || 1)
+    });
+
+    // Optimistically update grid status for UI
+    setGrid(prev => prev.map(item => 
+        item.id === question.id ? { ...item, status } : item
+    ));
+
+    // Navigate immediately if nextQid is provided
+    if (nextQid) {
+        fetchQuestion(nextQid);
     }
   };
 
@@ -475,6 +509,7 @@ export default function TestTakingPage() {
         "flex flex-col h-screen w-screen overflow-hidden font-arial select-none transition-colors relative fixed inset-0 z-[1000]",
         highContrast ? "bg-black text-yellow-400" : "bg-white text-black"
     )} style={{ fontFamily: 'Arial, Helvetica, sans-serif' }}>
+       <SyncWorker />
        <Watermark />
        
        {timerAlert && (

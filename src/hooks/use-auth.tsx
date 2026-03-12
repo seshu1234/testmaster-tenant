@@ -22,6 +22,7 @@ type AuthContextType = {
   user: User | null;
   token: string | null;
   tenantSlug: string | null;
+  branding: Record<string, string>;
   isLoading: boolean;
   login: (credentials: Record<string, string>) => Promise<void>;
   logout: () => void;
@@ -45,7 +46,13 @@ const deleteCookie = (name: string) => {
   document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
 };
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+export function AuthProvider({ 
+  children, 
+  branding = {} 
+}: { 
+  children: ReactNode; 
+  branding?: Record<string, string>;
+}) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -124,7 +131,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, tenantSlug, isLoading, login, logout }}>
+    <AuthContext.Provider value={{ user, token, tenantSlug, branding, isLoading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

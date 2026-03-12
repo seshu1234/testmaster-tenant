@@ -276,6 +276,26 @@ export default function TeacherLiveMonitorPage() {
                                       </div>
                                   </div>
                               </div>
+                              
+                              {/* Question Progress Heatmap */}
+                              <div className="space-y-1.5">
+                                 <div className="flex justify-between items-center">
+                                    <span className="text-[8px] font-black text-zinc-400 uppercase tracking-tighter">Question Telemetry</span>
+                                    <span className="text-[8px] font-bold text-primary">12 / 20 Answered</span>
+                                 </div>
+                                 <div className="flex gap-0.5 h-1.5">
+                                    {[...Array(20)].map((_, idx) => (
+                                       <div 
+                                          key={idx} 
+                                          className={cn(
+                                             "flex-1 rounded-sm",
+                                             idx < 12 ? "bg-emerald-500" : idx === 12 ? "bg-primary animate-pulse" : "bg-zinc-100 dark:bg-zinc-800"
+                                          )} 
+                                       />
+                                    ))}
+                                 </div>
+                              </div>
+
                               <div className="h-1.5 w-full bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
                                   <div 
                                     className={cn("h-full transition-all duration-1000", student.status === 'completed' ? "bg-emerald-500" : "bg-primary animate-pulse")} 
@@ -285,6 +305,13 @@ export default function TeacherLiveMonitorPage() {
                           </div>
                           
                           <div className="mt-6 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <Button 
+                                variant="outline" 
+                                size="sm" 
+                                className="flex-1 rounded-lg text-[10px] font-bold h-8"
+                              >
+                                EXTEND TIME
+                              </Button>
                               <Button 
                                 variant="outline" 
                                 size="sm" 

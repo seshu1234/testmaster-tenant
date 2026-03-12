@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Loader2, Users, FileText, Activity, CreditCard, AlertCircle } from "lucide-react";
+import { Loader2, Users, FileText, Activity, AlertCircle, TrendingUp, Bell } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { api } from "@/lib/api";
 import {
@@ -115,20 +115,20 @@ export default function AdminAnalyticsDashboard() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-none shadow-sm bg-primary/5 border-primary/10">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">AI Credits Used</CardTitle>
-            <CreditCard className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-primary">Plan Utilization</CardTitle>
+            <TrendingUp className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{overview.total_credits_used}</div>
-            <p className="text-xs text-muted-foreground mt-1 text-primary">From generative operations</p>
+            <div className="text-2xl font-bold">84%</div>
+            <p className="text-xs text-muted-foreground mt-1">Approaching 1.5k limit</p>
           </CardContent>
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 mt-6">
-        <Card>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+        <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle>Activity Trend (Last 7 Days)</CardTitle>
             <CardDescription>Daily breakdown of completed test attempts.</CardDescription>
@@ -164,6 +164,32 @@ export default function AdminAnalyticsDashboard() {
                 No activity registered in the last 7 days.
               </div>
             )}
+          </CardContent>
+        </Card>
+
+        <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Bell className="h-4 w-4 text-red-500" />
+              Critical Alerts
+            </CardTitle>
+            <CardDescription>System notices requiring immediate review.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+             {[
+               { title: "Low Credit Balance", desc: "Less than 500 AI credits remaining.", type: "warning" },
+               { title: "Expiring Soon", desc: "Plan 'Enterprise' expires in 12 days.", type: "urgent" },
+               { title: "Suspicious Activity", desc: "Multiple logins from different IPs.", type: "security" },
+             ].map((alert, i) => (
+               <div key={i} className={`p-3 rounded-lg border flex flex-col gap-1 ${
+                 alert.type === 'warning' ? 'bg-amber-50 border-amber-100' :
+                 alert.type === 'urgent' ? 'bg-red-50 border-red-100' :
+                 'bg-zinc-50 border-zinc-100'
+               }`}>
+                 <span className="text-xs font-bold uppercase tracking-tight">{alert.title}</span>
+                 <span className="text-[10px] text-muted-foreground">{alert.desc}</span>
+               </div>
+             ))}
           </CardContent>
         </Card>
       </div>

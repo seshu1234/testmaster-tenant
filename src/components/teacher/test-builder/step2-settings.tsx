@@ -10,6 +10,8 @@ interface TestData {
     passing_percentage: number;
     shuffle_questions: boolean;
     allow_navigation: boolean;
+    marks_per_question?: number;
+    negative_marking?: number;
     [key: string]: unknown;
   };
 }
@@ -50,6 +52,26 @@ export function Step2Settings({ data, onChange }: Step2Props) {
             type="number"
             value={data.settings.passing_percentage || 33}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSettingsChange("passing_percentage", parseInt(e.target.value))}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="marks">Default Marks per Question</Label>
+          <Input 
+            id="marks" 
+            type="number"
+            value={data.settings.marks_per_question || 4}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSettingsChange("marks_per_question", parseInt(e.target.value))}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="neg">Negative Marking per Question</Label>
+          <Input 
+            id="neg" 
+            type="number"
+            value={data.settings.negative_marking || 1}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSettingsChange("negative_marking", parseInt(e.target.value))}
           />
         </div>
       </div>
