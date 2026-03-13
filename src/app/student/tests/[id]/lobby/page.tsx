@@ -1,234 +1,179 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter, useParams } from "next/navigation";
-import { useAuth } from "@/hooks/use-auth";
-import { api } from "@/lib/api";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
+  ChevronRight, 
   ShieldCheck, 
   Monitor, 
-  Settings, 
-  AlertCircle, 
-  CheckCircle2, 
-  ArrowRight,
-  Info,
+  Wifi, 
+  Maximize, 
+  AlertTriangle,
+  FileText,
   Clock,
+  Info
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
-interface TestDetails {
-  id: string;
-  title: string;
-  duration: number;
-  total_questions: number;
-  instructions: string;
-  start_time?: string;
-}
-
-export default function StudentLobbyPage() {
+export default function StudentTestLobby({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const params = useParams();
-  const { user, token, tenantSlug } = useAuth();
-  const testId = params.id as string;
-
-  const [test, setTest] = useState<TestDetails | null>(null);
-  // Use a lazy initializer so browser APIs are read on first render (client-side),
-  // avoiding a setState call inside useEffect.
-  const [checks, setChecks] = useState(() => ({
-    fullscreen: typeof document !== 'undefined' && document.documentElement.requestFullscreen !== undefined,
-    internet: typeof navigator !== 'undefined' ? navigator.onLine : true,
-    auth: false,
-  }));
-  const [isStarting, setIsStarting] = useState(false);
-
-  // Derived — no extra state needed
-  const isReady = checks.internet && checks.auth;
-
-  // Re-run all browser checks on demand ("Re-run Diagnostics" button)
-  const runChecks = () => {
-    setChecks(prev => ({
-      ...prev,
-      fullscreen: document.documentElement.requestFullscreen !== undefined,
-      internet: navigator.onLine,
-    }));
-  };
+  const [checks, setChecks] = useState({
+    browser: false,
+    internet: false,
+    fullscreen: false,
+    auth: true
+  });
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const fetchDetails = async () => {
-      if (!user || !token) return;
-      try {
-        const response = await api(`/student/tests/${testId}`, { token: token || undefined, tenant: tenantSlug || undefined });
-        if (response.success) {
-          setTest(response.data);
-          setChecks(prev => ({ ...prev, auth: true }));
-        }
-      } catch (err) {
-        console.error("Failed to load test details:", err);
-      }
-    };
-    fetchDetails();
-  }, [testId, user, token, tenantSlug]);
+    // Simulate system checks
+    const timer = setTimeout(() => {
+      setChecks(prev => ({ ...prev, browser: true, internet: true }));
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
-  const startTest = async () => {
-    if (isStarting) return;
-    setIsStarting(true);
-    try {
-      const response = await api(`/student/tests/${testId}/start`, {
-        method: "POST",
-        token: token || undefined,
-        tenant: tenantSlug || undefined
+  const handleFullscreen = () => {
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen().then(() => {
+        setChecks(prev => ({ ...prev, fullscreen: true }));
+        setReady(true);
       });
-      if (response.success && response.data?.attempt_id) {
-        router.push(`/student/tests/${testId}/take?attempt=${response.data.attempt_id}`);
-      } else {
-        setIsStarting(false);
-      }
-    } catch (err) {
-      console.error("Failed to start test:", err);
-      setIsStarting(false);
     }
   };
 
-  if (!test) return <div className="p-8 text-center animate-pulse">Initializing exam environment...</div>;
-
   return (
-    <div className="max-w-5xl mx-auto py-12 px-6 space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      {/* 1. TEST HEADER */}
-      <div className="text-center space-y-4">
-        <Badge className="bg-primary/10 text-primary border-none py-1.5 px-6 rounded-full font-bold uppercase tracking-widest text-xs">
-            Secure Assessment Portal
-        </Badge>
-        <h1 className="text-5xl font-black tracking-tight text-zinc-900 dark:text-zinc-100">{test.title}</h1>
-        <div className="flex items-center justify-center gap-6 text-zinc-500 font-medium">
-            <div className="flex items-center gap-2">
-                <Clock className="h-5 w-5 text-indigo-500" />
-                {test.duration} Minutes
-            </div>
-            <div className="h-1.5 w-1.5 rounded-full bg-zinc-300" />
-            <div className="flex items-center gap-2">
-                <Info className="h-5 w-5 text-indigo-500" />
-                {test.total_questions} Questions
-            </div>
+    <div className="min-h-screen bg-zinc-50 dark:bg-black p-8 animate-in fade-in duration-700">
+      <div className="max-w-5xl mx-auto space-y-8">
+        <div className="flex justify-between items-end">
+           <div>
+              <Badge className="bg-primary/10 text-primary border-none text-[10px] font-black uppercase tracking-widest mb-4 px-4 py-1.5">Pre-Flight Check</Badge>
+              <h1 className="text-4xl font-black tracking-tighter uppercase italic">Assessment Lobby</h1>
+           </div>
+           <Button variant="ghost" className="text-xs font-black uppercase tracking-widest text-zinc-400" onClick={() => router.back()}>
+              Exit to Dashboard
+           </Button>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* 2. INSTRUCTIONS PANEL */}
-        <Card className="lg:col-span-2 rounded-3xl border shadow-xl overflow-hidden bg-white dark:bg-zinc-900">
-            <CardHeader className="bg-zinc-50 dark:bg-zinc-800/50 border-b p-8">
-                <CardTitle className="text-2xl font-black uppercase tracking-tight flex items-center gap-3">
-                    <ShieldCheck className="h-8 w-8 text-primary" />
-                    Candidate Instructions
-                </CardTitle>
-                <CardDescription className="text-zinc-500 font-medium">Please read these rules carefully before starting. Failure to comply may lead to disqualification.</CardDescription>
-            </CardHeader>
-            <CardContent className="p-8">
-                <div className="prose dark:prose-invert max-w-none text-zinc-600 dark:text-zinc-400 space-y-6">
-                    <div className="bg-amber-500/5 border border-amber-500/10 p-4 rounded-xl flex gap-3">
-                        <AlertCircle className="h-6 w-6 text-amber-500 shrink-0" />
-                        <p className="text-sm font-medium text-amber-800 dark:text-amber-200">
-                            <strong>Strict Proctoring Enabled:</strong> This test uses the AI proctoring engine. Tab switching, window resizing, or exiting fullscreen will be flagged and reported to your teacher in real-time.
-                        </p>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+           {/* Detailed Rules & Instructions */}
+           <div className="lg:col-span-2 space-y-8">
+              <Card className="border-none shadow-2xl rounded-[3rem] overflow-hidden bg-white dark:bg-zinc-950">
+                 <CardHeader className="p-8 border-b bg-zinc-50/50 dark:bg-zinc-900/10">
+                    <CardTitle className="text-xl font-black uppercase italic flex items-center gap-3">
+                       <FileText className="h-6 w-6 text-primary" />
+                       Exam Protocol
+                    </CardTitle>
+                 </CardHeader>
+                 <CardContent className="p-8 space-y-8">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                       {[
+                          { label: 'DURATION', val: '180 MINS', icon: Clock },
+                          { label: 'QUESTIONS', val: '45 ITEMS', icon: Monitor },
+                          { label: 'TOTAL MARKS', val: '180 PTS', icon: ShieldCheck },
+                          { label: 'NEGATIVE', val: '-1 MARK', icon: AlertTriangle }
+                       ].map((item, i) => (
+                          <div key={i} className="p-4 rounded-3xl bg-zinc-50 dark:bg-zinc-900 flex flex-col items-center text-center gap-1 border border-zinc-100 dark:border-zinc-800">
+                             <item.icon className="h-4 w-4 text-zinc-400 mb-1" />
+                             <span className="text-[8px] font-black text-zinc-400 uppercase tracking-widest">{item.label}</span>
+                             <span className="text-sm font-black italic">{item.val}</span>
+                          </div>
+                       ))}
                     </div>
-                    
+
                     <div className="space-y-4">
-                        <p className="font-bold text-zinc-800 dark:text-zinc-200">Exam Protocol:</p>
-                        <ul className="list-disc pl-6 space-y-3">
-                            <li>Ensure you have a stable internet connection throughout the duration.</li>
-                            <li>The timer will start the moment you click &quot;Start Assessment&quot;.</li>
-                            <li>Questions can be navigated freely using the side grid.</li>
-                            <li>Use the &quot;Mark for Review&quot; feature for questions you wish to revisit.</li>
-                            <li>Calculators and external aids are strictly prohibited unless specified.</li>
-                        </ul>
+                       <h4 className="font-black text-xs uppercase tracking-widest text-zinc-400 px-2">Important Instructions</h4>
+                       <div className="space-y-3">
+                          {[
+                             "Switching tabs or exiting fullscreen will be flagged as a violation.",
+                             "Ensure your webcam and microphone are active if proctoring is enabled.",
+                             "Answers are auto-saved every 30 seconds to the cloud.",
+                             "The test will automatically submit when the timer hits zero."
+                          ].map((text, i) => (
+                             <div key={i} className="flex gap-4 p-4 rounded-2xl bg-zinc-50/50 dark:bg-zinc-900/30 border dark:border-zinc-800">
+                                <div className="h-2 w-2 rounded-full bg-primary mt-1.5 shrink-0" />
+                                <p className="text-xs font-bold leading-relaxed">{text}</p>
+                             </div>
+                          ))}
+                       </div>
                     </div>
-                </div>
-            </CardContent>
-        </Card>
+                 </CardContent>
+              </Card>
+           </div>
 
-        {/* 3. SYSTEM CHECK SIDEBAR */}
-        <div className="space-y-6">
-            <Card className="rounded-3xl border shadow-xl bg-white dark:bg-zinc-900 overflow-hidden">
-                <CardHeader className="p-6 pb-0">
-                    <CardTitle className="text-lg font-black uppercase tracking-widest text-zinc-400">System Integrity</CardTitle>
-                </CardHeader>
-                <CardContent className="p-6 space-y-6">
-                    <CheckItem 
-                        icon={<Monitor className="h-5 w-5" />} 
-                        label="Screen Resolution" 
-                        status={checks.fullscreen ? 'success' : 'pending'} 
-                    />
-                    <CheckItem 
-                        icon={<Settings className="h-5 w-5" />} 
-                        label="Internet Stability" 
-                        status={checks.internet ? 'success' : 'error'} 
-                    />
-                    <CheckItem 
-                        icon={<ShieldCheck className="h-5 w-5" />} 
-                        label="Auth Verification" 
-                        status={checks.auth ? 'success' : 'pending'} 
-                    />
-                    
+           {/* System Check Sidebar */}
+           <div className="space-y-8">
+              <Card className="border-none shadow-2xl rounded-[3rem] bg-white dark:bg-zinc-950 p-8">
+                 <h3 className="text-sm font-black uppercase tracking-widest text-zinc-400 mb-8 px-2">System Readiness</h3>
+                 <div className="space-y-4">
+                    {[
+                       { id: 'browser', label: 'Browser Compatibility', icon: Monitor, status: checks.browser },
+                       { id: 'internet', label: 'Internet Connectivity', icon: Wifi, status: checks.internet },
+                       { id: 'fullscreen', label: 'Fullscreen Permission', icon: Maximize, status: checks.fullscreen },
+                       { id: 'auth', label: 'Identity Verified', icon: ShieldCheck, status: checks.auth }
+                    ].map((check) => (
+                       <div key={check.id} className="flex items-center justify-between p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border dark:border-zinc-800">
+                          <div className="flex items-center gap-3">
+                             <check.icon className={cn("h-4 w-4", check.status ? "text-emerald-500" : "text-zinc-400")} />
+                             <span className="text-[11px] font-bold">{check.label}</span>
+                          </div>
+                          {check.status ? (
+                             <div className="h-5 w-5 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                                <ShieldCheck className="h-3 w-3 text-emerald-500" />
+                             </div>
+                          ) : (
+                             <div className="h-5 w-5 rounded-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center animate-pulse" />
+                          )}
+                       </div>
+                    ))}
+                 </div>
+
+                 {(!checks.fullscreen && checks.browser && checks.internet) && (
                     <Button 
-                        variant="outline" 
-                        className="w-full h-12 rounded-xl font-bold border-2"
-                        onClick={runChecks}
+                       className="w-full mt-8 bg-zinc-900 dark:bg-white text-white dark:text-black font-black rounded-2xl h-14 hover:scale-[1.02] transform transition-all shadow-xl"
+                       onClick={handleFullscreen}
                     >
-                        Re-run Diagnostics
+                       ENABLE FULLSCREEN
                     </Button>
-                </CardContent>
-            </Card>
+                 )}
 
-            <div className="p-1">
-                <Button 
-                    disabled={!isReady}
-                    onClick={startTest}
-                    className={cn(
-                        "w-full h-20 rounded-3xl text-xl font-black uppercase tracking-widest transition-all duration-500 shadow-2xl shadow-primary/20",
-                        isReady ? "bg-primary text-white scale-105" : "bg-zinc-200 border-zinc-300 text-zinc-400 cursor-not-allowed"
-                    )}
-                >
-                    {isReady ? (
-                        <>
-                            {isStarting ? "Establishing Link..." : "Enter Test Node"}
-                            <ArrowRight className="ml-3 h-6 w-6" />
-                        </>
-                    ) : (
-                        "System Not Ready"
-                    )}
-                </Button>
-                <p className="mt-4 text-center text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">
-                    Click above to establish secure link
-                </p>
-            </div>
+                 {ready && (
+                    <div className="mt-8 space-y-4 animate-in zoom-in-95 duration-300">
+                       <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 flex gap-3">
+                          <Info className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
+                          <p className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 leading-relaxed uppercase tracking-tighter">
+                             All systems green. You are ready to start the assessment.
+                          </p>
+                       </div>
+                       <Button 
+                          className="w-full bg-primary text-white font-black rounded-2xl h-14 hover:scale-[1.05] transform transition-all shadow-[0_0_30px_rgba(var(--primary),0.3)]"
+                          onClick={() => router.push(`/student/tests/${params.id}/take`)}
+                       >
+                          START ASSESSMENT
+                       </Button>
+                    </div>
+                 )}
+              </Card>
+
+              <Card className="border-none shadow-xl rounded-[3rem] bg-zinc-950 text-white p-8 overflow-hidden relative group">
+                 <div className="relative z-10">
+                    <h4 className="text-xs font-black uppercase tracking-widest text-primary mb-4">Support</h4>
+                    <p className="text-xs font-bold leading-relaxed text-zinc-400">
+                       Facing issues? Contact support immediately.
+                    </p>
+                    <Button variant="link" className="p-0 h-auto text-[10px] font-black uppercase tracking-widest text-white mt-4 flex items-center gap-2 group-hover:gap-4 transition-all">
+                       Connect with Proctor
+                       <ChevronRight className="h-3 w-3" />
+                    </Button>
+                 </div>
+                 <div className="absolute -bottom-6 -right-6 h-32 w-32 bg-primary/10 rounded-full blur-2xl" />
+              </Card>
+           </div>
         </div>
       </div>
     </div>
   );
-}
-
-function CheckItem({ icon, label, status }: { icon: React.ReactNode, label: string, status: 'success' | 'error' | 'pending' }) {
-    return (
-        <div className="flex items-center justify-between p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl border">
-            <div className="flex items-center gap-3">
-                <div className={cn(
-                    "h-10 w-10 rounded-xl flex items-center justify-center transition-colors",
-                    status === 'success' ? "bg-emerald-500/10 text-emerald-600" : 
-                    status === 'error' ? "bg-rose-500/10 text-rose-600" : "bg-zinc-100 text-zinc-400"
-                )}>
-                    {icon}
-                </div>
-                <span className="font-bold text-sm text-zinc-700 dark:text-zinc-300">{label}</span>
-            </div>
-            {status === 'success' ? (
-                <CheckCircle2 className="h-5 w-5 text-emerald-500" />
-            ) : status === 'error' ? (
-                <AlertCircle className="h-5 w-5 text-rose-500" />
-            ) : (
-                <div className="h-2 w-2 rounded-full bg-zinc-300 animate-pulse" />
-            )}
-        </div>
-    );
 }

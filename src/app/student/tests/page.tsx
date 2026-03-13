@@ -1,110 +1,215 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useAuth } from "@/hooks/use-auth";
+import { api } from "@/lib/api";
 import Link from "next/link";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import { 
+  Calendar as CalendarIcon, 
+  ChevronLeft, 
+  ChevronRight, 
+  Search, 
+  Filter, 
+  Clock, 
+  BookOpen, 
+  ArrowUpRight,
+  Plus
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock } from "lucide-react";
-import { api } from "@/lib/api";
-import { useAuth } from "@/hooks/use-auth";
+import { cn } from "@/lib/utils";
 
-interface Test {
+interface StudentTest {
   id: string;
   title: string;
-  description: string;
+  type: string;
+  start_time: string;
   duration_seconds: number;
-  start_at: string | null;
-  end_at: string | null;
-  status: 'active' | 'upcoming' | 'expired';
-  subject?: string;
+  status: string;
 }
 
 export default function StudentTestsPage() {
-  const { user, token, tenantSlug } = useAuth();
-  const [tests, setTests] = useState<Test[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { token, tenantSlug } = useAuth();
+  const [tests, setTests] = useState<StudentTest[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchTests() {
-      if (!user || !token) return;
+      if (!token) return;
       try {
-        const response = await api("/student/tests", {
+        const response = await api("/v1/student/tests", {
           token,
           tenant: tenantSlug || undefined
         });
-        setTests(response.data || []);
+        if (response.success) {
+          setTests(response.data);
+        }
       } catch (error) {
-        console.error("Failed to fetch tests:", error);
+        console.error("Tests fetch error:", error);
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
     }
     fetchTests();
-  }, [user, token, tenantSlug]);
+  }, [token, tenantSlug]);
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'active': return <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20 hover:bg-emerald-500/20">Live Now</Badge>;
-      case 'upcoming': return <Badge variant="outline" className="text-amber-600 border-amber-500/20 bg-amber-500/5">Upcoming</Badge>;
-      default: return <Badge variant="secondary">Expired</Badge>;
-    }
-  };
-
-  if (isLoading) {
-    return <div className="p-8 text-center animate-pulse italic">Synchronizing your assessments...</div>;
-  }
+  if (loading) return <div className="p-8 text-center animate-pulse font-black uppercase tracking-widest text-zinc-400">Loading Assessment Vault...</div>;
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight">Available Assessments</h1>
-        <p className="text-muted-foreground italic">Good luck with your exams!</p>
+    <div className="space-y-8 animate-in fade-in duration-500 pb-20 p-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-black tracking-tight uppercase italic">Assessment Vault</h1>
+          <p className="text-muted-foreground text-sm font-medium">Manage your schedule, enter lobbies, and review upcoming challenges.</p>
+        </div>
+        <div className="flex gap-2">
+           <Link href="/student/practice">
+              <Button variant="outline" className="rounded-xl font-bold bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 h-11">
+                 <Plus className="h-4 w-4 mr-2" />
+                 SELF PRACTICE
+              </Button>
+           </Link>
+        </div>
       </div>
 
-      {tests.length === 0 ? (
-        <div className="border-2 border-dashed rounded-2xl p-20 text-center space-y-4">
-          <div className="mx-auto w-12 h-12 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
-            <Calendar className="h-6 w-6 text-zinc-400" />
-          </div>
-          <p className="text-muted-foreground font-medium">No tests are currently assigned to you.</p>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Left Column: Calendar View */}
+        <div className="lg:col-span-1 space-y-6">
+           <Card className="border-none shadow-2xl rounded-[2.5rem] bg-white dark:bg-zinc-950 p-6">
+              <div className="flex justify-between items-center mb-6">
+                 <h3 className="font-black italic uppercase text-xs tracking-widest px-2">
+                    {new Date().toLocaleString('default', { month: 'long', year: 'numeric' })}
+                 </h3>
+                 <div className="flex gap-1">
+                    <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full"><ChevronLeft className="h-4 w-4" /></Button>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full"><ChevronRight className="h-4 w-4" /></Button>
+                 </div>
+              </div>
+              
+              <div className="grid grid-cols-7 gap-1 text-center mb-2">
+                 {['S','M','T','W','T','F','S'].map(d => (
+                    <span key={d} className="text-[10px] font-black text-zinc-400">{d}</span>
+                 ))}
+              </div>
+              
+              <div className="grid grid-cols-7 gap-1">
+                 {Array.from({ length: 30 }).map((_, i) => {
+                    const day = i + 1;
+                    const today = new Date();
+                    const hasTest = tests.some(t => new Date(t.start_time).getDate() === day && new Date(t.start_time).getMonth() === today.getMonth());
+                    const isToday = day === today.getDate();
+                    return (
+                       <div 
+                          key={i} 
+                          className={cn(
+                             "h-10 rounded-xl flex flex-col items-center justify-center relative cursor-pointer transition-all",
+                             isToday ? "bg-primary text-white font-black" : "hover:bg-zinc-50 dark:hover:bg-zinc-900 text-xs font-bold",
+                             hasTest && !isToday && "text-primary"
+                          )}
+                       >
+                          {day}
+                          {hasTest && (
+                             <div className={cn("absolute bottom-1 h-1 w-1 rounded-full", isToday ? "bg-white" : "bg-primary")} />
+                          )}
+                       </div>
+                    );
+                 })}
+              </div>
+           </Card>
+
+           <Card className="border-none shadow-xl rounded-[2.5rem] bg-zinc-900 text-white p-8 relative overflow-hidden group">
+              <div className="relative z-10">
+                 <h3 className="text-xl font-black tracking-tight uppercase italic mb-4">Integrity Pro</h3>
+                 <p className="text-zinc-400 text-xs font-medium leading-relaxed mb-6">
+                    Our AI-powered proctoring is active. Ensure a stable connection and fullscreen mode for a smooth experience.
+                 </p>
+                 <Button className="w-full bg-white text-black font-black rounded-xl h-11 text-[10px]">
+                    GUIDELINES & RULES
+                 </Button>
+              </div>
+              <div className="absolute -bottom-10 -right-10 opacity-10 rotate-12">
+                 <CalendarIcon className="h-40 w-40" />
+              </div>
+           </Card>
         </div>
-      ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {tests.map((test) => (
-            <Card key={test.id} className="group overflow-hidden border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50 hover:shadow-xl hover:translate-y--1 transition-all duration-300">
-              <div className="h-2 bg-gradient-to-r from-primary/40 to-primary/10" />
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] uppercase font-bold tracking-widest text-primary/60">{test.subject || "General"}</span>
-                  {getStatusBadge(test.status)}
-                </div>
-                <CardTitle className="text-xl group-hover:text-primary transition-colors">{test.title}</CardTitle>
-                <CardDescription className="line-clamp-2 min-h-[40px] italic">{test.description}</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                   <div className="flex items-center gap-2 text-xs font-medium bg-zinc-100 dark:bg-zinc-800 p-2 rounded-lg">
-                      <Clock className="h-3.5 w-3.5 text-zinc-500" />
-                      <span>{Math.round(test.duration_seconds / 60)} Mins</span>
-                   </div>
-                   <div className="flex items-center gap-2 text-xs font-medium bg-zinc-100 dark:bg-zinc-800 p-2 rounded-lg">
-                      <Calendar className="h-3.5 w-3.5 text-zinc-500" />
-                      <span>{test.start_at ? new Date(test.start_at).toLocaleDateString() : "Anytime"}</span>
-                   </div>
-                </div>
-              </CardContent>
-              <CardFooter className="bg-zinc-50/50 dark:bg-zinc-900/20 pt-4">
-                <Link href={`/student/tests/${test.id}`} className="w-full">
-                  <Button className="w-full h-11 rounded-xl shadow-[0_4px_10px_rgba(var(--primary),0.2)] hover:shadow-primary/30 transition-all font-semibold">
-                    Review Instructions
-                  </Button>
-                </Link>
-              </CardFooter>
-            </Card>
-          ))}
+
+        {/* Right Column: Detailed Test List */}
+        <div className="lg:col-span-2 space-y-6">
+           <div className="flex items-center justify-between bg-white dark:bg-zinc-950 p-4 rounded-2xl border dark:border-zinc-800 shadow-sm">
+              <div className="relative flex-1 max-w-md">
+                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
+                 <input 
+                    type="text" 
+                    placeholder="Search for tests..." 
+                    className="w-full pl-10 pr-4 py-2 bg-zinc-50 dark:bg-zinc-900 rounded-xl border-none text-xs font-bold outline-none"
+                 />
+              </div>
+              <div className="flex gap-2">
+                 <Button variant="ghost" size="icon" className="rounded-xl"><Filter className="h-4 w-4" /></Button>
+              </div>
+           </div>
+
+           <div className="grid gap-4">
+              {tests.length > 0 ? tests.map((test) => (
+                 <Card key={test.id} className="border-none shadow-xl rounded-3xl overflow-hidden bg-white dark:bg-zinc-950 group hover:shadow-2xl transition-all duration-300">
+                    <CardContent className="p-0">
+                       <div className="flex flex-col md:flex-row items-stretch">
+                          <div className="w-1.5 bg-primary shrink-0" />
+                          <div className="flex-1 p-8 flex flex-col md:flex-row justify-between items-center gap-6">
+                             <div className="flex gap-6 items-center flex-1">
+                                <div className="h-16 w-16 bg-zinc-50 dark:bg-zinc-900 rounded-2xl flex flex-col items-center justify-center border dark:border-zinc-800 group-hover:scale-110 transition-transform">
+                                   <span className="text-[8px] font-black text-zinc-400 uppercase">DATE</span>
+                                   <span className="text-xl font-black italic">{new Date(test.start_time).getDate()}</span>
+                                </div>
+                                <div>
+                                   <div className="flex items-center gap-2 mb-1">
+                                      <Badge className="bg-primary/10 text-primary border-none text-[8px] font-black h-5 px-3 uppercase tracking-widest">{test.type || 'Assessment'}</Badge>
+                                      <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
+                                         {Math.floor(test.duration_seconds / 60)}m
+                                      </span>
+                                   </div>
+                                   <h4 className="text-xl font-black tracking-tight uppercase truncate">{test.title}</h4>
+                                   <div className="flex items-center gap-4 text-[10px] font-bold text-zinc-500 mt-2">
+                                      <div className="flex items-center gap-1.5"><Clock className="h-3 w-3" /> Scheduled: {new Date(test.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                                      <div className="flex items-center gap-1.5"><BookOpen className="h-3 w-3" /> System Check: OK</div>
+                                   </div>
+                                </div>
+                             </div>
+                             
+                             <div className="flex flex-col md:items-end gap-3 w-full md:w-auto">
+                                <Link href={`/student/tests/${test.id}/lobby`}>
+                                   <Button 
+                                      className={cn(
+                                         "h-12 px-8 rounded-xl font-black text-xs min-w-[140px] shadow-lg hover:scale-105 transition-all",
+                                         test.status !== 'completed' ? "bg-black dark:bg-white text-white dark:text-black" : "bg-zinc-100 dark:bg-zinc-900 text-zinc-400"
+                                      )}
+                                      disabled={test.status === 'completed'}
+                                   >
+                                      {test.status === 'completed' ? 'COMPLETED' : 'ENTER LOBBY'}
+                                      <ArrowUpRight className="ml-2 h-4 w-4" />
+                                   </Button>
+                                </Link>
+                                <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-[0.2em] italic">
+                                   {test.status === 'completed' ? 'Result available in history' : 'System ready for launch'}
+                                </p>
+                             </div>
+                          </div>
+                       </div>
+                    </CardContent>
+                 </Card>
+              )) : (
+                 <div className="text-center py-20 bg-white dark:bg-zinc-950 rounded-[3rem] border-2 border-dashed border-zinc-100 dark:border-zinc-900">
+                    <p className="font-black uppercase tracking-widest text-zinc-300">No Assessments Available</p>
+                 </div>
+              )}
+           </div>
+           
+           <Button variant="ghost" className="w-full mt-2 rounded-[2rem] h-20 border-2 border-dashed border-zinc-100 dark:border-zinc-900 font-black text-[10px] uppercase tracking-widest text-zinc-400 hover:text-primary transition-all">
+              Load Previous History
+           </Button>
         </div>
-      )}
+      </div>
     </div>
   );
 }

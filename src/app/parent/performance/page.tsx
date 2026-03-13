@@ -1,0 +1,291 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { 
+  TrendingUp, 
+  ArrowUpRight, 
+  Target, 
+  BrainCircuit, 
+  Zap, 
+  ArrowRight,
+  Flame,
+  Gem,
+} from "lucide-react";
+import { 
+  LineChart, 
+  Line, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer, 
+  Radar, 
+  RadarChart, 
+  PolarGrid, 
+  PolarAngleAxis 
+} from "recharts";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { api } from "@/lib/api";
+import { useAuth } from "@/hooks/use-auth";
+
+interface PerformanceData {
+  month: string;
+  score: number;
+  avg: number;
+}
+
+interface ConceptualData {
+  subject: string;
+  value: number;
+  fullMark: number;
+}
+
+interface SubjectStat {
+  subject: string;
+  score: number;
+  color: string;
+  trend: string;
+  level: string;
+  vsAvg: string;
+}
+
+export default function PerformancePage() {
+  const { token, tenantSlug } = useAuth();
+  const [activeSubject, setActiveSubject] = useState('All Subjects');
+  const [performanceData, setPerformanceData] = useState<PerformanceData[]>([]);
+  const [conceptualData, setConceptualData] = useState<ConceptualData[]>([]);
+  const [subjectStats, setSubjectStats] = useState<SubjectStat[]>([]);
+  const [insight, setInsight] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchPerformance() {
+      if (!token) return;
+      setIsLoading(true);
+      try {
+        // In a real scenario, we'd fetch the child ID first if not in URL/state
+        // For now using a general or first-child endpoint as per established dashboard pattern
+        const response = await api(`/v1/parent/performance?subject=${activeSubject}`, {
+          token,
+          tenant: tenantSlug || undefined
+        });
+        setPerformanceData(response.data.chart_data);
+        setConceptualData(response.data.cognitive_map);
+        setSubjectStats(response.data.subject_breakdown);
+        setInsight(response.data.ai_observation);
+      } catch (err) {
+        console.error("Failed to fetch performance data:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchPerformance();
+  }, [token, tenantSlug, activeSubject]);
+
+  return (
+    <div className="space-y-8 animate-in fade-in duration-700 pb-20 p-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-black tracking-tighter italic uppercase">Intelligence Metrics</h1>
+          <p className="text-muted-foreground text-sm font-medium">Deep analytics mapping your child&apos;s academic evolution.</p>
+        </div>
+        
+        <div className="flex bg-white dark:bg-zinc-900 p-1.5 rounded-2xl border dark:border-zinc-800 shadow-sm overflow-x-auto scrollbar-hide">
+           {['All Subjects', 'Physics', 'Chemistry', 'Mathematics'].map((s) => (
+             <button
+               key={s}
+               className={cn(
+                 "px-6 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all whitespace-nowrap",
+                 activeSubject === s 
+                   ? "bg-zinc-900 dark:bg-white text-white dark:text-black shadow-lg" 
+                   : "text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
+               )}
+               onClick={() => setActiveSubject(s)}
+             >
+               {s}
+             </button>
+           ))}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Main Performance Chart */}
+        <Card className="lg:col-span-8 border-none shadow-2xl rounded-[3rem] bg-white dark:bg-zinc-950 overflow-hidden">
+           <CardHeader className="p-10 border-b bg-zinc-50/50 dark:bg-zinc-900/30">
+              <div className="flex justify-between items-center">
+                 <div>
+                    <CardTitle className="text-2xl font-black tracking-tighter uppercase italic">Growth Trajectory</CardTitle>
+                    <CardDescription className="font-bold text-[10px] uppercase tracking-widest mt-1">Consistency vs Grade Benchmark</CardDescription>
+                 </div>
+                 <Badge className="bg-emerald-500/10 text-emerald-500 border-none font-black text-[10px] uppercase tracking-widest px-4 py-1.5">
+                    Live Updates
+                 </Badge>
+              </div>
+           </CardHeader>
+           <CardContent className="p-10">
+              <div className="h-[400px] w-full mt-4">
+                {isLoading ? (
+                  <div className="h-full w-full bg-zinc-50 dark:bg-zinc-900 rounded-3xl animate-pulse" />
+                ) : (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={performanceData}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+                      <XAxis 
+                         dataKey="month" 
+                         axisLine={false} 
+                         tickLine={false} 
+                         tick={{ fontSize: 10, fontWeight: 900 }}
+                      />
+                      <YAxis 
+                         axisLine={false} 
+                         tickLine={false} 
+                         tick={{ fontSize: 10, fontWeight: 900 }}
+                      />
+                      <Tooltip 
+                         contentStyle={{ borderRadius: '24px', border: 'none', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.1)' }}
+                         itemStyle={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase' }}
+                      />
+                      <Line 
+                         type="monotone" 
+                         dataKey="score" 
+                         stroke="#000" 
+                         strokeWidth={4} 
+                         dot={{ r: 6, fill: '#000', strokeWidth: 2, stroke: '#fff' }}
+                         activeDot={{ r: 8 }}
+                      />
+                      <Line 
+                         type="monotone" 
+                         dataKey="avg" 
+                         stroke="#94A3B8" 
+                         strokeWidth={2} 
+                         strokeDasharray="5 5" 
+                         dot={false}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                )}
+              </div>
+           </CardContent>
+        </Card>
+
+        {/* Aptitude Radar */}
+        <Card className="lg:col-span-4 border-none shadow-2xl rounded-[3rem] bg-zinc-950 text-white p-10 flex flex-col items-center">
+           <div className="text-center space-y-2 mb-10 w-full">
+              <h3 className="text-xl font-black italic uppercase tracking-tighter">Cognitive Map</h3>
+              <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Skill alignment across 5 dimensions</p>
+           </div>
+           
+           <div className="h-[300px] w-full">
+              {isLoading ? (
+                <div className="h-full w-full bg-white/5 rounded-full animate-pulse" />
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <RadarChart cx="50%" cy="50%" outerRadius="80%" data={conceptualData}>
+                      <PolarGrid stroke="#333" />
+                      <PolarAngleAxis 
+                        dataKey="subject" 
+                        tick={{ fill: '#666', fontSize: 8, fontWeight: 900 }} 
+                      />
+                      <Radar
+                        name="Aptitude"
+                        dataKey="value"
+                        stroke="#3B82F6"
+                        fill="#3B82F6"
+                        fillOpacity={0.4}
+                      />
+                  </RadarChart>
+                </ResponsiveContainer>
+              )}
+           </div>
+
+           <div className="mt-8 p-6 rounded-[2rem] bg-white/5 border border-white/10 w-full min-h-[120px]">
+              <div className="flex items-center gap-4 mb-3">
+                 <BrainCircuit className="h-5 w-5 text-primary" />
+                 <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">AI Observation</span>
+              </div>
+              {isLoading ? (
+                <div className="space-y-2">
+                  <div className="h-3 w-full bg-white/10 rounded animate-pulse" />
+                  <div className="h-3 w-2/3 bg-white/10 rounded animate-pulse" />
+                </div>
+              ) : (
+                <p className="text-xs font-bold leading-relaxed text-zinc-300">
+                  {insight || "Aggregating performance meta-data for conceptual analysis..."}
+                </p>
+              )}
+           </div>
+        </Card>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Subject-wise Cards */}
+        {isLoading ? (
+          Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="h-48 bg-zinc-100 dark:bg-zinc-900 rounded-[2.5rem] animate-pulse" />
+          ))
+        ) : (
+          subjectStats.map((subject, i) => (
+            <Card key={i} className="border-none shadow-xl rounded-[2.5rem] bg-white dark:bg-zinc-900 p-8 group hover:scale-[1.05] transition-all">
+                <div className="flex justify-between items-start mb-6">
+                  <div className="h-12 w-12 rounded-2xl bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center">
+                      <Target className={cn("h-6 w-6", subject.color)} />
+                  </div>
+                  <Badge className="bg-zinc-50 dark:bg-zinc-950 text-zinc-500 border-none font-black text-[8px] px-3 py-1 uppercase">{subject.level}</Badge>
+                </div>
+                <h4 className="text-xl font-black italic uppercase italic tracking-tighter mb-2">{subject.subject}</h4>
+                <div className="flex items-end gap-3">
+                  <div className="text-4xl font-black italic">{subject.score}%</div>
+                  <div className={cn("text-[10px] font-black uppercase mb-1", subject.trend.startsWith('+') ? 'text-emerald-500' : 'text-rose-500')}>
+                      {subject.trend}
+                  </div>
+                </div>
+                <div className="mt-6 pt-6 border-t dark:border-zinc-800 flex justify-between items-center text-[9px] font-black uppercase tracking-widest text-zinc-400">
+                  <span>vs Class Avg: {subject.vsAvg}</span>
+                  <ArrowUpRight className="h-4 w-4" />
+                </div>
+            </Card>
+          ))
+        )}
+      </div>
+
+      {/* AI Performance Insights */}
+      <Card className="border-none shadow-2xl rounded-[3rem] bg-primary p-12 text-white relative overflow-hidden group">
+         <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
+            <div className="space-y-6">
+               <div className="h-16 w-16 rounded-3xl bg-white/20 flex items-center justify-center">
+                  <Zap className="h-8 w-8 text-white" />
+               </div>
+               <h3 className="text-4xl font-black italic uppercase italic tracking-tighter leading-none">Executive Insights</h3>
+               <p className="text-primary-foreground/90 font-medium leading-relaxed max-w-md">
+                 Our neural engine monitors score velocity and error mitigation patterns to provide real-time rank predictions.
+               </p>
+               <div className="flex gap-4">
+                  <Button className="bg-white text-black font-black h-12 px-8 rounded-2xl text-[10px] uppercase tracking-widest hover:scale-105 transition-transform">
+                    REQUEST DEEP COUNSELING
+                  </Button>
+               </div>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+               {[
+                 { label: 'Consistency', value: 'High', icon: Flame },
+                 { label: 'Rank Target', value: '#2', icon: Target },
+                 { label: 'Score Alpha', value: '+14%', icon: TrendingUp },
+                 { label: 'Rewards Pts', value: '4.2k', icon: Gem }
+               ].map((mod, i) => (
+                  <div key={i} className="bg-white/10 backdrop-blur-md p-6 rounded-[2rem] border border-white/10">
+                     <mod.icon className="h-5 w-5 mb-3 opacity-60" />
+                     <p className="text-[10px] font-black uppercase tracking-widest opacity-60 mb-1">{mod.label}</p>
+                     <p className="text-xl font-black italic italic uppercase">{mod.value}</p>
+                  </div>
+               ))}
+            </div>
+         </div>
+         <ArrowRight className="absolute -bottom-20 -right-20 h-96 w-96 text-white opacity-5 rotate-45" />
+      </Card>
+    </div>
+  );
+}

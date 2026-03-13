@@ -1,6 +1,9 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { useAuth } from "@/hooks/use-auth";
+import { api } from "@/lib/api";
 import { 
   Users, 
   BookOpen, 
@@ -28,24 +31,78 @@ import {
 } from "recharts";
 import Link from "next/link";
 
-const performanceData = [
-  { name: "Week 1", score: 65 },
-  { name: "Week 2", score: 72 },
-  { name: "Week 3", score: 68 },
-  { name: "Week 4", score: 85 },
-  { name: "Week 5", score: 78 },
-  { name: "Week 6", score: 82 },
-];
+
+interface UpcomingAssessment {
+  title: string;
+  batch_name: string;
+  start_time: string;
+  status: string;
+}
+
+interface RecentResult {
+  name: string;
+  status: string;
+  avg_score: number;
+  high_score: number;
+}
+
+interface TeacherDashboardData {
+  kpis: {
+    my_classes: number;
+    my_students: number;
+    tests_created: number;
+    tests_to_grade: number;
+    avg_score: number;
+    ai_credits: number;
+  };
+  performance_trend: { name: string; score: number }[];
+  upcoming_assessments: UpcomingAssessment[];
+  recent_results: RecentResult[];
+  ai_insight?: string;
+}
 
 export default function TeacherDashboard() {
+  const { user, token, tenantSlug } = useAuth();
+  const [data, setData] = useState<TeacherDashboardData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchDashboard() {
+      if (!token) return;
+      try {
+        const response = await api("/v1/teacher/dashboard", {
+          token,
+          tenant: tenantSlug || undefined
+        });
+        if (response.success) {
+          setData(response.data);
+        }
+      } catch (error) {
+        console.error("Teacher dashboard fetch error:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchDashboard();
+  }, [token, tenantSlug]);
+
+  if (loading) return <div className="p-8 text-center animate-pulse font-bold text-zinc-400">Loading Academic Command...</div>;
+
+  const dashboard: TeacherDashboardData = data || {
+    kpis: { my_classes: 0, my_students: 0, tests_created: 0, tests_to_grade: 0, avg_score: 0, ai_credits: 0 },
+    performance_trend: [],
+    upcoming_assessments: [],
+    recent_results: [],
+    ai_insight: ""
+  };
 
   const kpis = [
-    { label: "My Classes", value: "4", icon: Users, description: "Active batches" },
-    { label: "My Students", value: "148", icon: Activity, description: "Total enrolled" },
-    { label: "Tests Created", value: "32", icon: BookOpen, description: "Lifetime total" },
-    { label: "Tests to Grade", value: "7", icon: Clock, description: "Manual review pending", urgent: true },
-    { label: "Class Avg Score", value: "78%", icon: TrendingUp, description: "Last 30 days" },
-    { label: "AI Credits", value: "850", icon: Zap, description: "Remaining this month" },
+    { label: "My Classes", value: dashboard.kpis.my_classes, icon: Users, description: "Active batches" },
+    { label: "My Students", value: dashboard.kpis.my_students, icon: Activity, description: "Total enrolled" },
+    { label: "Tests Created", value: dashboard.kpis.tests_created, icon: BookOpen, description: "Lifetime total" },
+    { label: "Tests to Grade", value: dashboard.kpis.tests_to_grade, icon: Clock, description: "Manual review pending", urgent: dashboard.kpis.tests_to_grade > 0 },
+    { label: "Class Avg Score", value: `${dashboard.kpis.avg_score}%`, icon: TrendingUp, description: "Last 30 days" },
+    { label: "AI Credits", value: dashboard.kpis.ai_credits, icon: Zap, description: "Remaining this month" },
   ];
 
   return (
@@ -54,16 +111,18 @@ export default function TeacherDashboard() {
         <div className="space-y-1">
           <h1 className="text-3xl font-bold tracking-tight">Academic Command</h1>
           <p className="text-muted-foreground flex items-center gap-2">
-            Welcome back, Prof. Henderson 
+            Welcome back, {user?.name || 'Instructor'} 
             <span className="h-1 w-1 rounded-full bg-zinc-300" />
-            Thursday, October 15, 2026
+            {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="outline" className="gap-2 border-zinc-200">
-            <Calendar className="h-4 w-4" />
-            View Schedule
-          </Button>
+          <Link href="/teacher/calendar">
+            <Button variant="outline" className="gap-2 border-zinc-200">
+               <Calendar className="h-4 w-4" />
+               View Schedule
+            </Button>
+          </Link>
           <Link href="/teacher/tests/new">
             <Button className="gap-2 bg-zinc-900 text-white hover:bg-zinc-800">
               <Plus className="h-4 w-4" />
@@ -103,7 +162,7 @@ export default function TeacherDashboard() {
           </CardHeader>
           <CardContent className="h-[300px] pt-4">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={performanceData}>
+              <AreaChart data={dashboard.performance_trend}>
                 <defs>
                   <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#18181b" stopOpacity={0.1}/>
@@ -132,7 +191,7 @@ export default function TeacherDashboard() {
               <div className="space-y-1">
                 <p className="text-sm font-bold">Smart Insights Available</p>
                 <p className="text-[11px] text-zinc-400 leading-relaxed italic">
-                  &ldquo;Your JEE Alpha batch is struggling with Entropy. Generate a remediation set?&rdquo;
+                  &ldquo;{dashboard.ai_insight || "Your students are showing great progress. Want to generate a new practice set?"}&rdquo;
                 </p>
               </div>
               <Link href="/teacher/questions/generate">
@@ -179,35 +238,35 @@ export default function TeacherDashboard() {
         <Card className="lg:col-span-2 border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Upcoming Assessments</CardTitle>
-            <Button variant="link" size="sm" className="text-xs h-auto p-0 flex items-center gap-1 group">
-              View All 
-              <ChevronRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
-            </Button>
+            <Link href="/teacher/tests">
+               <Button variant="link" size="sm" className="text-xs h-auto p-0 flex items-center gap-1 group">
+               View All 
+               <ChevronRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
+               </Button>
+            </Link>
           </CardHeader>
           <CardContent>
             <div className="divide-y divide-zinc-100">
-              {[
-                { title: "Weekly Mock: Organic Chemistry", batch: "JEE 2026 Alpha", time: "Tomorrow, 10:00 AM", status: "Ready" },
-                { title: "Foundation Quiz: Mechanics", batch: "Grade 10 Foundation", time: "Oct 18, 02:00 PM", status: "Draft" },
-                { title: "Revision Test: Calculus", batch: "JEE 2025 Delta", time: "Oct 20, 09:00 AM", status: "Scheduled" },
-              ].map((test, i) => (
+              {dashboard.upcoming_assessments.length > 0 ? dashboard.upcoming_assessments.map((test, i) => (
                 <div key={i} className="py-4 first:pt-0 last:pb-0 flex items-center gap-4 group">
                   <div className="h-10 w-10 rounded-xl bg-zinc-50 border border-zinc-100 flex items-center justify-center text-zinc-400 group-hover:bg-primary/5 group-hover:text-primary transition-colors">
                     <Calendar className="h-5 w-5" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-bold truncate">{test.title}</p>
-                    <p className="text-[10px] text-muted-foreground uppercase">{test.batch} • {test.time}</p>
+                    <p className="text-[10px] text-muted-foreground uppercase">{test.batch_name} • {new Date(test.start_time).toLocaleString()}</p>
                   </div>
                   <div className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-tight ${
-                    test.status === 'Ready' ? 'bg-green-100 text-green-700' :
+                    test.status === 'Ready' || test.status === 'published' ? 'bg-green-100 text-green-700' :
                     test.status === 'Draft' ? 'bg-orange-100 text-orange-700' :
                     'bg-blue-100 text-blue-700'
                   }`}>
                     {test.status}
                   </div>
                 </div>
-              ))}
+              )) : (
+                 <p className="text-xs text-center py-8 text-zinc-400 font-medium">No upcoming assessments scheduled.</p>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -217,27 +276,27 @@ export default function TeacherDashboard() {
             <CardTitle>Recent Results</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-             {[
-               { name: "Unit Test 4: Algebra", avg: "82%", high: "98%", status: "Published" },
-               { name: "Pre-Board Mock #1", avg: "65%", high: "92%", status: "Grading" },
-               { name: "Chap 2: Thermodynamics", avg: "74%", high: "88%", status: "Published" },
-             ].map((result, i) => (
+             {dashboard.recent_results.length > 0 ? dashboard.recent_results.map((result, i) => (
                <div key={i} className="p-3 rounded-lg border border-zinc-50 bg-zinc-50/30 flex flex-col gap-1 hover:border-zinc-100 hover:bg-white transition-all">
                  <div className="flex justify-between items-center">
                     <span className="text-xs font-bold line-clamp-1">{result.name}</span>
-                    <span className={`text-[8px] font-bold uppercase ${result.status === 'Published' ? 'text-green-600' : 'text-orange-600'}`}>
+                    <span className={`text-[8px] font-bold uppercase ${result.status === 'Published' || result.status === 'published' ? 'text-green-600' : 'text-orange-600'}`}>
                       {result.status}
                     </span>
                  </div>
                  <div className="flex justify-between text-[10px] text-muted-foreground">
-                    <span>Avg Score: <strong className="text-zinc-900">{result.avg}</strong></span>
-                    <span>High: <strong className="text-primary">{result.high}</strong></span>
+                    <span>Avg Score: <strong className="text-zinc-900">{result.avg_score}%</strong></span>
+                    <span>High: <strong className="text-primary">{result.high_score}%</strong></span>
                  </div>
                </div>
-             ))}
-             <Button variant="outline" className="w-full text-xs h-8 border-dashed border-zinc-200">
-               Access Full Analytics
-             </Button>
+             )) : (
+                <p className="text-xs text-center py-8 text-zinc-400 font-medium">No recent results found.</p>
+             )}
+             <Link href="/teacher/results" className="w-full block">
+               <Button variant="outline" className="w-full text-xs h-8 border-dashed border-zinc-200">
+                  Access Full Analytics
+               </Button>
+             </Link>
           </CardContent>
         </Card>
       </div>

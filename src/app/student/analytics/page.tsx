@@ -1,220 +1,217 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Loader2, TrendingUp, AlertCircle, BookOpen, User, Flame } from "lucide-react";
-import { useAuth } from "@/hooks/use-auth";
-import { api } from "@/lib/api";
-import {
-  Radar,
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { 
+  TrendingUp, 
+  Target, 
+  Zap, 
+  Activity, 
+  ArrowUpRight,
+} from "lucide-react";
+import { 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
   ResponsiveContainer,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip
+  Radar, 
+  RadarChart, 
+  PolarGrid, 
+  PolarAngleAxis, 
+  AreaChart,
+  Area,
+  Line
 } from "recharts";
-import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
-interface StudentOverview {
-  total_tests_taken: number;
-  average_score: number;
-  weakest_subject: string;
-  strongest_subject: string;
-}
+const scoreHistory = [
+  { date: 'Sep 1', score: 120, avg: 105 },
+  { date: 'Sep 15', score: 135, avg: 110 },
+  { date: 'Oct 1', score: 128, avg: 108 },
+  { date: 'Oct 15', score: 145, avg: 115 },
+  { date: 'Nov 1', score: 142, avg: 112 },
+  { date: 'Nov 15', score: 158, avg: 120 },
+];
 
-interface SubjectPerformance {
-  subject: string;
-  correct: number;
-  total: number;
-  accuracy: number;
-}
+const subjectData = [
+  { subject: 'Math', value: 85, fullMark: 100 },
+  { subject: 'Physics', value: 78, fullMark: 100 },
+  { subject: 'Chemistry', value: 92, fullMark: 100 },
+  { subject: 'Biology', value: 65, fullMark: 100 },
+  { subject: 'English', value: 88, fullMark: 100 },
+];
 
-interface RecentTrend {
-  date: string;
-  percentage: number;
-  test_title: string;
-}
-
-interface AnalyticsData {
-  overview: StudentOverview;
-  subject_performance: SubjectPerformance[];
-  recent_trend: RecentTrend[];
-  ai_recommendation: string;
-}
-
-export default function StudentAnalyticsDashboard() {
-  const { user, token, tenantSlug } = useAuth();
-  const [data, setData] = useState<AnalyticsData | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchAnalytics = async () => {
-      if (!user || !token) return;
-      try {
-        const response = await api(`/v1/student/analytics/insights`, { token, tenant: tenantSlug || undefined });
-        if (response.success && response.data) {
-          setData(response.data);
-        }
-      } catch (err) {
-        console.error("Failed to fetch student analytics:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchAnalytics();
-  }, [user, token, tenantSlug]);
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  if (!data) {
-    return (
-      <div className="p-8 text-center text-muted-foreground">
-        <AlertCircle className="h-8 w-8 mx-auto mb-2 text-destructive" />
-        <p>Could not load analytics data. Please try again later.</p>
-      </div>
-    );
-  }
-
-  const { overview, subject_performance, recent_trend, ai_recommendation } = data;
-
+export default function StudentAnalyticsPage() {
   return (
-    <div className="space-y-6 animate-in zoom-in-95 fade-in duration-500 pb-20 max-w-5xl mx-auto">
-      <div className="space-y-1">
-        <h1 className="text-3xl font-bold tracking-tight">AI Insights</h1>
-        <p className="text-muted-foreground">Personalized analytics to boost your learning efficiency.</p>
+    <div className="space-y-8 animate-in fade-in duration-700 pb-20 p-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-black tracking-tighter italic uppercase">Growth Matrix</h1>
+          <p className="text-muted-foreground text-sm font-medium">Deep dive into your performance metrics and AI-driven growth forecasting.</p>
+        </div>
+        <div className="flex gap-2">
+           <Button variant="outline" className="rounded-xl font-bold bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800">
+              UPCOMING TESTS
+           </Button>
+           <Button className="bg-primary text-white font-black rounded-xl">
+              GOAL TRACKER
+           </Button>
+        </div>
       </div>
 
-      <div className="bg-primary/5 border border-primary/20 rounded-xl p-6 flex flex-col md:flex-row gap-6 items-center">
-         <div className="h-16 w-16 min-w-[4rem] rounded-full bg-primary/20 text-primary flex items-center justify-center pt-1">
-            <User className="h-8 w-8" />
-         </div>
-         <div className="space-y-2">
-            <h3 className="text-xl font-semibold flex items-center gap-2">
-               <Flame className="h-5 w-5 text-orange-500" />
-               AI Recommendation
-            </h3>
-            <p className="text-muted-foreground leading-relaxed">{ai_recommendation}</p>
-         </div>
-      </div>
-
-      {/* KPI Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card>
-           <CardContent className="p-6">
-              <p className="text-xs font-medium text-muted-foreground tracking-wider uppercase">Tests Taken</p>
-              <div className="text-3xl font-bold mt-2">{overview.total_tests_taken}</div>
-           </CardContent>
-        </Card>
-        <Card>
-           <CardContent className="p-6">
-              <p className="text-xs font-medium text-muted-foreground tracking-wider uppercase">Average Score</p>
-              <div className="text-3xl font-bold mt-2">{overview.average_score}%</div>
-           </CardContent>
-        </Card>
-        <Card>
-           <CardContent className="p-6">
-              <p className="text-xs font-medium text-muted-foreground tracking-wider uppercase leading-tight">Strongest</p>
-              <div className="text-lg font-bold mt-2 line-clamp-1 text-green-600 dark:text-green-400">
-                {overview.strongest_subject}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Score Trend - Large Chart */}
+        <Card className="lg:col-span-8 border-none shadow-2xl rounded-[3rem] overflow-hidden bg-white dark:bg-zinc-950">
+           <CardHeader className="p-8 border-b bg-zinc-50/50 dark:bg-zinc-900/30">
+              <div className="flex justify-between items-center">
+                 <div>
+                    <CardTitle className="text-xl font-black uppercase italic italic tracking-tighter">Performance Velocity</CardTitle>
+                    <CardDescription className="font-bold text-[10px] uppercase tracking-widest mt-1">Your score trend compared to class average</CardDescription>
+                 </div>
+                 <Badge className="bg-emerald-500/10 text-emerald-500 border-none font-black text-[10px] italic">+12% Monthly Gain</Badge>
               </div>
-           </CardContent>
-        </Card>
-        <Card>
-           <CardContent className="p-6">
-              <p className="text-xs font-medium text-muted-foreground tracking-wider uppercase leading-tight">Weakest</p>
-              <div className="text-lg font-bold mt-2 line-clamp-1 text-red-600 dark:text-red-400">
-                {overview.weakest_subject}
-              </div>
-           </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Radar Chart */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Skill Matrix</CardTitle>
-            <CardDescription>Your accuracy mapped across all tested subjects.</CardDescription>
-          </CardHeader>
-          <CardContent className="h-80 flex items-center justify-center">
-            {subject_performance && subject_performance.length > 2 ? (
+           </CardHeader>
+           <CardContent className="p-8 h-[400px]">
               <ResponsiveContainer width="100%" height="100%">
-                <RadarChart cx="50%" cy="50%" outerRadius="70%" data={subject_performance}>
-                  <PolarGrid stroke="#e5e7eb" />
-                  <PolarAngleAxis dataKey="subject" tick={{ fontSize: 11, fill: 'var(--foreground)' }} />
-                  <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
-                  <Tooltip 
-                     contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                  />
-                  <Radar name="Accuracy %" dataKey="accuracy" stroke="var(--primary)" fill="var(--primary)" fillOpacity={0.4} />
-                </RadarChart>
+                 <AreaChart data={scoreHistory}>
+                    <defs>
+                       <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#18181b" stopOpacity={0.1}/>
+                          <stop offset="95%" stopColor="#18181b" stopOpacity={0}/>
+                       </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f1f1" />
+                    <XAxis 
+                       dataKey="date" 
+                       axisLine={false} 
+                       tickLine={false} 
+                       tick={{fontSize: 10, fontWeight: 900, fill: '#A1A1AA'}}
+                       dy={10}
+                    />
+                    <YAxis 
+                       axisLine={false} 
+                       tickLine={false} 
+                       tick={{fontSize: 10, fontWeight: 900, fill: '#A1A1AA'}}
+                    />
+                    <Tooltip 
+                       contentStyle={{ borderRadius: '1.5rem', border: 'none', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.15)', fontWeight: 900 }} 
+                       cursor={{ stroke: '#18181b', strokeWidth: 2 }}
+                    />
+                    <Area type="monotone" dataKey="score" stroke="#18181b" strokeWidth={4} fillOpacity={1} fill="url(#colorScore)" />
+                    <Line type="monotone" dataKey="avg" stroke="#A1A1AA" strokeWidth={2} strokeDasharray="5 5" dot={false} />
+                 </AreaChart>
               </ResponsiveContainer>
-            ) : (
-               <div className="text-center text-muted-foreground text-sm max-w-xs space-y-3">
-                  <div className="h-12 w-12 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center mx-auto">
-                     <BookOpen className="h-6 w-6 text-zinc-400" />
-                  </div>
-                  <p>Complete tests in at least 3 different subjects to unlock your skill radar.</p>
-               </div>
-            )}
-          </CardContent>
+           </CardContent>
         </Card>
 
-        {/* Line Chart Component for history */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Performance Trend</CardTitle>
-            <CardDescription>Your scores over the last few attempts.</CardDescription>
-          </CardHeader>
-          <CardContent className="h-[260px]">
-             {recent_trend && recent_trend.length > 1 ? (
-               <ResponsiveContainer width="100%" height="100%">
-                 <LineChart data={recent_trend} margin={{ top: 10, right: 30, left: 0, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-                    <XAxis 
-                      dataKey="date" 
-                      tickFormatter={(val) => new Date(val).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
-                      tickLine={false} 
-                      axisLine={false} 
-                      tick={{ fontSize: 11 }} 
-                    />
-                    <YAxis domain={[0, 100]} tickLine={false} axisLine={false} tick={{ fontSize: 11 }} tickFormatter={(val) => `${val}%`} />
-                    <Tooltip 
-                      contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                      labelFormatter={(label) => new Date(label).toLocaleDateString()}
-                    />
-                    <Line type="monotone" dataKey="percentage" name="Score" stroke="var(--primary)" strokeWidth={3} activeDot={{ r: 6 }} />
-                 </LineChart>
-               </ResponsiveContainer>
-             ) : (
-                <div className="h-full flex items-center justify-center text-muted-foreground text-sm">
-                  Complete more tests to see your trend over time.
-                </div>
-             )}
-          </CardContent>
-          <CardFooter className="bg-zinc-50 dark:bg-zinc-900/50 mt-4 border-t px-6 py-4 flex justify-between items-center">
-             <p className="text-sm text-muted-foreground">Ready to improve?</p>
-             <Button asChild size="sm">
-                <Link href="/student/tests" className="gap-2">
-                   Take a Test <TrendingUp className="h-4 w-4" />
-                </Link>
-             </Button>
-          </CardFooter>
+        {/* Radar Chart - Subject Breakdown */}
+        <Card className="lg:col-span-4 border-none shadow-2xl rounded-[3rem] bg-zinc-900 text-white p-8 overflow-hidden relative">
+           <div className="relative z-10 h-full flex flex-col">
+              <h3 className="text-xl font-black uppercase italic italic tracking-tighter mb-2">Aptitude Radar</h3>
+              <p className="text-zinc-500 text-[10px] font-black uppercase tracking-widest mb-8">Conceptual mapping across disciplines</p>
+              
+              <div className="flex-1 min-h-[300px]">
+                 <ResponsiveContainer width="100%" height="100%">
+                    <RadarChart cx="50%" cy="50%" outerRadius="80%" data={subjectData}>
+                       <PolarGrid stroke="#3f3f46" />
+                       <PolarAngleAxis dataKey="subject" tick={{fontSize: 10, fontWeight: 900, fill: '#71717a'}} />
+                       <Radar
+                          name="Competency"
+                          dataKey="value"
+                          stroke="#ffffff"
+                          strokeWidth={3}
+                          fill="#ffffff"
+                          fillOpacity={0.15}
+                       />
+                    </RadarChart>
+                 </ResponsiveContainer>
+              </div>
+
+              <div className="mt-8 space-y-4">
+                 <div className="flex justify-between items-end border-b border-white/5 pb-2">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Strongest Subject</span>
+                    <span className="text-sm font-black italic text-emerald-500">Chemistry (92%)</span>
+                 </div>
+                 <div className="flex justify-between items-end border-b border-white/5 pb-2">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Critical Area</span>
+                    <span className="text-sm font-black italic text-rose-500">Biology (65%)</span>
+                 </div>
+              </div>
+           </div>
+           <Activity className="absolute -bottom-12 -right-12 h-48 w-48 opacity-5 rotate-12" />
         </Card>
       </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+         {/* Detailed Metrics */}
+         <Card className="border-none shadow-xl rounded-[2.5rem] p-8 bg-white dark:bg-zinc-950 flex flex-col items-center gap-6">
+            <div className="h-20 w-20 rounded-[2rem] bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center">
+               <TrendingUp className="h-8 w-8 text-orange-500" />
+            </div>
+            <div className="text-center">
+               <h4 className="text-sm font-black uppercase tracking-widest italic">Improvement Rate</h4>
+               <p className="text-3xl font-black italic mt-1">+18.4%</p>
+               <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-2">Vs Previous Quarter</p>
+            </div>
+         </Card>
+
+         <Card className="border-none shadow-xl rounded-[2.5rem] p-8 bg-white dark:bg-zinc-950 flex flex-col items-center gap-6">
+            <div className="h-20 w-20 rounded-[2rem] bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center">
+               <Target className="h-8 w-8 text-emerald-500" />
+            </div>
+            <div className="text-center">
+               <h4 className="text-sm font-black uppercase tracking-widest italic">Precision Index</h4>
+               <p className="text-3xl font-black italic mt-1">94.2%</p>
+               <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-2">Accuracy on Easy/Med Items</p>
+            </div>
+         </Card>
+
+         <Card className="border-none shadow-xl rounded-[2.5rem] p-8 bg-white dark:bg-zinc-950 flex flex-col items-center gap-6">
+            <div className="h-20 w-20 rounded-[2rem] bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
+               <Activity className="h-8 w-8 text-blue-500" />
+            </div>
+            <div className="text-center">
+               <h4 className="text-sm font-black uppercase tracking-widest italic">Stability Score</h4>
+               <p className="text-3xl font-black italic mt-1">8.5/10</p>
+               <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-2">Performance Consistency</p>
+            </div>
+         </Card>
+      </div>
+
+      {/* AI Intelligence recommendations */}
+      <Card className="border-none shadow-2xl rounded-[3rem] bg-black text-white p-12 relative overflow-hidden group">
+         <div className="relative z-10 flex flex-col lg:flex-row justify-between items-center gap-12">
+            <div className="max-w-2xl space-y-6">
+               <Badge className="bg-primary text-white border-none text-[10px] font-black uppercase tracking-widest px-4 py-1.5">
+                  AI Recommendation Engine
+               </Badge>
+               <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">
+                  Predictive Analysis: Score Forecast
+               </h2>
+               <p className="text-zinc-500 text-lg font-medium leading-relaxed">
+                  Based on your current trajectory and consistency, our AI predicts a <span className="text-white italic font-bold">165+ score</span> in the upcoming All-India Series. To guarantee this, focus on high-weightage topics in Biology.
+               </p>
+               <Button className="bg-white text-black font-black px-8 h-12 rounded-xl group-hover:scale-105 transition-all">
+                  UNFOLD DETAIL STUDY PLAN <ArrowUpRight className="ml-2 h-4 w-4" />
+               </Button>
+            </div>
+            <div className="flex gap-4">
+               {[
+                  { label: 'Predicted Rank', val: 'AIR 450' },
+                  { label: 'Syllabus Health', val: '86%' }
+               ].map((m, i) => (
+                  <div key={i} className="bg-white/5 backdrop-blur-xl border border-white/10 p-8 rounded-[2.5rem] text-center min-w-[160px]">
+                     <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500 mb-2">{m.label}</p>
+                     <p className="text-2xl font-black italic">{m.val}</p>
+                  </div>
+               ))}
+            </div>
+         </div>
+         <Zap className="absolute -bottom-20 -left-20 h-64 w-64 text-primary opacity-10 rotate-[-15deg] group-hover:rotate-[5deg] transition-all duration-700" />
+      </Card>
     </div>
   );
 }

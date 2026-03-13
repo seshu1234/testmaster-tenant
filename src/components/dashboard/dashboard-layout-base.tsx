@@ -3,6 +3,7 @@
 import { ReactNode, useEffect } from "react";
 import { Sidebar } from "./sidebar";
 import { UserNav } from "./user-nav";
+import { NotificationBell } from "./notification-bell";
 import { useAuth } from "@/hooks/use-auth";
 import { useRouter, usePathname } from "next/navigation";
 
@@ -43,7 +44,10 @@ export function DashboardLayoutBase({ children, allowedRoles }: DashboardLayoutP
           <h2 className="text-xl font-semibold capitalize">
             {pathname.split("/")[1]} Dashboard
           </h2>
-          <UserNav />
+          <div className="flex items-center gap-4">
+            <NotificationBell />
+            <UserNav />
+          </div>
         </header>
         <main className="flex-1 overflow-y-auto p-8">
           {children}

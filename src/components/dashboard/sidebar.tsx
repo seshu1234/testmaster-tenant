@@ -19,7 +19,9 @@ import {
   HelpCircle,
   Calendar,
   FolderOpen,
-  TrendingUp
+  TrendingUp,
+  Zap,
+  Bell
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import Image from "next/image";
@@ -48,17 +50,32 @@ const teacherLinks = [
   { name: "Question Insights", href: "/teacher/analytics/question-analytics", icon: TrendingUp },
   { name: "Communications", href: "/teacher/communications", icon: Send },
   { name: "Study Materials", href: "/teacher/resources", icon: FolderOpen },
+  { name: "Settings", href: "/teacher/settings", icon: Settings },
 ];
 
 const studentLinks = [
   { name: "My Dashboard", href: "/student", icon: LayoutDashboard },
   { name: "Tests", href: "/student/tests", icon: BookOpen },
-  { name: "Results", href: "/student/results", icon: FileText },
+  { name: "Practice Drills", href: "/student/practice", icon: Zap },
+  { name: "Resources", href: "/student/resources", icon: FolderOpen },
+  { name: "Performance", href: "/student/analytics", icon: TrendingUp },
+  { name: "Leaderboards", href: "/student/leaderboard", icon: Activity },
+  { name: "Mistake Log", href: "/student/mistakes", icon: HelpCircle },
+  { name: "Achievements", href: "/student/achievements", icon: Rocket },
+  { name: "Notifications", href: "/student/notifications", icon: Bell },
+  { name: "Settings", href: "/student/settings", icon: Settings },
   { name: "Support", href: "/student/support", icon: HelpCircle },
 ];
 
 const parentLinks = [
-  { name: "Wards Overview", href: "/parent", icon: Users },
+  { name: "My Dashboard", href: "/parent", icon: LayoutDashboard },
+  { name: "Family Matrix", href: "/parent/family", icon: Users },
+  { name: "Performance", href: "/parent/performance", icon: TrendingUp },
+  { name: "Test Results", href: "/parent/results", icon: BookOpen },
+  { name: "Upcoming Tests", href: "/parent/upcoming", icon: Calendar },
+  { name: "Communications", href: "/parent/communications", icon: Send },
+  { name: "Settings", href: "/parent/settings", icon: Settings },
+  { name: "Support", href: "/parent/support", icon: HelpCircle },
 ];
 
 export function Sidebar() {
