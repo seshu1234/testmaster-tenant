@@ -55,7 +55,7 @@ export default function AiGeneratePage() {
     setSelectedIndices([]);
 
     try {
-      const response = await api("/v1/teacher/ai/generate-questions", {
+      const response = await api("/teacher/ai/generate-questions", {
         method: "POST",
         token,
         tenant: tenantSlug || undefined,
@@ -95,7 +95,7 @@ export default function AiGeneratePage() {
     try {
       const questionsToSave = selectedIndices.map(i => generatedQuestions[i]);
       
-      const response = await api("/v1/teacher/questions/bulk", {
+      const response = await api("/teacher/questions/bulk", {
         method: "POST",
         token,
         tenant: tenantSlug || undefined,

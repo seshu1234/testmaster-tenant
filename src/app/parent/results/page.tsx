@@ -56,7 +56,7 @@ export default function ResultsHistoryPage() {
     async function fetchInsights() {
       if (!token || !activeWardId) return;
       try {
-        const response = await api(`/v1/parent/ai/${activeWardId}/insights`, {
+        const response = await api(`/parent/ai/${activeWardId}/insights`, {
           token,
           tenant: tenantSlug || undefined
         });
@@ -72,7 +72,7 @@ export default function ResultsHistoryPage() {
     async function fetchWards() {
       if (!token) return;
       try {
-        const response = await api("/v1/parent/children", {
+        const response = await api("/parent/children", {
           token,
           tenant: tenantSlug || undefined
         });
@@ -93,7 +93,7 @@ export default function ResultsHistoryPage() {
       if (!token || !activeWardId) return;
       setIsLoading(true);
       try {
-        const response = await api(`/v1/parent/results/${activeWardId}`, {
+        const response = await api(`/parent/results/${activeWardId}`, {
           token,
           tenant: tenantSlug || undefined
         });

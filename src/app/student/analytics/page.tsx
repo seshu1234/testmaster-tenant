@@ -49,7 +49,7 @@ export default function StudentAnalyticsPage() {
       if (!token) return;
       setLoading(true);
       try {
-        const response = await api("/v1/student/analytics/insights", {
+        const response = await api("/student/analytics/insights", {
           token,
           tenant: tenantSlug || undefined
         });

@@ -125,7 +125,7 @@ export default function CreateQuestionPage() {
         finalAnswer = [shortAnswer];
       }
 
-      const response = await api("/v1/teacher/questions", {
+      const response = await api("/teacher/questions", {
         method: "POST",
         token,
         tenant: tenantSlug || undefined,

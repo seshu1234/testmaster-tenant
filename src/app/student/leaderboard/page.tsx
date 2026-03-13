@@ -44,7 +44,7 @@ export default function StudentLeaderboardPage() {
       if (!token) return;
       setLoading(true);
       try {
-        const response = await api("/v1/student/leaderboard", {
+        const response = await api("/student/leaderboard", {
           token,
           tenant: tenantSlug || undefined,
           params: { view }

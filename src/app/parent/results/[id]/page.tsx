@@ -68,7 +68,7 @@ export default function DetailedResultPage() {
       if (!token || !params.id) return;
       setIsLoading(true);
       try {
-        const response = await api(`/v1/parent/results/${params.id}`, {
+        const response = await api(`/parent/results/${params.id}`, {
           token,
           tenant: tenantSlug || undefined
         });

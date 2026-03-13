@@ -53,7 +53,7 @@ export default function TeacherProfilePage() {
     async function fetchProfile() {
       if (!token) return;
       try {
-        const response = await api("/v1/teacher/profile", {
+        const response = await api("/teacher/profile", {
           token,
           tenant: tenantSlug || undefined
         });
@@ -71,7 +71,7 @@ export default function TeacherProfilePage() {
     if (!token || !profile) return;
     setIsSaving(true);
     try {
-      await api("/v1/teacher/profile", {
+      await api("/teacher/profile", {
         method: "PUT",
         token,
         tenant: tenantSlug || undefined,
@@ -95,7 +95,7 @@ export default function TeacherProfilePage() {
     const updatedSettings = { ...profile.settings, [key]: value };
     setProfile({ ...profile, settings: updatedSettings });
     try {
-      await api("/v1/teacher/profile", {
+      await api("/teacher/profile", {
         method: "PUT",
         token,
         tenant: tenantSlug || undefined,

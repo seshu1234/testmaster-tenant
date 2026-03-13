@@ -36,7 +36,7 @@ export default function ParentSettingsPage() {
     async function fetchSettings() {
       if (!token) return;
       try {
-        const response = await api("/v1/parent/settings", {
+        const response = await api("/parent/settings", {
           token,
           tenant: tenantSlug || undefined
         });
@@ -58,7 +58,7 @@ export default function ParentSettingsPage() {
     if (!token) return;
     setIsSaving(true);
     try {
-      await api("/v1/parent/settings", {
+      await api("/parent/settings", {
         method: "PUT",
         token,
         tenant: tenantSlug || undefined,

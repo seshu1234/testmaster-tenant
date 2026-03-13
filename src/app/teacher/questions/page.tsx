@@ -57,7 +57,7 @@ export default function QuestionsPage() {
         if (subjectFilter) queryParams.append("subject", subjectFilter);
         if (topicFilter) queryParams.append("topic", topicFilter);
 
-        const response = await api(`/v1/teacher/questions?${queryParams.toString()}`, {
+        const response = await api(`/teacher/questions?${queryParams.toString()}`, {
           token,
           tenant: tenantSlug || undefined,
         });
@@ -81,7 +81,7 @@ export default function QuestionsPage() {
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this question?") || !token || !user) return;
     try {
-      const response = await api(`/v1/teacher/questions/${id}`, {
+      const response = await api(`/teacher/questions/${id}`, {
         method: "DELETE",
         token,
         tenant: tenantSlug || undefined,
@@ -98,14 +98,14 @@ export default function QuestionsPage() {
   const handleDuplicate = async (id: string) => {
     if (!token || !user) return;
     try {
-      const response = await api(`/v1/teacher/questions/${id}/duplicate`, {
+      const response = await api(`/teacher/questions/${id}/duplicate`, {
         method: "POST",
         token,
         tenant: tenantSlug || undefined,
       });
       if (response.success) {
         // Refresh the list after duplication
-        const listResponse = await api(`/v1/teacher/questions`, {
+        const listResponse = await api(`/teacher/questions`, {
           token,
           tenant: tenantSlug || undefined,
         });

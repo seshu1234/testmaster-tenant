@@ -55,7 +55,7 @@ export default function TeacherLiveMonitorPage() {
   const fetchLiveStats = useCallback(async () => {
     if (!user || !token) return;
     try {
-      const response = await api(`/v1/teacher/tests/${testId}/live`, { token, tenant: tenantSlug || undefined });
+      const response = await api(`/teacher/tests/${testId}/live`, { token, tenant: tenantSlug || undefined });
       if (response.success) {
         setStats(response.data);
       }
@@ -69,7 +69,7 @@ export default function TeacherLiveMonitorPage() {
   const handleForceSubmit = async (attemptId: string, studentId: string) => {
     if (!user || !token || !confirm(`Force submit attempt for student ${studentId}?`)) return;
     try {
-        const response = await api(`/v1/teacher/tests/${testId}/force-submit/${studentId}`, { 
+        const response = await api(`/teacher/tests/${testId}/force-submit/${studentId}`, { 
             method: 'POST', 
             token, 
             tenant: tenantSlug || undefined 
@@ -86,7 +86,7 @@ export default function TeacherLiveMonitorPage() {
     if (!user || !token || !broadcastMessage.trim()) return;
     setIsBroadcasting(true);
     try {
-        const response = await api(`/v1/teacher/tests/${testId}/broadcast`, {
+        const response = await api(`/teacher/tests/${testId}/broadcast`, {
             method: 'POST',
             token,
             tenant: tenantSlug || undefined,

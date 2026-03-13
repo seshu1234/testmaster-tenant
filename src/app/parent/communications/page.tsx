@@ -53,7 +53,7 @@ export default function CommunicationsPage() {
       if (!token) return;
       setIsLoading(true);
       try {
-        const response = await api("/v1/parent/communications/teachers", {
+        const response = await api("/parent/communications/teachers", {
           token,
           tenant: tenantSlug || undefined
         });
@@ -74,7 +74,7 @@ export default function CommunicationsPage() {
     async function fetchMessages() {
       if (!token || !activeTeacher) return;
       try {
-        const response = await api(`/v1/parent/communications/messages/${activeTeacher.id}`, {
+        const response = await api(`/parent/communications/messages/${activeTeacher.id}`, {
           token,
           tenant: tenantSlug || undefined
         });
@@ -103,7 +103,7 @@ export default function CommunicationsPage() {
       setMessages([...messages, msg]);
       setNewMessage("");
 
-      await api(`/v1/parent/communications/messages/${activeTeacher.id}`, {
+      await api(`/parent/communications/messages/${activeTeacher.id}`, {
         method: 'POST',
         body: JSON.stringify({ text: newMessage }),
         token,

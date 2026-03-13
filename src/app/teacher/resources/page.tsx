@@ -36,7 +36,7 @@ export default function TeacherResourcesPage() {
     async function fetchResources() {
       if (!token) return;
       try {
-        const response = await api("/v1/teacher/resources", {
+        const response = await api("/teacher/resources", {
           token,
           tenant: tenantSlug || undefined
         });

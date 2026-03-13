@@ -49,7 +49,7 @@ export default function StudentTestLobby({ params }: { params: { id: string } })
     async function fetchTest() {
       if (!token) return;
       try {
-        const response = await api(`/v1/student/tests/${params.id}`, {
+        const response = await api(`/student/tests/${params.id}`, {
           token,
           tenant: tenantSlug || undefined
         });
@@ -90,7 +90,7 @@ export default function StudentTestLobby({ params }: { params: { id: string } })
     setIsStarting(true);
     setError(null);
     try {
-      const response = await api(`/v1/student/tests/${params.id}/start`, {
+      const response = await api(`/student/tests/${params.id}/start`, {
         method: "POST",
         token,
         tenant: tenantSlug || undefined

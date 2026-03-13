@@ -58,7 +58,7 @@ export default function BatchDetailsPage() {
     async function fetchBatchDetails() {
       if (!token || !id) return;
       try {
-        const response = await api(`/v1/teacher/batches/${id}`, {
+        const response = await api(`/teacher/batches/${id}`, {
           token,
           tenant: tenantSlug || undefined
         });

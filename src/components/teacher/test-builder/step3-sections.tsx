@@ -29,7 +29,7 @@ export function Step3Sections({ testId, onUpdate }: Step3Props) {
   const fetchSections = useCallback(async () => {
     if (!user || !token || !testId) return;
     try {
-      const response = await api(`/v1/teacher/tests/${testId}`, {
+      const response = await api(`/teacher/tests/${testId}`, {
         token,
         tenant: user.tenant_id,
       });
@@ -50,7 +50,7 @@ export function Step3Sections({ testId, onUpdate }: Step3Props) {
   const addSection = async () => {
     if (!user || !token || !testId) return;
     try {
-      const response = await api(`/v1/teacher/tests/${testId}/sections`, {
+      const response = await api(`/teacher/tests/${testId}/sections`, {
         method: "POST",
         token,
         tenant: user.tenant_id,
@@ -71,7 +71,7 @@ export function Step3Sections({ testId, onUpdate }: Step3Props) {
   const removeSection = async (sectionId: string) => {
     if (!user || !token || !testId) return;
     try {
-      const response = await api(`/v1/teacher/tests/${testId}/sections/${sectionId}`, {
+      const response = await api(`/teacher/tests/${testId}/sections/${sectionId}`, {
         method: "DELETE",
         token,
         tenant: user.tenant_id,
@@ -88,7 +88,7 @@ export function Step3Sections({ testId, onUpdate }: Step3Props) {
   const updateSection = async (sectionId: string, updates: Partial<Section>) => {
     if (!user || !token || !testId) return;
     try {
-        await api(`/v1/teacher/tests/${testId}/sections/${sectionId}`, {
+        await api(`/teacher/tests/${testId}/sections/${sectionId}`, {
             method: "PUT",
             token,
             tenant: user.tenant_id,

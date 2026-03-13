@@ -38,7 +38,7 @@ export default function StudentTestsPage() {
     async function fetchTests() {
       if (!token) return;
       try {
-        const response = await api("/v1/student/tests", {
+        const response = await api("/student/tests", {
           token,
           tenant: tenantSlug || undefined
         });

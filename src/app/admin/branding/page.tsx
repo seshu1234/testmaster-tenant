@@ -47,7 +47,7 @@ export default function AdminBrandingPage() {
     const fetchBranding = async () => {
       if (!user || !token) return;
       try {
-        const response = await api(`/v1/admin/branding`, { token, tenant: user.tenant_id });
+        const response = await api(`/admin/branding`, { token, tenant: user.tenant_id });
         if (response.success && response.data) {
           setConfig(response.data);
         }
@@ -64,7 +64,7 @@ export default function AdminBrandingPage() {
     if (!user || !token) return;
     setSaving(true);
     try {
-      const response = await api(`/v1/admin/branding`, {
+      const response = await api(`/admin/branding`, {
         method: "PUT",
         token,
         tenant: user.tenant_id,

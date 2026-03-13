@@ -44,7 +44,7 @@ export default function UpcomingTestsPage() {
     async function fetchWards() {
       if (!token) return;
       try {
-        const response = await api("/v1/parent/children", {
+        const response = await api("/parent/children", {
           token,
           tenant: tenantSlug || undefined
         });
@@ -65,7 +65,7 @@ export default function UpcomingTestsPage() {
       if (!token || !activeWardId) return;
       setIsLoading(true);
       try {
-        const response = await api(`/v1/parent/tests/${activeWardId}/upcoming`, {
+        const response = await api(`/parent/tests/${activeWardId}/upcoming`, {
           token,
           tenant: tenantSlug || undefined
         });

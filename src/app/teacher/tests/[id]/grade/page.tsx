@@ -43,7 +43,7 @@ export default function ManualGradingPage() {
     const fetchUngraded = async () => {
       if (!user || !token) return;
       try {
-        const response = await api(`/v1/teacher/tests/${testId}/ungraded`, {
+        const response = await api(`/teacher/tests/${testId}/ungraded`, {
           token,
           tenant: tenantSlug || undefined,
         });
@@ -63,7 +63,7 @@ export default function ManualGradingPage() {
     if (!user || !token || !responses[currentIndex]) return;
     setSubmitting(true);
     try {
-      const response = await api(`/v1/teacher/grade`, {
+      const response = await api(`/teacher/grade`, {
         method: "POST",
         token,
         tenant: tenantSlug || undefined,

@@ -49,7 +49,7 @@ export default function StudentMistakesPage() {
       if (!token) return;
       setLoading(true);
       try {
-        const response = await api("/v1/student/mistakes", {
+        const response = await api("/student/mistakes", {
           token,
           tenant: tenantSlug ?? undefined,
           params: { filter: activeFilter }
@@ -69,7 +69,7 @@ export default function StudentMistakesPage() {
 
   const toggleBookmark = async (id: string) => {
     try {
-      const response = await api(`/v1/student/mistakes/${id}/toggle-bookmark`, {
+      const response = await api(`/student/mistakes/${id}/toggle-bookmark`, {
         method: "POST",
         token: token ?? undefined,
         tenant: tenantSlug ?? undefined

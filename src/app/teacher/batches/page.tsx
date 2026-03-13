@@ -33,7 +33,7 @@ export default function TeacherBatchesPage() {
     const fetchBatches = async () => {
       if (!user || !token) return;
       try {
-        const response = await api("/v1/teacher/batches", {
+        const response = await api("/teacher/batches", {
           token,
           tenant: tenantSlug || undefined,
         });

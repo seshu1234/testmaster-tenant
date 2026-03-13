@@ -74,7 +74,7 @@ export default function StudentDashboard() {
     async function fetchDashboard() {
       if (!token) return;
       try {
-        const response = await api("/v1/student/dashboard", {
+        const response = await api("/student/dashboard", {
           token,
           tenant: tenantSlug || undefined
         });

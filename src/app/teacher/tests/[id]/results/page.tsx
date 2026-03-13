@@ -53,7 +53,7 @@ export default function TeacherResultsPage() {
     const fetchAnalytics = async () => {
       if (!user || !token) return;
       try {
-        const response = await api(`/v1/teacher/tests/${testId}/analytics`, { token, tenant: tenantSlug || undefined });
+        const response = await api(`/teacher/tests/${testId}/analytics`, { token, tenant: tenantSlug || undefined });
         if (response.success) {
           setSummary(response.data.summary);
           setQuestions(response.data.questions);

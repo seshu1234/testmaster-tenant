@@ -56,7 +56,7 @@ export function Step4Questions({ testId, sections }: Step4Props) {
       const queryParams = new URLSearchParams();
       if (search) queryParams.append("search", search);
       
-      const response = await api(`/v1/teacher/questions?${queryParams.toString()}`, {
+      const response = await api(`/teacher/questions?${queryParams.toString()}`, {
         token,
         tenant: user.tenant_id,
       });
@@ -73,7 +73,7 @@ export function Step4Questions({ testId, sections }: Step4Props) {
   const fetchAssigned = useCallback(async () => {
     if (!user || !token || !testId || !activeSectionId) return;
     try {
-      const response = await api(`/v1/teacher/tests/${testId}/sections/${activeSectionId}/questions`, {
+      const response = await api(`/teacher/tests/${testId}/sections/${activeSectionId}/questions`, {
         token,
         tenant: user.tenant_id,
       });
@@ -113,14 +113,14 @@ export function Step4Questions({ testId, sections }: Step4Props) {
     
     try {
       if (isAssigned) {
-        await api(`/v1/teacher/tests/${testId}/sections/${activeSectionId}/questions/${question.id}`, {
+        await api(`/teacher/tests/${testId}/sections/${activeSectionId}/questions/${question.id}`, {
           method: "DELETE",
           token,
           tenant: user.tenant_id,
         });
         setAssignedQuestions(prev => prev.filter(q => q.question_id !== question.id));
       } else {
-        await api(`/v1/teacher/tests/${testId}/questions`, {
+        await api(`/teacher/tests/${testId}/questions`, {
           method: "POST",
           token,
           tenant: user.tenant_id,

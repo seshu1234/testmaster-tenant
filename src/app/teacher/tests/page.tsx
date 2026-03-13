@@ -28,7 +28,7 @@ export default function TeacherTestsPage() {
     async function fetchTests() {
       if (!token) return;
       try {
-         const response = await api("/v1/teacher/tests", {
+         const response = await api("/teacher/tests", {
             token,
             tenant: user?.tenant_id || undefined
          });
@@ -44,7 +44,7 @@ export default function TeacherTestsPage() {
 
   const handleCreateTest = async () => {
      try {
-         const response = await api("/v1/teacher/tests", {
+         const response = await api("/teacher/tests", {
              method: "POST",
              token: token || undefined,
              tenant: user?.tenant_id || undefined,

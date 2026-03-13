@@ -47,7 +47,7 @@ export default function TeacherCommunicationsPage() {
     async function fetchChats() {
       if (!token) return;
       try {
-        const response = await api("/v1/teacher/communication", {
+        const response = await api("/teacher/communication", {
           token,
           tenant: tenantSlug || undefined
         });
@@ -69,7 +69,7 @@ export default function TeacherCommunicationsPage() {
       if (!token || !selectedChat) return;
       setMsgLoading(true);
       try {
-        const response = await api(`/v1/teacher/communication/messages/${selectedChat.id}`, {
+        const response = await api(`/teacher/communication/messages/${selectedChat.id}`, {
           token,
           tenant: tenantSlug || undefined
         });
@@ -89,7 +89,7 @@ export default function TeacherCommunicationsPage() {
     const textToSend = messageText;
     setMessageText("");
     try {
-      await api(`/v1/teacher/communication/messages/${selectedChat.id}`, {
+      await api(`/teacher/communication/messages/${selectedChat.id}`, {
         method: "POST",
         token,
         tenant: tenantSlug || undefined,

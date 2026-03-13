@@ -49,7 +49,7 @@ export default function AdminDashboard() {
     async function getDashboard() {
       if (!token) return;
       try {
-        const response = await api("/v1/admin/dashboard", {
+        const response = await api("/admin/dashboard", {
           token,
           tenant: tenantSlug || undefined
         });

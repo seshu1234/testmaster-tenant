@@ -31,7 +31,7 @@ export default function TeacherCalendarPage() {
     const fetchTests = async () => {
       if (!user || !token) return;
       try {
-        const response = await api("/v1/teacher/tests", {
+        const response = await api("/teacher/tests", {
           token,
           tenant: tenantSlug || undefined,
         });

@@ -70,7 +70,7 @@ export default function TeacherDashboard() {
     async function fetchDashboard() {
       if (!token) return;
       try {
-        const response = await api("/v1/teacher/dashboard", {
+        const response = await api("/teacher/dashboard", {
           token,
           tenant: tenantSlug || undefined
         });

@@ -63,7 +63,7 @@ export default function TeacherAnalyticsDashboard() {
     const fetchAnalytics = async () => {
       if (!user || !token) return;
       try {
-        const response = await api(`/v1/teacher/analytics/overview`, { token, tenant: tenantSlug || undefined });
+        const response = await api(`/teacher/analytics/overview`, { token, tenant: tenantSlug || undefined });
         if (response.success && response.data) {
           setData(response.data);
         }

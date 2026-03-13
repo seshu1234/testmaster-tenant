@@ -62,7 +62,7 @@ export default function ParentDashboard() {
     async function fetchWards() {
       if (!token) return;
       try {
-        const response = await api("/v1/parent/children", {
+        const response = await api("/parent/children", {
           token,
           tenant: tenantSlug || undefined
         });
@@ -82,7 +82,7 @@ export default function ParentDashboard() {
       if (!token || !activeWard) return;
       setIsLoading(true);
       try {
-        const response = await api(`/v1/parent/children/${activeWard.id}/dashboard`, {
+        const response = await api(`/parent/children/${activeWard.id}/dashboard`, {
           token,
           tenant: tenantSlug || undefined
         });

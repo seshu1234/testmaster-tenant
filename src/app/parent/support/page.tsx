@@ -9,8 +9,7 @@ import {
   ShieldCheck,
   Zap,
   Globe,
-  Loader2,
-  Plus
+  Loader2
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -27,10 +26,17 @@ const faqs = [
   { q: "How to schedule a mentor meeting?", a: "Go to Communications, select a mentor, and click 'Schedule Meeting' to see available slots." },
 ];
 
+interface SupportTicket {
+  id: string;
+  subject: string;
+  status: string;
+  updated_at: string;
+}
+
 export default function SupportPage() {
   const { token, tenantSlug } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
-  const [tickets, setTickets] = useState<Record<string, any>[]>([]);
+  const [tickets, setTickets] = useState<SupportTicket[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
 
@@ -38,7 +44,7 @@ export default function SupportPage() {
     async function fetchTickets() {
       if (!token) return;
       try {
-        const response = await api("/v1/parent/support", {
+        const response = await api("/parent/support", {
           token,
           tenant: tenantSlug || undefined
         });
@@ -57,7 +63,7 @@ export default function SupportPage() {
     if (!token) return;
     setIsCreating(true);
     try {
-      await api("/v1/parent/support", {
+      await api("/parent/support", {
         method: "POST",
         token,
         tenant: tenantSlug || undefined,
@@ -69,7 +75,7 @@ export default function SupportPage() {
         })
       });
       // Refresh tickets
-      const refreshRes = await api("/v1/parent/support", {
+      const refreshRes = await api("/parent/support", {
         token,
         tenant: tenantSlug || undefined
       });

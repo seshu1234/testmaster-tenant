@@ -50,7 +50,7 @@ export default function FamilyDashboardPage() {
       if (!token) return;
       setIsLoading(true);
       try {
-        const response = await api("/v1/parent/family/comparison", {
+        const response = await api("/parent/family/comparison", {
           token,
           tenant: tenantSlug || undefined
         });

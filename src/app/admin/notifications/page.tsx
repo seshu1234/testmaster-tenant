@@ -31,7 +31,7 @@ export default function NotificationSettingsPage() {
     const fetchTemplates = async () => {
       if (!user || !token) return;
       try {
-        const response = await api(`/v1/admin/notifications/templates`, { token, tenant: user.tenant_id });
+        const response = await api(`/admin/notifications/templates`, { token, tenant: user.tenant_id });
         if (response.success) {
           setTemplates(response.data);
         }
@@ -49,7 +49,7 @@ export default function NotificationSettingsPage() {
     setSaving(template.id);
     setMessage(null);
     try {
-      const response = await api(`/v1/admin/notifications/templates/${template.id}`, {
+      const response = await api(`/admin/notifications/templates/${template.id}`, {
         method: 'PUT',
         token,
         tenant: user.tenant_id,

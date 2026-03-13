@@ -34,7 +34,7 @@ export function AiExplainDialog({ open, onOpenChange, questionId, questionTitle,
     if (!token) return;
     setLoading(true);
     try {
-      const response = await api(`/v1/teacher/ai/generate-explanation/${questionId}`, {
+      const response = await api(`/teacher/ai/generate-explanation/${questionId}`, {
         method: "POST",
         token,
         tenant: tenantSlug || undefined
@@ -53,7 +53,7 @@ export function AiExplainDialog({ open, onOpenChange, questionId, questionTitle,
     if (!token || !explanation) return;
     setSaving(true);
     try {
-      const response = await api(`/v1/teacher/questions/${questionId}`, {
+      const response = await api(`/teacher/questions/${questionId}`, {
         method: "PATCH",
         token,
         tenant: tenantSlug || undefined,

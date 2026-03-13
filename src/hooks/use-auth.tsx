@@ -87,7 +87,7 @@ export function AuthProvider({
 
   const login = async (credentials: Record<string, string>) => {
     try {
-      const response = await api("/v1/login", {
+      const response = await api("/login", {
         method: "POST",
         body: JSON.stringify({
           email: credentials.email,

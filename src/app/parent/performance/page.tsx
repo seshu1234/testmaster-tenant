@@ -72,7 +72,7 @@ export default function PerformancePage() {
     async function fetchWards() {
       if (!token) return;
       try {
-        const response = await api("/v1/parent/children", {
+        const response = await api("/parent/children", {
           token,
           tenant: tenantSlug || undefined
         });
@@ -93,7 +93,7 @@ export default function PerformancePage() {
       if (!token || !activeWardId) return;
       setIsLoading(true);
       try {
-        const response = await api(`/v1/parent/performance/${activeWardId}/overview?subject=${activeSubject}`, {
+        const response = await api(`/parent/performance/${activeWardId}/overview?subject=${activeSubject}`, {
           token,
           tenant: tenantSlug || undefined
         });

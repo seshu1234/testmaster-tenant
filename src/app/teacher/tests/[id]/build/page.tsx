@@ -82,7 +82,7 @@ export default function TestBuilderPage() {
   const fetchTest = useCallback(async () => {
     if (!user || !token || !id) return;
     try {
-      const response = await api(`/v1/teacher/tests/${id}`, {
+      const response = await api(`/teacher/tests/${id}`, {
         token,
         tenant: user.tenant_id,
       });
@@ -117,7 +117,7 @@ export default function TestBuilderPage() {
     if (!user || !token || !id) return;
     setSaving(true);
     try {
-      await api(`/v1/teacher/tests/${id}`, {
+      await api(`/teacher/tests/${id}`, {
         method: "PUT",
         token,
         tenant: user.tenant_id,
@@ -143,7 +143,7 @@ export default function TestBuilderPage() {
     if (!user || !token || !id) return;
     setSaving(true);
     try {
-      const response = await api(`/v1/teacher/tests/${id}/publish`, {
+      const response = await api(`/teacher/tests/${id}/publish`, {
         method: "POST",
         token,
         tenant: user.tenant_id,

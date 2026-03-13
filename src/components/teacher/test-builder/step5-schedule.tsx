@@ -36,7 +36,7 @@ export function Step5Schedule({ data, onChange }: Step5Props) {
     const fetchBatches = async () => {
       if (!user || !token) return;
       try {
-        const response = await api(`/v1/teacher/batches`, {
+        const response = await api(`/teacher/batches`, {
           token,
           tenant: user.tenant_id,
         });

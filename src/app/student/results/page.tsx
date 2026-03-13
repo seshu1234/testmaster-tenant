@@ -70,7 +70,7 @@ export default function StudentTestResultPage() {
         return;
       }
       try {
-        const response = await api(`/v1/student/attempts/${attemptId}/result`, {
+        const response = await api(`/student/attempts/${attemptId}/result`, {
           token,
           tenant: tenantSlug || undefined
         });

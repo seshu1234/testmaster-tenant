@@ -42,7 +42,7 @@ export default function StudentNotificationsPage() {
       if (!token) return;
       setLoading(true);
       try {
-        const response = await api(`/v1/student/notifications?filter=${activeTab}`, {
+        const response = await api(`/student/notifications?filter=${activeTab}`, {
           token,
           tenant: tenantSlug || undefined
         });
@@ -59,7 +59,7 @@ export default function StudentNotificationsPage() {
   const markAsRead = async (id: string) => {
     if (!token) return;
     try {
-      await api(`/v1/student/notifications/${id}/read`, {
+      await api(`/student/notifications/${id}/read`, {
         method: 'POST',
         token,
         tenant: tenantSlug || undefined

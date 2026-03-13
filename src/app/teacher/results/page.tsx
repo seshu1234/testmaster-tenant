@@ -29,7 +29,7 @@ export default function TeacherAnalytics() {
     const fetchAnalytics = async () => {
       if (!user || !token) return;
       try {
-        const response = await api("/v1/teacher/analytics", {
+        const response = await api("/teacher/analytics", {
           token,
           tenant: tenantSlug || undefined,
         });

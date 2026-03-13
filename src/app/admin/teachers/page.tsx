@@ -82,7 +82,7 @@ export default function TeachersPage() {
     if (!confirm(`Are you sure you want to delete ${teacher.name}?`)) return;
 
     try {
-      await api(`/v1/admin/teachers/${teacher.id}`, {
+      await api(`/admin/teachers/${teacher.id}`, {
         method: "DELETE",
         token: token || undefined,
         tenant: tenantSlug || undefined,

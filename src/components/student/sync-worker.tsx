@@ -28,7 +28,7 @@ export function SyncWorker() {
       // Based on PRD "Batched API POST every 30 seconds", we should try to batch if backend supports it.
       // If backend only supports single, we loop. Assuming batch endpoint /answers/batch exist or using existing one.
       
-      const response = await api(`/v1/student/attempts/${store.attemptId}/answers/batch`, {
+      const response = await api(`/student/attempts/${store.attemptId}/answers/batch`, {
         method: "POST",
         token,
         tenant: tenantSlug || undefined,

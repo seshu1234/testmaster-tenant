@@ -49,7 +49,7 @@ export default function StudentTestTakingPage({ params }: { params: { id: string
     async function fetchAttempt() {
       if (!token || !attemptId) return;
       try {
-        const response = await api(`/v1/student/attempts/${attemptId}`, {
+        const response = await api(`/student/attempts/${attemptId}`, {
           token,
           tenant: tenantSlug || undefined
         });
@@ -76,7 +76,7 @@ export default function StudentTestTakingPage({ params }: { params: { id: string
   const handleSubmit = useCallback(async () => {
     if (!token || !attemptId) return;
     try {
-      await api(`/v1/student/attempts/${attemptId}/submit`, {
+      await api(`/student/attempts/${attemptId}/submit`, {
         method: "POST",
         token,
         tenant: tenantSlug || undefined,
@@ -112,7 +112,7 @@ export default function StudentTestTakingPage({ params }: { params: { id: string
       
       setIsSyncing(true);
       try {
-        await api(`/v1/student/attempts/${attemptId}/answers`, {
+        await api(`/student/attempts/${attemptId}/answers`, {
           method: "POST",
           token,
           tenant: tenantSlug || undefined,
