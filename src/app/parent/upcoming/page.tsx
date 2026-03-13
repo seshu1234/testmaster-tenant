@@ -28,17 +28,44 @@ interface UpcomingTest {
   isReady: boolean;
 }
 
+interface Ward {
+  id: string;
+  name: string;
+}
+
 export default function UpcomingTestsPage() {
   const { token, tenantSlug } = useAuth();
+  const [wards, setWards] = useState<Ward[]>([]);
+  const [activeWardId, setActiveWardId] = useState<string | null>(null);
   const [tests, setTests] = useState<UpcomingTest[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchUpcoming() {
+    async function fetchWards() {
       if (!token) return;
+      try {
+        const response = await api("/v1/parent/children", {
+          token,
+          tenant: tenantSlug || undefined
+        });
+        const fetchedWards = response.data || [];
+        setWards(fetchedWards);
+        if (fetchedWards.length > 0 && !activeWardId) {
+          setActiveWardId(fetchedWards[0].id);
+        }
+      } catch (err) {
+        console.error("Failed to fetch wards:", err);
+      }
+    }
+    fetchWards();
+  }, [token, tenantSlug, activeWardId]);
+
+  useEffect(() => {
+    async function fetchUpcoming() {
+      if (!token || !activeWardId) return;
       setIsLoading(true);
       try {
-        const response = await api("/v1/parent/upcoming", {
+        const response = await api(`/v1/parent/tests/${activeWardId}/upcoming`, {
           token,
           tenant: tenantSlug || undefined
         });
@@ -50,7 +77,7 @@ export default function UpcomingTestsPage() {
       }
     }
     fetchUpcoming();
-  }, [token, tenantSlug]);
+  }, [token, tenantSlug, activeWardId]);
 
   return (
     <div className="space-y-8 animate-in fade-in duration-700 pb-20 p-6">
@@ -60,7 +87,25 @@ export default function UpcomingTestsPage() {
           <p className="text-muted-foreground text-sm font-medium">Monitoring upcoming assessments and study milestones.</p>
         </div>
         
-        <div className="flex gap-3">
+        <div className="flex gap-4 items-center">
+           {wards.length > 1 && (
+            <div className="flex bg-white dark:bg-zinc-900 p-1 rounded-xl border dark:border-zinc-800 shadow-sm overflow-x-auto scrollbar-hide mr-2">
+              {wards.map((ward) => (
+                <button
+                  key={ward.id}
+                  className={cn(
+                    "px-4 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-lg transition-all whitespace-nowrap",
+                    activeWardId === ward.id 
+                      ? "bg-primary text-white" 
+                      : "text-zinc-500 hover:text-zinc-800"
+                  )}
+                  onClick={() => setActiveWardId(ward.id)}
+                >
+                  {ward.name.split(' ')[0]}
+                </button>
+              ))}
+            </div>
+          )}
            <Button variant="outline" className="rounded-2xl border-zinc-200 dark:border-zinc-800 font-black text-[10px] uppercase tracking-widest px-6 h-12">
               <CalendarIcon className="mr-2 h-4 w-4" />
               GOOGLE CALENDAR SYNC

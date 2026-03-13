@@ -61,28 +61,7 @@ export default function AdminDashboard() {
         }
       } catch (error) {
         console.error("Admin dashboard fetch error:", error);
-        // Fallback for demo/dev
-        setData({
-          stats: { total_students: 2543, active_tests: 14, avg_performance: 72, revenue: 0 },
-          revenue_data: [
-            { name: "Mon", students: 40, tests: 24 },
-            { name: "Tue", students: 30, tests: 13 },
-            { name: "Wed", students: 20, tests: 98 },
-            { name: "Thu", students: 27, tests: 39 },
-            { name: "Fri", students: 18, tests: 48 },
-            { name: "Sat", students: 23, tests: 38 },
-            { name: "Sun", students: 34, tests: 43 },
-          ],
-          recent_activity: [
-            { user: "Sarah Connor", action: "Completed Mock Test #4", time: "2 MINS AGO" },
-            { user: "James Smith", action: "Updated Centre Profile", time: "15 MINS AGO" },
-            { user: "Physics Dept", action: "Published 4 New Assessments", time: "3 HOURS AGO" },
-          ],
-          upcoming_events: [
-            { title: "National Level Mock #4", date: "Oct 24", time: "09:00 AM" },
-            { title: "Quarterly Performance Review", date: "Oct 28", time: "11:00 AM" },
-          ]
-        });
+        // We should ideally show an error state to the user
       } finally {
         setLoading(false);
       }

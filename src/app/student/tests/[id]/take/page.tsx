@@ -15,9 +15,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import "katex/dist/katex.min.css";
 import { InlineMath } from "react-katex";
+import { useAuth } from "@/hooks/use-auth";
+import { api } from "@/lib/api";
 
 interface Question {
   id: string;
@@ -29,40 +31,64 @@ interface Question {
 
 export default function StudentTestTakingPage({ params }: { params: { id: string } }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const attemptId = searchParams.get("attempt");
+  const { token, tenantSlug } = useAuth();
+  
+  const [questions, setQuestions] = useState<Question[]>([]);
   const [currentIdx, setCurrentIdx] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(10800); // 3 hours
+  const [timeLeft, setTimeLeft] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string | boolean>>({});
   const [flagged, setFlagged] = useState<Set<string>>(new Set());
   const [isSyncing, setIsSyncing] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [testTitle, setTestTitle] = useState("ASSESSMENT IN PROGRESS");
+  const [loading, setLoading] = useState(true);
 
-  const questions: Question[] = [
-    { 
-      id: '1', 
-      text: 'Find the value of $x$ if $2x + 5 = 15$.', 
-      type: 'MCQ', 
-      options: ['5', '10', '7.5', '2.5'], 
-      marks: 4 
-    },
-    { 
-      id: '2', 
-      text: 'The derivative of $\\sin(x)$ is $\\cos(x)$.', 
-      type: 'TF', 
-      marks: 2 
-    },
-    { 
-      id: '3', 
-      text: 'Evaluate the integral: $\\int e^x dx$.', 
-      type: 'FIB', 
-      marks: 4 
+  useEffect(() => {
+    async function fetchAttempt() {
+      if (!token || !attemptId) return;
+      try {
+        const response = await api(`/v1/student/attempts/${attemptId}`, {
+          token,
+          tenant: tenantSlug || undefined
+        });
+        if (response.success) {
+          setQuestions(response.data.questions);
+          setTimeLeft(response.data.time_left_seconds);
+          setAnswers(response.data.existing_answers || {});
+          if (response.data.test?.title) {
+            setTestTitle(response.data.test.title);
+          }
+        }
+      } catch (error) {
+        console.error("Attempt fetch error:", error);
+      } finally {
+        setLoading(false);
+      }
     }
-  ];
+    fetchAttempt();
+  }, [token, attemptId, tenantSlug]);
 
-  const currentQuestion = questions[currentIdx];
+  const questionsPool = questions;
+  const currentQuestion = questionsPool[currentIdx];
 
-  const handleSubmit = useCallback(() => {
-    router.push(`/student/tests/${params.id}/result`);
-  }, [router, params.id]);
+  const handleSubmit = useCallback(async () => {
+    if (!token || !attemptId) return;
+    try {
+      await api(`/v1/student/attempts/${attemptId}/submit`, {
+        method: "POST",
+        token,
+        tenant: tenantSlug || undefined,
+        body: JSON.stringify({ answers })
+      });
+      router.push(`/student/tests/${params.id}/result?attempt=${attemptId}`);
+    } catch (error) {
+      console.error("Submit error:", error);
+      // Fallback redirect
+      router.push(`/student/tests/${params.id}/result?attempt=${attemptId}`);
+    }
+  }, [router, params.id, attemptId, token, tenantSlug, answers]);
 
   // Timer
   useEffect(() => {
@@ -79,14 +105,27 @@ export default function StudentTestTakingPage({ params }: { params: { id: string
     return () => clearInterval(timer);
   }, [handleSubmit]);
 
-  // Auto-save
+  // Auto-save & Sync
   useEffect(() => {
-    const saveTimer = setInterval(() => {
+    const saveTimer = setInterval(async () => {
+      if (!token || !attemptId || Object.keys(answers).length === 0) return;
+      
       setIsSyncing(true);
-      setTimeout(() => setIsSyncing(false), 800);
+      try {
+        await api(`/v1/student/attempts/${attemptId}/answers`, {
+          method: "POST",
+          token,
+          tenant: tenantSlug || undefined,
+          body: JSON.stringify({ answers })
+        });
+      } catch (error) {
+        console.error("Sync error:", error);
+      } finally {
+        setTimeout(() => setIsSyncing(false), 800);
+      }
     }, 30000);
     return () => clearInterval(saveTimer);
-  }, []);
+  }, [token, attemptId, tenantSlug, answers]);
 
   const formatTime = (seconds: number) => {
     const h = Math.floor(seconds / 3600);
@@ -114,6 +153,9 @@ export default function StudentTestTakingPage({ params }: { params: { id: string
   };
 
 
+  if (loading) return <div className="p-12 text-center animate-pulse font-black uppercase tracking-widest text-zinc-400">Arming assessment environment...</div>;
+  if (!currentQuestion) return <div className="p-12 text-center font-black uppercase tracking-widest text-rose-500">Assessment questions not synchronized.</div>;
+
   return (
     <div className="flex h-screen w-full bg-zinc-50 dark:bg-black overflow-hidden select-none">
       {/* Main Container */}
@@ -125,7 +167,7 @@ export default function StudentTestTakingPage({ params }: { params: { id: string
               <Menu className="h-5 w-5" />
             </Button>
             <div className="hidden md:block">
-               <h2 className="text-sm font-black italic tracking-tight uppercase">JEE ADVANCED 2025 • MOCK #4</h2>
+               <h2 className="text-sm font-black italic tracking-tight uppercase">{testTitle}</h2>
             </div>
           </div>
 
@@ -257,9 +299,9 @@ export default function StudentTestTakingPage({ params }: { params: { id: string
 
            <Button 
               className="bg-black dark:bg-white text-white dark:text-black rounded-xl font-black text-xs uppercase h-12 px-8"
-              onClick={() => setCurrentIdx(prev => Math.min(questions.length - 1, prev + 1))}
-              disabled={currentIdx === questions.length - 1}
-           >
+              onClick={() => setCurrentIdx(prev => Math.min(questionsPool.length - 1, prev + 1))}
+              disabled={currentIdx === questionsPool.length - 1}
+            >
               NEXT QUESTION
            </Button>
         </footer>
@@ -280,7 +322,7 @@ export default function StudentTestTakingPage({ params }: { params: { id: string
 
          <div className="p-6 overflow-y-auto h-[calc(100%-4rem)] space-y-8">
             <div className="grid grid-cols-4 gap-3">
-               {questions.map((q, i) => (
+               {questionsPool.map((q, i) => (
                   <button 
                      key={q.id}
                      className={cn(

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";   
 import { 
   Send,  
@@ -9,11 +9,12 @@ import {
   MoreVertical,
   Paperclip,
   Smile,
-  Mic,
   CheckCheck,
-  Plus
+  Plus,
+  Loader2
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
+import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
 interface Chat {
@@ -26,17 +27,93 @@ interface Chat {
   online?: boolean;
 }
 
-export default function TeacherCommunicationsPage() {
-  const { user } = useAuth();
-  const [chats] = useState<Chat[]>([
-    { id: '1', name: 'IIT-JEE Batch A', type: 'batch', lastMessage: 'Rahul: Sir, when is the next mock test?', timestamp: '10:45 AM', unread: 3 },
-    { id: '2', name: 'NEET Practice Group', type: 'batch', lastMessage: 'Anita: Thank you for the notes!', timestamp: '9:30 AM', unread: 0 },
-    { id: '3', name: 'Rahul Sharma', type: 'direct', lastMessage: 'I have a doubt in Physics Ch-3', timestamp: 'Yesterday', unread: 1, online: true },
-  ]);
-  const [selectedChat, setSelectedChat] = useState<Chat | null>(user ? chats[0] : null);
-  const [message, setMessage] = useState("");
+interface Message {
+  id: string;
+  text: string;
+  isMe: boolean;
+  timestamp: string;
+}
 
-  if (!user) return null;
+export default function TeacherCommunicationsPage() {
+  const { token, tenantSlug } = useAuth();
+  const [chats, setChats] = useState<Chat[]>([]);
+  const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [messageText, setMessageText] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [msgLoading, setMsgLoading] = useState(false);
+
+  useEffect(() => {
+    async function fetchChats() {
+      if (!token) return;
+      try {
+        const response = await api("/v1/teacher/communication", {
+          token,
+          tenant: tenantSlug || undefined
+        });
+        setChats(response.data);
+        if (response.data.length > 0) {
+          setSelectedChat(response.data[0]);
+        }
+      } catch (err) {
+        console.error("Failed to fetch chats:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchChats();
+  }, [token, tenantSlug]);
+
+  useEffect(() => {
+    async function fetchMessages() {
+      if (!token || !selectedChat) return;
+      setMsgLoading(true);
+      try {
+        const response = await api(`/v1/teacher/communication/messages/${selectedChat.id}`, {
+          token,
+          tenant: tenantSlug || undefined
+        });
+        setMessages(response.data);
+      } catch (err) {
+        console.warn("Signal interruption:", err);
+        setMessages([]);
+      } finally {
+        setMsgLoading(false);
+      }
+    }
+    fetchMessages();
+  }, [token, tenantSlug, selectedChat]);
+
+  const handleSendMessage = async () => {
+    if (!token || !selectedChat || !messageText.trim()) return;
+    const textToSend = messageText;
+    setMessageText("");
+    try {
+      await api(`/v1/teacher/communication/messages/${selectedChat.id}`, {
+        method: "POST",
+        token,
+        tenant: tenantSlug || undefined,
+        body: JSON.stringify({ text: textToSend })
+      });
+      // Append optimistically
+      setMessages(prev => [...prev, {
+        id: Math.random().toString(),
+        text: textToSend,
+        isMe: true,
+        timestamp: new Date().toISOString()
+      }]);
+    } catch (err) {
+      console.error("Failed to send message:", err);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+         <Loader2 className="h-8 w-8 animate-spin text-zinc-400" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-[calc(100vh-140px)] -mt-2 -mx-8 overflow-hidden bg-white dark:bg-zinc-950 border-t">
@@ -44,17 +121,17 @@ export default function TeacherCommunicationsPage() {
        <div className="w-80 border-r flex flex-col bg-zinc-50/50 dark:bg-zinc-900/30">
           <div className="p-4 border-b space-y-4 bg-white dark:bg-zinc-950">
              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-black tracking-tight">Messages</h2>
+                <h2 className="text-xl font-black tracking-tight italic">Relays</h2>
                 <Button variant="ghost" size="icon" className="rounded-full">
-                   <Plus className="h-5 w-5" />
+                   <Plus className="h-5 w-5 text-zinc-400" />
                 </Button>
              </div>
              <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
                 <input 
                   type="text" 
-                  placeholder="Search batches or students..." 
-                  className="w-full pl-9 pr-4 py-2 border rounded-xl bg-zinc-50 dark:bg-zinc-900 border-none text-xs focus:ring-2 ring-primary/20 outline-none"
+                  placeholder="Scan nodes..." 
+                  className="w-full pl-9 pr-4 py-2 border rounded-xl bg-zinc-50 dark:bg-zinc-900 border-none text-[10px] font-black uppercase tracking-widest focus:ring-2 ring-primary/20 outline-none"
                 />
              </div>
           </div>
@@ -65,29 +142,29 @@ export default function TeacherCommunicationsPage() {
                   onClick={() => setSelectedChat(chat)}
                   className={cn(
                     "p-3 rounded-2xl cursor-pointer transition-all flex items-center gap-3 relative group",
-                    selectedChat?.id === chat.id ? "bg-white dark:bg-zinc-800 shadow-md ring-1 ring-zinc-200 dark:ring-zinc-700" : "hover:bg-zinc-100 dark:hover:bg-zinc-800/50"
+                    selectedChat?.id === chat.id ? "bg-white dark:bg-zinc-800 shadow-lg ring-1 ring-zinc-200 dark:ring-zinc-700" : "hover:bg-zinc-100 dark:hover:bg-zinc-800/50"
                   )}
                 >
                    <div className="relative">
                       <div className={cn(
-                        "h-12 w-12 rounded-2xl flex items-center justify-center font-bold text-white",
-                        chat.type === 'batch' ? "bg-indigo-500" : "bg-primary"
+                        "h-12 w-12 rounded-2xl flex items-center justify-center font-black text-white italic",
+                        chat.type === 'batch' ? "bg-indigo-500 shadow-indigo-500/20 shadow-lg" : "bg-primary shadow-primary/20 shadow-lg"
                       )}>
                          {chat.name.charAt(0)}
                       </div>
                       {chat.online && (
-                         <div className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-emerald-500 border-2 border-white dark:border-zinc-950" />
+                         <div className="absolute -bottom-1 -right-1 h-3.5 w-3.5 rounded-full bg-emerald-500 border-2 border-white dark:border-zinc-950" />
                       )}
                    </div>
                    <div className="flex-1 overflow-hidden">
                       <div className="flex justify-between items-center mb-0.5">
-                         <span className="font-bold text-sm truncate">{chat.name}</span>
-                         <span className="text-[10px] text-zinc-400">{chat.timestamp}</span>
+                         <span className="font-extrabold text-[11px] uppercase tracking-tighter truncate">{chat.name}</span>
+                         <span className="text-[9px] font-bold text-zinc-400 uppercase">{chat.timestamp}</span>
                       </div>
-                      <p className="text-xs text-zinc-500 truncate">{chat.lastMessage}</p>
+                      <p className="text-[10px] text-zinc-500 truncate font-medium">{chat.lastMessage}</p>
                    </div>
                    {chat.unread > 0 && (
-                      <div className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 rounded-full bg-primary flex items-center justify-center text-[10px] font-black text-white shadow-lg ring-2 ring-white dark:ring-zinc-900">
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 rounded-full bg-primary flex items-center justify-center text-[10px] font-black text-white shadow-xl ring-2 ring-white dark:ring-zinc-900">
                          {chat.unread}
                       </div>
                    )}
@@ -97,84 +174,95 @@ export default function TeacherCommunicationsPage() {
        </div>
 
        {/* Main: Chat View */}
-       <div className="flex-1 flex flex-col items-center justify-center relative bg-zinc-50/20 dark:bg-zinc-950/20">
+       <div className="flex-1 flex flex-col items-center justify-center relative bg-white dark:bg-zinc-950">
           {selectedChat ? (
             <>
               {/* Chat Header */}
-              <div className="absolute top-0 left-0 right-0 h-16 bg-white dark:bg-zinc-950 border-b flex items-center justify-between px-6 z-10 shadow-sm">
+              <div className="absolute top-0 left-0 right-0 h-16 bg-white dark:bg-zinc-950 border-b flex items-center justify-between px-6 z-10">
                  <div className="flex items-center gap-4">
                     <div className={cn(
-                      "h-10 w-10 rounded-xl flex items-center justify-center font-bold text-white shadow-lg",
+                      "h-10 w-10 rounded-xl flex items-center justify-center font-black text-white shadow-md italic",
                       selectedChat.type === 'batch' ? "bg-indigo-500" : "bg-primary"
                     )}>
                        {selectedChat.name.charAt(0)}
                     </div>
                     <div>
-                       <h3 className="font-extrabold tracking-tight">{selectedChat.name}</h3>
-                       <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">{selectedChat.online ? 'Online' : '15 Students Active'}</p>
+                       <h3 className="font-black italic uppercase text-sm tracking-tight">{selectedChat.name}</h3>
+                       <p className="text-[9px] font-black text-emerald-500 uppercase tracking-widest">Active Relay Node</p>
                     </div>
                  </div>
                  <div className="flex gap-2">
-                    <Button variant="ghost" size="icon" className="rounded-full"><Search className="h-5 w-5" /></Button>
-                    <Button variant="ghost" size="icon" className="rounded-full"><MoreVertical className="h-5 w-5" /></Button>
+                    <Button variant="ghost" size="icon" className="rounded-full"><Search className="h-4 w-4 text-zinc-400" /></Button>
+                    <Button variant="ghost" size="icon" className="rounded-full"><MoreVertical className="h-4 w-4 text-zinc-400" /></Button>
                  </div>
               </div>
 
               {/* Message Feed */}
               <div className="flex-1 w-full overflow-y-auto p-8 space-y-6 flex flex-col pt-24">
-                 <div className="flex justify-center mb-8">
-                    <span className="bg-zinc-100 dark:bg-zinc-800 text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full text-zinc-500">Today</span>
-                 </div>
-                 
-                 <div className="flex gap-4 max-w-[80%]">
-                    <div className="h-8 w-8 rounded-full bg-zinc-100 flex-shrink-0" />
-                    <div className="space-y-1">
-                       <span className="text-[10px] font-bold text-zinc-400 ml-2">Rahul Sharma • 10:45 AM</span>
-                       <div className="bg-white dark:bg-zinc-900 p-4 rounded-2xl rounded-tl-none shadow-sm border border-zinc-100 dark:border-zinc-800 font-medium text-sm leading-relaxed">
-                          Sir, how do we approach the problem of magnetic flux in a variable area loop?
+                 {msgLoading ? (
+                   <div className="flex-1 flex items-center justify-center">
+                     <Loader2 className="h-6 w-6 animate-spin text-zinc-300" />
+                   </div>
+                 ) : messages.length > 0 ? (
+                   messages.map((msg) => (
+                    <div key={msg.id} className={cn("flex gap-4 max-w-[80%]", msg.isMe ? "ml-auto flex-row-reverse" : "")}>
+                       <div className={cn("h-8 w-8 rounded-xl flex-shrink-0 flex items-center justify-center font-black text-[10px]", msg.isMe ? "bg-zinc-900 text-white" : "bg-zinc-100 text-zinc-400")}>
+                          {msg.isMe ? 'Y' : selectedChat.name.charAt(0)}
                        </div>
-                    </div>
-                 </div>
-
-                 <div className="flex gap-4 max-w-[80%] ml-auto flex-row-reverse">
-                    <div className="h-8 w-8 rounded-full bg-primary flex-shrink-0" />
-                    <div className="space-y-1 text-right">
-                       <span className="text-[10px] font-bold text-zinc-400 mr-2">You • 10:48 AM</span>
-                       <div className="bg-zinc-900 border dark:bg-primary p-4 rounded-2xl rounded-tr-none shadow-xl text-white font-medium text-sm leading-relaxed">
-                          Remember to apply Faraday&apos;s Law using the rate of change of area. Check the solved example in Chapter 4, Page 112.
-                       </div>
-                       <div className="flex justify-end gap-1 pt-1">
-                          <div className="h-4 w-4 rounded-full bg-emerald-500 flex items-center justify-center border-2 border-white dark:border-black shadow-sm">
-                             <CheckCheck className="h-2.5 w-2.5 text-white" />
+                       <div className={cn("space-y-1", msg.isMe ? "text-right" : "")}>
+                          <span className="text-[9px] font-black text-zinc-400 uppercase tracking-widest">{msg.isMe ? 'Authorized Sender' : selectedChat.name} • {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                          <div className={cn(
+                            "p-4 rounded-2xl text-[11px] font-bold leading-relaxed shadow-sm",
+                            msg.isMe ? "bg-primary text-white" : "bg-zinc-50 dark:bg-zinc-900 border dark:border-zinc-800 text-zinc-800 dark:text-zinc-200"
+                          )}>
+                             {msg.text}
                           </div>
+                          {msg.isMe && (
+                             <div className="flex justify-end gap-1 pt-1 opacity-50">
+                                <CheckCheck className="h-3 w-3 text-emerald-500" />
+                             </div>
+                          )}
                        </div>
                     </div>
-                 </div>
+                   ))
+                 ) : (
+                   <div className="flex-1 flex flex-col items-center justify-center text-zinc-300 gap-4 opacity-30">
+                     <MessageSquare className="h-10 w-10" />
+                     <p className="text-[10px] font-black uppercase tracking-widest">No signals detected in this sector.</p>
+                   </div>
+                 )}
               </div>
 
               {/* Chat Input */}
-              <div className="absolute bottom-6 left-6 right-6 flex gap-3 z-10">
-                 <div className="flex-1 bg-white dark:bg-zinc-900 rounded-2xl border shadow-xl flex items-center px-4 gap-2 focus-within:ring-2 ring-primary/20 transition-all">
-                    <Button variant="ghost" size="icon" className="rounded-full text-zinc-400"><Paperclip className="h-5 w-5" /></Button>
-                    <input 
-                      type="text" 
-                      placeholder="Typing to Class..." 
-                      className="flex-1 bg-transparent border-none py-4 text-sm font-medium outline-none"
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                    />
-                    <Button variant="ghost" size="icon" className="rounded-full text-zinc-400"><Smile className="h-5 w-5" /></Button>
-                    <Button variant="ghost" size="icon" className="rounded-full text-zinc-400"><Mic className="h-5 w-5" /></Button>
-                 </div>
-                 <Button className="h-14 w-14 rounded-2xl shadow-xl flex items-center justify-center p-0" onClick={() => setMessage("")}>
-                    <Send className="h-6 w-6" />
-                 </Button>
+              <div className="p-6 w-full max-w-4xl">
+                <div className="bg-zinc-50 dark:bg-zinc-900 rounded-[2rem] border dark:border-zinc-800 shadow-2xl flex items-center px-6 gap-3 focus-within:ring-2 ring-primary/20 transition-all">
+                   <Button variant="ghost" size="icon" className="rounded-full text-zinc-400"><Paperclip className="h-4 w-4" /></Button>
+                   <input 
+                     type="text" 
+                     placeholder="Transmit intelligence..." 
+                     className="flex-1 bg-transparent border-none py-5 text-xs font-bold outline-none placeholder:text-[10px] placeholder:font-black placeholder:uppercase placeholder:tracking-[0.2em]"
+                     value={messageText}
+                     onChange={(e) => setMessageText(e.target.value)}
+                     onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                   />
+                   <div className="flex items-center gap-2">
+                     <Button variant="ghost" size="icon" className="rounded-full text-zinc-400 hidden md:flex"><Smile className="h-4 w-4" /></Button>
+                     <Button 
+                       onClick={handleSendMessage}
+                       className="h-12 px-8 rounded-2xl shadow-xl flex items-center justify-center gap-2 font-black text-[10px] uppercase tracking-widest"
+                     >
+                        SEND <Send className="h-4 w-4" />
+                     </Button>
+                   </div>
+                </div>
               </div>
             </>
           ) : (
             <div className="flex flex-col items-center gap-4 text-zinc-300">
-               <MessageSquare className="h-16 w-16" />
-               <p className="font-black uppercase tracking-widest">Select a channel to begin</p>
+               <div className="h-20 w-20 rounded-[2.5rem] bg-zinc-50 dark:bg-zinc-900 flex items-center justify-center mb-4">
+                  <MessageSquare className="h-10 w-10" />
+               </div>
+               <p className="font-black uppercase tracking-[0.3em] text-[10px]">Initialize communication relay</p>
             </div>
           )}
        </div>

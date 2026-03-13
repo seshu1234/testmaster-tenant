@@ -1,6 +1,4 @@
-"use client";
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   HelpCircle, 
   MessageSquare, 
@@ -10,12 +8,17 @@ import {
   ChevronRight,
   ShieldCheck,
   Zap,
-  Globe
+  Globe,
+  Loader2,
+  Plus
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { api } from "@/lib/api";
+import { useAuth } from "@/hooks/use-auth";
+import { cn } from "@/lib/utils";
 
 const faqs = [
   { q: "How do I link a second child to my account?", a: "Navigate to Settings > Child Linking and enter the unique Student ID provided by the centre." },
@@ -25,7 +28,59 @@ const faqs = [
 ];
 
 export default function SupportPage() {
+  const { token, tenantSlug } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
+  const [tickets, setTickets] = useState<Record<string, any>[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isCreating, setIsCreating] = useState(false);
+
+  useEffect(() => {
+    async function fetchTickets() {
+      if (!token) return;
+      try {
+        const response = await api("/v1/parent/support", {
+          token,
+          tenant: tenantSlug || undefined
+        });
+        // Handle pagination if needed, but for now just data
+        setTickets(response.data?.data || response.data || []);
+      } catch (err) {
+        console.error("Failed to fetch tickets:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchTickets();
+  }, [token, tenantSlug]);
+
+  const handleCreateTicket = async () => {
+    if (!token) return;
+    setIsCreating(true);
+    try {
+      await api("/v1/parent/support", {
+        method: "POST",
+        token,
+        tenant: tenantSlug || undefined,
+        body: JSON.stringify({
+          subject: "Support Request from Parent Portal",
+          description: "Guardian requested assistance via Support Command Center.",
+          priority: "medium",
+          category: "technical"
+        })
+      });
+      // Refresh tickets
+      const refreshRes = await api("/v1/parent/support", {
+        token,
+        tenant: tenantSlug || undefined
+      });
+      setTickets(refreshRes.data || refreshRes.data?.data || []);
+      alert("Support ticket initiated! An agent will contact you shortly.");
+    } catch (err) {
+      console.error("Failed to create ticket:", err);
+    } finally {
+      setIsCreating(false);
+    }
+  };
 
   const filteredFaqs = faqs.filter(f => 
     f.q.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -58,8 +113,12 @@ export default function SupportPage() {
                <h3 className="text-xl font-black italic uppercase italic tracking-tighter">Live Transmission</h3>
                <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500 mt-2">REAL-TIME AGENT ACCESS</p>
             </div>
-            <Button className="w-full bg-white text-black font-black h-12 rounded-2xl text-[10px] uppercase tracking-widest">
-               INITIATE CHAT
+            <Button 
+              onClick={handleCreateTicket}
+              disabled={isCreating}
+              className="w-full bg-white text-black font-black h-12 rounded-2xl text-[10px] uppercase tracking-widest"
+            >
+               {isCreating ? 'INITIATING...' : 'INITIATE CHAT'}
             </Button>
          </Card>
 
@@ -77,7 +136,7 @@ export default function SupportPage() {
          </Card>
 
          <Card className="border-none shadow-xl rounded-[2.5rem] bg-white dark:bg-zinc-900 p-10 flex flex-col items-center text-center gap-6 group hover:scale-[1.05] transition-all">
-            <div className="h-16 w-16 bg-zinc-50 dark:bg-zinc-950 rounded-[1.5rem] flex items-center justify-center">
+            <div className="h-16 w-16 bg-zinc-50 dark:bg-zinc-900 rounded-[1.5rem] flex items-center justify-center">
                <Phone className="h-8 w-8 text-zinc-400" />
             </div>
             <div>
@@ -91,24 +150,62 @@ export default function SupportPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-12">
-         {/* FAQs */}
-         <div className="lg:col-span-8 space-y-6">
-            <h3 className="text-2xl font-black italic uppercase italic tracking-tighter mb-8 px-4">Knowledge Base</h3>
-            <div className="space-y-4">
-               {filteredFaqs.map((faq, i) => (
-                  <Card key={i} className="border-none shadow-sm rounded-[2rem] bg-white dark:bg-zinc-900/50 overflow-hidden group">
-                     <div className="p-8 flex items-start gap-6">
-                        <div className="h-10 w-10 rounded-xl bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center shrink-0">
-                           <HelpCircle className="h-5 w-5 text-zinc-400" />
+         {/* Active Tickets & FAQs */}
+         <div className="lg:col-span-8 space-y-12">
+            <div className="space-y-6">
+               <div className="flex justify-between items-center px-4">
+                  <h3 className="text-2xl font-black italic uppercase italic tracking-tighter mb-4">Active Inquiries</h3>
+                  <Badge className="bg-primary/10 text-primary border-none text-[8px] font-black uppercase">{tickets.length} Open</Badge>
+               </div>
+               <div className="space-y-4">
+                  {isLoading ? (
+                    <div className="flex items-center justify-center py-10">
+                       <Loader2 className="h-6 w-6 animate-spin text-zinc-400" />
+                    </div>
+                  ) : tickets.length > 0 ? (
+                    tickets.slice(0, 3).map((ticket, i) => (
+                      <Card key={i} className="border-none shadow-sm rounded-[2rem] bg-white dark:bg-zinc-900 border overflow-hidden group">
+                         <div className="p-8 flex items-center gap-6">
+                            <div className="h-12 w-12 rounded-2xl bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center shrink-0">
+                               <div className={cn("h-3 w-3 rounded-full", ticket.status === 'open' ? 'bg-emerald-500' : 'bg-amber-500')} />
+                            </div>
+                            <div className="flex-1">
+                               <div className="flex items-center gap-3 mb-1">
+                                  <h4 className="font-black text-sm uppercase italic tracking-tight">{ticket.subject}</h4>
+                                  <Badge className="bg-zinc-100 dark:bg-zinc-800 text-[7px] font-black uppercase text-zinc-500 border-none">#{ticket.id}</Badge>
+                               </div>
+                               <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Status: {ticket.status} • Updated {new Date(ticket.updated_at).toLocaleDateString()}</p>
+                            </div>
+                            <ChevronRight className="h-5 w-5 text-zinc-300 group-hover:translate-x-1 transition-transform" />
+                         </div>
+                      </Card>
+                    ))
+                  ) : (
+                    <div className="p-12 text-center border-dashed border-2 rounded-[2.5rem] border-zinc-100 dark:border-zinc-900">
+                       <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">No active support transmissions.</p>
+                    </div>
+                  )}
+               </div>
+            </div>
+
+            <div className="space-y-6 pt-12">
+               <h3 className="text-2xl font-black italic uppercase italic tracking-tighter mb-8 px-4">Knowledge Base</h3>
+               <div className="space-y-4">
+                  {filteredFaqs.map((faq, i) => (
+                     <Card key={i} className="border-none shadow-sm rounded-[2rem] bg-white dark:bg-zinc-900/50 overflow-hidden group">
+                        <div className="p-8 flex items-start gap-6">
+                           <div className="h-10 w-10 rounded-xl bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center shrink-0">
+                              <HelpCircle className="h-5 w-5 text-zinc-400" />
+                           </div>
+                           <div className="flex-1 space-y-3">
+                              <h4 className="font-black text-sm uppercase italic italic tracking-tight">{faq.q}</h4>
+                              <p className="text-xs font-medium text-zinc-500 leading-relaxed">{faq.a}</p>
+                           </div>
+                           <ChevronRight className="h-5 w-5 text-zinc-300 group-hover:translate-x-1 transition-transform" />
                         </div>
-                        <div className="flex-1 space-y-3">
-                           <h4 className="font-black text-sm uppercase italic italic tracking-tight">{faq.q}</h4>
-                           <p className="text-xs font-medium text-zinc-500 leading-relaxed">{faq.a}</p>
-                        </div>
-                        <ChevronRight className="h-5 w-5 text-zinc-300 group-hover:translate-x-1 transition-transform" />
-                     </div>
-                  </Card>
-               ))}
+                     </Card>
+                  ))}
+               </div>
             </div>
          </div>
 

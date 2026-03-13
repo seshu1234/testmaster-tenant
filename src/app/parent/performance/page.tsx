@@ -52,9 +52,16 @@ interface SubjectStat {
   vsAvg: string;
 }
 
+interface Ward {
+  id: string;
+  name: string;
+}
+
 export default function PerformancePage() {
   const { token, tenantSlug } = useAuth();
   const [activeSubject, setActiveSubject] = useState('All Subjects');
+  const [wards, setWards] = useState<Ward[]>([]);
+  const [activeWardId, setActiveWardId] = useState<string | null>(null);
   const [performanceData, setPerformanceData] = useState<PerformanceData[]>([]);
   const [conceptualData, setConceptualData] = useState<ConceptualData[]>([]);
   const [subjectStats, setSubjectStats] = useState<SubjectStat[]>([]);
@@ -62,13 +69,31 @@ export default function PerformancePage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchPerformance() {
+    async function fetchWards() {
       if (!token) return;
+      try {
+        const response = await api("/v1/parent/children", {
+          token,
+          tenant: tenantSlug || undefined
+        });
+        const fetchedWards = response.data || [];
+        setWards(fetchedWards);
+        if (fetchedWards.length > 0 && !activeWardId) {
+          setActiveWardId(fetchedWards[0].id);
+        }
+      } catch (err) {
+        console.error("Failed to fetch wards:", err);
+      }
+    }
+    fetchWards();
+  }, [token, tenantSlug, activeWardId]);
+
+  useEffect(() => {
+    async function fetchPerformance() {
+      if (!token || !activeWardId) return;
       setIsLoading(true);
       try {
-        // In a real scenario, we'd fetch the child ID first if not in URL/state
-        // For now using a general or first-child endpoint as per established dashboard pattern
-        const response = await api(`/v1/parent/performance?subject=${activeSubject}`, {
+        const response = await api(`/v1/parent/performance/${activeWardId}/overview?subject=${activeSubject}`, {
           token,
           tenant: tenantSlug || undefined
         });
@@ -83,7 +108,7 @@ export default function PerformancePage() {
       }
     }
     fetchPerformance();
-  }, [token, tenantSlug, activeSubject]);
+  }, [token, tenantSlug, activeWardId, activeSubject]);
 
   return (
     <div className="space-y-8 animate-in fade-in duration-700 pb-20 p-6">
@@ -93,21 +118,42 @@ export default function PerformancePage() {
           <p className="text-muted-foreground text-sm font-medium">Deep analytics mapping your child&apos;s academic evolution.</p>
         </div>
         
-        <div className="flex bg-white dark:bg-zinc-900 p-1.5 rounded-2xl border dark:border-zinc-800 shadow-sm overflow-x-auto scrollbar-hide">
-           {['All Subjects', 'Physics', 'Chemistry', 'Mathematics'].map((s) => (
-             <button
-               key={s}
-               className={cn(
-                 "px-6 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all whitespace-nowrap",
-                 activeSubject === s 
-                   ? "bg-zinc-900 dark:bg-white text-white dark:text-black shadow-lg" 
-                   : "text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
-               )}
-               onClick={() => setActiveSubject(s)}
-             >
-               {s}
-             </button>
-           ))}
+        <div className="flex flex-col md:flex-row gap-4">
+          {wards.length > 1 && (
+            <div className="flex bg-white dark:bg-zinc-900 p-1 rounded-xl border dark:border-zinc-800 shadow-sm overflow-x-auto scrollbar-hide">
+              {wards.map((ward) => (
+                <button
+                  key={ward.id}
+                  className={cn(
+                    "px-4 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-lg transition-all whitespace-nowrap",
+                    activeWardId === ward.id 
+                      ? "bg-primary text-white" 
+                      : "text-zinc-500 hover:text-zinc-800"
+                  )}
+                  onClick={() => setActiveWardId(ward.id)}
+                >
+                  {ward.name.split(' ')[0]}
+                </button>
+              ))}
+            </div>
+          )}
+
+          <div className="flex bg-white dark:bg-zinc-900 p-1.5 rounded-2xl border dark:border-zinc-800 shadow-sm overflow-x-auto scrollbar-hide">
+             {['All Subjects', 'Physics', 'Chemistry', 'Mathematics'].map((s) => (
+               <button
+                 key={s}
+                 className={cn(
+                   "px-6 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all whitespace-nowrap",
+                   activeSubject === s 
+                     ? "bg-zinc-900 dark:bg-white text-white dark:text-black shadow-lg" 
+                     : "text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
+                 )}
+                 onClick={() => setActiveSubject(s)}
+               >
+                 {s}
+               </button>
+             ))}
+          </div>
         </div>
       </div>
 
@@ -271,10 +317,10 @@ export default function PerformancePage() {
             
             <div className="grid grid-cols-2 gap-4">
                {[
-                 { label: 'Consistency', value: 'High', icon: Flame },
-                 { label: 'Rank Target', value: '#2', icon: Target },
-                 { label: 'Score Alpha', value: '+14%', icon: TrendingUp },
-                 { label: 'Rewards Pts', value: '4.2k', icon: Gem }
+                 { label: 'Consistency', value: performanceData.length > 0 ? (performanceData[performanceData.length-1].score > 70 ? 'High' : 'Medium') : 'TBD', icon: Flame },
+                 { label: 'Rank Target', value: insight ? 'Top 100' : 'TBD', icon: Target },
+                 { label: 'Score Alpha', value: performanceData.length > 1 ? `+${(performanceData[performanceData.length-1].score - performanceData[0].score).toFixed(0)}%` : '0%', icon: TrendingUp },
+                 { label: 'Confidence', value: insight ? '95%' : 'N/A', icon: Gem }
                ].map((mod, i) => (
                   <div key={i} className="bg-white/10 backdrop-blur-md p-6 rounded-[2rem] border border-white/10">
                      <mod.icon className="h-5 w-5 mb-3 opacity-60" />

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { 
   Bell, 
@@ -13,27 +13,62 @@ import {
   Mail,
   Zap,
   ChevronRight,
-  Circle
+  Circle,
+  Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { api } from "@/lib/api";
+import { useAuth } from "@/hooks/use-auth";
 
-const notifications = [
-  { id: '1', title: 'New Mock Test Released', body: 'JEE Main Full Test #42 is now available for your batch.', type: 'test', time: '2 mins ago', unread: true },
-  { id: '2', title: 'Result Published', body: 'Physics Unit Test: Ionic Equilibrium results are out. You scored 88%.', type: 'result', time: '2 hours ago', unread: true },
-  { id: '3', title: 'Teacher Message', body: 'Mr. Verma added a new study sheet in the Mechanics vault.', type: 'message', time: '5 hours ago', unread: false },
-  { id: '4', title: 'Badge Unlocked', body: 'Congratulations! You earned the "Early Bird" achievement.', type: 'achievement', time: 'Yesterday', unread: false },
-  { id: '5', title: 'Schedule Update', body: 'Chemistry class scheduled for 4:00 PM today has been postponed.', type: 'alert', time: 'Yesterday', unread: false }
-];
+interface NotificationItem {
+  id: string;
+  title: string;
+  body: string;
+  type: string;
+  time: string;
+  unread: boolean;
+}
 
 export default function StudentNotificationsPage() {
+  const { token, tenantSlug } = useAuth();
   const [activeTab, setActiveTab] = useState<'all' | 'unread'>('all');
+  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const filteredNotifications = notifications.filter(n => {
-    if (activeTab === 'unread') return n.unread;
-    return true;
-  });
+  useEffect(() => {
+    async function fetchNotifications() {
+      if (!token) return;
+      setLoading(true);
+      try {
+        const response = await api(`/v1/student/notifications?filter=${activeTab}`, {
+          token,
+          tenant: tenantSlug || undefined
+        });
+        setNotifications(response.data);
+      } catch (err) {
+        console.error("Failed to fetch notifications:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchNotifications();
+  }, [token, tenantSlug, activeTab]);
+
+  const markAsRead = async (id: string) => {
+    if (!token) return;
+    try {
+      await api(`/v1/student/notifications/${id}/read`, {
+        method: 'POST',
+        token,
+        tenant: tenantSlug || undefined
+      });
+      setNotifications(prev => prev.map(n => n.id === id ? { ...n, unread: false } : n));
+    } catch (err) {
+      console.error("Failed to mark as read:", err);
+    }
+  };
 
   return (
     <div className="space-y-8 animate-in fade-in duration-700 pb-20 p-6">
@@ -63,51 +98,67 @@ export default function StudentNotificationsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Notification Feed */}
         <div className="lg:col-span-8 space-y-4">
-           {filteredNotifications.map((notif) => (
-              <Card key={notif.id} className={cn(
-                 "border-none shadow-xl rounded-[2.5rem] bg-white dark:bg-zinc-950 overflow-hidden relative group hover:scale-[1.01] transition-all transform duration-300",
-                 notif.unread && "border-l-4 border-primary"
-              )}>
-                 <div className="p-8 flex items-start gap-8">
-                    <div className={cn(
-                       "h-16 w-16 rounded-[1.5rem] flex items-center justify-center shrink-0 shadow-inner group-hover:rotate-6 transition-transform",
-                       notif.type === 'test' ? 'bg-blue-50 dark:bg-blue-500/10 text-blue-500' :
-                       notif.type === 'result' ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500' :
-                       notif.type === 'message' ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-500' :
-                       notif.type === 'achievement' ? 'bg-purple-50 dark:bg-purple-500/10 text-purple-500' :
-                       'bg-rose-50 dark:bg-rose-500/10 text-rose-500'
-                    )}>
-                       {notif.type === 'test' ? <Calendar className="h-8 w-8" /> :
-                        notif.type === 'result' ? <Target className="h-8 w-8" /> :
-                        notif.type === 'message' ? <MessageCircle className="h-8 w-8" /> :
-                        notif.type === 'achievement' ? <Trophy className="h-8 w-8" /> :
-                        <AlertTriangle className="h-8 w-8" />}
-                    </div>
-
-                    <div className="flex-1 min-w-0 space-y-1">
-                       <div className="flex justify-between items-start">
-                          <h3 className={cn("text-xl font-black italic uppercase italic tracking-tighter", notif.unread ? "text-zinc-900 dark:text-white" : "text-zinc-500")}>
-                             {notif.title}
-                          </h3>
-                          <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">{notif.time}</span>
-                       </div>
-                       <p className="text-xs font-bold text-zinc-400 italic leading-relaxed max-w-lg truncate md:whitespace-normal">
-                          {notif.body}
-                       </p>
-                    </div>
-
-                    <div className="flex flex-col items-end justify-between h-16 shrink-0">
-                       {notif.unread && <div className="h-2 w-2 rounded-full bg-primary shadow-[0_0_10px_rgba(var(--primary),0.5)]" />}
-                       <Button size="icon" variant="ghost" className="h-10 w-10 rounded-xl bg-zinc-50 dark:bg-zinc-900 hover:bg-primary hover:text-white transition-all">
-                          <ChevronRight className="h-5 w-5" />
-                       </Button>
-                    </div>
-                 </div>
+           {loading ? (
+              <div className="flex flex-col items-center justify-center py-20 gap-4">
+                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                 <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Syncing with Hub...</p>
+              </div>
+           ) : notifications.length === 0 ? (
+              <Card className="p-20 text-center border-dashed border-2 border-zinc-100 dark:border-zinc-900 bg-transparent">
+                 <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">All transmissions cleared. You are up to date.</p>
               </Card>
-           ))}
+           ) : (
+             notifications.map((notif) => (
+                <Card key={notif.id} className={cn(
+                   "border-none shadow-xl rounded-[2.5rem] bg-white dark:bg-zinc-950 overflow-hidden relative group hover:scale-[1.01] transition-all transform duration-300",
+                   notif.unread && "border-l-4 border-primary"
+                )}>
+                   <div className="p-8 flex items-start gap-8">
+                      <div className={cn(
+                         "h-16 w-16 rounded-[1.5rem] flex items-center justify-center shrink-0 shadow-inner group-hover:rotate-6 transition-transform",
+                         notif.type === 'test' ? 'bg-blue-50 dark:bg-blue-500/10 text-blue-500' :
+                         notif.type === 'result' ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500' :
+                         notif.type === 'message' ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-500' :
+                         notif.type === 'achievement' ? 'bg-purple-50 dark:bg-purple-500/10 text-purple-500' :
+                         'bg-rose-50 dark:bg-rose-500/10 text-rose-500'
+                      )}>
+                         {notif.type === 'test' ? <Calendar className="h-8 w-8" /> :
+                          notif.type === 'result' ? <Target className="h-8 w-8" /> :
+                          notif.type === 'message' ? <MessageCircle className="h-8 w-8" /> :
+                          notif.type === 'achievement' ? <Trophy className="h-8 w-8" /> :
+                          <AlertTriangle className="h-8 w-8" />}
+                      </div>
+  
+                      <div className="flex-1 min-w-0 space-y-1">
+                         <div className="flex justify-between items-start">
+                            <h3 className={cn("text-xl font-black italic uppercase italic tracking-tighter", notif.unread ? "text-zinc-900 dark:text-white" : "text-zinc-500")}>
+                               {notif.title}
+                            </h3>
+                            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">{notif.time}</span>
+                         </div>
+                         <p className="text-xs font-bold text-zinc-400 italic leading-relaxed max-w-lg truncate md:whitespace-normal">
+                            {notif.body}
+                         </p>
+                      </div>
+  
+                      <div className="flex flex-col items-end justify-between h-16 shrink-0">
+                         {notif.unread && <div className="h-2 w-2 rounded-full bg-primary shadow-[0_0_10px_rgba(var(--primary),0.5)]" />}
+                         <Button 
+                            size="icon" 
+                            variant="ghost" 
+                            className="h-10 w-10 rounded-xl bg-zinc-50 dark:bg-zinc-900 hover:bg-primary hover:text-white transition-all"
+                            onClick={() => markAsRead(notif.id)}
+                         >
+                            <ChevronRight className="h-5 w-5" />
+                         </Button>
+                      </div>
+                   </div>
+                </Card>
+             ))
+           )}
            
            <Button variant="ghost" className="w-full mt-4 rounded-3xl h-16 border-2 border-dashed border-zinc-100 dark:border-zinc-900 font-black text-[10px] uppercase tracking-widest text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors">
-              Archive & Clear All Read Notifications
+              Archive & Clear All Notifications
            </Button>
         </div>
 
@@ -122,8 +173,8 @@ export default function StudentNotificationsPage() {
                  
                  <div className="space-y-6">
                     {[
-                       { label: 'Unread Alerts', val: 2, icon: Bell, color: 'text-primary' },
-                       { label: 'Teacher Comms', val: 1, icon: Mail, color: 'text-blue-500' },
+                       { label: 'Total Unread', val: notifications.filter(n => n.unread).length, icon: Bell, color: 'text-primary' },
+                       { label: 'Active Streams', val: 3, icon: Mail, color: 'text-blue-500' },
                        { label: 'System Health', val: '99%', icon: Zap, color: 'text-emerald-500' }
                     ].map((s, i) => (
                        <div key={i} className="flex items-center justify-between p-5 rounded-3xl bg-white/5 border border-white/10">

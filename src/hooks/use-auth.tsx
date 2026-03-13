@@ -9,6 +9,7 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
+import { env } from "@/lib/env";
 
 type User = {
   id: string;
@@ -65,6 +66,9 @@ export function AuthProvider({
   let initialTenantSlug = null;
   if (hostname && hostname !== 'localhost' && hostname !== '127.0.0.1') {
     initialTenantSlug = hostname.split('.')[0];
+  } else {
+    // Fallback for local development
+    initialTenantSlug = env.NEXT_PUBLIC_DEFAULT_TENANT;
   }
   
   const tenantSlug = initialTenantSlug;

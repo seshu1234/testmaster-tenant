@@ -9,12 +9,28 @@ const ROLE_ROUTES: Record<string, string> = {
   parent: '/parent',
 };
 
-function extractTenantSlug(hostname: string): string {
-  const isLocal = hostname.includes('localhost') || hostname.includes('127.0.0.1');
-  const rootDomain = isLocal ? 'localhost:3001' : 'testmaster.in';
-  const slugRaw = hostname.replace(`.${rootDomain}`, '');
-  // If no subdomain (bare root domain) return empty
-  return slugRaw === hostname ? '' : slugRaw;
+function extractTenantSlug(host: string): string {
+  // host can be "demo.localhost:3000" or just "demo.localhost"
+  const hostname = host.split(':')[0];
+  const parts = hostname.split('.');
+  
+  // If we have at least 2 parts like demo.localhost, the first part is the slug
+  if (parts.length >= 2) {
+    const lastPart = parts[parts.length - 1];
+    const secondLastPart = parts[parts.length - 2];
+    
+    // Check for common local domains
+    if (lastPart === 'localhost' || (secondLastPart === 'localhost' && lastPart === 'local')) {
+      return parts[0];
+    }
+    
+    // Check for production domain
+    if (hostname.endsWith('.testmaster.in')) {
+      return hostname.replace('.testmaster.in', '');
+    }
+  }
+  
+  return '';
 }
 
 export function middleware(request: NextRequest) {

@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { api } from "@/lib/api";
+import { useAuth } from "@/hooks/use-auth";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { 
-  Trophy, 
   Search, 
-  Filter, 
   TrendingUp, 
   TrendingDown, 
   Minus, 
@@ -16,20 +16,53 @@ import {
   Target
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-const leaderboards = [
-  { id: '1', name: 'Rahul Sharma', score: 172, rank: 1, trend: 'up', badges: ['speed_king', 'accuracy_master'] },
-  { id: '2', name: 'Anita Gupta', score: 168, rank: 2, trend: 'down', badges: ['subject_topper'] },
-  { id: '3', name: 'Vikram Singh', score: 165, rank: 3, trend: 'same', badges: ['streak_warrior'] },
-  { id: '4', name: 'Priya Verma', score: 158, rank: 4, trend: 'up', badges: [] },
-  { id: '5', name: 'Arjun Mehra', score: 154, rank: 5, trend: 'down', badges: [] },
-  { id: '14', name: 'You (Aspirant)', score: 145, rank: 14, trend: 'up', badges: ['fire_streak'], highlighted: true },
-];
+interface LeaderboardEntry {
+  id: string;
+  name: string;
+  score: number;
+  rank: number;
+  trend: string;
+  badges: string[];
+  highlighted?: boolean;
+}
+
+interface Neighbors {
+  target_name?: string;
+  target_rank?: number;
+  gap?: number;
+}
 
 export default function StudentLeaderboardPage() {
+  const { token, tenantSlug } = useAuth();
   const [view, setView] = useState<'batch' | 'centre' | 'global'>('batch');
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [neighbors, setNeighbors] = useState<Neighbors | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchLeaderboard() {
+      if (!token) return;
+      setLoading(true);
+      try {
+        const response = await api("/v1/student/leaderboard", {
+          token,
+          tenant: tenantSlug || undefined,
+          params: { view }
+        });
+        if (response.success) {
+          setLeaderboard(response.data.leaderboard);
+          setNeighbors(response.data.neighbors);
+        }
+      } catch (error) {
+        console.error("Leaderboard fetch error:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchLeaderboard();
+  }, [token, tenantSlug, view]);
 
   const getTrendIcon = (trend: string) => {
     switch (trend) {
@@ -65,7 +98,7 @@ export default function StudentLeaderboardPage() {
                    ? "bg-zinc-900 dark:bg-white text-white dark:text-black shadow-lg" 
                    : "text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
                )}
-               onClick={() => setView(v as any)}
+                onClick={() => setView(v as 'batch' | 'centre' | 'global')}
              >
                {v}
              </button>
@@ -76,30 +109,38 @@ export default function StudentLeaderboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Top 3 Focus */}
         <div className="lg:col-span-12 grid grid-cols-1 md:grid-cols-3 gap-8">
-           {leaderboards.slice(0, 3).map((student) => (
-              <Card key={student.id} className={cn("border-2 shadow-2xl rounded-[3rem] p-10 flex flex-col items-center text-center relative overflow-hidden group", getRankStyle(student.rank))}>
-                 <div className="relative z-10 space-y-4">
-                    <div className="h-24 w-24 rounded-[2rem] bg-white dark:bg-zinc-950 shadow-xl flex items-center justify-center relative mx-auto group-hover:scale-110 transition-transform">
-                       <span className="text-4xl font-black italic">{student.name.charAt(0)}</span>
-                       <div className="absolute -top-3 -right-3 h-10 w-10 rounded-xl bg-zinc-900 text-white flex items-center justify-center font-black animate-bounce shadow-xl">
-                          {student.rank}
-                       </div>
-                    </div>
-                    <div>
-                       <h3 className="text-xl font-black uppercase tracking-tighter truncate">{student.name}</h3>
-                       <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">Score: {student.score}</p>
-                    </div>
-                    <div className="flex gap-1 justify-center">
-                       {student.badges.map(b => (
-                          <div key={b} className="h-6 w-6 rounded-lg bg-zinc-900/10 flex items-center justify-center">
-                             <Award className="h-3 w-3" />
-                          </div>
-                       ))}
-                    </div>
-                 </div>
-                 {student.rank === 1 && <Star className="absolute top-6 right-6 h-12 w-12 text-amber-500/10 rotate-12" />}
-              </Card>
-           ))}
+           {loading ? (
+             [1,2,3].map(i => <div key={i} className="h-64 bg-secondary rounded-[3rem] animate-pulse" />)
+           ) : leaderboard.length > 0 ? (
+             leaderboard.slice(0, 3).map((student) => (
+                <Card key={student.id} className={cn("border-2 shadow-2xl rounded-[3rem] p-10 flex flex-col items-center text-center relative overflow-hidden group", getRankStyle(student.rank))}>
+                   <div className="relative z-10 space-y-4">
+                      <div className="h-24 w-24 rounded-[2rem] bg-white dark:bg-zinc-950 shadow-xl flex items-center justify-center relative mx-auto group-hover:scale-110 transition-transform">
+                         <span className="text-4xl font-black italic">{student.name.charAt(0)}</span>
+                         <div className="absolute -top-3 -right-3 h-10 w-10 rounded-xl bg-zinc-900 text-white flex items-center justify-center font-black animate-bounce shadow-xl">
+                            {student.rank}
+                         </div>
+                      </div>
+                      <div>
+                         <h3 className="text-xl font-black uppercase tracking-tighter truncate">{student.name}</h3>
+                         <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">Score: {student.score}</p>
+                      </div>
+                      <div className="flex gap-1 justify-center">
+                         {student.badges.map(b => (
+                            <div key={b} className="h-6 w-6 rounded-lg bg-zinc-900/10 flex items-center justify-center">
+                               <Award className="h-3 w-3" />
+                            </div>
+                         ))}
+                      </div>
+                   </div>
+                   {student.rank === 1 && <Star className="absolute top-6 right-6 h-12 w-12 text-amber-500/10 rotate-12" />}
+                </Card>
+             ))
+           ) : (
+             <div className="col-span-3 text-center py-20 bg-secondary/20 rounded-[3rem] font-black uppercase tracking-widest text-zinc-400">
+                No rankings available yet.
+             </div>
+           )}
         </div>
 
         {/* Detailed Leaderboard Table */}
@@ -120,7 +161,18 @@ export default function StudentLeaderboardPage() {
            </CardHeader>
            <CardContent className="p-0">
               <div className="divide-y dark:divide-zinc-800">
-                 {leaderboards.map((student) => (
+                 {loading ? (
+                    Array.from({ length: 5 }).map((_, i) => (
+                       <div key={i} className="flex items-center justify-between p-6 px-10 animate-pulse">
+                          <div className="flex items-center gap-6">
+                             <div className="h-6 w-8 bg-secondary rounded" />
+                             <div className="h-12 w-12 rounded-2xl bg-secondary" />
+                             <div className="h-4 w-32 bg-secondary rounded" />
+                          </div>
+                          <div className="h-8 w-24 bg-secondary rounded" />
+                       </div>
+                    ))
+                 ) : leaderboard.map((student) => (
                     <div 
                        key={student.id} 
                        className={cn(
@@ -170,23 +222,32 @@ export default function StudentLeaderboardPage() {
            <Card className="border-none shadow-2xl rounded-[3rem] bg-zinc-900 text-white p-8 overflow-hidden relative group">
               <div className="relative z-10">
                  <h3 className="text-xl font-black uppercase italic italic tracking-tighter mb-8">Next Target</h3>
-                 <div className="space-y-6">
-                    <div className="flex items-center gap-4">
-                       <div className="h-12 w-12 rounded-2xl bg-white/10 flex items-center justify-center font-black text-xs text-primary animate-pulse">#13</div>
-                       <div>
-                          <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Beat Arjun Mehra</p>
-                          <p className="text-xs font-bold italic">Gap: 9 PTS <span className="text-[8px] opacity-60">to rank up</span></p>
+                 {neighbors && neighbors.target_name ? (
+                    <div className="space-y-6">
+                       <div className="flex items-center gap-4">
+                          <div className="h-12 w-12 rounded-2xl bg-white/10 flex items-center justify-center font-black text-xs text-primary animate-pulse">
+                             #{neighbors.target_rank}
+                          </div>
+                          <div>
+                             <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Beat {neighbors.target_name}</p>
+                             <p className="text-xs font-bold italic">Gap: {neighbors.gap} PTS <span className="text-[8px] opacity-60">to rank up</span></p>
+                          </div>
                        </div>
+                       <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
+                          <p className="text-[11px] font-bold text-zinc-400 leading-relaxed uppercase tracking-tighter italic">
+                             &quot;You&apos;re closing the gap fast. Prediction: You will overtake in a few more successful tests.&quot;
+                          </p>
+                       </div>
+                       <Button className="w-full bg-white text-black font-black rounded-2xl h-12 text-[10px]">
+                          CLAIM RANK #{neighbors.target_rank}
+                       </Button>
                     </div>
-                    <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
-                       <p className="text-[11px] font-bold text-zinc-400 leading-relaxed uppercase tracking-tighter italic">
-                          "You're gaining 4.2 points per test faster than #13. Prediction: You will overtake in 2 more tests."
-                       </p>
+                 ) : (
+                    <div className="text-center py-8">
+                       <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">You are at the top!</p>
+                       <p className="text-xs font-bold italic text-primary mt-2">Maintain your position.</p>
                     </div>
-                    <Button className="w-full bg-white text-black font-black rounded-2xl h-12 text-[10px]">
-                       CLAIM RANK #13
-                    </Button>
-                 </div>
+                 )}
               </div>
               <Target className="absolute -bottom-12 -right-12 h-48 w-48 opacity-5 rotate-[-15deg] group-hover:scale-110 transition-transform duration-700" />
            </Card>

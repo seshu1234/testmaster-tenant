@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { 
   Award, 
@@ -14,26 +14,78 @@ import {
   CheckCircle2,
   ChevronRight,
   TrendingUp,
-  Star
+  Star,
+  Loader2,
+  LucideIcon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
+import { api } from "@/lib/api";
+import { useAuth } from "@/hooks/use-auth";
 
-const badges = [
-  { id: '1', title: 'Speed King', description: 'Complete a full length test 10 minutes before time.', icon: Zap, color: 'text-blue-500', bg: 'bg-blue-50 dark:bg-blue-900/20', status: 'earned', date: 'Oct 12, 2025' },
-  { id: '2', title: 'Fire Streak', description: 'Maintain a 10-day study streak.', icon: Flame, color: 'text-orange-500', bg: 'bg-orange-50 dark:bg-orange-900/20', status: 'earned', date: 'Nov 01, 2025' },
-  { id: '3', title: 'Accuracy Master', description: 'Get 100% accuracy in any Physics unit test.', icon: Target, color: 'text-emerald-500', bg: 'bg-emerald-50 dark:bg-emerald-900/20', status: 'earned', date: 'Oct 28, 2025' },
-  { id: '4', title: 'Subject Topper', description: 'Rank #1 in any subject in your batch.', icon: Trophy, color: 'text-amber-500', bg: 'bg-amber-50 dark:bg-amber-900/20', status: 'locked', progress: 85 },
-  { id: '5', title: 'Persistence', description: 'Complete 50 tests without missing any.', icon: Clock, color: 'text-purple-500', bg: 'bg-purple-50 dark:bg-purple-900/20', status: 'locked', progress: 40 },
-  { id: '6', title: 'Night Owl', description: 'Complete 5 assessments after 11:00 PM.', icon: BookOpen, color: 'text-indigo-500', bg: 'bg-indigo-50 dark:bg-indigo-900/20', status: 'locked', progress: 60 }
-];
+const iconMap: Record<string, LucideIcon> = {
+  Zap, Flame, Target, Trophy, Clock, BookOpen, Star, Award
+};
+
+interface BadgeItem {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  status: 'earned' | 'locked';
+  date?: string;
+  progress: number;
+}
+
+interface AchievementData {
+  badges: BadgeItem[];
+  stats: {
+    badges_count: number;
+    mastery_points: number;
+    level: string;
+    rank_title: string;
+    global_status: string;
+  };
+  heatmap: { date: string; intensity: number; count: number }[];
+}
 
 export default function StudentAchievementsPage() {
+  const { token, tenantSlug } = useAuth();
   const [activeTab, setActiveTab] = useState<'all' | 'earned' | 'locked'>('all');
+  const [data, setData] = useState<AchievementData | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const filteredBadges = badges.filter(b => {
+  useEffect(() => {
+    async function fetchAchievements() {
+      if (!token) return;
+      try {
+        const response = await api('/v1/student/achievements', {
+          token,
+          tenant: tenantSlug || undefined
+        });
+        setData(response.data);
+      } catch (err) {
+        console.error("Failed to fetch achievements:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchAchievements();
+  }, [token, tenantSlug]);
+
+  if (loading) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-950">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!data) return null;
+
+  const filteredBadges = data.badges.filter(b => {
     if (activeTab === 'all') return true;
     return b.status === activeTab;
   });
@@ -54,18 +106,18 @@ export default function StudentAchievementsPage() {
               
               <div className="flex items-center gap-8 mt-8">
                  <div className="text-center">
-                    <p className="text-4xl font-black italic">12</p>
+                    <p className="text-4xl font-black italic">{data.stats.badges_count}</p>
                     <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Badges Earned</p>
                  </div>
                  <div className="h-12 w-[1px] bg-white/10" />
                  <div className="text-center">
-                    <p className="text-4xl font-black italic">850</p>
+                    <p className="text-4xl font-black italic">{data.stats.mastery_points}</p>
                     <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Mastery Points</p>
                  </div>
                  <div className="h-12 w-[1px] bg-white/10" />
                  <div className="text-center">
-                    <p className="text-4xl font-black italic">Lvl 8</p>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Student Rank</p>
+                    <p className="text-4xl font-black italic">{data.stats.level}</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">{data.stats.rank_title}</p>
                  </div>
               </div>
            </div>
@@ -75,7 +127,7 @@ export default function StudentAchievementsPage() {
                  <Star className="h-10 w-10 text-white" />
               </div>
               <div className="text-center space-y-2">
-                 <p className="text-xl font-black italic uppercase italic">Top 3% Elite</p>
+                 <p className="text-xl font-black italic uppercase italic">{data.stats.global_status}</p>
                  <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Current Global Status</p>
               </div>
            </div>
@@ -106,55 +158,60 @@ export default function StudentAchievementsPage() {
 
       {/* Badge Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-         {filteredBadges.map((badge) => (
-            <Card key={badge.id} className={cn(
-               "border-none shadow-xl rounded-[3rem] p-8 overflow-hidden relative group transition-all duration-500",
-               badge.status === 'earned' ? "bg-white dark:bg-zinc-950" : "bg-zinc-100 dark:bg-zinc-900 opacity-80"
-            )}>
-               <div className="relative z-10 flex flex-col h-full">
-                  <div className="flex justify-between items-start mb-8">
-                     <div className={cn("h-16 w-16 rounded-[1.5rem] flex items-center justify-center transition-transform group-hover:rotate-12", badge.bg)}>
-                        <badge.icon className={cn("h-8 w-8", badge.color)} />
-                     </div>
-                     {badge.status === 'earned' ? (
-                        <div className="h-6 w-6 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center">
-                           <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                        </div>
-                     ) : (
-                        <div className="h-6 w-6 rounded-lg bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center">
-                           <Lock className="h-3 w-3 text-zinc-400" />
-                        </div>
-                     )}
-                  </div>
+         {filteredBadges.map((badge) => {
+            const IconComp = iconMap[badge.icon] || Trophy;
+            return (
+              <Card key={badge.id} className={cn(
+                 "border-none shadow-xl rounded-[3rem] p-8 overflow-hidden relative group transition-all duration-500",
+                 badge.status === 'earned' ? "bg-white dark:bg-zinc-950" : "bg-zinc-100 dark:bg-zinc-900 opacity-80"
+              )}>
+                 <div className="relative z-10 flex flex-col h-full">
+                    <div className="flex justify-between items-start mb-8">
+                       <div className={cn(
+                          "h-16 w-16 rounded-[1.5rem] flex items-center justify-center transition-transform group-hover:rotate-12 bg-primary/5 text-primary"
+                        )}>
+                          <IconComp className="h-8 w-8" />
+                       </div>
+                       {badge.status === 'earned' ? (
+                          <div className="h-6 w-6 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center">
+                             <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                          </div>
+                       ) : (
+                          <div className="h-6 w-6 rounded-lg bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center">
+                             <Lock className="h-3 w-3 text-zinc-400" />
+                          </div>
+                       )}
+                    </div>
 
-                  <div className="space-y-2 mb-8">
-                     <h3 className="text-xl font-black italic uppercase italic tracking-tighter">{badge.title}</h3>
-                     <p className="text-xs font-bold text-zinc-400 leading-relaxed">{badge.description}</p>
-                  </div>
+                    <div className="space-y-2 mb-8">
+                       <h3 className="text-xl font-black italic uppercase italic tracking-tighter">{badge.title}</h3>
+                       <p className="text-xs font-bold text-zinc-400 leading-relaxed">{badge.description}</p>
+                    </div>
 
-                  <div className="mt-auto">
-                     {badge.status === 'earned' ? (
-                        <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-zinc-400 border-t pt-4">
-                           <span>Unlocked</span>
-                           <span>{badge.date}</span>
-                        </div>
-                     ) : (
-                        <div className="space-y-4 pt-4 border-t border-dashed">
-                           <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-zinc-400">
-                              <span>Mission Progress</span>
-                              <span>{badge.progress}%</span>
-                           </div>
-                           <Progress value={badge.progress} className="h-2 bg-zinc-200 dark:bg-zinc-800" />
-                        </div>
-                     )}
-                  </div>
-               </div>
-               
-               {badge.status === 'earned' && (
-                  <div className="absolute -bottom-6 -right-6 h-24 w-24 bg-primary/5 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
-               )}
-            </Card>
-         ))}
+                    <div className="mt-auto">
+                       {badge.status === 'earned' ? (
+                          <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-zinc-400 border-t pt-4">
+                             <span>Unlocked</span>
+                             <span>{badge.date}</span>
+                          </div>
+                       ) : (
+                          <div className="space-y-4 pt-4 border-t border-dashed">
+                             <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-zinc-400">
+                                <span>Mission Progress</span>
+                                <span>{badge.progress}%</span>
+                             </div>
+                             <Progress value={badge.progress} className="h-2 bg-zinc-200 dark:bg-zinc-800" />
+                          </div>
+                       )}
+                    </div>
+                 </div>
+                 
+                 {badge.status === 'earned' && (
+                    <div className="absolute -bottom-6 -right-6 h-24 w-24 bg-primary/5 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
+                 )}
+              </Card>
+            )
+         })}
       </div>
 
       {/* Motivation Heatmap */}
@@ -176,24 +233,28 @@ export default function StudentAchievementsPage() {
 
          <div className="overflow-x-auto scrollbar-hide">
             <div className="flex gap-1.5 min-w-[800px]">
-               {Array.from({ length: 26 }).map((_, weekIndex) => (
-                  <div key={weekIndex} className="flex flex-col gap-1.5">
-                     {Array.from({ length: 7 }).map((_, dayIndex) => {
-                        const intensity = Math.random();
-                        return (
-                           <div 
-                              key={dayIndex} 
-                              className={cn(
-                                 "h-4 w-4 rounded-sm transition-all hover:scale-125 cursor-help",
-                                 intensity < 0.2 ? "bg-zinc-100 dark:bg-zinc-900" : "bg-primary shadow-[0_0_8px_rgba(var(--primary),0.3)]"
-                              )}
-                              style={{ opacity: intensity > 0.2 ? intensity : 1 }}
-                              title={`Activity level: ${Math.floor(intensity * 100)}%`}
-                           />
-                        );
-                     })}
-                  </div>
-               ))}
+               {/* Regroup data by weeks */}
+               {(() => {
+                  const weeks = [];
+                  for (let i = 0; i < data.heatmap.length; i += 7) {
+                    weeks.push(data.heatmap.slice(i, i + 7));
+                  }
+                  return weeks.map((week, weekIndex) => (
+                    <div key={weekIndex} className="flex flex-col gap-1.5">
+                       {week.map((day, dayIndex) => (
+                          <div 
+                             key={dayIndex} 
+                             className={cn(
+                                "h-4 w-4 rounded-sm transition-all hover:scale-125 cursor-help",
+                                day.intensity === 0 ? "bg-zinc-100 dark:bg-zinc-900" : "bg-primary shadow-[0_0_8px_rgba(var(--primary),0.3)]"
+                             )}
+                             style={{ opacity: day.intensity > 0 ? day.intensity : 1 }}
+                             title={`${day.date}: ${day.count} activities`}
+                          />
+                       ))}
+                    </div>
+                  ));
+               })()}
             </div>
          </div>
          
@@ -212,9 +273,9 @@ export default function StudentAchievementsPage() {
       <Card className="border-none shadow-2xl rounded-[3rem] bg-primary p-12 text-white relative overflow-hidden group">
          <div className="relative z-10 flex flex-col lg:flex-row justify-between items-center gap-12">
             <div className="max-w-xl space-y-6">
-               <h3 className="text-4xl font-black italic tracking-tighter uppercase italic leading-none">Level 8 Ascension</h3>
+               <h3 className="text-4xl font-black italic tracking-tighter uppercase italic leading-none">{data.stats.level} Ascension</h3>
                <p className="text-primary-foreground/80 text-lg font-medium leading-relaxed">
-                  Earn <span className="text-white font-black italic">150 more points</span> to reach Level 9 and unlock custom profile themes and the &quot;Prestige&quot; badge indicator.
+                  Earn more mastery points to reach the next level and unlock custom profile themes and prime badge indicators.
                </p>
                <Button className="bg-white text-black font-black px-10 h-14 rounded-2xl group-hover:scale-105 transition-all">
                   MISSION LOG <ChevronRight className="ml-2 h-5 w-5" />

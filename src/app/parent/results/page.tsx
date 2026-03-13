@@ -31,18 +31,69 @@ interface TestResult {
   status: 'Completed' | 'Pending' | 'Flagged';
 }
 
+interface Ward {
+  id: string;
+  name: string;
+}
+
 export default function ResultsHistoryPage() {
   const { token, tenantSlug } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
+  const [wards, setWards] = useState<Ward[]>([]);
+  const [activeWardId, setActiveWardId] = useState<string | null>(null);
   const [results, setResults] = useState<TestResult[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [insight, setInsight] = useState<{ 
+    recommendations?: string;
+    percentile?: number;
+    confidence?: number;
+    predicted_rank?: number;
+    strengths?: string[];
+    weaknesses?: string[];
+  } | null>(null);
+
+  useEffect(() => {
+    async function fetchInsights() {
+      if (!token || !activeWardId) return;
+      try {
+        const response = await api(`/v1/parent/ai/${activeWardId}/insights`, {
+          token,
+          tenant: tenantSlug || undefined
+        });
+        setInsight(response.data);
+      } catch (err) {
+        console.error("Failed to fetch insights:", err);
+      }
+    }
+    fetchInsights();
+  }, [token, tenantSlug, activeWardId]);
+
+  useEffect(() => {
+    async function fetchWards() {
+      if (!token) return;
+      try {
+        const response = await api("/v1/parent/children", {
+          token,
+          tenant: tenantSlug || undefined
+        });
+        const fetchedWards = response.data || [];
+        setWards(fetchedWards);
+        if (fetchedWards.length > 0 && !activeWardId) {
+          setActiveWardId(fetchedWards[0].id);
+        }
+      } catch (err) {
+        console.error("Failed to fetch wards:", err);
+      }
+    }
+    fetchWards();
+  }, [token, tenantSlug, activeWardId]);
 
   useEffect(() => {
     async function fetchResults() {
-      if (!token) return;
+      if (!token || !activeWardId) return;
       setIsLoading(true);
       try {
-        const response = await api("/v1/parent/results", {
+        const response = await api(`/v1/parent/results/${activeWardId}`, {
           token,
           tenant: tenantSlug || undefined
         });
@@ -54,7 +105,7 @@ export default function ResultsHistoryPage() {
       }
     }
     fetchResults();
-  }, [token, tenantSlug]);
+  }, [token, tenantSlug, activeWardId]);
 
   const filteredResults = results.filter(result => 
     result.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -69,7 +120,25 @@ export default function ResultsHistoryPage() {
           <p className="text-muted-foreground text-sm font-medium">Archived assessment logs and performance verification.</p>
         </div>
         
-        <div className="flex gap-3">
+        <div className="flex gap-4 items-center">
+           {wards.length > 1 && (
+            <div className="flex bg-white dark:bg-zinc-900 p-1 rounded-xl border dark:border-zinc-800 shadow-sm overflow-x-auto scrollbar-hide mr-2">
+              {wards.map((ward) => (
+                <button
+                  key={ward.id}
+                  className={cn(
+                    "px-4 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-lg transition-all whitespace-nowrap",
+                    activeWardId === ward.id 
+                      ? "bg-primary text-white" 
+                      : "text-zinc-500 hover:text-zinc-800"
+                  )}
+                  onClick={() => setActiveWardId(ward.id)}
+                >
+                  {ward.name.split(' ')[0]}
+                </button>
+              ))}
+            </div>
+          )}
            <Button variant="outline" className="rounded-2xl border-zinc-200 dark:border-zinc-800 font-black text-[10px] uppercase tracking-widest px-6 h-12">
               <Download className="mr-2 h-4 w-4" />
               EXPORT ALL
@@ -152,9 +221,9 @@ export default function ResultsHistoryPage() {
                     <AlertCircle className="h-7 w-7 text-white" />
                  </div>
                  <h3 className="text-2xl font-black italic uppercase italic tracking-tighter mb-4 leading-none">Performance Alert</h3>
-                 <p className="text-rose-100 text-xs font-medium leading-relaxed mb-10">
-                    {isLoading ? "Analysing trends..." : "Score volatility detected in Chemistry. We recommend a focused revision on Equilibrium principles before next mock."}
-                 </p>
+                  <p className="text-rose-100 text-xs font-medium leading-relaxed mb-10">
+                     {isLoading ? "Analysing trends..." : (insight?.recommendations || "Scanning performance for trajectory volatility...")}
+                  </p>
                  <Button className="w-full bg-white text-rose-500 font-black h-12 rounded-2xl text-[10px] uppercase tracking-widest hover:scale-105 transition-transform">
                     VIEW REMOVAL GUIDANCE
                  </Button>
@@ -175,9 +244,9 @@ export default function ResultsHistoryPage() {
 
               <div className="space-y-6">
                  {[
-                   { label: 'Current percentile', value: '92.4%', color: 'text-white' },
-                   { label: 'IIT-JEE Qualified', value: '98% LIKELY', color: 'text-emerald-500' },
-                   { label: 'Focus Area', value: 'ORGANIC', color: 'text-amber-500' }
+                   { label: 'Current percentile', value: insight?.percentile ? `${insight.percentile.toFixed(1)}%` : 'TBD', color: 'text-white' },
+                   { label: 'Confidence Score', value: insight?.confidence ? `${(insight.confidence * 100).toFixed(0)}%` : 'TBD', color: 'text-emerald-500' },
+                   { label: 'Focus Area', value: insight?.recommendations ? insight.recommendations.split(' ')[0].toUpperCase() : 'TBD', color: 'text-amber-500' }
                  ].map((stat, i) => (
                     <div key={i} className="flex justify-between items-end border-b border-white/10 pb-4 last:border-0 last:pb-0">
                        <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">{stat.label}</span>
@@ -190,7 +259,7 @@ export default function ResultsHistoryPage() {
                  <div className="flex gap-4">
                     <Target className="h-5 w-5 text-primary shrink-0" />
                     <p className="text-[10px] font-bold text-zinc-400 leading-relaxed uppercase">
-                       Predicted rank range: <span className="text-white">#120 - #180</span> based on current velocity.
+                       Predicted rank range: <span className="text-white">#{insight?.predicted_rank || 'TBD'}</span> based on current velocity.
                     </p>
                  </div>
               </div>

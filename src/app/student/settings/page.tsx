@@ -1,6 +1,4 @@
-"use client";
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { 
   Target, 
@@ -15,7 +13,7 @@ import {
   Camera,
   LogOut,
   TrendingUp,
-  Award
+  Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,9 +21,123 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
+import { api } from "@/lib/api";
+import { useAuth } from "@/hooks/use-auth";
+import Image from "next/image";
+
+interface StudyGoal {
+  target?: string;
+  progress?: number;
+  exam?: string;
+}
+
+interface StudentSettings {
+  push_notifications: boolean;
+  weekly_reports: boolean;
+  dark_mode: boolean;
+  [key: string]: boolean;
+}
+
+interface StudentProfile {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  role: string;
+  batch?: string;
+  level?: number;
+  points?: number;
+  streak?: number; 
+  study_goal?: StudyGoal;
+  settings: StudentSettings;
+  avatar_url?: string;
+}
+
+interface ParentInfo {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  status: string;
+  last_activity: string;
+}
 
 export default function StudentSettingsPage() {
+  const { token, tenantSlug } = useAuth();
   const [activeTab, setActiveTab] = useState<'profile' | 'parent'>('profile');
+  const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState<StudentProfile | null>(null);
+  const [parent, setParent] = useState<ParentInfo | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    async function fetchData() {
+      if (!token) return;
+      try {
+        const [profRes, parentRes] = await Promise.all([
+          api('/v1/student/profile', { token, tenant: tenantSlug || undefined }),
+          api('/v1/student/parent-connect', { token, tenant: tenantSlug || undefined })
+        ]);
+        setProfile(profRes.data as StudentProfile);
+        setParent(parentRes.data as ParentInfo);
+      } catch (err) {
+        console.error("Failed to fetch settings data:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, [token, tenantSlug]);
+
+  const handleSaveProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!token) return;
+    setIsSaving(true);
+    try {
+      const formData = new FormData(e.target as HTMLFormElement);
+      const data = {
+        name: formData.get('name'),
+        phone: formData.get('phone'),
+      };
+      await api('/v1/student/profile', {
+        method: 'PUT',
+        token,
+        tenant: tenantSlug || undefined,
+        body: JSON.stringify(data)
+      });
+      // Refresh data
+      const res = await api('/v1/student/profile', { token, tenant: tenantSlug || undefined });
+      setProfile(res.data as StudentProfile);
+    } catch (err) {
+      console.error("Failed to update profile:", err);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleTogglePreference = async (key: string, value: boolean) => {
+    if (!token || !profile || !profile.settings) return;
+    try {
+      const newSettings = { ...profile.settings, [key]: value };
+      await api('/v1/student/profile', {
+        method: 'PUT',
+        token,
+        tenant: tenantSlug || undefined,
+        body: JSON.stringify({ settings: newSettings })
+      });
+      setProfile({ ...profile, settings: newSettings });
+    } catch (err) {
+      console.error("Failed to update preference:", err);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 animate-in fade-in duration-700 pb-20 p-6">
@@ -59,27 +171,31 @@ export default function StudentSettingsPage() {
             <div className="lg:col-span-4 space-y-8">
                <Card className="border-none shadow-2xl rounded-[3rem] bg-white dark:bg-zinc-950 p-10 flex flex-col items-center text-center">
                   <div className="relative group cursor-pointer mb-6">
-                     <div className="h-32 w-32 rounded-[3rem] bg-primary flex items-center justify-center text-4xl font-black italic text-white shadow-2xl group-hover:scale-105 transition-all">
-                        A
+                     <div className="h-32 w-32 rounded-[3.5rem] bg-primary flex items-center justify-center text-4xl font-black italic text-white shadow-2xl group-hover:scale-105 transition-all overflow-hidden border-4 border-white dark:border-zinc-900 relative">
+                        {profile?.avatar_url ? (
+                           <Image src={profile.avatar_url} alt={profile.name || "Student Avatar"} fill className="object-cover" />
+                        ) : (
+                           profile?.name?.charAt(0)
+                        )}
                      </div>
-                     <div className="absolute inset-0 bg-black/40 rounded-[3rem] items-center justify-center hidden group-hover:flex">
+                     <div className="absolute inset-0 bg-black/40 rounded-[3.5rem] items-center justify-center hidden group-hover:flex">
                         <Camera className="h-8 w-8 text-white" />
                      </div>
                      <div className="absolute -bottom-2 -right-2 h-10 w-10 rounded-2xl bg-zinc-900 text-white flex items-center justify-center border-4 border-white dark:border-zinc-950">
                         <Flame className="h-4 w-4 text-orange-500" />
                      </div>
                   </div>
-                  <h3 className="text-2xl font-black uppercase tracking-tight italic">Rahul Sharma</h3>
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">JEE aspirant • Rank #14</p>
+                  <h3 className="text-2xl font-black uppercase tracking-tight italic">{profile?.name}</h3>
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">{profile?.batch} • Level {profile?.level}</p>
                   
                   <div className="grid grid-cols-2 gap-4 w-full mt-10">
                      <div className="bg-zinc-50 dark:bg-zinc-900 p-4 rounded-2xl border dark:border-zinc-800 text-center">
                         <p className="text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-1">Points</p>
-                        <p className="text-xl font-black italic">850</p>
+                        <p className="text-xl font-black italic">{profile?.points}</p>
                      </div>
                      <div className="bg-zinc-50 dark:bg-zinc-900 p-4 rounded-2xl border dark:border-zinc-800 text-center">
-                        <p className="text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-1">Accuracy</p>
-                        <p className="text-xl font-black italic">85%</p>
+                        <p className="text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-1">Streak</p>
+                        <p className="text-xl font-black italic">{profile?.streak} Days</p>
                      </div>
                   </div>
 
@@ -92,74 +208,106 @@ export default function StudentSettingsPage() {
                <Card className="border-none shadow-xl rounded-[2.5rem] bg-zinc-950 p-8 text-white overflow-hidden relative">
                   <div className="relative z-10">
                      <h4 className="text-xs font-black uppercase tracking-widest text-primary mb-6">Study Goals</h4>
-                     <div className="space-y-6">
-                        <div className="space-y-3">
-                           <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
-                              <span>Weekly Test Goal</span>
-                              <span>4/5</span>
+                     <div className="space-y-4">
+                        <div className="flex justify-between items-center bg-zinc-50 dark:bg-zinc-900/50 p-6 rounded-2xl">
+                           <div className="flex items-center gap-4">
+                              <Badge className="bg-primary/10 text-primary border-none text-[8px] font-black uppercase tracking-widest px-4 py-1.5">Primary Goal</Badge>
+                              <h4 className="text-xs font-black uppercase tracking-tight italic">{profile?.study_goal?.target || 'Not Set'}</h4>
                            </div>
-                           <Progress value={80} className="h-2 bg-white/10" />
+                           <TrendingUp className="h-5 w-5 text-zinc-300" />
                         </div>
-                        <div className="space-y-3">
-                           <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
-                              <span>Accuracy Target</span>
-                              <span>85/90</span>
-                           </div>
-                           <Progress value={94} className="h-2 bg-white/10" />
+                        <Progress value={profile?.study_goal?.progress || 0} className="h-6 rounded-xl bg-zinc-100 dark:bg-zinc-900" />
+                        <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-zinc-400 mt-2 italic px-2">
+                           <span>CURRENT PROGRESS</span>
+                           <span>{profile?.study_goal?.progress || 0}%</span>
                         </div>
                      </div>
                   </div>
                   <Target className="absolute -bottom-10 -right-10 h-32 w-32 opacity-10 rotate-12" />
+               </Card>
+
+               <Card className="border-none shadow-xl rounded-[3rem] bg-white dark:bg-zinc-950 p-10 flex flex-col gap-4">
+                  <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                     <Target className="h-5 w-5 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-black italic uppercase italic tracking-tighter">Academic Focus</h3>
+                  <p className="text-zinc-500 text-[10px] font-medium leading-relaxed uppercase tracking-widest">Targeting: {profile?.study_goal?.exam || 'N/A'}</p>
                </Card>
             </div>
 
             {/* Account Settings */}
             <div className="lg:col-span-8 space-y-8">
                <Card className="border-none shadow-2xl rounded-[3rem] bg-white dark:bg-zinc-950 p-10">
-                  <h3 className="text-xl font-black italic uppercase italic tracking-tighter mb-10">Basic Information</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                     <div className="space-y-3">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 px-2">Full Name</label>
-                        <Input className="rounded-2xl h-14 bg-zinc-50 dark:bg-zinc-900 border-none font-bold" defaultValue="Rahul Sharma" />
-                     </div>
-                     <div className="space-y-3">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 px-2">Email Address</label>
-                        <Input className="rounded-2xl h-14 bg-zinc-50 dark:bg-zinc-900 border-none font-bold" defaultValue="rahul@aspirant.in" disabled />
-                     </div>
-                     <div className="space-y-3">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 px-2">Phone Number</label>
-                        <Input className="rounded-2xl h-14 bg-zinc-50 dark:bg-zinc-900 border-none font-bold" defaultValue="+91 9876543210" />
-                     </div>
-                     <div className="space-y-3">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 px-2">Course / Batch</label>
-                        <Input className="rounded-2xl h-14 bg-zinc-50 dark:bg-zinc-900 border-none font-bold" defaultValue="IIT-JEE 2025 (Morning)" disabled />
-                     </div>
-                  </div>
-                  <Button className="mt-10 px-10 h-14 rounded-2xl font-black bg-primary text-white shadow-xl hover:scale-105 transition-all">
-                     SAVE CHANGES
-                  </Button>
+                  <h3 className="text-2xl font-black italic uppercase italic tracking-tighter mb-8 px-4">Core Identification</h3>
+                  <form onSubmit={handleSaveProfile}>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                       <div className="space-y-3">
+                          <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-4">Full Legal Name</label>
+                          <Input 
+                            value={profile?.name || ""} 
+                            onChange={(e) => setProfile(prev => prev ? {...prev, name: e.target.value} : null)}
+                            className="h-14 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border-none font-bold px-6 focus:ring-2 focus:ring-primary/20 transition-all" 
+                          />
+                       </div>
+                       <div className="space-y-3">
+                          <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-4">Electronic Mail</label>
+                          <Input 
+                            value={profile?.email || ""} 
+                            readOnly
+                            className="h-14 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border-none font-bold px-6 opacity-60 cursor-not-allowed" 
+                          />
+                       </div>
+                       <div className="space-y-3">
+                          <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-4">Phone Number</label>
+                          <Input 
+                            value={profile?.phone || ""} 
+                            onChange={(e) => setProfile(prev => prev ? {...prev, phone: e.target.value} : null)}
+                            className="h-14 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border-none font-bold px-6 focus:ring-2 focus:ring-primary/20 transition-all" 
+                          />
+                       </div>
+                       <div className="space-y-3">
+                          <h4 className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-4 mb-3">System Roles</h4>
+                          <div className="flex gap-2 ml-2">
+                            <Badge className="bg-zinc-100 dark:bg-zinc-800 text-zinc-500 border-none text-[8px] font-black uppercase tracking-widest px-4 py-1.5">{profile?.role}</Badge>
+                          </div>
+                       </div>
+                    </div>
+                    <div className="mt-10 flex gap-4">
+                       <Button 
+                         onClick={handleSaveProfile}
+                         disabled={isSaving}
+                         className="bg-primary text-white font-black px-10 h-14 rounded-2xl shadow-xl hover:scale-105 transition-all w-full md:w-auto"
+                       >
+                          {isSaving ? 'SYNCHRONIZING...' : 'SAVE CORE PROFILE'}
+                       </Button>
+                       <Button variant="ghost" className="h-14 px-8 rounded-2xl font-black text-[10px] uppercase tracking-widest">DISCARD CHANGES</Button>
+                    </div>
+                  </form>
                </Card>
 
-               <Card className="border-none shadow-xl rounded-[3rem] bg-white dark:bg-zinc-950 p-10">
-                  <h3 className="text-xl font-black italic uppercase italic tracking-tighter mb-8">Preferences</h3>
-                  <div className="space-y-4">
+               <Card className="border-none shadow-2xl rounded-[3rem] bg-white dark:bg-zinc-950 p-10">
+                  <h3 className="text-2xl font-black italic uppercase italic tracking-tighter mb-8 px-4">Neural Preferences</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                      {[
-                        { label: 'Push Notifications', desc: 'Test reminders and result alerts', icon: Bell },
-                        { label: 'Parent Weekly Report', desc: 'Sync my performance with parent account', icon: Share2 },
-                        { label: 'Dark Mode', desc: 'Switch system appearance', icon: Globe }
-                     ].map((pref, i) => (
-                        <div key={i} className="flex items-center justify-between p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border dark:border-zinc-800">
-                           <div className="flex items-center gap-4">
-                              <div className="h-10 w-10 rounded-xl bg-white dark:bg-zinc-950 flex items-center justify-center">
-                                 <pref.icon className="h-5 w-5 text-zinc-400" />
-                              </div>
-                              <div>
-                                 <h4 className="text-sm font-black uppercase tracking-tight">{pref.label}</h4>
-                                 <p className="text-[10px] font-bold text-zinc-400">{pref.desc}</p>
-                              </div>
+                        { key: 'push_notifications', label: 'Push Notifications', icon: Bell, desc: 'Real-time alert relay for system events.' },
+                        { key: 'weekly_reports', label: 'Weekly Diagnostics', icon: Share2, desc: 'Automated performance report generation.' },
+                        { key: 'dark_mode', label: 'High Contrast Mode', icon: Globe, desc: 'Optimized visual rendering for low-light ops.' }
+                     ].map((pref) => (
+                        <div key={pref.key} className="p-6 rounded-[2rem] bg-zinc-50 dark:bg-zinc-900/50 flex items-center justify-between group hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-all border border-transparent hover:border-zinc-200 dark:hover:border-zinc-800">
+                        <div className="flex items-center gap-4">
+                           <div className="h-10 w-10 rounded-xl bg-white dark:bg-zinc-950 flex items-center justify-center">
+                              <pref.icon className="h-5 w-5 text-zinc-400" />
                            </div>
-                           <Switch defaultChecked={true} />
+                           <div>
+                              <h4 className="text-sm font-black uppercase tracking-tight">{pref.label}</h4>
+                              <p className="text-[10px] font-bold text-zinc-400">{pref.desc}</p>
+                           </div>
                         </div>
+                           <Switch
+                             checked={profile?.settings?.[pref.key] || false}
+                             onCheckedChange={(val: boolean) => handleTogglePreference(pref.key, val)}
+                           />
+                     </div>
                      ))}
                   </div>
                </Card>
@@ -170,45 +318,54 @@ export default function StudentSettingsPage() {
             {/* Parent Connect View */}
             <div className="lg:col-span-12 grid grid-cols-1 lg:grid-cols-3 gap-8">
                <div className="lg:col-span-2 space-y-8">
-                  <Card className="border-none shadow-2xl rounded-[3rem] bg-white dark:bg-zinc-950 p-10 relative overflow-hidden group">
-                     <div className="relative z-10 flex flex-col md:flex-row gap-10 items-center">
-                        <div className="h-40 w-40 rounded-[3rem] bg-zinc-50 dark:bg-zinc-900 border-4 border-dashed flex items-center justify-center p-4">
-                           <Users className="h-16 w-16 text-zinc-200" />
-                        </div>
-                        <div className="flex-1 space-y-6">
-                           <Badge className="bg-emerald-500/10 text-emerald-500 border-none text-[8px] font-black uppercase tracking-widest px-4 py-1.5">
-                              1 Active Connection
-                           </Badge>
-                           <h2 className="text-3xl font-black italic uppercase tracking-tighter">Sunita Sharma (Mother)</h2>
-                           <div className="grid grid-cols-2 gap-4">
-                              <div className="flex items-center gap-3 text-zinc-500">
-                                 <Mail className="h-4 w-4" />
-                                 <span className="text-xs font-bold">sunita@family.com</span>
-                              </div>
-                              <div className="flex items-center gap-3 text-zinc-500">
-                                 <Phone className="h-4 w-4" />
-                                 <span className="text-xs font-bold">+91 99999 88888</span>
-                              </div>
-                           </div>
-                           <div className="flex gap-4">
-                              <Button variant="outline" className="rounded-xl font-black text-[10px] h-10 px-6 border-zinc-200">
-                                 UPDATE PERMISSIONS
-                              </Button>
-                              <Button variant="ghost" className="rounded-xl font-black text-[10px] h-10 px-6 text-rose-500">
-                                 REVOKE ACCESS
-                              </Button>
-                           </div>
-                        </div>
-                     </div>
-                  </Card>
+                  {parent ? (
+                    <Card className="border-none shadow-2xl rounded-[3rem] bg-white dark:bg-zinc-950 p-10 relative overflow-hidden group">
+                       <div className="relative z-10 flex flex-col md:flex-row gap-10 items-center">
+                          <div className="h-40 w-40 rounded-[3rem] bg-zinc-50 dark:bg-zinc-900 border-4 border-dashed flex items-center justify-center p-4">
+                             <Users className="h-16 w-16 text-zinc-200" />
+                          </div>
+                          <div className="flex-1 space-y-6">
+                             <Badge className="bg-emerald-500/10 text-emerald-500 border-none text-[8px] font-black uppercase tracking-widest px-4 py-1.5">
+                                {parent?.status}
+                             </Badge>
+                             <h2 className="text-3xl font-black italic uppercase tracking-tighter">{parent?.name}</h2>
+                             <div className="grid grid-cols-2 gap-4">
+                                <div className="flex items-center gap-3 text-zinc-500">
+                                   <Mail className="h-4 w-4" />
+                                   <span className="text-xs font-bold">{parent?.email}</span>
+                                </div>
+                                <div className="flex items-center gap-3 text-zinc-500">
+                                   <Phone className="h-4 w-4" />
+                                   <span className="text-xs font-bold">{parent?.phone || 'No phone set'}</span>
+                                </div>
+                             </div>
+                             <div className="flex gap-4">
+                                <Button variant="outline" className="rounded-xl font-black text-[10px] h-10 px-6 border-zinc-200">
+                                   UPDATE PERMISSIONS
+                                </Button>
+                                <Button variant="ghost" className="rounded-xl font-black text-[10px] h-10 px-6 text-rose-500">
+                                   REVOKE ACCESS
+                                </Button>
+                             </div>
+                          </div>
+                       </div>
+                    </Card>
+                  ) : (
+                    <Card className="border-none shadow-2xl rounded-[3rem] bg-white dark:bg-zinc-950 p-10 flex flex-col items-center justify-center text-center gap-6">
+                       <Users className="h-16 w-16 text-zinc-200" />
+                       <h3 className="text-xl font-black uppercase italic tracking-tighter">No Parent Account Linked</h3>
+                       <p className="text-muted-foreground text-sm max-w-md">Connect with a guardian to share your academic victories and get performance support.</p>
+                       <Button className="bg-primary text-white font-black px-10 h-14 rounded-2xl shadow-xl hover:scale-105 transition-all">
+                          LINK A PARENT
+                       </Button>
+                    </Card>
+                  )}
 
                   <Card className="border-none shadow-xl rounded-[3rem] bg-white dark:bg-zinc-950 p-10">
                      <h3 className="text-xl font-black italic uppercase italic tracking-tighter mb-8">Shared Intelligence</h3>
                      <div className="space-y-2">
-                        {[
-                           { event: 'Result Shared', detail: 'JEE Advance Mock 4 - 145/180', time: '2 hours ago' },
-                           { event: 'Study Streak Alert', detail: 'Day 10 milestone completed!', time: 'Yesterday' },
-                           { event: 'New Goal Set', detail: 'Target AIR 500 set', time: '2 days ago' }
+                        {parent ? [
+                           { event: parent?.last_activity, detail: 'Latest sync successful', time: 'Just now' },
                         ].map((log, i) => (
                            <div key={i} className="flex items-center justify-between p-4 px-6 hover:bg-zinc-50 dark:hover:bg-zinc-900 rounded-2xl transition-all group">
                               <div className="flex items-center gap-4">
@@ -220,7 +377,9 @@ export default function StudentSettingsPage() {
                               </div>
                               <span className="text-[9px] font-black text-zinc-300 uppercase tracking-widest">{log.time}</span>
                            </div>
-                        ))}
+                        )) : (
+                          <div className="text-center py-10 opacity-50 font-bold uppercase text-[10px]">No recent logs.</div>
+                        )}
                      </div>
                   </Card>
                </div>
@@ -240,16 +399,6 @@ export default function StudentSettingsPage() {
                         </Button>
                      </div>
                      <ShieldCheck className="absolute -bottom-10 -right-10 h-40 w-40 opacity-5 rotate-12" />
-                  </Card>
-                  
-                  <Card className="border-none shadow-xl rounded-[3rem] bg-white dark:bg-zinc-950 p-8 flex flex-col items-center gap-4">
-                     <div className="h-12 w-12 rounded-xl bg-primary/5 flex items-center justify-center">
-                        <Award className="h-6 w-6 text-primary" />
-                     </div>
-                     <div className="text-center">
-                        <h4 className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Next Mastery Item</h4>
-                        <p className="font-black italic mt-1">Share Achievement #12</p>
-                     </div>
                   </Card>
                </div>
             </div>

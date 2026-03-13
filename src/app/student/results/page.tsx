@@ -1,11 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { 
-  Trophy, 
-  Target, 
-  Clock, 
+  Trophy,
   TrendingUp, 
   CheckCircle2, 
   XCircle,
@@ -13,38 +11,137 @@ import {
   Download,
   Share2,
   BookOpen,
-  ArrowUpRight
+  ArrowUpRight,
+  Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
+import { useSearchParams, useRouter } from "next/navigation";
+import { api } from "@/lib/api";
+import { useAuth } from "@/hooks/use-auth";
 import "katex/dist/katex.min.css";
 import { InlineMath } from "react-katex";
 
+interface ResultData {
+  obtained_marks: number;
+  total_marks: number;
+  percentage: number;
+  rank?: number;
+  percentile?: number;
+  accuracy?: number;
+  time_spent_seconds: number;
+  status: string;
+  test?: {
+    title: string;
+    subject: string;
+  };
+  answers: Array<{
+    id: number;
+    question_id: string;
+    status: 'correct' | 'incorrect' | 'unattempted';
+    marks_obtained: number;
+    user_answer: string;
+    question: {
+      content: string;
+      answer: string;
+      explanation: string;
+      subject: string;
+      topic: string;
+    }
+  }>;
+}
+
 export default function StudentTestResultPage() {
   const [activeTab, setActiveTab] = useState<'overview' | 'review'>('overview');
+  const searchParams = useSearchParams();
+  const attemptId = searchParams.get("attempt");
+  const { token, tenantSlug } = useAuth();
+  const router = useRouter();
 
-  const result = {
-    score: 145,
-    totalMarks: 180,
-    percentage: 80.5,
-    rank: 42,
-    totalStudents: 1250,
-    percentile: 96.6,
-    accuracy: 85,
-    timeSpent: '2h 45m',
-    subjects: [
-      { name: 'Physics', score: 52, total: 60, accuracy: 88, color: 'text-blue-500' },
-      { name: 'Chemistry', score: 48, total: 60, accuracy: 82, color: 'text-emerald-500' },
-      { name: 'Mathematics', score: 45, total: 60, accuracy: 75, color: 'text-amber-500' }
-    ],
-    questions: [
-       { id: 1, text: 'Find the value of $x$ if $2x + 5 = 15$.', status: 'correct', userAnswer: '5', correctAnswer: '5', explanation: 'Subtracting 5 from both sides gives $2x = 10$, hence $x = 5$.' },
-       { id: 2, text: 'The derivative of $\\sin(x)$ is $\\cos(x)$.', status: 'correct', userAnswer: 'True', correctAnswer: 'True', explanation: 'By definition of differentiation, $\\frac{d}{dx}\\sin(x) = \\cos(x)$.' },
-       { id: 3, text: 'Evaluate the integral: $\\int e^x dx$.', status: 'incorrect', userAnswer: '$e^{-x}$', correctAnswer: '$e^x + C$', explanation: 'The integral of the exponential function $e^x$ is $e^x$ plus the constant of integration $C$.' }
-    ]
+  const [result, setResult] = useState<ResultData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchResult() {
+      if (!token || !attemptId) {
+        setLoading(false);
+        return;
+      }
+      try {
+        const response = await api(`/v1/student/attempts/${attemptId}/result`, {
+          token,
+          tenant: tenantSlug || undefined
+        });
+        if (response.success) {
+          setResult(response.data);
+        }
+      } catch (err) {
+        console.error("Result fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchResult();
+  }, [token, attemptId, tenantSlug]);
+
+  if (loading) {
+    return (
+      <div className="h-screen flex flex-col items-center justify-center gap-4">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+        <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Synchronizing Assessment Outcome...</p>
+      </div>
+    );
+  }
+
+  if (!result) {
+    return (
+      <div className="h-screen flex flex-col items-center justify-center gap-6 p-12 text-center">
+        <AlertCircle className="h-16 w-16 text-rose-500" />
+        <h2 className="text-2xl font-black uppercase italic tracking-tight">Outcome Not Found</h2>
+        <p className="text-muted-foreground text-sm max-w-md font-medium">We couldn&apos;t retrieve the diagnostics for this assessment. It may still be in the neural grading queue.</p>
+        <Button onClick={() => router.back()} className="rounded-xl px-10 h-12 bg-black text-white font-black">RETURN TO BASE</Button>
+      </div>
+    );
+  }
+
+  const formatTime = (seconds: number) => {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    return h > 0 ? `${h}h ${m}m` : `${m}m`;
   };
+
+  // Helper to calculate subject breakdown from answers
+  const subjectBreakdown = result.answers.reduce((acc, answer) => {
+    const subjectName = answer.question.subject;
+    if (!acc[subjectName]) {
+      acc[subjectName] = { score: 0, total: 0, correctCount: 0, totalQuestions: 0 };
+    }
+    acc[subjectName].score += answer.marks_obtained;
+    // Assuming each question contributes equally to total marks for simplicity, or needs actual question total marks
+    // For now, let's assume each question has a max mark of 1 if marks_obtained is 0 or 1.
+    // If marks_obtained can be more, we need to know max marks per question.
+    // For now, let's use a placeholder total per question, e.g., 1 mark per question.
+    // A more robust solution would require `question.max_marks` in the API.
+    // For the sake of matching the original structure, let's assume `total` is 60 per subject as in the original hardcoded data.
+    // This is a simplification and might need adjustment based on actual API data.
+    acc[subjectName].total += 1; // Placeholder, assuming 1 mark per question for total
+    if (answer.status === 'correct') {
+      acc[subjectName].correctCount += 1;
+    }
+    acc[subjectName].totalQuestions += 1;
+    return acc;
+  }, {} as Record<string, { score: number; total: number; correctCount: number; totalQuestions: number }>);
+
+  const subjectsFormatted = Object.entries(subjectBreakdown).map(([name, data]) => ({
+    name,
+    score: data.score,
+    total: data.totalQuestions, // Using totalQuestions as total for now
+    accuracy: data.totalQuestions > 0 ? Math.round((data.correctCount / data.totalQuestions) * 100) : 0,
+    color: 'text-blue-500' // Placeholder color, could be dynamic
+  }));
+
 
   return (
     <div className="space-y-8 animate-in fade-in duration-700 pb-20 p-6">
@@ -53,14 +150,19 @@ export default function StudentTestResultPage() {
         <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-12">
            <div className="flex flex-col gap-4 text-center md:text-left">
               <Badge className="w-fit bg-emerald-500/20 text-emerald-400 border-none text-[10px] font-black uppercase tracking-[0.2em] px-4 py-1.5 mx-auto md:mx-0">
-                 Excellent Performance
+                 {result.percentage >= 80 ? "Excellent Performance" : result.percentage >= 60 ? "Good Performance" : "Requires Improvement"}
               </Badge>
-              <h1 className="text-6xl font-black tracking-tighter italic uppercase leading-none">Victory!</h1>
-              <p className="text-zinc-400 text-lg font-medium max-w-md">
-                 You outperformed 96% of your peers in this assessment. Great work on Physics!
+              <h1 className="text-6xl font-black tracking-tighter italic uppercase leading-none">
+                 {result.percentage >= 80 ? "Victory!" : "Result Card"}
+              </h1>
+              <p className="text-zinc-400 text-lg font-medium max-w-md italic">
+                 {result.test?.title} • {result.test?.subject} • {formatTime(result.time_spent_seconds)}
               </p>
               <div className="flex flex-wrap gap-4 mt-4 justify-center md:justify-start">
-                 <Button className="bg-white text-black font-black px-8 h-12 rounded-xl">
+                 <Button 
+                   onClick={() => window.open(`${process.env.NEXT_PUBLIC_API_URL}/v1/student/attempts/${attemptId}/result/pdf`, '_blank')}
+                   className="bg-white text-black font-black px-8 h-12 rounded-xl"
+                  >
                     <Download className="h-4 w-4 mr-2" /> PDF REPORT
                  </Button>
                  <Button variant="outline" className="bg-white/5 border-white/10 text-white px-8 h-12 rounded-xl">
@@ -73,14 +175,14 @@ export default function StudentTestResultPage() {
               <div className="text-center space-y-2">
                  <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Final Score</p>
                  <div className="text-5xl font-black italic tracking-tighter text-primary">
-                    {result.score}<span className="text-xl text-zinc-500 font-normal">/{result.totalMarks}</span>
+                    {result.obtained_marks}<span className="text-xl text-zinc-500 font-normal">/{result.total_marks}</span>
                  </div>
               </div>
               <div className="h-16 w-[1px] bg-white/10" />
               <div className="text-center space-y-2">
                  <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Percentile</p>
                  <div className="text-5xl font-black italic tracking-tighter">
-                    {result.percentile}<span className="text-xl text-emerald-500 font-normal">%</span>
+                    {result.percentile?.toFixed(1) || result.percentage.toFixed(1)}<span className="text-xl text-emerald-500 font-normal">%</span>
                  </div>
               </div>
            </div>
@@ -113,9 +215,9 @@ export default function StudentTestResultPage() {
             <div className="lg:col-span-2 space-y-8">
                {/* Subject Breakdown */}
                <Card className="border-none shadow-2xl rounded-[3rem] bg-white dark:bg-zinc-950 p-8">
-                  <h3 className="text-lg font-black uppercase italic italic mb-8 tracking-tighter">Subject Insights</h3>
+                  <h3 className="text-lg font-black uppercase italic mb-8 tracking-tighter">Subject Insights</h3>
                   <div className="grid gap-6">
-                     {result.subjects.map((sub) => (
+                     {subjectsFormatted.map((sub) => (
                         <div key={sub.name} className="space-y-3">
                            <div className="flex justify-between items-end">
                               <div>
@@ -126,39 +228,44 @@ export default function StudentTestResultPage() {
                                  {sub.score}<span className="text-xs text-zinc-400 font-normal">/{sub.total}</span>
                               </div>
                            </div>
-                           <Progress value={(sub.score/sub.total)*100} className="h-2 bg-zinc-100 dark:bg-zinc-900" />
+                           <Progress value={sub.total > 0 ? (sub.score/sub.total)*100 : 0} className="h-2 bg-zinc-100 dark:bg-zinc-900" />
                         </div>
                      ))}
                   </div>
                </Card>
 
-               <div className="grid grid-cols-2 gap-8 text-center">
-                  <Card className="border-none shadow-xl rounded-[2.5rem] bg-white dark:bg-zinc-950 p-8 flex flex-col items-center gap-2">
-                     <Clock className="h-6 w-6 text-zinc-400" />
-                     <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Total Time Spent</p>
-                     <div className="text-2xl font-black italic">{result.timeSpent}</div>
-                  </Card>
-                  <Card className="border-none shadow-xl rounded-[2.5rem] bg-white dark:bg-zinc-950 p-8 flex flex-col items-center gap-2">
-                     <Target className="h-6 w-6 text-zinc-400" />
-                     <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Overall Accuracy</p>
-                     <div className="text-2xl font-black italic text-emerald-500">{result.accuracy}%</div>
-                  </Card>
-               </div>
-            </div>
-
-            <div className="space-y-8">
-               <Card className="border-none shadow-2xl rounded-[3.5rem] bg-primary p-12 text-white relative overflow-hidden group">
-                  <div className="relative z-10 text-center">
-                     <h4 className="text-[10px] font-black uppercase tracking-widest mb-2 text-primary-foreground/60">Global Ranking</h4>
-                     <div className="text-7xl font-black italic tracking-tighter mb-4">#{result.rank}</div>
-                     <p className="text-xs font-bold text-primary-foreground/80 leading-relaxed">
-                        Currently leading in the top 3% of the October Batch.
+               <Card className="border-none shadow-xl rounded-[2.5rem] bg-zinc-950 p-8 text-white relative overflow-hidden group">
+                  <div className="relative z-10 text-center md:text-left space-y-4">
+                     <h4 className="text-xs font-black uppercase tracking-widest text-primary">Global Standing</h4>
+                     <div className="text-5xl font-black italic tracking-tighter mb-2">#{result.rank || 'TBD'}</div>
+                     <p className="text-[10px] font-bold text-zinc-400 leading-relaxed uppercase tracking-widest max-w-sm">
+                        You are positioned among the elite performers in this assessment cycle. Keep pushing for the #1 spot.
                      </p>
-                     <Button className="w-full mt-8 bg-white text-black font-black rounded-[2rem] h-14 group-hover:scale-105 transition-transform">
+                     <Button className="mt-4 bg-primary text-white font-black rounded-xl px-8 h-10 text-[10px] hover:scale-105 transition-transform">
                         VIEW LEADERBOARD
                      </Button>
                   </div>
-                  <TrendingUp className="absolute -bottom-12 -right-12 h-48 w-48 opacity-10 rotate-[-15deg]" />
+                  <TrendingUp className="absolute -bottom-10 -right-10 h-40 w-40 opacity-10 rotate-[-15deg]" />
+               </Card>
+            </div>
+
+            <div className="space-y-8">
+               <Card className="border-none shadow-xl rounded-[2.5rem] bg-white dark:bg-zinc-950 p-8">
+                  <h4 className="text-xs font-black uppercase tracking-widest text-zinc-400 mb-6 italic">Performance Analytics</h4>
+                  <div className="space-y-4">
+                     <div className="flex justify-between items-center bg-zinc-50 dark:bg-zinc-900 border dark:border-zinc-800 p-4 rounded-2xl">
+                        <span className="text-[10px] font-black uppercase">Correct</span>
+                        <Badge className="bg-emerald-500 text-white border-none">{result.answers.filter(a => a.status === 'correct').length}</Badge>
+                     </div>
+                     <div className="flex justify-between items-center bg-zinc-50 dark:bg-zinc-900 border dark:border-zinc-800 p-4 rounded-2xl">
+                        <span className="text-[10px] font-black uppercase">Incorrect</span>
+                        <Badge className="bg-rose-500 text-white border-none">{result.answers.filter(a => a.status === 'incorrect').length}</Badge>
+                     </div>
+                     <div className="flex justify-between items-center bg-zinc-50 dark:bg-zinc-900 border dark:border-zinc-800 p-4 rounded-2xl">
+                        <span className="text-[10px] font-black uppercase">Skipped</span>
+                        <Badge className="bg-zinc-200 dark:bg-zinc-800 text-zinc-500 border-none">{result.answers.filter(a => a.status === 'unattempted').length}</Badge>
+                     </div>
+                  </div>
                </Card>
                
                <Card className="border-none shadow-xl rounded-[2.5rem] bg-zinc-950 p-8 text-white">
@@ -166,7 +273,7 @@ export default function StudentTestResultPage() {
                   <div className="space-y-4">
                      <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
                         <p className="text-xs font-bold leading-relaxed">
-                           Focus on <span className="text-primary italic">Mechanics</span>. You spent 4 minutes more on it but accuracy was only 60%.
+                           Strategic Focus: Revisit questions from <span className="text-primary italic">Topic Diagnostics</span>. Accuracy in {result.test?.subject} can be improved by targeting specific weak pillars.
                         </p>
                      </div>
                      <Button variant="link" className="p-0 h-auto text-[10px] font-black uppercase tracking-widest text-white flex items-center gap-2">
@@ -180,12 +287,12 @@ export default function StudentTestResultPage() {
       ) : (
          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-6">
-               {result.questions.map((q, i) => (
-                  <Card key={q.id} className="border-none shadow-xl rounded-[2.5rem] bg-white dark:bg-zinc-950 overflow-hidden group">
-                     <div className="flex min-h-[300px]">
+               {result.answers.map((ans, i) => (
+                  <Card key={ans.id} className="border-none shadow-xl rounded-[2.5rem] bg-white dark:bg-zinc-950 overflow-hidden group">
+                     <div className="flex min-h-[250px]">
                         <div className={cn(
                            "w-2 shrink-0",
-                           q.status === 'correct' ? "bg-emerald-500" : "bg-rose-500"
+                           ans.status === 'correct' ? "bg-emerald-500" : ans.status === 'incorrect' ? "bg-rose-500" : "bg-zinc-200"
                         )} />
                         <div className="flex-1 p-8 space-y-8">
                            <div className="flex justify-between items-start">
@@ -193,10 +300,11 @@ export default function StudentTestResultPage() {
                                  <Badge className="bg-zinc-100 dark:bg-zinc-800 text-zinc-500 border-none text-[10px] font-black px-3 py-1">Q {i + 1}</Badge>
                                  <Badge className={cn(
                                     "border-none text-[8px] font-black uppercase px-3 py-1",
-                                    q.status === 'correct' ? "bg-emerald-500/10 text-emerald-500" : "bg-rose-500/10 text-rose-500"
+                                    ans.status === 'correct' ? "bg-emerald-500/10 text-emerald-500" : ans.status === 'incorrect' ? "bg-rose-500/10 text-rose-500" : "bg-zinc-500/10 text-zinc-500"
                                  )}>
-                                    {q.status}
+                                    {ans.status}
                                  </Badge>
+                                 <Badge variant="outline" className="text-[7px] border-zinc-200 text-zinc-400 font-bold uppercase">{ans.question?.topic}</Badge>
                               </div>
                               <div className="h-10 w-10 rounded-xl bg-zinc-50 dark:bg-zinc-900 flex items-center justify-center">
                                  <BookOpen className="h-4 w-4 text-zinc-400" />
@@ -204,32 +312,34 @@ export default function StudentTestResultPage() {
                            </div>
 
                            <div className="text-xl font-bold leading-relaxed text-zinc-800 dark:text-zinc-200">
-                              {q.text.split('$').map((part, idx) => 
+                              {ans.question?.content.split('$').map((part, idx) => 
                                  idx % 2 === 0 ? part : <InlineMath key={idx} math={part} />
                               )}
                            </div>
 
-                           <div className="grid grid-cols-2 gap-4">
+                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                               <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border dark:border-zinc-800">
-                                 <p className="text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-1">Your Answer</p>
-                                 <div className={cn("text-sm font-black italic", q.status === 'correct' ? "text-emerald-500" : "text-rose-500")}>{q.userAnswer}</div>
+                                 <p className="text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-1">Your Selected Answer</p>
+                                 <div className={cn("text-sm font-black italic", ans.status === 'correct' ? "text-emerald-500" : "text-rose-500")}>{ans.user_answer || 'SKIPPED'}</div>
                               </div>
                               <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border dark:border-zinc-800">
-                                 <p className="text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-1">Correct Answer</p>
-                                 <div className="text-sm font-black italic text-emerald-500">{q.correctAnswer}</div>
+                                 <p className="text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-1">Authenticated Correct Answer</p>
+                                 <div className="text-sm font-black italic text-emerald-500">{ans.question?.answer}</div>
                               </div>
                            </div>
 
-                           <div className="p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border dark:border-zinc-800 border-dashed">
-                              <h5 className="text-[10px] font-black uppercase tracking-widest text-primary mb-3 flex items-center gap-2">
-                                 <AlertCircle className="h-3 w-3" /> Step-by-Step Explanation
-                              </h5>
-                              <p className="text-xs font-bold leading-relaxed text-zinc-600 dark:text-zinc-400">
-                                 {q.explanation.split('$').map((part, idx) => 
-                                    idx % 2 === 0 ? part : <InlineMath key={idx} math={part} />
-                                 )}
-                              </p>
-                           </div>
+                           {ans.question?.explanation && (
+                              <div className="p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border dark:border-zinc-800 border-dashed">
+                                 <h5 className="text-[10px] font-black uppercase tracking-widest text-primary mb-3 flex items-center gap-2">
+                                    <AlertCircle className="h-3 w-3" /> Step-by-Step Logic
+                                 </h5>
+                                 <p className="text-xs font-bold leading-relaxed text-zinc-600 dark:text-zinc-400">
+                                    {ans.question.explanation.split('$').map((part, idx) => 
+                                       idx % 2 === 0 ? part : <InlineMath key={idx} math={part} />
+                                    )}
+                                 </p>
+                              </div>
+                           )}
                         </div>
                      </div>
                   </Card>
@@ -238,13 +348,13 @@ export default function StudentTestResultPage() {
 
             <div className="space-y-8">
                <Card className="border-none shadow-2xl rounded-[3rem] bg-white dark:bg-zinc-950 p-8">
-                  <h4 className="text-sm font-black uppercase tracking-tight italic mb-6">Filter by Status</h4>
+                  <h4 className="text-sm font-black uppercase tracking-tight italic mb-6">Diagnostic Filters</h4>
                   <div className="grid gap-4">
                      {[
-                        { label: 'All Questions', count: 45, icon: BookOpen },
-                        { label: 'Correct', count: 32, icon: CheckCircle2, color: 'text-emerald-500' },
-                        { label: 'Incorrect', count: 8, icon: XCircle, color: 'text-rose-500' },
-                        { label: 'Unattempted', count: 5, icon: AlertCircle, color: 'text-amber-500' }
+                        { label: 'All Queries', count: result.answers.length, icon: BookOpen },
+                        { label: 'Correct', count: result.answers.filter(a => a.status === 'correct').length, icon: CheckCircle2, color: 'text-emerald-500' },
+                        { label: 'Incorrect', count: result.answers.filter(a => a.status === 'incorrect').length, icon: XCircle, color: 'text-rose-500' },
+                        { label: 'Unattempted', count: result.answers.filter(a => a.status === 'unattempted').length, icon: AlertCircle, color: 'text-amber-500' }
                      ].map((f) => (
                         <button key={f.label} className="flex items-center justify-between p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-900 hover:scale-[1.02] transition-transform group text-left">
                            <div className="flex items-center gap-3">

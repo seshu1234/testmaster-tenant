@@ -1,6 +1,6 @@
-"use client";
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { api } from "@/lib/api";
+import { useAuth } from "@/hooks/use-auth";
 import { Card } from "@/components/ui/card";
 import { 
   Search, 
@@ -18,14 +18,76 @@ import { cn } from "@/lib/utils";
 import "katex/dist/katex.min.css";
 import { InlineMath } from "react-katex";
 
-const mistakes = [
-  { id: '1', text: 'Evaluate the limit: $\\lim_{x \\to 0} \\frac{\\sin x}{x}$.', subject: 'Mathematics', topic: 'Calculus', difficulty: 'Easy', status: 'bookmarked', errorType: 'Conceptual' },
-  { id: '2', text: 'A car starts from rest and accelerates at $2m/s^2$. Find the distance covered in 5 seconds.', subject: 'Physics', topic: 'Mechanics', difficulty: 'Medium', status: 'recent', errorType: 'Calculation' },
-  { id: '3', text: 'What is the oxidation state of Mn in $KMnO_4$?', subject: 'Chemistry', topic: 'Inorganic', difficulty: 'Medium', status: 'recent', errorType: 'Factual' }
-];
+interface Mistake {
+  id: string;
+  text: string;
+  subject: string;
+  topic: string;
+  difficulty: string;
+  status: 'bookmarked' | 'recent';
+  errorType: string;
+  explanation?: string;
+  selected_option?: Record<string, unknown>;
+  created_at: string;
+}
+
+interface ErrorTheme {
+  label: string;
+  val: number;
+  color: string;
+}
 
 export default function StudentMistakesPage() {
+  const { token, tenantSlug } = useAuth();
   const [activeFilter, setActiveFilter] = useState<'all' | 'bookmarked' | 'resolved'>('all');
+  const [mistakes, setMistakes] = useState<Mistake[]>([]);
+  const [errorThemes, setErrorThemes] = useState<ErrorTheme[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchMistakes() {
+      if (!token) return;
+      setLoading(true);
+      try {
+        const response = await api("/v1/student/mistakes", {
+          token,
+          tenant: tenantSlug ?? undefined,
+          params: { filter: activeFilter }
+        });
+        if (response.success) {
+          setMistakes(response.data);
+          setErrorThemes(response.error_themes || []);
+        }
+      } catch (error) {
+        console.error("Mistakes fetch error:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchMistakes();
+  }, [token, tenantSlug, activeFilter]);
+
+  const toggleBookmark = async (id: string) => {
+    try {
+      const response = await api(`/v1/student/mistakes/${id}/toggle-bookmark`, {
+        method: "POST",
+        token: token ?? undefined,
+        tenant: tenantSlug ?? undefined
+      });
+      if (response.success) {
+        setMistakes(prev => prev.map(m => m.id === id ? { ...m, status: response.is_bookmarked ? 'bookmarked' : 'recent' } : m));
+      }
+    } catch (error) {
+      console.error("Toggle bookmark error:", error);
+    }
+  };
+
+  const stats = [
+    { label: 'Unresolved Errors', val: mistakes.length, icon: AlertCircle, color: 'text-rose-500' },
+    { label: 'Bookmarks', val: mistakes.filter(m => m.status === 'bookmarked').length, icon: Bookmark, color: 'text-amber-500' },
+    { label: 'Mastery Rate', val: '65%', icon: CheckCircle2, color: 'text-emerald-500' },
+    { label: 'Revision Streak', val: '4 Days', icon: Zap, color: 'text-blue-500' }
+  ];
 
   return (
     <div className="space-y-8 animate-in fade-in duration-700 pb-20 p-6">
@@ -44,22 +106,17 @@ export default function StudentMistakesPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Statistics & Filters */}
         <div className="lg:col-span-12 grid grid-cols-1 md:grid-cols-4 gap-6">
-           {[
-              { label: 'Unresolved Errors', val: '42', icon: AlertCircle, color: 'text-rose-500' },
-              { label: 'Bookmarks', val: '18', icon: Bookmark, color: 'text-amber-500' },
-              { label: 'Mastery Rate', val: '65%', icon: CheckCircle2, color: 'text-emerald-500' },
-              { label: 'Revision Streak', val: '4 Days', icon: Zap, color: 'text-blue-500' }
-           ].map((s, i) => (
-              <Card key={i} className="border-none shadow-xl rounded-[2.5rem] bg-white dark:bg-zinc-950 p-6 flex items-center gap-6">
-                 <div className="h-12 w-12 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border flex items-center justify-center">
-                    <s.icon className={cn("h-5 w-5", s.color)} />
-                 </div>
-                 <div>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">{s.label}</p>
-                    <p className="text-xl font-black italic">{s.val}</p>
-                 </div>
-              </Card>
-           ))}
+            {stats.map((s, i) => (
+               <Card key={i} className="border-none shadow-xl rounded-[2.5rem] bg-white dark:bg-zinc-950 p-6 flex items-center gap-6">
+                  <div className="h-12 w-12 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border flex items-center justify-center">
+                     <s.icon className={cn("h-5 w-5", s.color)} />
+                  </div>
+                  <div>
+                     <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">{s.label}</p>
+                     <p className="text-xl font-black italic">{s.val}</p>
+                  </div>
+               </Card>
+            ))}
         </div>
 
         {/* Search & Main List */}
@@ -75,13 +132,13 @@ export default function StudentMistakesPage() {
               </div>
               <div className="flex bg-zinc-100 dark:bg-zinc-900 p-1 rounded-xl">
                  {['all', 'bookmarked'].map((t) => (
-                    <button 
+                    <button
                        key={t}
                        className={cn(
                           "px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all",
                           activeFilter === t ? "bg-white dark:bg-zinc-800 shadow-sm text-black dark:text-white" : "text-zinc-400"
                        )}
-                       onClick={() => setActiveFilter(t as 'all' | 'bookmarked')}
+                        onClick={() => setActiveFilter(t as 'all' | 'bookmarked')}
                     >
                        {t}
                     </button>
@@ -90,7 +147,9 @@ export default function StudentMistakesPage() {
            </div>
 
            <div className="space-y-4">
-              {mistakes.map((m) => (
+              {loading ? (
+                 [1,2,3].map(i => <div key={i} className="h-48 bg-secondary/10 animate-pulse rounded-[2.5rem]" />)
+              ) : mistakes.length > 0 ? mistakes.map((m) => (
                  <Card key={m.id} className="border-none shadow-xl rounded-[2.5rem] bg-white dark:bg-zinc-950 overflow-hidden group hover:scale-[1.01] transition-all">
                     <div className="flex">
                        <div className={cn(
@@ -109,7 +168,9 @@ export default function StudentMistakesPage() {
                                    {m.errorType} Error
                                 </Badge>
                              </div>
-                             <button className={cn(
+                             <button
+                                onClick={() => toggleBookmark(m.id)}
+                                className={cn(
                                 "h-8 w-8 rounded-lg flex items-center justify-center transition-all",
                                 m.status === 'bookmarked' ? "bg-amber-500 text-white" : "bg-zinc-50 dark:bg-zinc-900"
                              )}>
@@ -118,15 +179,15 @@ export default function StudentMistakesPage() {
                           </div>
 
                           <div className="text-lg font-bold leading-relaxed mb-8">
-                             {m.text.split('$').map((part, idx) => 
+                             {m.text.split('$').map((part, idx) =>
                                 idx % 2 === 0 ? part : <InlineMath key={idx} math={part} />
                              )}
                           </div>
 
                           <div className="flex justify-between items-center pt-6 border-t border-dashed dark:border-zinc-800">
                              <div className="flex items-center gap-4">
-                                <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Failed 3 times</span>
-                                <span className="text-[10px] font-bold text-rose-500 uppercase tracking-tighter italic">High Priority</span>
+                                <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Failed Attempt</span>
+                                <span className="text-[10px] font-bold text-rose-500 uppercase tracking-tighter italic">Review Required</span>
                              </div>
                              <Button variant="ghost" className="rounded-xl text-[10px] font-black uppercase tracking-widest text-primary hover:bg-primary/5">
                                 RE-ATTEMPT NOW <ChevronRight className="ml-1 h-3 w-3" />
@@ -135,7 +196,11 @@ export default function StudentMistakesPage() {
                        </div>
                     </div>
                  </Card>
-              ))}
+              )) : (
+                 <div className="text-center py-20 bg-secondary/5 rounded-[2.5rem] font-black uppercase tracking-widest text-zinc-400">
+                    No mistakes found. Great work!
+                 </div>
+              )}
            </div>
         </div>
 
@@ -162,21 +227,21 @@ export default function StudentMistakesPage() {
            <Card className="border-none shadow-xl rounded-[2.5rem] bg-white dark:bg-zinc-950 p-8">
               <h4 className="text-sm font-black uppercase italic tracking-tight mb-6">Error Themes</h4>
               <div className="space-y-4">
-                 {[
-                    { label: 'Sylligence', val: 45, color: 'bg-rose-500' },
-                    { label: 'Conceptual', val: 32, color: 'bg-amber-500' },
-                    { label: 'Time Pressure', val: 23, color: 'bg-blue-500' }
-                 ].map((t) => (
-                    <div key={t.label} className="space-y-2">
-                       <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
-                          <span>{t.label}</span>
-                          <span className="text-zinc-400">{t.val}%</span>
-                       </div>
-                       <div className="h-1.5 w-full bg-zinc-100 dark:bg-zinc-900 rounded-full overflow-hidden">
-                          <div className={cn("h-full", t.color)} style={{ width: `${t.val}%` }} />
-                       </div>
-                    </div>
-                 ))}
+                  {(errorThemes.length > 0 ? errorThemes : [
+                     { label: 'Conceptual', val: 0, color: 'bg-rose-500' },
+                     { label: 'Calculation', val: 0, color: 'bg-amber-500' },
+                     { label: 'Factual', val: 0, color: 'bg-blue-500' }
+                  ]).map((t) => (
+                     <div key={t.label} className="space-y-2">
+                        <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
+                           <span>{t.label}</span>
+                           <span className="text-zinc-400">{t.val}%</span>
+                        </div>
+                        <div className="h-1.5 w-full bg-zinc-100 dark:bg-zinc-900 rounded-full overflow-hidden">
+                           <div className={cn("h-full", t.color)} style={{ width: `${t.val}%` }} />
+                        </div>
+                     </div>
+                  ))}
               </div>
            </Card>
         </div>

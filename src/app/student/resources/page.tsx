@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { 
   BookOpen, 
@@ -16,48 +16,85 @@ import {
   ArrowUpRight,
   TrendingUp,
   BrainCircuit,
-  Lightbulb
+  Lightbulb,
+  Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
+import { api } from "@/lib/api";
+import { useAuth } from "@/hooks/use-auth";
 
-const resources = [
-  { 
-    id: '1', 
-    title: 'Modern Physics: Atomic Structure', 
-    type: 'Video', 
-    subject: 'Physics', 
-    duration: '12:45', 
-    rating: 4.9, 
-    source: 'TM Originals',
-    premium: true 
-  },
-  { 
-    id: '2', 
-    title: 'Stoichiometry Periodic Table Hacks', 
-    type: 'PDF', 
-    subject: 'Chemistry', 
-    size: '1.2 MB', 
-    rating: 4.7, 
-    source: 'CheatSheets',
-    premium: false 
-  },
-  { 
-    id: '3', 
-    title: 'Quadratic Equations Deep Dive', 
-    type: 'Practice Sheet', 
-    subject: 'Mathematics', 
-    questions: 50, 
-    rating: 4.8, 
-    source: 'TM Question Bank',
-    premium: true 
-  }
-];
+interface ResourceItem {
+  id: string;
+  title: string;
+  type: string;
+  subject: string;
+  duration?: string;
+  size?: string;
+  questions?: number;
+  rating: number;
+  source: string;
+  premium: boolean;
+}
+
+interface InsightRecommendation {
+  topic: string;
+  count?: number;
+}
+
+interface InsightData {
+  recommendations: InsightRecommendation[] | string[];
+  performance_trend: number;
+}
 
 export default function StudentResourcesPage() {
+  const { token, tenantSlug } = useAuth();
   const [activeTab, setActiveTab] = useState<'all' | 'video' | 'pdf' | 'notes'>('all');
+  const [resources, setResources] = useState<ResourceItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [insightData, setInsightData] = useState<InsightData | null>(null);
+
+  useEffect(() => {
+    async function fetchResources() {
+      if (!token) return;
+      try {
+        const response = await api('/v1/student/resources', {
+          token,
+          tenant: tenantSlug || undefined
+        });
+        setResources(response.data);
+      } catch (err) {
+        console.error("Failed to fetch resources:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    async function fetchAIInsights() {
+      if (!token) return;
+      try {
+        const response = await api('/v1/student/analytics/insights', {
+          token,
+          tenant: tenantSlug || undefined
+        });
+        setInsightData(response.data);
+      } catch (err) {
+        console.error("Failed to fetch AI insights:", err);
+      }
+    }
+
+    fetchResources();
+    fetchAIInsights();
+  }, [token, tenantSlug]);
+
+  const filteredResources = resources.filter(res => {
+    if (activeTab === 'all') return true;
+    if (activeTab === 'video') return res.type.toLowerCase() === 'video';
+    if (activeTab === 'pdf') return res.type.toLowerCase() === 'pdf';
+    return res.type.toLowerCase() === 'practice sheet' || res.type.toLowerCase() === 'notes';
+  });
 
   return (
     <div className="space-y-8 animate-in fade-in duration-700 pb-20 p-6">
@@ -98,7 +135,7 @@ export default function StudentResourcesPage() {
                        key={tab}
                        className={cn(
                           "px-6 py-2 text-[9px] font-black uppercase tracking-widest rounded-xl transition-all whitespace-nowrap",
-                          activeTab === tab ? "bg-white dark:bg-zinc-800 shadow-sm text-black dark:text-white" : "text-zinc-500"
+                           activeTab === tab ? "bg-white dark:bg-zinc-800 shadow-sm text-black dark:text-white" : "text-zinc-500"
                        )}
                        onClick={() => setActiveTab(tab as 'all' | 'video' | 'pdf' | 'notes')}
                     >
@@ -109,43 +146,54 @@ export default function StudentResourcesPage() {
            </div>
 
            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {resources.map((res) => (
-                 <Card key={res.id} className="border-none shadow-xl rounded-[2.5rem] bg-white dark:bg-zinc-950 overflow-hidden group hover:scale-[1.02] transition-all transform duration-500">
-                    <div className="p-8 space-y-6">
-                       <div className="flex justify-between items-start">
-                          <div className={cn(
-                             "h-14 w-14 rounded-2xl flex items-center justify-center transition-transform group-hover:rotate-6 shadow-inner",
-                             res.type === 'Video' ? "bg-blue-50 dark:bg-blue-500/10 text-blue-500" : "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500"
-                          )}>
-                             {res.type === 'Video' ? <Video className="h-7 w-7" /> : <FileText className="h-7 w-7" />}
-                          </div>
-                          {res.premium && (
-                             <Badge className="bg-amber-500/10 text-amber-500 border-none text-[8px] font-black px-3 py-1 flex items-center gap-1">
-                                <Star className="h-2 w-2 fill-amber-500" /> PREMIUM
-                             </Badge>
-                          )}
-                       </div>
-
-                       <div className="space-y-2">
-                          <div className="flex items-center gap-2">
-                             <Badge variant="outline" className="text-[7px] font-black uppercase tracking-widest h-4 px-2">{res.subject}</Badge>
-                             <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">{res.source}</span>
-                          </div>
-                          <h3 className="text-xl font-black italic uppercase italic tracking-tighter leading-tight group-hover:text-primary transition-colors">{res.title}</h3>
-                       </div>
-
-                       <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-zinc-400">
-                          <div className="flex items-center gap-4">
-                             <div className="flex items-center gap-1.5"><Clock className="h-3 w-3" /> {res.duration || res.size || res.questions + ' Qs'}</div>
-                             <div className="flex items-center gap-1.5 text-amber-500"><Star className="h-3 w-3 fill-amber-500" /> {res.rating}</div>
-                          </div>
-                          <Button size="icon" variant="ghost" className="h-10 w-10 rounded-xl bg-zinc-50 dark:bg-zinc-900">
-                             {res.type === 'Video' ? <PlayCircle className="h-5 w-5" /> : <Download className="h-5 w-5" />}
-                          </Button>
-                       </div>
-                    </div>
+              {loading ? (
+                 <div className="col-span-2 flex flex-col items-center justify-center py-20 gap-4">
+                    <Loader2 className="h-10 w-10 animate-spin text-primary" />
+                    <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Opening the vault...</p>
+                 </div>
+              ) : filteredResources.length === 0 ? (
+                 <Card className="col-span-2 p-20 text-center border-dashed border-2 border-zinc-100 dark:border-zinc-900 bg-transparent">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">The vault is currently empty for this category.</p>
                  </Card>
-              ))}
+              ) : (
+                filteredResources.map((res) => (
+                   <Card key={res.id} className="border-none shadow-xl rounded-[2.5rem] bg-white dark:bg-zinc-950 overflow-hidden group hover:scale-[1.02] transition-all transform duration-500">
+                      <div className="p-8 space-y-6">
+                         <div className="flex justify-between items-start">
+                            <div className={cn(
+                               "h-14 w-14 rounded-2xl flex items-center justify-center transition-transform group-hover:rotate-6 shadow-inner",
+                               res.type.toLowerCase() === 'video' ? "bg-blue-50 dark:bg-blue-500/10 text-blue-500" : "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500"
+                            )}>
+                               {res.type.toLowerCase() === 'video' ? <Video className="h-7 w-7" /> : <FileText className="h-7 w-7" />}
+                            </div>
+                            {res.premium && (
+                               <Badge className="bg-amber-500/10 text-amber-500 border-none text-[8px] font-black px-3 py-1 flex items-center gap-1">
+                                  <Star className="h-2 w-2 fill-amber-500" /> PREMIUM
+                               </Badge>
+                            )}
+                         </div>
+  
+                         <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                               <Badge variant="outline" className="text-[7px] font-black uppercase tracking-widest h-4 px-2">{res.subject}</Badge>
+                               <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">{res.source}</span>
+                            </div>
+                            <h3 className="text-xl font-black italic uppercase italic tracking-tighter leading-tight group-hover:text-primary transition-colors">{res.title}</h3>
+                         </div>
+  
+                         <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-zinc-400">
+                            <div className="flex items-center gap-4">
+                               <div className="flex items-center gap-1.5"><Clock className="h-3 w-3" /> {res.duration || res.size || (res.questions && res.questions + ' Qs')}</div>
+                               <div className="flex items-center gap-1.5 text-amber-500"><Star className="h-3 w-3 fill-amber-500" /> {res.rating}</div>
+                            </div>
+                            <Button size="icon" variant="ghost" className="h-10 w-10 rounded-xl bg-zinc-50 dark:bg-zinc-900">
+                               {res.type.toLowerCase() === 'video' ? <PlayCircle className="h-5 w-5" /> : <Download className="h-5 w-5" />}
+                            </Button>
+                         </div>
+                      </div>
+                   </Card>
+                ))
+              )}
            </div>
         </div>
 
@@ -158,20 +206,22 @@ export default function StudentResourcesPage() {
                  </div>
                  <h3 className="text-2xl font-black italic uppercase italic tracking-tighter leading-none">AI Study Assist</h3>
                  <p className="text-zinc-500 text-xs font-medium leading-relaxed">
-                    We&apos;ve identified your speed is slowing in <span className="text-white italic italic">Mechanics</span>. Here&apos;s a curated focus list to help you catch up.
+                    Based on your analytics, here are the most critical focus areas to boost your current trajectory.
                  </p>
-                 <div className="space-y-4">
-                    {[
-                       'Center of Mass Summary',
-                       'Impulse & Momentum Drill',
-                       'Collisions Cheat Sheet'
-                    ].map((item, i) => (
-                       <div key={i} className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors cursor-pointer group/item">
-                          <span className="text-[10px] font-bold uppercase tracking-tight">{item}</span>
-                          <ArrowUpRight className="h-3 w-3 text-primary group-hover/item:translate-x-0.5 transition-transform" />
-                       </div>
-                    ))}
-                 </div>
+                  <div className="space-y-4">
+                  {(insightData?.recommendations || []).slice(0, 3).map((item: InsightRecommendation | string, i: number) => {
+                    const topic = typeof item === 'string' ? item : item.topic;
+                    return (
+                      <div key={i} className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors cursor-pointer group/item">
+                         <span className="text-[10px] font-bold uppercase tracking-tight">{topic}</span>
+                         <ArrowUpRight className="h-3 w-3 text-primary group-hover/item:translate-x-0.5 transition-transform" />
+                      </div>
+                    );
+                  })}
+                  {(!insightData?.recommendations || insightData.recommendations.length === 0) && (
+                     <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500 text-center py-4">Scanning your performance...</p>
+                  )}
+                  </div>
               </div>
            </Card>
 
@@ -195,13 +245,13 @@ export default function StudentResourcesPage() {
            <Card className="border-none shadow-xl rounded-[3rem] bg-primary p-10 text-white relative overflow-hidden group">
               <h4 className="text-[10px] font-black uppercase tracking-[0.2em] mb-4 opacity-70">Weekly Objective</h4>
               <p className="text-xl font-black italic uppercase italic leading-tight mb-8">
-                 Complete 5 High-Tier Physics Resources
+                 Master your current weak topics to reach Elite Status.
               </p>
               <div className="flex items-center justify-between mb-4">
-                 <span className="text-xs font-black italic uppercase">3 / 5 Done</span>
-                 <span className="text-xs font-black italic italic">60%</span>
+                 <span className="text-xs font-black italic uppercase">Resource Velocity</span>
+                 <span className="text-xs font-black italic italic">{insightData?.performance_trend || 0}%</span>
               </div>
-              <Progress value={60} className="h-2 bg-white/20" />
+              <Progress value={insightData?.performance_trend || 0} className="h-2 bg-white/20" />
               <TrendingUp className="absolute -bottom-8 -right-8 h-32 w-32 opacity-10 rotate-12" />
            </Card>
         </div>

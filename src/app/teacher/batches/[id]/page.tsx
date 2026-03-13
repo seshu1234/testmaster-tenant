@@ -1,6 +1,7 @@
-"use client";
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
+import { useAuth } from "@/hooks/use-auth";
+import { api } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { 
   Users, 
@@ -12,7 +13,8 @@ import {
   Mail,
   GraduationCap,
   Download,
-  ArrowRight
+  ArrowRight,
+  Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -29,12 +31,66 @@ interface Student {
   last_test: string;
 }
 
+interface BatchData {
+  batch: {
+    id: string;
+    name: string;
+    subject: string;
+    students_count: number;
+    created_at: string;
+  };
+  students: Student[];
+  metrics: {
+    avg_score: number;
+    total_students: number;
+    critical_students: number;
+  };
+}
+
 export default function BatchDetailsPage() {
-  const [students] = useState<Student[]>([
-    { id: '1', name: 'Rahul Sharma', email: 'rahul@example.com', attendance: 92, avg_score: 88, status: 'outstanding', last_test: 'Physics Mock' },
-    { id: '2', name: 'Anita Gupta', email: 'anita@example.com', attendance: 85, avg_score: 42, status: 'at-risk', last_test: 'Math Unit 1' },
-    { id: '3', name: 'Vikram Singh', email: 'vikram@example.com', attendance: 78, avg_score: 75, status: 'active', last_test: 'Chemistry Quiz' },
-  ]);
+  const { id } = useParams();
+  const { token, tenantSlug } = useAuth();
+  const [data, setData] = useState<BatchData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    async function fetchBatchDetails() {
+      if (!token || !id) return;
+      try {
+        const response = await api(`/v1/teacher/batches/${id}`, {
+          token,
+          tenant: tenantSlug || undefined
+        });
+        if (response.success) {
+          setData(response.data);
+        }
+      } catch (error) {
+        console.error("Batch fetch error:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchBatchDetails();
+  }, [token, id, tenantSlug]);
+
+  if (loading) {
+     return (
+        <div className="flex items-center justify-center min-h-screen">
+           <div className="flex flex-col items-center gap-4">
+              <Loader2 className="h-10 w-10 text-primary animate-spin" />
+              <p className="text-sm font-bold text-zinc-400 uppercase tracking-widest">Synchronizing batch data...</p>
+           </div>
+        </div>
+     );
+  }
+
+  if (!data) return <div className="p-12 text-center font-bold text-rose-500">Batch details unavailable.</div>;
+
+  const filteredStudents = data.students.filter(s => 
+    s.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    s.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500 pb-20 p-6">
@@ -43,11 +99,11 @@ export default function BatchDetailsPage() {
           <Badge className="bg-primary/20 text-primary border-none mb-4 px-3 py-1 text-[10px] font-black uppercase tracking-widest">
             Detailed Performance Report
           </Badge>
-          <h1 className="text-4xl font-black tracking-tight mb-2">IIT-JEE Batch A</h1>
+          <h1 className="text-4xl font-black tracking-tight mb-2">{data.batch.name}</h1>
           <div className="flex items-center gap-6 text-zinc-400 text-sm font-medium">
-             <div className="flex items-center gap-2"><Users className="h-4 w-4" /> 42 Students</div>
-             <div className="flex items-center gap-2"><BookOpen className="h-4 w-4" /> Physics, Chemistry, Math</div>
-             <div className="flex items-center gap-2"><Calendar className="h-4 w-4" /> Created Sep 2025</div>
+             <div className="flex items-center gap-2"><Users className="h-4 w-4" /> {data.metrics.total_students} Students</div>
+             <div className="flex items-center gap-2"><BookOpen className="h-4 w-4" /> {data.batch.subject || 'Multi-Subject'}</div>
+             <div className="flex items-center gap-2"><Calendar className="h-4 w-4" /> Created {new Date(data.batch.created_at).toLocaleDateString()}</div>
           </div>
         </div>
         <div className="relative z-10 flex gap-3">
@@ -63,33 +119,39 @@ export default function BatchDetailsPage() {
          <Card className="border-none shadow-xl bg-white dark:bg-zinc-900 p-6 rounded-3xl">
             <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-widest text-[10px] mb-4">Batch Average</h3>
             <div className="flex items-baseline gap-2">
-               <span className="text-4xl font-black italic">72.4%</span>
+               <span className="text-4xl font-black italic">{data.metrics.avg_score}%</span>
                <TrendingUp className="h-5 w-5 text-emerald-500" />
             </div>
-            <p className="text-[10px] font-bold text-zinc-400 mt-2">+5% since last unit test</p>
+            <p className="text-[10px] font-bold text-zinc-400 mt-2">Center Average Comparison: Stable</p>
          </Card>
          <Card className="border-none shadow-xl bg-white dark:bg-zinc-900 p-6 rounded-3xl">
             <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-widest text-[10px] mb-4">Syllabus Progress</h3>
             <div className="space-y-2">
                <div className="flex justify-between text-[10px] font-black">
                   <span>Units Completed</span>
-                  <span>14/20</span>
+                  <span>--/--</span>
                </div>
-               <Progress value={70} className="h-1.5 bg-zinc-100 dark:bg-zinc-800" />
+               <Progress value={0} className="h-1.5 bg-zinc-100 dark:bg-zinc-800" />
             </div>
          </Card>
-         <Card className="border-none shadow-xl bg-white dark:bg-zinc-900 p-6 rounded-3xl border-l-4 border-l-rose-500">
+         <Card className={cn(
+            "border-none shadow-xl bg-white dark:bg-zinc-900 p-6 rounded-3xl border-l-4",
+            data.metrics.critical_students > 0 ? "border-l-rose-500" : "border-l-emerald-500"
+         )}>
             <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-widest text-[10px] mb-4">Critical Students</h3>
             <div className="flex items-baseline gap-2">
-               <span className="text-4xl font-black text-rose-500">04</span>
-               <span className="text-[10px] font-bold text-rose-400 uppercase tracking-widest leading-none">Underperforming</span>
+               <span className={cn(
+                  "text-4xl font-black",
+                  data.metrics.critical_students > 0 ? "text-rose-500" : "text-emerald-500"
+               )}>{data.metrics.critical_students.toString().padStart(2, '0')}</span>
+               <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest leading-none">Underperforming</span>
             </div>
          </Card>
          <Card className="border-none shadow-xl bg-white dark:bg-zinc-900 p-6 rounded-3xl">
-            <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-widest text-[10px] mb-4">Next Scheduled Test</h3>
+            <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-widest text-[10px] mb-4">Batch Status</h3>
             <div className="space-y-1">
-               <p className="font-bold text-sm">Thermodynamics Final</p>
-               <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">Oct 24, 2025 • 2:00 PM</p>
+               <p className="font-bold text-sm uppercase">Active Enrollment</p>
+               <p className="text-[10px] text-emerald-500 font-bold uppercase tracking-widest">Normal Operations</p>
             </div>
          </Card>
       </div>
@@ -107,6 +169,8 @@ export default function BatchDetailsPage() {
                      type="text" 
                      placeholder="Search by name or email..." 
                      className="w-full pl-11 pr-4 py-3 bg-white dark:bg-zinc-900 border rounded-2xl text-xs outline-none ring-primary/10 focus:ring-4 transition-all"
+                     value={searchTerm}
+                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
                </div>
             </div>
@@ -124,7 +188,7 @@ export default function BatchDetailsPage() {
                      </tr>
                   </thead>
                   <tbody className="divide-y dark:divide-zinc-800">
-                     {students.map((student) => (
+                     {filteredStudents.map((student) => (
                         <tr key={student.id} className="hover:bg-zinc-50/50 dark:hover:bg-zinc-900/40 transition-colors group">
                            <td className="px-8 py-6">
                               <div className="flex items-center gap-4">
@@ -167,6 +231,11 @@ export default function BatchDetailsPage() {
                            </td>
                         </tr>
                      ))}
+                     {filteredStudents.length === 0 && (
+                        <tr>
+                           <td colSpan={5} className="px-8 py-12 text-center text-zinc-400 font-medium italic">No students found matching your search.</td>
+                        </tr>
+                     )}
                   </tbody>
                </table>
             </div>

@@ -68,7 +68,7 @@ export function LoginForm() {
                   <FormControl>
                     <select 
                       {...field}
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-accent/50 transition-colors cursor-pointer"
                     >
                       <option value="student">Student</option>
                       <option value="teacher">Teacher</option>
@@ -87,7 +87,11 @@ export function LoginForm() {
                 <FormItem>
                   <FormLabel>Email Address</FormLabel>
                   <FormControl>
-                    <Input placeholder="name@example.com" {...field} />
+                    <Input 
+                      placeholder="name@example.com" 
+                      {...field} 
+                      className="transition-colors hover:border-primary/50 focus-visible:ring-primary/30"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -100,16 +104,28 @@ export function LoginForm() {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} />
+                    <Input 
+                      type="password" 
+                      placeholder="••••••••" 
+                      {...field} 
+                      className="transition-colors hover:border-primary/50 focus-visible:ring-primary/30"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
             {error && (
-              <div className="text-sm font-medium text-destructive bg-destructive/10 p-3 rounded-md">{error}</div>
+              <div className="text-sm font-medium text-destructive bg-destructive/10 p-3 rounded-md animate-in fade-in slide-in-from-top-1 duration-300">
+                {error}
+              </div>
             )}
-            <Button type="submit" className="w-full py-6 text-base font-semibold transition-all hover:scale-[1.02]" disabled={isLoading}>
+            <Button 
+              type="submit" 
+              variant="default"
+              className="w-full py-6 text-base font-semibold bg-black text-white hover:bg-black/90 transition-all hover:scale-[1.02] hover:shadow-lg active:scale-[0.98] active:shadow-md disabled:hover:scale-100 disabled:active:scale-100" 
+              disabled={isLoading}
+            >
               {isLoading ? "Authenticating..." : "Sign In"}
             </Button>
           </form>

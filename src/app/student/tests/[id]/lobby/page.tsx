@@ -15,11 +15,28 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
+import { api } from "@/lib/api";
+import { useAuth } from "@/hooks/use-auth";
+import { AlertCircle } from "lucide-react";
+
+interface TestDetails {
+  id: string;
+  title: string;
+  duration_seconds: number;
+  questions_count?: number;
+  settings?: {
+    passing_percentage: number;
+    negative_marking?: number;
+  };
+}
 
 export default function StudentTestLobby({ params }: { params: { id: string } }) {
   const router = useRouter();
+  const { token, tenantSlug } = useAuth();
+  const [test, setTest] = useState<TestDetails | null>(null);
+  const [loading, setLoading] = useState(true);
   const [checks, setChecks] = useState({
     browser: false,
     internet: false,
@@ -27,6 +44,26 @@ export default function StudentTestLobby({ params }: { params: { id: string } })
     auth: true
   });
   const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    async function fetchTest() {
+      if (!token) return;
+      try {
+        const response = await api(`/v1/student/tests/${params.id}`, {
+          token,
+          tenant: tenantSlug || undefined
+        });
+        if (response.success) {
+          setTest(response.data);
+        }
+      } catch (error) {
+        console.error("Lobby fetch error:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchTest();
+  }, [token, params.id, tenantSlug]);
 
   useEffect(() => {
     // Simulate system checks
@@ -44,6 +81,33 @@ export default function StudentTestLobby({ params }: { params: { id: string } })
       });
     }
   };
+
+  const [isStarting, setIsStarting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleStartAssessment = async () => {
+    if (!token) return;
+    setIsStarting(true);
+    setError(null);
+    try {
+      const response = await api(`/v1/student/tests/${params.id}/start`, {
+        method: "POST",
+        token,
+        tenant: tenantSlug || undefined
+      });
+      if (response.success) {
+        router.push(`/student/tests/${params.id}/take?attempt=${response.data.attempt_id}`);
+      }
+    } catch (err) {
+      setError("Authorization failed or system busy. Retrying...");
+      console.error(err);
+    } finally {
+      setIsStarting(false);
+    }
+  };
+
+  if (loading) return <div className="p-12 text-center animate-pulse font-black uppercase tracking-widest text-zinc-400">Synchronizing with Proctor Vault...</div>;
+  if (!test) return <div className="p-12 text-center font-black uppercase tracking-widest text-rose-500">Failed to secure assessment link.</div>;
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-black p-8 animate-in fade-in duration-700">
@@ -71,10 +135,10 @@ export default function StudentTestLobby({ params }: { params: { id: string } })
                  <CardContent className="p-8 space-y-8">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                        {[
-                          { label: 'DURATION', val: '180 MINS', icon: Clock },
-                          { label: 'QUESTIONS', val: '45 ITEMS', icon: Monitor },
-                          { label: 'TOTAL MARKS', val: '180 PTS', icon: ShieldCheck },
-                          { label: 'NEGATIVE', val: '-1 MARK', icon: AlertTriangle }
+                          { label: 'DURATION', val: `${Math.floor(test.duration_seconds / 60)} MINS`, icon: Clock },
+                          { label: 'QUESTIONS', val: `${test.questions_count || 0} ITEMS`, icon: Monitor },
+                          { label: 'TOTAL MARKS', val: `${(test.questions_count || 0) * 4} PTS`, icon: ShieldCheck },
+                          { label: 'NEGATIVE', val: `${test.settings?.negative_marking ? '-' + test.settings.negative_marking : '0'} MARK`, icon: AlertTriangle }
                        ].map((item, i) => (
                           <div key={i} className="p-4 rounded-3xl bg-zinc-50 dark:bg-zinc-900 flex flex-col items-center text-center gap-1 border border-zinc-100 dark:border-zinc-800">
                              <item.icon className="h-4 w-4 text-zinc-400 mb-1" />
@@ -148,12 +212,19 @@ export default function StudentTestLobby({ params }: { params: { id: string } })
                              All systems green. You are ready to start the assessment.
                           </p>
                        </div>
-                       <Button 
-                          className="w-full bg-primary text-white font-black rounded-2xl h-14 hover:scale-[1.05] transform transition-all shadow-[0_0_30px_rgba(var(--primary),0.3)]"
-                          onClick={() => router.push(`/student/tests/${params.id}/take`)}
-                       >
-                          START ASSESSMENT
-                       </Button>
+                        {error && (
+                           <div className="p-4 rounded-xl bg-rose-500 text-white flex items-center gap-3 animate-shake">
+                              <AlertCircle className="h-4 w-4 shrink-0" />
+                              <p className="text-[10px] font-bold uppercase">{error}</p>
+                           </div>
+                        )}
+                        <Button 
+                           className="w-full bg-primary text-white font-black rounded-2xl h-14 hover:scale-[1.05] transform transition-all shadow-[0_0_30px_rgba(var(--primary),0.3)]"
+                           onClick={handleStartAssessment}
+                           disabled={isStarting}
+                        >
+                           {isStarting ? "SECURING LINK..." : "START ASSESSMENT"}
+                        </Button>
                     </div>
                  )}
               </Card>

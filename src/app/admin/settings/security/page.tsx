@@ -5,7 +5,7 @@ import { api } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ShieldAlert, Timer, LogOut, Terminal, Search } from "lucide-react";
+import { ShieldAlert, Timer, LogOut, Terminal, Search, Loader2 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -21,43 +21,58 @@ import { Lock, Download, ShieldCheck, Database } from "lucide-react";
 
 interface AuditLog {
   id: string;
-  user: string;
+  user?: { name: string; role: string };
   action: string;
-  resource: string;
+  entity_type: string;
   ip_address: string;
-  timestamp: string;
+  performed_at: string;
+}
+
+interface SecurityData {
+  audit_logs: AuditLog[];
+  active_sessions: {
+    name: string;
+    email: string;
+    last_used_at: string;
+    device: string;
+  }[];
+  security_score: number;
 }
 
 export default function SecurityAuditPage() {
   const { token, tenantSlug } = useAuth();
-  const [logs, setLogs] = useState<AuditLog[]>([]);
+  const [data, setData] = useState<SecurityData | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchLogs = useCallback(async () => {
+  const fetchSecurityData = useCallback(async () => {
     if (!token) return;
     try {
       setLoading(true);
-      const response = await api("/admin/audit-logs", {
+      const response = await api("/admin/security", {
         token,
         tenant: tenantSlug || undefined,
       });
-      setLogs(response.data);
-    } catch {
-      // Fallback for UI testing
-      setLogs([
-        { id: "1", user: "Admin (Centre)", action: "DELETE_BATCH", resource: "JEE-2024-Old", ip_address: "192.168.1.1", timestamp: new Date().toISOString() },
-        { id: "2", user: "Mrs. Kapoor", action: "LOGIN", resource: "Teacher Portal", ip_address: "103.42.12.1", timestamp: new Date(Date.now() - 3600000).toISOString() },
-        { id: "3", user: "Admin (Centre)", action: "UPDATE_BRANDING", resource: "System Setting", ip_address: "192.168.1.1", timestamp: new Date(Date.now() - 7200000).toISOString() },
-        { id: "4", user: "Prof. Verma", action: "PUBLISH_TEST", resource: "Mock Test #4", ip_address: "142.112.5.9", timestamp: new Date(Date.now() - 86400000).toISOString() },
-      ]);
+      if (response.success) {
+        setData(response.data);
+      }
+    } catch (err) {
+      console.error("Security fetch error:", err);
     } finally {
       setLoading(false);
     }
   }, [token, tenantSlug]);
 
   useEffect(() => {
-    fetchLogs();
-  }, [fetchLogs]);
+    fetchSecurityData();
+  }, [fetchSecurityData]);
+
+  if (loading && !data) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
@@ -70,7 +85,7 @@ export default function SecurityAuditPage() {
         </div>
         <Button variant="outline" className="gap-2 border-red-200 text-red-600 hover:bg-red-50">
           <ShieldAlert className="h-4 w-4" />
-          Critical Alerts (0)
+          Security Score: {data?.security_score || 0}%
         </Button>
       </div>
 
@@ -79,27 +94,31 @@ export default function SecurityAuditPage() {
           <CardHeader>
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <Timer className="h-4 w-4 text-primary" />
-              Active Admin Sessions
+              Active Institutional Sessions
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-               <div className="flex items-center justify-between">
-                 <div className="flex flex-col">
-                   <span className="text-sm font-medium">This Computer (MacBook Pro)</span>
-                   <span className="text-[10px] text-muted-foreground font-mono">192.168.1.1 • Active Now</span>
+               {data?.active_sessions.map((session, i) => (
+                 <div key={i} className="flex items-center justify-between">
+                   <div className="flex flex-col">
+                     <span className="text-sm font-medium">{session.name} ({session.device || 'Unknown Device'})</span>
+                     <span className="text-[10px] text-muted-foreground font-mono">
+                       {session.email} • {session.last_used_at ? new Date(session.last_used_at).toLocaleString() : 'Active Now'}
+                     </span>
+                   </div>
+                   {i === 0 ? (
+                     <Badge variant="outline" className="text-green-600 border-green-200">Current</Badge>
+                   ) : (
+                     <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-red-500">
+                       <LogOut className="h-4 w-4" />
+                     </Button>
+                   )}
                  </div>
-                 <Badge variant="outline" className="text-green-600 border-green-200">Current</Badge>
-               </div>
-               <div className="flex items-center justify-between">
-                 <div className="flex flex-col">
-                   <span className="text-sm font-medium">iPhone 15 Pro</span>
-                   <span className="text-[10px] text-muted-foreground font-mono">10.0.0.45 • 2 hours ago</span>
-                 </div>
-                 <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-red-500">
-                   <LogOut className="h-4 w-4" />
-                 </Button>
-               </div>
+               ))}
+               {(!data?.active_sessions || data.active_sessions.length === 0) && (
+                 <p className="text-xs text-muted-foreground italic">No active sessions detected.</p>
+               )}
             </div>
           </CardContent>
         </Card>
@@ -114,12 +133,12 @@ export default function SecurityAuditPage() {
           <CardContent>
              <div className="grid grid-cols-2 gap-4">
                 <div className="p-3 rounded-lg bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-700">
-                  <div className="text-2xl font-bold">{logs.length}</div>
-                  <p className="text-[10px] text-muted-foreground uppercase font-bold">Total Actions</p>
+                  <div className="text-2xl font-bold">{data?.audit_logs.length || 0}</div>
+                  <p className="text-[10px] text-muted-foreground uppercase font-bold">Recent Actions</p>
                 </div>
                 <div className="p-3 rounded-lg bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-700">
-                  <div className="text-2xl font-bold text-green-600">0</div>
-                  <p className="text-[10px] text-muted-foreground uppercase font-bold">Failed Logins</p>
+                  <div className="text-2xl font-bold text-green-600">Secure</div>
+                  <p className="text-[10px] text-muted-foreground uppercase font-bold">System Status</p>
                 </div>
              </div>
           </CardContent>
@@ -156,20 +175,20 @@ export default function SecurityAuditPage() {
                   </TableCell>
                 </TableRow>
               ) : (
-                logs.map((log) => (
+                data?.audit_logs.map((log) => (
                   <TableRow key={log.id}>
                     <TableCell className="text-[10px] font-mono text-muted-foreground">
-                      {new Date(log.timestamp).toLocaleString()}
+                      {new Date(log.performed_at).toLocaleString()}
                     </TableCell>
-                    <TableCell className="font-medium text-sm">{log.user}</TableCell>
+                    <TableCell className="font-medium text-sm">{log.user?.name || 'System'}</TableCell>
                     <TableCell>
                        <Badge variant="outline" className="text-[9px] font-bold uppercase tracking-tight">
                         {log.action}
                        </Badge>
                     </TableCell>
-                    <TableCell className="text-sm">{log.resource}</TableCell>
+                    <TableCell className="text-sm">{log.entity_type}</TableCell>
                     <TableCell className="text-right text-[10px] font-mono text-muted-foreground">
-                      {log.ip_address}
+                      {log.ip_address || '---'}
                     </TableCell>
                   </TableRow>
                 ))

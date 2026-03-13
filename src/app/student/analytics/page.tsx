@@ -1,6 +1,6 @@
-"use client";
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { api } from "@/lib/api";
+import { useAuth } from "@/hooks/use-auth";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { 
   TrendingUp, 
@@ -25,26 +25,58 @@ import {
 } from "recharts";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 
-const scoreHistory = [
-  { date: 'Sep 1', score: 120, avg: 105 },
-  { date: 'Sep 15', score: 135, avg: 110 },
-  { date: 'Oct 1', score: 128, avg: 108 },
-  { date: 'Oct 15', score: 145, avg: 115 },
-  { date: 'Nov 1', score: 142, avg: 112 },
-  { date: 'Nov 15', score: 158, avg: 120 },
-];
-
-const subjectData = [
-  { subject: 'Math', value: 85, fullMark: 100 },
-  { subject: 'Physics', value: 78, fullMark: 100 },
-  { subject: 'Chemistry', value: 92, fullMark: 100 },
-  { subject: 'Biology', value: 65, fullMark: 100 },
-  { subject: 'English', value: 88, fullMark: 100 },
-];
+interface AnalyticsData {
+  overview: {
+    total_tests_taken: number;
+    average_score: number;
+    weakest_subject: string;
+    strongest_subject: string;
+    predicted_rank: number;
+    percentile: number;
+  };
+  subject_performance: Array<{ subject: string; correct: number; total: number; accuracy: number }>;
+  recent_trend: Array<{ percentage: number; date: string; test_title: string }>;
+  ai_recommendation: string;
+}
 
 export default function StudentAnalyticsPage() {
+  const { token, tenantSlug } = useAuth();
+  const [data, setData] = useState<AnalyticsData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchAnalytics() {
+      if (!token) return;
+      setLoading(true);
+      try {
+        const response = await api("/v1/student/analytics/insights", {
+          token,
+          tenant: tenantSlug || undefined
+        });
+        if (response.success) {
+          setData(response.data);
+        }
+      } catch (error) {
+        console.error("Analytics fetch error:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchAnalytics();
+  }, [token, tenantSlug]);
+
+  const chartData = data?.recent_trend.map(item => ({
+    date: new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+    score: item.percentage,
+    avg: 70 // Conceptually, this would be class average from backend
+  })) || [];
+
+  const radarData = data?.subject_performance.map(item => ({
+    subject: item.subject,
+    value: item.accuracy,
+    fullMark: 100
+  })) || [];
   return (
     <div className="space-y-8 animate-in fade-in duration-700 pb-20 p-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -71,39 +103,52 @@ export default function StudentAnalyticsPage() {
                     <CardTitle className="text-xl font-black uppercase italic italic tracking-tighter">Performance Velocity</CardTitle>
                     <CardDescription className="font-bold text-[10px] uppercase tracking-widest mt-1">Your score trend compared to class average</CardDescription>
                  </div>
-                 <Badge className="bg-emerald-500/10 text-emerald-500 border-none font-black text-[10px] italic">+12% Monthly Gain</Badge>
+                 {data && (
+                    <Badge className="bg-emerald-500/10 text-emerald-500 border-none font-black text-[10px] italic">
+                       {data.overview.average_score}% Avg Score
+                    </Badge>
+                 )}
               </div>
            </CardHeader>
            <CardContent className="p-8 h-[400px]">
-              <ResponsiveContainer width="100%" height="100%">
-                 <AreaChart data={scoreHistory}>
-                    <defs>
-                       <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#18181b" stopOpacity={0.1}/>
-                          <stop offset="95%" stopColor="#18181b" stopOpacity={0}/>
-                       </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f1f1" />
-                    <XAxis 
-                       dataKey="date" 
-                       axisLine={false} 
-                       tickLine={false} 
-                       tick={{fontSize: 10, fontWeight: 900, fill: '#A1A1AA'}}
-                       dy={10}
-                    />
-                    <YAxis 
-                       axisLine={false} 
-                       tickLine={false} 
-                       tick={{fontSize: 10, fontWeight: 900, fill: '#A1A1AA'}}
-                    />
-                    <Tooltip 
-                       contentStyle={{ borderRadius: '1.5rem', border: 'none', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.15)', fontWeight: 900 }} 
-                       cursor={{ stroke: '#18181b', strokeWidth: 2 }}
-                    />
-                    <Area type="monotone" dataKey="score" stroke="#18181b" strokeWidth={4} fillOpacity={1} fill="url(#colorScore)" />
-                    <Line type="monotone" dataKey="avg" stroke="#A1A1AA" strokeWidth={2} strokeDasharray="5 5" dot={false} />
-                 </AreaChart>
-              </ResponsiveContainer>
+              {loading ? (
+                <div className="h-full w-full bg-secondary/20 animate-pulse rounded-2xl" />
+              ) : chartData.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                   <AreaChart data={chartData}>
+                      <defs>
+                         <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="#18181b" stopOpacity={0.1}/>
+                            <stop offset="95%" stopColor="#18181b" stopOpacity={0}/>
+                         </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f1f1" />
+                      <XAxis 
+                         dataKey="date" 
+                         axisLine={false} 
+                         tickLine={false} 
+                         tick={{fontSize: 10, fontWeight: 900, fill: '#A1A1AA'}}
+                         dy={10}
+                      />
+                      <YAxis 
+                         axisLine={false} 
+                         tickLine={false} 
+                         tick={{fontSize: 10, fontWeight: 900, fill: '#A1A1AA'}}
+                         domain={[0, 100]}
+                      />
+                      <Tooltip 
+                         contentStyle={{ borderRadius: '1.5rem', border: 'none', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.15)', fontWeight: 900 }} 
+                         cursor={{ stroke: '#18181b', strokeWidth: 2 }}
+                      />
+                      <Area type="monotone" dataKey="score" stroke="#18181b" strokeWidth={4} fillOpacity={1} fill="url(#colorScore)" />
+                      <Line type="monotone" dataKey="avg" stroke="#A1A1AA" strokeWidth={2} strokeDasharray="5 5" dot={false} />
+                   </AreaChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="h-full w-full flex items-center justify-center text-zinc-400 font-black uppercase tracking-widest bg-secondary/10 rounded-2xl">
+                   No test data to visualize performance.
+                </div>
+              )}
            </CardContent>
         </Card>
 
@@ -114,32 +159,42 @@ export default function StudentAnalyticsPage() {
               <p className="text-zinc-500 text-[10px] font-black uppercase tracking-widest mb-8">Conceptual mapping across disciplines</p>
               
               <div className="flex-1 min-h-[300px]">
-                 <ResponsiveContainer width="100%" height="100%">
-                    <RadarChart cx="50%" cy="50%" outerRadius="80%" data={subjectData}>
-                       <PolarGrid stroke="#3f3f46" />
-                       <PolarAngleAxis dataKey="subject" tick={{fontSize: 10, fontWeight: 900, fill: '#71717a'}} />
-                       <Radar
-                          name="Competency"
-                          dataKey="value"
-                          stroke="#ffffff"
-                          strokeWidth={3}
-                          fill="#ffffff"
-                          fillOpacity={0.15}
-                       />
-                    </RadarChart>
-                 </ResponsiveContainer>
+                 {loading ? (
+                    <div className="h-full w-full bg-white/5 animate-pulse rounded-full" />
+                 ) : radarData.length > 0 ? (
+                    <ResponsiveContainer width="100%" height="100%">
+                       <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
+                          <PolarGrid stroke="#3f3f46" />
+                          <PolarAngleAxis dataKey="subject" tick={{fontSize: 10, fontWeight: 900, fill: '#71717a'}} />
+                          <Radar
+                             name="Competency"
+                             dataKey="value"
+                             stroke="#ffffff"
+                             strokeWidth={3}
+                             fill="#ffffff"
+                             fillOpacity={0.15}
+                          />
+                       </RadarChart>
+                    </ResponsiveContainer>
+                 ) : (
+                    <div className="h-full w-full flex items-center justify-center text-zinc-600 font-black uppercase tracking-widest text-center">
+                       Radar requires multi-subject data.
+                    </div>
+                 )}
               </div>
 
-              <div className="mt-8 space-y-4">
-                 <div className="flex justify-between items-end border-b border-white/5 pb-2">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Strongest Subject</span>
-                    <span className="text-sm font-black italic text-emerald-500">Chemistry (92%)</span>
-                 </div>
-                 <div className="flex justify-between items-end border-b border-white/5 pb-2">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Critical Area</span>
-                    <span className="text-sm font-black italic text-rose-500">Biology (65%)</span>
-                 </div>
-              </div>
+              {data && (
+                <div className="mt-8 space-y-4">
+                   <div className="flex justify-between items-end border-b border-white/5 pb-2">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Strongest Subject</span>
+                      <span className="text-sm font-black italic text-emerald-500">{data.overview.strongest_subject}</span>
+                   </div>
+                   <div className="flex justify-between items-end border-b border-white/5 pb-2">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Critical Area</span>
+                      <span className="text-sm font-black italic text-rose-500">{data.overview.weakest_subject}</span>
+                   </div>
+                </div>
+              )}
            </div>
            <Activity className="absolute -bottom-12 -right-12 h-48 w-48 opacity-5 rotate-12" />
         </Card>
@@ -152,9 +207,9 @@ export default function StudentAnalyticsPage() {
                <TrendingUp className="h-8 w-8 text-orange-500" />
             </div>
             <div className="text-center">
-               <h4 className="text-sm font-black uppercase tracking-widest italic">Improvement Rate</h4>
-               <p className="text-3xl font-black italic mt-1">+18.4%</p>
-               <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-2">Vs Previous Quarter</p>
+               <h4 className="text-sm font-black uppercase tracking-widest italic">Tests Taken</h4>
+               <p className="text-3xl font-black italic mt-1">{data?.overview.total_tests_taken || 0}</p>
+               <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-2">Active Assessments</p>
             </div>
          </Card>
 
@@ -163,9 +218,9 @@ export default function StudentAnalyticsPage() {
                <Target className="h-8 w-8 text-emerald-500" />
             </div>
             <div className="text-center">
-               <h4 className="text-sm font-black uppercase tracking-widest italic">Precision Index</h4>
-               <p className="text-3xl font-black italic mt-1">94.2%</p>
-               <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-2">Accuracy on Easy/Med Items</p>
+               <h4 className="text-sm font-black uppercase tracking-widest italic">Avg Accuracy</h4>
+               <p className="text-3xl font-black italic mt-1">{data?.overview.average_score || 0}%</p>
+               <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-2">Overall Proficiency</p>
             </div>
          </Card>
 
@@ -174,9 +229,9 @@ export default function StudentAnalyticsPage() {
                <Activity className="h-8 w-8 text-blue-500" />
             </div>
             <div className="text-center">
-               <h4 className="text-sm font-black uppercase tracking-widest italic">Stability Score</h4>
-               <p className="text-3xl font-black italic mt-1">8.5/10</p>
-               <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-2">Performance Consistency</p>
+               <h4 className="text-sm font-black uppercase tracking-widest italic">Stability Index</h4>
+               <p className="text-3xl font-black italic mt-1">{data ? (data.overview.average_score > 70 ? 'High' : 'Medium') : 'N/A'}</p>
+               <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-2">Performance consistency</p>
             </div>
          </Card>
       </div>
@@ -192,7 +247,7 @@ export default function StudentAnalyticsPage() {
                   Predictive Analysis: Score Forecast
                </h2>
                <p className="text-zinc-500 text-lg font-medium leading-relaxed">
-                  Based on your current trajectory and consistency, our AI predicts a <span className="text-white italic font-bold">165+ score</span> in the upcoming All-India Series. To guarantee this, focus on high-weightage topics in Biology.
+                  {data?.ai_recommendation || "Take more tests to generate deep AI-driven growth forecasting and personalized study plans."}
                </p>
                <Button className="bg-white text-black font-black px-8 h-12 rounded-xl group-hover:scale-105 transition-all">
                   UNFOLD DETAIL STUDY PLAN <ArrowUpRight className="ml-2 h-4 w-4" />
@@ -200,8 +255,8 @@ export default function StudentAnalyticsPage() {
             </div>
             <div className="flex gap-4">
                {[
-                  { label: 'Predicted Rank', val: 'AIR 450' },
-                  { label: 'Syllabus Health', val: '86%' }
+                  { label: 'Forecasted Rank', val: data?.overview.predicted_rank ? `#${data.overview.predicted_rank}` : 'Calculating...' },
+                  { label: 'Current Percentile', val: data?.overview.percentile ? `${data.overview.percentile.toFixed(1)}%` : 'TBD' }
                ].map((m, i) => (
                   <div key={i} className="bg-white/5 backdrop-blur-xl border border-white/10 p-8 rounded-[2.5rem] text-center min-w-[160px]">
                      <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500 mb-2">{m.label}</p>

@@ -18,24 +18,58 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
+import { api } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
 import Image from "next/image";
 
 export default function ParentSettingsPage() {
-  const { user, token, logout } = useAuth();
+  const { user, token, logout, tenantSlug } = useAuth();
   const [settings, setSettings] = useState({
     email_notifications: true,
     sms_alerts: false,
     whatsapp_sync: true,
     two_factor: false
   });
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    // Fetch user settings if needed
-  }, [token]);
+    async function fetchSettings() {
+      if (!token) return;
+      try {
+        const response = await api("/v1/parent/settings", {
+          token,
+          tenant: tenantSlug || undefined
+        });
+        if (response.data && response.data.settings) {
+          setSettings(response.data.settings);
+        }
+      } catch (err) {
+        console.error("Failed to fetch settings:", err);
+      }
+    }
+    fetchSettings();
+  }, [token, tenantSlug]);
 
   const handleToggle = (key: keyof typeof settings) => {
     setSettings(prev => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const saveSettings = async () => {
+    if (!token) return;
+    setIsSaving(true);
+    try {
+      await api("/v1/parent/settings", {
+        method: "PUT",
+        token,
+        tenant: tenantSlug || undefined,
+        body: JSON.stringify({ settings })
+      });
+      // Toast or success feedback would go here
+    } catch (err) {
+      console.error("Failed to save settings:", err);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   if (!user) return null;
@@ -179,12 +213,15 @@ export default function ParentSettingsPage() {
                        </div>
                     </div>
                  </div>
-                 
-                 <div className="mt-12 flex justify-end">
-                    <Button className="h-14 px-12 rounded-[2rem] bg-zinc-900 dark:bg-white text-white dark:text-black font-black text-xs uppercase tracking-widest hover:scale-105 transition-all shadow-xl">
-                       SAVE GLOBAL CONFIGS
-                    </Button>
-                 </div>
+                                  <div className="mt-12 flex justify-end">
+                     <Button 
+                        disabled={isSaving}
+                        onClick={saveSettings}
+                        className="h-14 px-12 rounded-[2rem] bg-zinc-900 dark:bg-white text-white dark:text-black font-black text-xs uppercase tracking-widest hover:scale-105 transition-all shadow-xl"
+                     >
+                        {isSaving ? "SYCHRONIZING..." : "SAVE GLOBAL CONFIGS"}
+                     </Button>
+                  </div>
               </CardContent>
            </Card>
         </div>
