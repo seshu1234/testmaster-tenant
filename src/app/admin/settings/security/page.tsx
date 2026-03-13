@@ -90,7 +90,7 @@ export default function SecurityAuditPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+        <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
           <CardHeader>
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <Timer className="h-4 w-4 text-primary" />
@@ -117,13 +117,13 @@ export default function SecurityAuditPage() {
                  </div>
                ))}
                {(!data?.active_sessions || data.active_sessions.length === 0) && (
-                 <p className="text-xs text-muted-foreground italic">No active sessions detected.</p>
+                  <p className="text-xs text-muted-foreground">No active sessions detected.</p>
                )}
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+        <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
           <CardHeader>
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <Terminal className="h-4 w-4 text-primary" />
@@ -145,7 +145,7 @@ export default function SecurityAuditPage() {
         </Card>
       </div>
 
-      <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+      <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
             <CardTitle>Master Audit Log</CardTitle>
@@ -199,7 +199,7 @@ export default function SecurityAuditPage() {
       </Card>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <Card className="border-none shadow-sm bg-zinc-900 text-white">
+        <Card className="border shadow-sm bg-zinc-900 text-white">
           <CardHeader>
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <Lock className="h-4 w-4 text-primary-foreground" />
@@ -224,7 +224,7 @@ export default function SecurityAuditPage() {
           </CardContent>
         </Card>
 
-        <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+        <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
           <CardHeader>
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <ShieldCheck className="h-4 w-4 text-primary" />
@@ -238,9 +238,9 @@ export default function SecurityAuditPage() {
              </Button>
              <div className="flex items-center gap-2 p-3 rounded-lg bg-zinc-100/50 border border-dashed border-zinc-200">
                <Database className="h-4 w-4 text-zinc-400" />
-               <p className="text-[10px] text-zinc-500 italic">
-                 Last full integrity scan: {new Date().toLocaleDateString()}
-               </p>
+                <p className="text-[10px] text-zinc-500">
+                  Last full integrity scan: {new Date().toLocaleDateString()}
+                </p>
              </div>
           </CardContent>
         </Card>

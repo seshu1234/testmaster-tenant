@@ -82,7 +82,7 @@ export default function TeacherTestsPage() {
 
        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {tests.map(test => (
-             <Card key={test.id} className="flex flex-col">
+             <Card key={test.id} className="flex flex-col border shadow-sm">
                 <CardHeader>
                    <div className="flex justify-between items-start">
                      <CardTitle className="line-clamp-1">{test.title}</CardTitle>

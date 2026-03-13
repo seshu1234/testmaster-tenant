@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { api } from "@/lib/api";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
@@ -27,12 +28,27 @@ interface Resource {
 }
 
 export default function TeacherResourcesPage() {
-  useAuth();
-  const [resources] = useState<Resource[]>([
-    { id: '1', name: 'Quantum Mechanics Notes - Phase 1', type: 'pdf', size: '2.4 MB', uploaded_at: '2 days ago', batch_count: 3 },
-    { id: '2', name: 'Electrostatics Video Lecture', type: 'video', size: '150 MB', uploaded_at: 'Yesterday', batch_count: 5 },
-    { id: '3', name: 'Advanced Calculus Worksheets', type: 'pdf', size: '1.1 MB', uploaded_at: 'Just now', batch_count: 1 },
-  ]);
+  const [resources, setResources] = useState<Resource[]>([]);
+  const { token, tenantSlug } = useAuth();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchResources() {
+      if (!token) return;
+      try {
+        const response = await api("/v1/teacher/resources", {
+          token,
+          tenant: tenantSlug || undefined
+        });
+        setResources(response.data || []);
+      } catch (error) {
+        console.error("Failed to fetch resources:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchResources();
+  }, [token, tenantSlug]);
 
   const getIcon = (type: string) => {
     switch (type) {
@@ -51,7 +67,7 @@ export default function TeacherResourcesPage() {
           <p className="text-muted-foreground">Upload and distribute course resources to your assigned batches.</p>
         </div>
         <div className="flex gap-2">
-           <Button className="gap-2 bg-zinc-900 border-none rounded-xl h-11 px-6 text-white shadow-xl hover:bg-black transition-all">
+           <Button className="gap-2 bg-zinc-900 rounded-xl h-11 px-6 text-white shadow-sm hover:bg-black transition-all">
              <Plus className="h-4 w-4" />
              Upload Material
            </Button>
@@ -60,7 +76,7 @@ export default function TeacherResourcesPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
          <div className="md:col-span-3 space-y-4">
-            <div className="flex items-center justify-between bg-white dark:bg-zinc-950 p-4 rounded-2xl border shadow-sm">
+            <div className="flex items-center justify-between bg-white dark:bg-zinc-950 p-4 rounded-xl border shadow-sm">
                <div className="relative flex-1 max-w-md">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
                   <input 
@@ -77,8 +93,17 @@ export default function TeacherResourcesPage() {
             </div>
 
             <div className="grid grid-cols-1 gap-3">
-               {resources.map((res) => (
-                  <Card key={res.id} className="group border-none shadow-sm hover:shadow-md transition-all bg-white dark:bg-zinc-900 overflow-hidden">
+                {loading ? (
+                  <div className="py-12 text-center text-muted-foreground animate-pulse text-xs uppercase font-bold tracking-widest">
+                    Retrieving resources...
+                  </div>
+                ) : resources.length === 0 ? (
+                  <div className="py-12 text-center text-muted-foreground border-2 border-dashed rounded-xl">
+                    No resources uploaded yet. Click &quot;Upload Material&quot; to begin.
+                  </div>
+                ) : (
+                  resources.map((res) => (
+                  <Card key={res.id} className="group border shadow-sm hover:shadow-md transition-all bg-white dark:bg-zinc-900 overflow-hidden">
                      <CardContent className="p-4 flex items-center justify-between">
                         <div className="flex items-center gap-4">
                            <div className="h-12 w-12 rounded-2xl bg-zinc-50 dark:bg-zinc-800 flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -98,21 +123,22 @@ export default function TeacherResourcesPage() {
                         </div>
                      </CardContent>
                   </Card>
-               ))}
+                ))
+               )}
             </div>
          </div>
 
          <div className="space-y-6">
-            <Card className="border-none shadow-xl bg-primary text-white p-6 rounded-3xl overflow-hidden relative">
+            <Card className="border shadow-sm bg-primary text-white p-6 rounded-2xl overflow-hidden relative">
                <div className="relative z-10 space-y-4">
                   <h3 className="text-lg font-black tracking-tight">Cloud Storage</h3>
                   <div className="space-y-2">
                      <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
-                        <span>Used</span>
-                        <span>4.2 GB / 10 GB</span>
+                        <span>Used Storage</span>
+                        <span>-- / 10 GB</span>
                      </div>
                      <div className="h-2 w-full bg-white/20 rounded-full overflow-hidden">
-                        <div className="h-full bg-white w-[42%]" />
+                        <div className="h-full bg-white w-[0%]" />
                      </div>
                   </div>
                   <Button variant="outline" className="w-full bg-white/10 border-white/20 hover:bg-white text-white hover:text-primary rounded-xl font-bold">
@@ -122,16 +148,11 @@ export default function TeacherResourcesPage() {
                <FolderOpen className="absolute -bottom-10 -right-10 h-40 w-40 text-black/10 rotate-12" />
             </Card>
 
-            <Card className="border-none shadow-lg bg-zinc-900 text-white p-6 rounded-3xl">
+            <Card className="border shadow-sm bg-zinc-900 text-white p-6 rounded-2xl">
                <h3 className="text-sm font-black uppercase tracking-widest text-zinc-400 mb-6">Recent Activities</h3>
                <div className="space-y-6">
-                  <div className="flex gap-4">
-                     <div className="h-2 w-2 rounded-full bg-emerald-500 mt-1.5 shrink-0 shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
-                     <p className="text-xs font-medium text-zinc-300">You shared <span className="text-white font-bold">Calculus_W1.pdf</span> with <span className="text-primary font-bold">Batch B</span></p>
-                  </div>
-                  <div className="flex gap-4">
-                     <div className="h-2 w-2 rounded-full bg-indigo-500 mt-1.5 shrink-0 shadow-[0_0_10px_rgba(99,102,241,0.5)]" />
-                     <p className="text-xs font-medium text-zinc-300">New video lecture uploaded to library</p>
+                  <div className="text-center py-4 text-xs text-zinc-500 uppercase font-bold tracking-widest">
+                     No recent activities.
                   </div>
                </div>
             </Card>

@@ -143,7 +143,7 @@ export default function StudentSettingsPage() {
     <div className="space-y-8 animate-in fade-in duration-700 pb-20 p-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-black tracking-tighter italic uppercase">Identity & Control</h1>
+          <h1 className="text-3xl font-black tracking-tighter uppercase">Identity & Control</h1>
           <p className="text-muted-foreground text-sm font-medium">Manage your personal profile, study goals, and parent connectivity.</p>
         </div>
         <div className="flex bg-white dark:bg-zinc-900 p-1 rounded-2xl border dark:border-zinc-800 shadow-sm">
@@ -169,33 +169,33 @@ export default function StudentSettingsPage() {
            <>
             {/* Profile Overview */}
             <div className="lg:col-span-4 space-y-8">
-               <Card className="border-none shadow-2xl rounded-[3rem] bg-white dark:bg-zinc-950 p-10 flex flex-col items-center text-center">
+               <Card className="border shadow-md rounded-3xl bg-white dark:bg-zinc-950 p-8 flex flex-col items-center text-center">
                   <div className="relative group cursor-pointer mb-6">
-                     <div className="h-32 w-32 rounded-[3.5rem] bg-primary flex items-center justify-center text-4xl font-black italic text-white shadow-2xl group-hover:scale-105 transition-all overflow-hidden border-4 border-white dark:border-zinc-900 relative">
+                     <div className="h-32 w-32 rounded-3xl bg-primary flex items-center justify-center text-4xl font-black text-white shadow-2xl group-hover:scale-105 transition-all overflow-hidden border-4 border-white dark:border-zinc-900 relative">
                         {profile?.avatar_url ? (
                            <Image src={profile.avatar_url} alt={profile.name || "Student Avatar"} fill className="object-cover" />
                         ) : (
                            profile?.name?.charAt(0)
                         )}
                      </div>
-                     <div className="absolute inset-0 bg-black/40 rounded-[3.5rem] items-center justify-center hidden group-hover:flex">
+                     <div className="absolute inset-0 bg-black/40 rounded-3xl items-center justify-center hidden group-hover:flex">
                         <Camera className="h-8 w-8 text-white" />
                      </div>
                      <div className="absolute -bottom-2 -right-2 h-10 w-10 rounded-2xl bg-zinc-900 text-white flex items-center justify-center border-4 border-white dark:border-zinc-950">
                         <Flame className="h-4 w-4 text-orange-500" />
                      </div>
                   </div>
-                  <h3 className="text-2xl font-black uppercase tracking-tight italic">{profile?.name}</h3>
+                  <h3 className="text-2xl font-black uppercase tracking-tight">{profile?.name}</h3>
                   <p className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">{profile?.batch} • Level {profile?.level}</p>
                   
                   <div className="grid grid-cols-2 gap-4 w-full mt-10">
                      <div className="bg-zinc-50 dark:bg-zinc-900 p-4 rounded-2xl border dark:border-zinc-800 text-center">
                         <p className="text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-1">Points</p>
-                        <p className="text-xl font-black italic">{profile?.points}</p>
+                        <p className="text-xl font-black">{profile?.points}</p>
                      </div>
                      <div className="bg-zinc-50 dark:bg-zinc-900 p-4 rounded-2xl border dark:border-zinc-800 text-center">
                         <p className="text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-1">Streak</p>
-                        <p className="text-xl font-black italic">{profile?.streak} Days</p>
+                        <p className="text-xl font-black">{profile?.streak} Days</p>
                      </div>
                   </div>
 
@@ -205,19 +205,19 @@ export default function StudentSettingsPage() {
                   </Button>
                </Card>
 
-               <Card className="border-none shadow-xl rounded-[2.5rem] bg-zinc-950 p-8 text-white overflow-hidden relative">
+               <Card className="border shadow-md rounded-2xl bg-zinc-950 p-6 text-white overflow-hidden relative">
                   <div className="relative z-10">
                      <h4 className="text-xs font-black uppercase tracking-widest text-primary mb-6">Study Goals</h4>
                      <div className="space-y-4">
                         <div className="flex justify-between items-center bg-zinc-50 dark:bg-zinc-900/50 p-6 rounded-2xl">
                            <div className="flex items-center gap-4">
                               <Badge className="bg-primary/10 text-primary border-none text-[8px] font-black uppercase tracking-widest px-4 py-1.5">Primary Goal</Badge>
-                              <h4 className="text-xs font-black uppercase tracking-tight italic">{profile?.study_goal?.target || 'Not Set'}</h4>
+                              <h4 className="text-xs font-black uppercase tracking-tight">{profile?.study_goal?.target || 'Not Set'}</h4>
                            </div>
                            <TrendingUp className="h-5 w-5 text-zinc-300" />
                         </div>
                         <Progress value={profile?.study_goal?.progress || 0} className="h-6 rounded-xl bg-zinc-100 dark:bg-zinc-900" />
-                        <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-zinc-400 mt-2 italic px-2">
+                        <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-zinc-400 mt-2 px-2">
                            <span>CURRENT PROGRESS</span>
                            <span>{profile?.study_goal?.progress || 0}%</span>
                         </div>
@@ -226,19 +226,19 @@ export default function StudentSettingsPage() {
                   <Target className="absolute -bottom-10 -right-10 h-32 w-32 opacity-10 rotate-12" />
                </Card>
 
-               <Card className="border-none shadow-xl rounded-[3rem] bg-white dark:bg-zinc-950 p-10 flex flex-col gap-4">
+               <Card className="border shadow-md rounded-3xl bg-white dark:bg-zinc-950 p-8 flex flex-col gap-4">
                   <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
                      <Target className="h-5 w-5 text-primary" />
                   </div>
-                  <h3 className="text-xl font-black italic uppercase italic tracking-tighter">Academic Focus</h3>
+                  <h3 className="text-xl font-black uppercase tracking-tighter">Academic Focus</h3>
                   <p className="text-zinc-500 text-[10px] font-medium leading-relaxed uppercase tracking-widest">Targeting: {profile?.study_goal?.exam || 'N/A'}</p>
                </Card>
             </div>
 
             {/* Account Settings */}
             <div className="lg:col-span-8 space-y-8">
-               <Card className="border-none shadow-2xl rounded-[3rem] bg-white dark:bg-zinc-950 p-10">
-                  <h3 className="text-2xl font-black italic uppercase italic tracking-tighter mb-8 px-4">Core Identification</h3>
+               <Card className="border shadow-md rounded-3xl bg-white dark:bg-zinc-950 p-8">
+                  <h3 className="text-2xl font-black uppercase tracking-tighter mb-8 px-4">Core Identification</h3>
                   <form onSubmit={handleSaveProfile}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                        <div className="space-y-3">
@@ -285,15 +285,15 @@ export default function StudentSettingsPage() {
                   </form>
                </Card>
 
-               <Card className="border-none shadow-2xl rounded-[3rem] bg-white dark:bg-zinc-950 p-10">
-                  <h3 className="text-2xl font-black italic uppercase italic tracking-tighter mb-8 px-4">Neural Preferences</h3>
+               <Card className="border shadow-md rounded-3xl bg-white dark:bg-zinc-950 p-8">
+                  <h3 className="text-2xl font-black uppercase tracking-tighter mb-8 px-4">Neural Preferences</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                      {[
                         { key: 'push_notifications', label: 'Push Notifications', icon: Bell, desc: 'Real-time alert relay for system events.' },
                         { key: 'weekly_reports', label: 'Weekly Diagnostics', icon: Share2, desc: 'Automated performance report generation.' },
                         { key: 'dark_mode', label: 'High Contrast Mode', icon: Globe, desc: 'Optimized visual rendering for low-light ops.' }
                      ].map((pref) => (
-                        <div key={pref.key} className="p-6 rounded-[2rem] bg-zinc-50 dark:bg-zinc-900/50 flex items-center justify-between group hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-all border border-transparent hover:border-zinc-200 dark:hover:border-zinc-800">
+                        <div key={pref.key} className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900/50 flex items-center justify-between group hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-all border border-transparent hover:border-zinc-200 dark:hover:border-zinc-800">
                         <div className="flex items-center gap-4">
                            <div className="h-10 w-10 rounded-xl bg-white dark:bg-zinc-950 flex items-center justify-center">
                               <pref.icon className="h-5 w-5 text-zinc-400" />
@@ -319,16 +319,16 @@ export default function StudentSettingsPage() {
             <div className="lg:col-span-12 grid grid-cols-1 lg:grid-cols-3 gap-8">
                <div className="lg:col-span-2 space-y-8">
                   {parent ? (
-                    <Card className="border-none shadow-2xl rounded-[3rem] bg-white dark:bg-zinc-950 p-10 relative overflow-hidden group">
+                    <Card className="border shadow-md rounded-3xl bg-white dark:bg-zinc-950 p-8 relative overflow-hidden group">
                        <div className="relative z-10 flex flex-col md:flex-row gap-10 items-center">
-                          <div className="h-40 w-40 rounded-[3rem] bg-zinc-50 dark:bg-zinc-900 border-4 border-dashed flex items-center justify-center p-4">
+                          <div className="h-40 w-40 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border-4 border-dashed flex items-center justify-center p-4">
                              <Users className="h-16 w-16 text-zinc-200" />
                           </div>
                           <div className="flex-1 space-y-6">
                              <Badge className="bg-emerald-500/10 text-emerald-500 border-none text-[8px] font-black uppercase tracking-widest px-4 py-1.5">
                                 {parent?.status}
                              </Badge>
-                             <h2 className="text-3xl font-black italic uppercase tracking-tighter">{parent?.name}</h2>
+                             <h2 className="text-3xl font-black uppercase tracking-tighter">{parent?.name}</h2>
                              <div className="grid grid-cols-2 gap-4">
                                 <div className="flex items-center gap-3 text-zinc-500">
                                    <Mail className="h-4 w-4" />
@@ -351,9 +351,9 @@ export default function StudentSettingsPage() {
                        </div>
                     </Card>
                   ) : (
-                    <Card className="border-none shadow-2xl rounded-[3rem] bg-white dark:bg-zinc-950 p-10 flex flex-col items-center justify-center text-center gap-6">
+                    <Card className="border shadow-md rounded-3xl bg-white dark:bg-zinc-950 p-8 flex flex-col items-center justify-center text-center gap-6">
                        <Users className="h-16 w-16 text-zinc-200" />
-                       <h3 className="text-xl font-black uppercase italic tracking-tighter">No Parent Account Linked</h3>
+                       <h3 className="text-xl font-black uppercase tracking-tighter">No Parent Account Linked</h3>
                        <p className="text-muted-foreground text-sm max-w-md">Connect with a guardian to share your academic victories and get performance support.</p>
                        <Button className="bg-primary text-white font-black px-10 h-14 rounded-2xl shadow-xl hover:scale-105 transition-all">
                           LINK A PARENT
@@ -361,17 +361,17 @@ export default function StudentSettingsPage() {
                     </Card>
                   )}
 
-                  <Card className="border-none shadow-xl rounded-[3rem] bg-white dark:bg-zinc-950 p-10">
-                     <h3 className="text-xl font-black italic uppercase italic tracking-tighter mb-8">Shared Intelligence</h3>
+                  <Card className="border shadow-md rounded-3xl bg-white dark:bg-zinc-950 p-8">
+                     <h3 className="text-xl font-black uppercase tracking-tighter mb-8">Shared Intelligence</h3>
                      <div className="space-y-2">
                         {parent ? [
                            { event: parent?.last_activity, detail: 'Latest sync successful', time: 'Just now' },
                         ].map((log, i) => (
-                           <div key={i} className="flex items-center justify-between p-4 px-6 hover:bg-zinc-50 dark:hover:bg-zinc-900 rounded-2xl transition-all group">
+                           <div key={i} className="flex items-center justify-between p-4 px-6 hover:bg-zinc-50 dark:hover:bg-900 rounded-2xl transition-all group">
                               <div className="flex items-center gap-4">
                                  <div className="h-2 w-2 rounded-full bg-emerald-500" />
                                  <div>
-                                    <h4 className="text-xs font-black uppercase tracking-tight italic">{log.event}</h4>
+                                    <h4 className="text-xs font-black uppercase tracking-tight">{log.event}</h4>
                                     <p className="text-[10px] font-bold text-zinc-400">{log.detail}</p>
                                  </div>
                               </div>
@@ -385,12 +385,12 @@ export default function StudentSettingsPage() {
                </div>
 
                <div className="space-y-8">
-                  <Card className="border-none shadow-2xl rounded-[3rem] bg-zinc-900 p-8 text-white relative overflow-hidden group">
+                  <Card className="border shadow-md rounded-2xl bg-zinc-900 p-6 text-white relative overflow-hidden group">
                      <div className="relative z-10 text-center space-y-6">
                         <div className="h-16 w-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
                            <TrendingUp className="h-8 w-8 text-primary" />
                         </div>
-                        <h3 className="text-xl font-black italic uppercase italic tracking-tighter">Transparency</h3>
+                        <h3 className="text-xl font-black uppercase tracking-tighter">Transparency</h3>
                         <p className="text-zinc-500 text-xs font-medium leading-relaxed">
                            Connecting a parent account ensures they stay in the loop with your progress and achievements.
                         </p>

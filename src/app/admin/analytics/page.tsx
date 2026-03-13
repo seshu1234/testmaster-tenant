@@ -82,7 +82,7 @@ export default function AdminAnalyticsDashboard() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
+        <Card className="border shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Active Students</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
@@ -93,7 +93,7 @@ export default function AdminAnalyticsDashboard() {
           </CardContent>
         </Card>
         
-        <Card>
+        <Card className="border shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Platform Tests</CardTitle>
             <FileText className="h-4 w-4 text-muted-foreground" />
@@ -104,7 +104,7 @@ export default function AdminAnalyticsDashboard() {
           </CardContent>
         </Card>
         
-        <Card>
+        <Card className="border shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Test Attempts</CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
@@ -115,20 +115,20 @@ export default function AdminAnalyticsDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border-none shadow-sm bg-primary/5 border-primary/10">
+        <Card className="border shadow-sm border-emerald-100 bg-emerald-50/30">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-primary">Plan Utilization</CardTitle>
-            <TrendingUp className="h-4 w-4 text-primary" />
+            <CardTitle className="text-sm font-medium text-emerald-600">Platform Health</CardTitle>
+            <TrendingUp className="h-4 w-4 text-emerald-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">84%</div>
-            <p className="text-xs text-muted-foreground mt-1">Approaching 1.5k limit</p>
+            <div className="text-2xl font-bold">Stable</div>
+            <p className="text-xs text-muted-foreground mt-1">All systems operational</p>
           </CardContent>
         </Card>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-        <Card className="lg:col-span-2">
+        <Card className="lg:col-span-2 border shadow-sm">
           <CardHeader>
             <CardTitle>Activity Trend (Last 7 Days)</CardTitle>
             <CardDescription>Daily breakdown of completed test attempts.</CardDescription>
@@ -167,29 +167,18 @@ export default function AdminAnalyticsDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+        <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Bell className="h-4 w-4 text-red-500" />
-              Critical Alerts
+              <Bell className="h-4 w-4 text-zinc-400" />
+              Notices
             </CardTitle>
-            <CardDescription>System notices requiring immediate review.</CardDescription>
+            <CardDescription>System notices and platform updates.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-             {[
-               { title: "Low Credit Balance", desc: "Less than 500 AI credits remaining.", type: "warning" },
-               { title: "Expiring Soon", desc: "Plan 'Enterprise' expires in 12 days.", type: "urgent" },
-               { title: "Suspicious Activity", desc: "Multiple logins from different IPs.", type: "security" },
-             ].map((alert, i) => (
-               <div key={i} className={`p-3 rounded-lg border flex flex-col gap-1 ${
-                 alert.type === 'warning' ? 'bg-amber-50 border-amber-100' :
-                 alert.type === 'urgent' ? 'bg-red-50 border-red-100' :
-                 'bg-zinc-50 border-zinc-100'
-               }`}>
-                 <span className="text-xs font-bold uppercase tracking-tight">{alert.title}</span>
-                 <span className="text-[10px] text-muted-foreground">{alert.desc}</span>
-               </div>
-             ))}
+             <div className="p-8 text-center text-muted-foreground text-xs uppercase font-bold tracking-widest">
+                No new notices.
+             </div>
           </CardContent>
         </Card>
       </div>

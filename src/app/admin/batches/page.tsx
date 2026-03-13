@@ -56,12 +56,10 @@ export default function BatchesPage() {
       });
       setBatches(response.data);
     } catch {
-      // Fallback for UI testing
-      setBatches([
-        { id: "b1", name: "JEE-2026-Alpha", description: "Elite batch for early starters", teacher_ids: ["t1", "t2"], student_count: 45, avg_score: 72, status: "active", created_at: new Date().toISOString() },
-        { id: "b2", name: "NEET-2025-Turbo", description: "Fast-track medical preparation", teacher_ids: ["t3"], student_count: 32, avg_score: 68, status: "active", created_at: new Date().toISOString() },
-        { id: "b3", name: "Class-12-Board", description: "CBSE board focus", teacher_ids: ["t2"], student_count: 120, avg_score: 85, status: "active", created_at: new Date().toISOString() },
-      ]);
+      setBatches([]);
+      toast.error("Error", {
+        description: "Failed to fetch batches from the server.",
+      });
     } finally {
       setLoading(false);
     }
@@ -124,7 +122,7 @@ export default function BatchesPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
-         <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+         <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
              <CardTitle className="text-sm font-medium">Total Batches</CardTitle>
              <BookOpen className="h-4 w-4 text-primary" />
@@ -133,7 +131,7 @@ export default function BatchesPage() {
              <div className="text-2xl font-bold">{batches.length}</div>
            </CardContent>
          </Card>
-         <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+         <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
              <CardTitle className="text-sm font-medium">Avg Student/Batch</CardTitle>
              <Users className="h-4 w-4 text-primary" />
@@ -144,7 +142,7 @@ export default function BatchesPage() {
              </div>
            </CardContent>
          </Card>
-         <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+         <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
              <CardTitle className="text-sm font-medium">Top Performance</CardTitle>
              <TrendingUp className="h-4 w-4 text-primary" />
@@ -170,7 +168,7 @@ export default function BatchesPage() {
         </TabsList>
 
         <TabsContent value="directory" className="mt-6 space-y-6">
-          <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
             <CardHeader>
               <CardTitle>Batch Directory</CardTitle>
               <CardDescription>
@@ -180,13 +178,13 @@ export default function BatchesPage() {
             <CardContent>
               <Table>
                 <TableHeader>
-                  <TableRow>
-                    <TableHead>Batch Name</TableHead>
-                    <TableHead>Teachers</TableHead>
-                    <TableHead>Students</TableHead>
-                    <TableHead>Avg Score</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                  <TableRow className="bg-zinc-50">
+                    <TableHead className="font-bold text-[10px] uppercase tracking-wider">Batch Name</TableHead>
+                    <TableHead className="font-bold text-[10px] uppercase tracking-wider">Teachers</TableHead>
+                    <TableHead className="font-bold text-[10px] uppercase tracking-wider">Students</TableHead>
+                    <TableHead className="font-bold text-[10px] uppercase tracking-wider">Avg Score</TableHead>
+                    <TableHead className="font-bold text-[10px] uppercase tracking-wider">Status</TableHead>
+                    <TableHead className="text-right font-bold text-[10px] uppercase tracking-wider">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -265,7 +263,7 @@ export default function BatchesPage() {
         </TabsContent>
 
         <TabsContent value="calendar" className="mt-6">
-          <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
             <CardHeader>
               <CardTitle>Institutional Calendar</CardTitle>
               <CardDescription>Manage holidays, exam schedules, and academic events.</CardDescription>
@@ -300,7 +298,7 @@ export default function BatchesPage() {
                     <CalendarIcon className="h-12 w-12 text-zinc-200" />
                     <div className="space-y-1">
                       <p className="font-bold">Full Calendar View</p>
-                      <p className="text-xs text-muted-foreground">Interactive calendar for drag-and-drop scheduling.</p>
+                      <p className="text-xs text-muted-foreground">Manage academic events and scheduling.</p>
                     </div>
                     <Button size="sm">Launch Full Scheduler</Button>
                  </div>

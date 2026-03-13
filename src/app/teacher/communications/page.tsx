@@ -121,7 +121,7 @@ export default function TeacherCommunicationsPage() {
        <div className="w-80 border-r flex flex-col bg-zinc-50/50 dark:bg-zinc-900/30">
           <div className="p-4 border-b space-y-4 bg-white dark:bg-zinc-950">
              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-black tracking-tight italic">Relays</h2>
+                <h2 className="text-xl font-black tracking-tight">Messages</h2>
                 <Button variant="ghost" size="icon" className="rounded-full">
                    <Plus className="h-5 w-5 text-zinc-400" />
                 </Button>
@@ -130,8 +130,8 @@ export default function TeacherCommunicationsPage() {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
                 <input 
                   type="text" 
-                  placeholder="Scan nodes..." 
-                  className="w-full pl-9 pr-4 py-2 border rounded-xl bg-zinc-50 dark:bg-zinc-900 border-none text-[10px] font-black uppercase tracking-widest focus:ring-2 ring-primary/20 outline-none"
+                  placeholder="Search messages..." 
+                  className="w-full pl-9 pr-4 py-2 border rounded-xl bg-zinc-50 dark:bg-zinc-900 border-none text-[10px] font-bold uppercase tracking-wider focus:ring-2 ring-primary/20 outline-none"
                 />
              </div>
           </div>
@@ -147,8 +147,8 @@ export default function TeacherCommunicationsPage() {
                 >
                    <div className="relative">
                       <div className={cn(
-                        "h-12 w-12 rounded-2xl flex items-center justify-center font-black text-white italic",
-                        chat.type === 'batch' ? "bg-indigo-500 shadow-indigo-500/20 shadow-lg" : "bg-primary shadow-primary/20 shadow-lg"
+                        "h-12 w-12 rounded-2xl flex items-center justify-center font-black text-white",
+                        chat.type === 'batch' ? "bg-indigo-500 shadow-indigo-500/20" : "bg-primary shadow-primary/20"
                       )}>
                          {chat.name.charAt(0)}
                       </div>
@@ -181,14 +181,14 @@ export default function TeacherCommunicationsPage() {
               <div className="absolute top-0 left-0 right-0 h-16 bg-white dark:bg-zinc-950 border-b flex items-center justify-between px-6 z-10">
                  <div className="flex items-center gap-4">
                     <div className={cn(
-                      "h-10 w-10 rounded-xl flex items-center justify-center font-black text-white shadow-md italic",
+                      "h-10 w-10 rounded-xl flex items-center justify-center font-black text-white shadow-md",
                       selectedChat.type === 'batch' ? "bg-indigo-500" : "bg-primary"
                     )}>
                        {selectedChat.name.charAt(0)}
                     </div>
                     <div>
-                       <h3 className="font-black italic uppercase text-sm tracking-tight">{selectedChat.name}</h3>
-                       <p className="text-[9px] font-black text-emerald-500 uppercase tracking-widest">Active Relay Node</p>
+                       <h3 className="font-black uppercase text-sm tracking-tight">{selectedChat.name}</h3>
+                       <p className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">Online</p>
                     </div>
                  </div>
                  <div className="flex gap-2">
@@ -210,7 +210,7 @@ export default function TeacherCommunicationsPage() {
                           {msg.isMe ? 'Y' : selectedChat.name.charAt(0)}
                        </div>
                        <div className={cn("space-y-1", msg.isMe ? "text-right" : "")}>
-                          <span className="text-[9px] font-black text-zinc-400 uppercase tracking-widest">{msg.isMe ? 'Authorized Sender' : selectedChat.name} • {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                          <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">{msg.isMe ? 'You' : selectedChat.name} • {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                           <div className={cn(
                             "p-4 rounded-2xl text-[11px] font-bold leading-relaxed shadow-sm",
                             msg.isMe ? "bg-primary text-white" : "bg-zinc-50 dark:bg-zinc-900 border dark:border-zinc-800 text-zinc-800 dark:text-zinc-200"
@@ -228,7 +228,7 @@ export default function TeacherCommunicationsPage() {
                  ) : (
                    <div className="flex-1 flex flex-col items-center justify-center text-zinc-300 gap-4 opacity-30">
                      <MessageSquare className="h-10 w-10" />
-                     <p className="text-[10px] font-black uppercase tracking-widest">No signals detected in this sector.</p>
+                      <p className="text-[10px] font-bold uppercase tracking-widest">No messages yet.</p>
                    </div>
                  )}
               </div>
@@ -237,10 +237,10 @@ export default function TeacherCommunicationsPage() {
               <div className="p-6 w-full max-w-4xl">
                 <div className="bg-zinc-50 dark:bg-zinc-900 rounded-[2rem] border dark:border-zinc-800 shadow-2xl flex items-center px-6 gap-3 focus-within:ring-2 ring-primary/20 transition-all">
                    <Button variant="ghost" size="icon" className="rounded-full text-zinc-400"><Paperclip className="h-4 w-4" /></Button>
-                   <input 
-                     type="text" 
-                     placeholder="Transmit intelligence..." 
-                     className="flex-1 bg-transparent border-none py-5 text-xs font-bold outline-none placeholder:text-[10px] placeholder:font-black placeholder:uppercase placeholder:tracking-[0.2em]"
+                    <input 
+                      type="text" 
+                      placeholder="Type a message..." 
+                      className="flex-1 bg-transparent border-none py-5 text-xs font-bold outline-none placeholder:text-[10px] placeholder:font-bold placeholder:uppercase placeholder:tracking-wider"
                      value={messageText}
                      onChange={(e) => setMessageText(e.target.value)}
                      onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
@@ -262,7 +262,7 @@ export default function TeacherCommunicationsPage() {
                <div className="h-20 w-20 rounded-[2.5rem] bg-zinc-50 dark:bg-zinc-900 flex items-center justify-center mb-4">
                   <MessageSquare className="h-10 w-10" />
                </div>
-               <p className="font-black uppercase tracking-[0.3em] text-[10px]">Initialize communication relay</p>
+                <p className="font-bold uppercase tracking-widest text-[10px]">Select a chat to start messaging</p>
             </div>
           )}
        </div>

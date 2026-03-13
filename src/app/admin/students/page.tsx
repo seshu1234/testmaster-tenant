@@ -76,12 +76,10 @@ export default function StudentsPage() {
       });
       setStudents(response.data);
     } catch {
-      // Fallback for UI testing
-      setStudents([
-        { id: "1", name: "Rahul Sharma", email: "rahul@example.com", batch: "JEE-2026-A", status: "active", created_at: new Date().toISOString() },
-        { id: "2", name: "Priya Patel", email: "priya@example.com", batch: "NEET-2025-B", status: "active", created_at: new Date().toISOString() },
-        { id: "3", name: "Amit Kumar", email: "amit@example.com", batch: "JEE-2026-A", status: "suspended", created_at: new Date().toISOString() },
-      ]);
+      setStudents([]);
+      toast.error("Error", {
+        description: "Failed to fetch students from the server.",
+      });
     } finally {
       setLoading(false);
     }
@@ -193,7 +191,7 @@ export default function StudentsPage() {
                    Batch Assignment
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleBulkAction("Send Email")}>
-                   Send Campaign Email
+                   Send Email
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleBulkAction("Suspend")}>
                    Suspend Accounts
@@ -208,7 +206,7 @@ export default function StudentsPage() {
         )}
       </div>
 
-      <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+      <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
         <CardHeader>
           <CardTitle className="text-lg">Students</CardTitle>
           <CardDescription className="text-xs">
@@ -236,12 +234,12 @@ export default function StudentsPage() {
               {loading ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-12 text-muted-foreground animate-pulse text-xs uppercase font-bold tracking-widest">
-                    Retrieving student records...
+                    Loading student records...
                   </TableCell>
                 </TableRow>
               ) : filteredStudents.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-12 text-muted-foreground italic">
+                  <TableCell colSpan={6} className="text-center py-12 text-muted-foreground">
                     No students matching your search criteria.
                   </TableCell>
                 </TableRow>

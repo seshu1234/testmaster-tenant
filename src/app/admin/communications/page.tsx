@@ -99,7 +99,7 @@ export default function CommunicationsPage() {
         setMessage("");
         setSubject("");
       }
-    } catch (err) {
+    } catch {
       toast.error("Failed to transmit broadcast");
     } finally {
       setLoading(false);
@@ -118,9 +118,9 @@ export default function CommunicationsPage() {
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Communication Command</h2>
+          <h2 className="text-3xl font-bold tracking-tight">Communications</h2>
           <p className="text-muted-foreground">
-            Multi-channel engagement platform for institutional updates and alerts.
+            Send announcements and broadcasts to your center audience.
           </p>
         </div>
       </div>
@@ -139,7 +139,7 @@ export default function CommunicationsPage() {
 
         <TabsContent value="compose" className="mt-6 space-y-6">
           <div className="grid gap-6 md:grid-cols-3">
-            <Card className="md:col-span-2 border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+            <Card className="md:col-span-2 border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <MessageSquare className="h-5 w-5 text-primary" />
@@ -157,8 +157,8 @@ export default function CommunicationsPage() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="announcement">App Announcement</SelectItem>
-                        <SelectItem value="email">Institutional Email</SelectItem>
-                        <SelectItem value="sms">Emergency SMS</SelectItem>
+                        <SelectItem value="email">Email</SelectItem>
+                        <SelectItem value="sms">SMS</SelectItem>
                         <SelectItem value="push">Mobile Push Notification</SelectItem>
                       </SelectContent>
                     </Select>
@@ -191,7 +191,7 @@ export default function CommunicationsPage() {
                 <div className="space-y-2">
                   <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Body Content</label>
                   <Textarea 
-                    placeholder="Type your secure message message here..." 
+                    placeholder="Type your message here..." 
                     className="min-h-[160px] resize-none border-zinc-100 bg-zinc-50/50"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
@@ -215,7 +215,7 @@ export default function CommunicationsPage() {
             </Card>
 
             <div className="space-y-6">
-              <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+              <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-sm font-medium flex items-center gap-2">
                     <BarChart2 className="h-4 w-4 text-primary" />
@@ -232,13 +232,13 @@ export default function CommunicationsPage() {
                        <div className="h-full bg-primary w-full" />
                      </div>
                    </div>
-                   <div className="text-[10px] text-muted-foreground italic">
+                   <div className="text-[10px] text-muted-foreground">
                      Data synchronized from center roster.
                    </div>
                 </CardContent>
               </Card>
 
-              <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+              <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
                 <CardHeader className="pb-3 flex flex-row items-center justify-between">
                   <CardTitle className="text-sm font-medium flex items-center gap-2">
                     <History className="h-4 w-4 text-primary" />
@@ -259,7 +259,7 @@ export default function CommunicationsPage() {
                      </div>
                    ))}
                    {(!summary?.recent_broadcasts || summary.recent_broadcasts.length === 0) && (
-                     <p className="text-xs text-muted-foreground italic text-center py-4">No recent broadcasts found.</p>
+                      <p className="text-xs text-muted-foreground text-center py-4">No recent broadcasts found.</p>
                    )}
                 </CardContent>
               </Card>
@@ -268,11 +268,11 @@ export default function CommunicationsPage() {
         </TabsContent>
 
         <TabsContent value="campaigns" className="mt-6">
-          <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle>Institutional Email Campaigns</CardTitle>
-                <CardDescription>Managed mass-mailing workflows and automated drip series.</CardDescription>
+                <CardTitle>Email Campaigns</CardTitle>
+                <CardDescription>Create and manage automated email campaigns for your students.</CardDescription>
               </div>
               <Button className="gap-2">
                 <Mail className="h-4 w-4" />

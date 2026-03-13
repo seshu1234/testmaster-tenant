@@ -177,7 +177,7 @@ export default function CreateQuestionPage() {
 
       <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-6 pb-12">
         <div className="md:col-span-2 space-y-6">
-          <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
             <CardHeader>
               <CardTitle className="text-lg">Question Content</CardTitle>
             </CardHeader>
@@ -202,7 +202,7 @@ export default function CreateQuestionPage() {
             </CardContent>
           </Card>
 
-          <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-lg">
                 {type === "match" ? "Match Pairs" : "Options & Answer"}
@@ -238,7 +238,7 @@ export default function CreateQuestionPage() {
                     value={shortAnswer}
                     onChange={(e) => setShortAnswer(e.target.value)}
                    />
-                   <p className="text-[10px] text-muted-foreground italic">Note: Short answer evaluation is case-insensitive by default in the engine.</p>
+                   <p className="text-[10px] text-muted-foreground">Note: Short answer evaluation is case-insensitive by default in the engine.</p>
                 </div>
               ) : (
                 options.map((option, index) => (
@@ -268,7 +268,7 @@ export default function CreateQuestionPage() {
             </CardContent>
           </Card>
 
-          <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
             <CardHeader>
               <CardTitle className="text-lg">Solution Explanation</CardTitle>
             </CardHeader>
@@ -281,7 +281,7 @@ export default function CreateQuestionPage() {
             </CardContent>
           </Card>
 
-          <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
             <CardHeader>
               <CardTitle className="text-lg">Version Control</CardTitle>
             </CardHeader>
@@ -299,7 +299,7 @@ export default function CreateQuestionPage() {
         </div>
 
         <div className="space-y-6">
-          <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
             <CardHeader>
               <CardTitle className="text-lg">Classification</CardTitle>
             </CardHeader>

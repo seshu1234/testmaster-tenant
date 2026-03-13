@@ -104,7 +104,7 @@ export default function StudentPracticePage() {
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="space-y-4">
             <Badge variant="secondary" className="bg-primary-foreground/20 text-primary-foreground">Growth Engine</Badge>
-            <h1 className="text-4xl font-bold italic uppercase tracking-tight">Precision Practice</h1>
+            <h1 className="text-4xl font-bold uppercase tracking-tight">Precision Practice</h1>
             <p className="text-primary-foreground/80">
               AI-curated drills designed to eliminate your weak spots and maximize score velocity.
             </p>
@@ -114,7 +114,7 @@ export default function StudentPracticePage() {
             <Gem className="h-8 w-8 text-amber-400" />
             <div>
               <p className="text-sm text-primary-foreground/60 uppercase font-bold tracking-wider">Practice Multiplier</p>
-              <p className="text-lg font-black italic uppercase tracking-tight">1.5x Rewards Active</p>
+               <p className="text-lg font-black uppercase tracking-tight">1.5x Rewards Active</p>
             </div>
           </div>
         </div>
@@ -164,7 +164,7 @@ export default function StudentPracticePage() {
               </Card>
             ) : (
               practiceSets.map((set) => (
-                <Card key={set.id} className="p-6 transition-all hover:shadow-md group">
+                 <Card key={set.id} className="p-6 transition-all border shadow-sm rounded-2xl group">
                   <div className="flex items-center gap-6">
                     <div className="h-20 w-20 bg-muted rounded-lg flex flex-col items-center justify-center transition-transform group-hover:scale-105">
                       <Zap className={cn(
@@ -187,7 +187,7 @@ export default function StudentPracticePage() {
                           {set.subject}
                         </span>
                       </div>
-                      <h3 className="text-xl font-black italic uppercase tracking-tight">{set.title}</h3>
+                       <h3 className="text-xl font-black uppercase tracking-tight">{set.title}</h3>
                       <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
                         <div className="flex items-center gap-1"><Clock className="h-3 w-3" /> {set.settings?.questions_count || 10} Questions</div>
                         <div className="flex items-center gap-1"><Star className="h-3 w-3 text-amber-500" /> {set.settings?.points || 100} Points</div>
@@ -195,7 +195,7 @@ export default function StudentPracticePage() {
                     </div>
 
                     <Link href={`/student/tests/${set.id}/lobby`}>
-                      <Button className="font-black italic uppercase tracking-tighter hover:scale-105 transition-transform px-8">
+                       <Button className="font-black uppercase tracking-tighter hover:scale-105 transition-transform px-8">
                         START DRILL
                       </Button>
                     </Link>
@@ -214,9 +214,9 @@ export default function StudentPracticePage() {
             ) : (
               <div className="space-y-4">
                 <TrendingUp className="h-8 w-8 text-primary" />
-                <h3 className="text-lg font-black italic uppercase tracking-tight leading-none">Growth Forecast</h3>
+                <h3 className="text-lg font-black uppercase tracking-tight leading-none">Growth Forecast</h3>
                 <p className="text-xs font-medium text-muted-foreground leading-relaxed">
-                  Based on your recent practice of <span className="font-black italic text-foreground uppercase tracking-tight">Focus Areas</span>, 
+                  Based on your recent practice of <span className="font-black text-foreground uppercase tracking-tight">Focus Areas</span>, 
                   your upcoming score is expected to improve.
                 </p>
                 <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
@@ -236,8 +236,8 @@ export default function StudentPracticePage() {
                 <div className="flex justify-center">
                   <Flame className="h-8 w-8 text-orange-500 animate-pulse" />
                 </div>
-                <h4 className="text-lg font-black italic uppercase tracking-tight leading-none">Practice Streak</h4>
-                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground italic">{dashboardData?.student?.streak} Day Streak</p>
+                <h4 className="text-lg font-black uppercase tracking-tight leading-none">Practice Streak</h4>
+                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{dashboardData?.student?.streak} Day Streak</p>
                 <div className="flex justify-center gap-1">
                   {(dashboardData?.streak_history || [0,0,0,0,0,0,0]).map((s: number, i: number) => (
                     <div key={i} className={cn(
@@ -256,7 +256,7 @@ export default function StudentPracticePage() {
                <div className="flex justify-center p-4"><Loader2 className="h-6 w-6 animate-spin" /></div>
             ) : (
               <div className="space-y-5">
-                {(insightData?.subject_averages || []).slice(0, 3).map((target: any, i: number) => (
+                {(insightData?.subject_averages || []).slice(0, 3).map((target: { subject: string; avg_percentage: number }, i: number) => (
                   <div key={i} className="space-y-2.5">
                     <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
                       <span>{target.subject}</span>

@@ -99,7 +99,7 @@ export default function AdminQuestionBankPage() {
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Question Intelligence</h2>
+          <h2 className="text-3xl font-bold tracking-tight">Question Bank</h2>
           <p className="text-muted-foreground">
             Maintain the highest standards of academic integrity and quality control.
           </p>
@@ -155,11 +155,11 @@ export default function AdminQuestionBankPage() {
             </div>
           </div>
 
-          <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50 overflow-hidden">
+          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50 overflow-hidden">
             <CardHeader className="bg-zinc-900 text-white py-4 flex flex-row items-center justify-between">
               <div>
-                 <CardTitle className="text-lg">Master Item Repository</CardTitle>
-                 <CardDescription className="text-zinc-400">Total {filteredQuestions.length} unique items detected.</CardDescription>
+                 <CardTitle className="text-lg">Questions Repository</CardTitle>
+                 <CardDescription className="text-zinc-400">Total {filteredQuestions.length} unique questions stored.</CardDescription>
               </div>
               <Button variant="ghost" className="text-zinc-400 hover:text-white gap-2">
                  <Copy className="h-4 w-4" />
@@ -182,13 +182,13 @@ export default function AdminQuestionBankPage() {
                   {loading ? (
                     <TableRow>
                       <TableCell colSpan={6} className="text-center py-12 animate-pulse text-muted-foreground text-xs uppercase font-bold tracking-widest">
-                        Decrypting item hashes...
+                        Loading questions bank...
                       </TableCell>
                     </TableRow>
                   ) : filteredQuestions.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center py-12 text-muted-foreground italic">
-                        No items matching your audit criteria.
+                      <TableCell colSpan={6} className="text-center py-12 text-muted-foreground">
+                        No questions found matching your criteria.
                       </TableCell>
                     </TableRow>
                   ) : (
@@ -197,7 +197,7 @@ export default function AdminQuestionBankPage() {
                         <TableCell className="pl-6">
                           <div className="flex flex-col">
                             <span className="font-medium text-sm line-clamp-1">{q.text}</span>
-                            <span className="text-[10px] text-muted-foreground font-mono">HASH: {q.id.substring(0, 8)}</span>
+                            <span className="text-[10px] text-muted-foreground tracking-tight">ID: {q.id.substring(0, 8)}</span>
                           </div>
                         </TableCell>
                         <TableCell className="text-center">
@@ -251,16 +251,16 @@ export default function AdminQuestionBankPage() {
 
         <TabsContent value="quality" className="mt-6 space-y-6">
            <div className="grid gap-6 md:grid-cols-2">
-              <Card className="border-none shadow-sm bg-white border-zinc-100 overflow-hidden relative">
+              <Card className="border shadow-sm bg-white border-zinc-100 overflow-hidden relative">
                  <div className="absolute top-0 right-0 p-8 opacity-5">
                     <AlertTriangle className="h-24 w-24" />
                  </div>
                  <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                        <Zap className="h-4 w-4 text-amber-500" />
-                       AI Duplicate Radar
+                       Duplicate Detection
                     </CardTitle>
-                    <CardDescription>Identifying items with high semantic similarity.</CardDescription>
+                    <CardDescription>Identifying questions with high similarity.</CardDescription>
                  </CardHeader>
                  <CardContent className="space-y-4">
                     {[
@@ -284,7 +284,7 @@ export default function AdminQuestionBankPage() {
                  </CardContent>
               </Card>
 
-              <Card className="border-none shadow-sm bg-zinc-900 text-white overflow-hidden relative">
+              <Card className="border shadow-sm bg-zinc-900 text-white overflow-hidden relative">
                  <div className="absolute top-0 right-0 p-8 opacity-10">
                     <ShieldCheck className="h-24 w-24" />
                  </div>

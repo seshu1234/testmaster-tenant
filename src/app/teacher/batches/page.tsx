@@ -75,7 +75,7 @@ export default function TeacherBatchesPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {batches.map((batch) => (
-          <Card key={batch.id} className="group border-none shadow-lg hover:shadow-2xl transition-all duration-300 bg-white dark:bg-zinc-900 overflow-hidden">
+          <Card key={batch.id} className="group border shadow-md hover:shadow-lg transition-all duration-300 bg-white dark:bg-zinc-900 overflow-hidden">
             <div className="h-2 bg-primary w-full" />
             <CardHeader className="p-6">
               <div className="flex justify-between items-start">
@@ -94,20 +94,12 @@ export default function TeacherBatchesPage() {
                     <p className="text-xl font-black">{batch.student_count}</p>
                  </div>
                  <div className="bg-zinc-50 dark:bg-zinc-800/50 p-3 rounded-2xl border">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-1">Avg Score</p>
-                    <p className="text-xl font-black">78%</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-1">Last Activity</p>
+                    <p className="text-sm font-black">{batch.last_test ? new Date(batch.last_test).toLocaleDateString() : 'No activity'}</p>
                  </div>
               </div>
 
-              <div className="space-y-3">
-                 <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-zinc-400">
-                    <span>Course Completion</span>
-                    <span>65%</span>
-                 </div>
-                 <div className="h-1.5 w-full bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
-                    <div className="h-full bg-emerald-500 w-[65%]" />
-                 </div>
-              </div>
+
 
               <div className="pt-4 flex gap-2">
                  <Link href={`/teacher/batches/${batch.id}`} className="flex-1">

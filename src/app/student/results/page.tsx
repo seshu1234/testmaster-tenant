@@ -99,7 +99,7 @@ export default function StudentTestResultPage() {
     return (
       <div className="h-screen flex flex-col items-center justify-center gap-6 p-12 text-center">
         <AlertCircle className="h-16 w-16 text-rose-500" />
-        <h2 className="text-2xl font-black uppercase italic tracking-tight">Outcome Not Found</h2>
+        <h2 className="text-2xl font-black uppercase tracking-tight">Outcome Not Found</h2>
         <p className="text-muted-foreground text-sm max-w-md font-medium">We couldn&apos;t retrieve the diagnostics for this assessment. It may still be in the neural grading queue.</p>
         <Button onClick={() => router.back()} className="rounded-xl px-10 h-12 bg-black text-white font-black">RETURN TO BASE</Button>
       </div>
@@ -119,14 +119,7 @@ export default function StudentTestResultPage() {
       acc[subjectName] = { score: 0, total: 0, correctCount: 0, totalQuestions: 0 };
     }
     acc[subjectName].score += answer.marks_obtained;
-    // Assuming each question contributes equally to total marks for simplicity, or needs actual question total marks
-    // For now, let's assume each question has a max mark of 1 if marks_obtained is 0 or 1.
-    // If marks_obtained can be more, we need to know max marks per question.
-    // For now, let's use a placeholder total per question, e.g., 1 mark per question.
-    // A more robust solution would require `question.max_marks` in the API.
-    // For the sake of matching the original structure, let's assume `total` is 60 per subject as in the original hardcoded data.
-    // This is a simplification and might need adjustment based on actual API data.
-    acc[subjectName].total += 1; // Placeholder, assuming 1 mark per question for total
+    acc[subjectName].total += 1; // Assuming 1 mark per question for total as a base calculation
     if (answer.status === 'correct') {
       acc[subjectName].correctCount += 1;
     }
@@ -152,10 +145,10 @@ export default function StudentTestResultPage() {
               <Badge className="w-fit bg-emerald-500/20 text-emerald-400 border-none text-[10px] font-black uppercase tracking-[0.2em] px-4 py-1.5 mx-auto md:mx-0">
                  {result.percentage >= 80 ? "Excellent Performance" : result.percentage >= 60 ? "Good Performance" : "Requires Improvement"}
               </Badge>
-              <h1 className="text-6xl font-black tracking-tighter italic uppercase leading-none">
+              <h1 className="text-6xl font-black tracking-tighter uppercase leading-none">
                  {result.percentage >= 80 ? "Victory!" : "Result Card"}
               </h1>
-              <p className="text-zinc-400 text-lg font-medium max-w-md italic">
+              <p className="text-zinc-400 text-lg font-medium max-w-md">
                  {result.test?.title} • {result.test?.subject} • {formatTime(result.time_spent_seconds)}
               </p>
               <div className="flex flex-wrap gap-4 mt-4 justify-center md:justify-start">
@@ -171,17 +164,17 @@ export default function StudentTestResultPage() {
               </div>
            </div>
 
-           <div className="flex items-center gap-12 bg-white/5 backdrop-blur-xl p-10 rounded-[3rem] border border-white/10 shadow-inner">
+           <div className="flex items-center gap-12 bg-white/5 backdrop-blur-xl p-10 rounded-3xl border border-white/10 shadow-inner">
               <div className="text-center space-y-2">
                  <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Final Score</p>
-                 <div className="text-5xl font-black italic tracking-tighter text-primary">
+                 <div className="text-5xl font-black tracking-tighter text-primary">
                     {result.obtained_marks}<span className="text-xl text-zinc-500 font-normal">/{result.total_marks}</span>
                  </div>
               </div>
               <div className="h-16 w-[1px] bg-white/10" />
               <div className="text-center space-y-2">
                  <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Percentile</p>
-                 <div className="text-5xl font-black italic tracking-tighter">
+                 <div className="text-5xl font-black tracking-tighter">
                     {result.percentile?.toFixed(1) || result.percentage.toFixed(1)}<span className="text-xl text-emerald-500 font-normal">%</span>
                  </div>
               </div>
@@ -214,8 +207,8 @@ export default function StudentTestResultPage() {
          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-8">
                {/* Subject Breakdown */}
-               <Card className="border-none shadow-2xl rounded-[3rem] bg-white dark:bg-zinc-950 p-8">
-                  <h3 className="text-lg font-black uppercase italic mb-8 tracking-tighter">Subject Insights</h3>
+               <Card className="border shadow-md rounded-2xl bg-white dark:bg-zinc-950 p-6">
+                  <h3 className="text-lg font-black uppercase mb-8 tracking-tighter">Subject Insights</h3>
                   <div className="grid gap-6">
                      {subjectsFormatted.map((sub) => (
                         <div key={sub.name} className="space-y-3">
@@ -224,7 +217,7 @@ export default function StudentTestResultPage() {
                                  <h4 className="font-black text-sm uppercase">{sub.name}</h4>
                                  <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Efficiency: {sub.accuracy}%</p>
                               </div>
-                              <div className="text-lg font-black italic">
+                               <div className="text-lg font-black">
                                  {sub.score}<span className="text-xs text-zinc-400 font-normal">/{sub.total}</span>
                               </div>
                            </div>
@@ -234,10 +227,10 @@ export default function StudentTestResultPage() {
                   </div>
                </Card>
 
-               <Card className="border-none shadow-xl rounded-[2.5rem] bg-zinc-950 p-8 text-white relative overflow-hidden group">
+               <Card className="border shadow-md rounded-2xl bg-zinc-950 p-8 text-white relative overflow-hidden group">
                   <div className="relative z-10 text-center md:text-left space-y-4">
                      <h4 className="text-xs font-black uppercase tracking-widest text-primary">Global Standing</h4>
-                     <div className="text-5xl font-black italic tracking-tighter mb-2">#{result.rank || 'TBD'}</div>
+                     <div className="text-5xl font-black tracking-tighter mb-2">#{result.rank || 'TBD'}</div>
                      <p className="text-[10px] font-bold text-zinc-400 leading-relaxed uppercase tracking-widest max-w-sm">
                         You are positioned among the elite performers in this assessment cycle. Keep pushing for the #1 spot.
                      </p>
@@ -250,8 +243,8 @@ export default function StudentTestResultPage() {
             </div>
 
             <div className="space-y-8">
-               <Card className="border-none shadow-xl rounded-[2.5rem] bg-white dark:bg-zinc-950 p-8">
-                  <h4 className="text-xs font-black uppercase tracking-widest text-zinc-400 mb-6 italic">Performance Analytics</h4>
+               <Card className="border shadow-md rounded-2xl bg-white dark:bg-zinc-950 p-6">
+                  <h4 className="text-xs font-black uppercase tracking-widest text-zinc-400 mb-6">Performance Analytics</h4>
                   <div className="space-y-4">
                      <div className="flex justify-between items-center bg-zinc-50 dark:bg-zinc-900 border dark:border-zinc-800 p-4 rounded-2xl">
                         <span className="text-[10px] font-black uppercase">Correct</span>
@@ -268,12 +261,12 @@ export default function StudentTestResultPage() {
                   </div>
                </Card>
                
-               <Card className="border-none shadow-xl rounded-[2.5rem] bg-zinc-950 p-8 text-white">
+               <Card className="border shadow-md rounded-2xl bg-zinc-950 p-6 text-white">
                   <h4 className="text-xs font-black uppercase tracking-widest text-primary mb-6">AI Growth Engine</h4>
                   <div className="space-y-4">
-                     <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
+                     <div className="p-4 rounded-xl bg-white/5 border border-white/10">
                         <p className="text-xs font-bold leading-relaxed">
-                           Strategic Focus: Revisit questions from <span className="text-primary italic">Topic Diagnostics</span>. Accuracy in {result.test?.subject} can be improved by targeting specific weak pillars.
+                           Strategic Focus: Revisit questions from <span className="text-primary">Topic Diagnostics</span>. Accuracy in {result.test?.subject} can be improved by targeting specific weak pillars.
                         </p>
                      </div>
                      <Button variant="link" className="p-0 h-auto text-[10px] font-black uppercase tracking-widest text-white flex items-center gap-2">
@@ -287,8 +280,8 @@ export default function StudentTestResultPage() {
       ) : (
          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-6">
-               {result.answers.map((ans, i) => (
-                  <Card key={ans.id} className="border-none shadow-xl rounded-[2.5rem] bg-white dark:bg-zinc-950 overflow-hidden group">
+                {result.answers.map((ans, i) => (
+                  <Card key={ans.id} className="border shadow-md rounded-2xl bg-white dark:bg-zinc-950 overflow-hidden group">
                      <div className="flex min-h-[250px]">
                         <div className={cn(
                            "w-2 shrink-0",
@@ -320,11 +313,11 @@ export default function StudentTestResultPage() {
                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                               <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border dark:border-zinc-800">
                                  <p className="text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-1">Your Selected Answer</p>
-                                 <div className={cn("text-sm font-black italic", ans.status === 'correct' ? "text-emerald-500" : "text-rose-500")}>{ans.user_answer || 'SKIPPED'}</div>
+                                  <div className={cn("text-sm font-black", ans.status === 'correct' ? "text-emerald-500" : "text-rose-500")}>{ans.user_answer || 'SKIPPED'}</div>
                               </div>
                               <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border dark:border-zinc-800">
                                  <p className="text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-1">Authenticated Correct Answer</p>
-                                 <div className="text-sm font-black italic text-emerald-500">{ans.question?.answer}</div>
+                                  <div className="text-sm font-black text-emerald-500">{ans.question?.answer}</div>
                               </div>
                            </div>
 
@@ -347,8 +340,8 @@ export default function StudentTestResultPage() {
             </div>
 
             <div className="space-y-8">
-               <Card className="border-none shadow-2xl rounded-[3rem] bg-white dark:bg-zinc-950 p-8">
-                  <h4 className="text-sm font-black uppercase tracking-tight italic mb-6">Diagnostic Filters</h4>
+               <Card className="border shadow-md rounded-2xl bg-white dark:bg-zinc-950 p-6">
+                  <h4 className="text-sm font-black uppercase tracking-tight mb-6">Diagnostic Filters</h4>
                   <div className="grid gap-4">
                      {[
                         { label: 'All Queries', count: result.answers.length, icon: BookOpen },

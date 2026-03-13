@@ -56,7 +56,7 @@ export default function ParentManagementPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
-        <Card className="md:col-span-2 border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+        <Card className="md:col-span-2 border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
@@ -113,7 +113,7 @@ export default function ParentManagementPage() {
           </CardContent>
         </Card>
 
-        <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+        <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
           <CardHeader>
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <LinkIcon className="h-4 w-4 text-primary" />
@@ -138,7 +138,7 @@ export default function ParentManagementPage() {
                     <div className="h-full bg-primary w-[64%]" />
                   </div>
                </div>
-               <p className="text-[10px] text-muted-foreground leading-relaxed italic">
+               <p className="text-[10px] text-muted-foreground leading-relaxed">
                  &ldquo;85% of parents check their child&apos;s test results within 1 hour of publishing.&rdquo;
                </p>
              </div>
@@ -146,7 +146,7 @@ export default function ParentManagementPage() {
         </Card>
       </div>
 
-      <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+      <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
         <CardHeader>
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>

@@ -167,7 +167,7 @@ export default function StudentTestTakingPage({ params }: { params: { id: string
               <Menu className="h-5 w-5" />
             </Button>
             <div className="hidden md:block">
-               <h2 className="text-sm font-black italic tracking-tight uppercase">{testTitle}</h2>
+               <h2 className="text-sm font-black tracking-tight uppercase">{testTitle}</h2>
             </div>
           </div>
 
@@ -231,7 +231,7 @@ export default function StudentTestTakingPage({ params }: { params: { id: string
                     <button 
                        key={i}
                        className={cn(
-                          "w-full text-left p-6 rounded-[1.5rem] border-2 transition-all flex items-center gap-6 group",
+                          "w-full text-left p-6 rounded-2xl border-2 transition-all flex items-center gap-6 group",
                           answers[currentQuestion.id] === opt 
                              ? "bg-primary/5 border-primary shadow-xl ring-2 ring-primary/10" 
                              : "bg-white dark:bg-zinc-900 border-zinc-100 dark:border-zinc-800 hover:border-zinc-200 dark:hover:border-zinc-700"
@@ -252,7 +252,7 @@ export default function StudentTestTakingPage({ params }: { params: { id: string
                     <button 
                        key={val.toString()}
                        className={cn(
-                          "w-full text-left p-6 rounded-[1.5rem] border-2 transition-all flex items-center gap-6",
+                          "w-full text-left p-6 rounded-2xl border-2 transition-all flex items-center gap-6",
                           answers[currentQuestion.id] === val 
                              ? "bg-primary/5 border-primary shadow-xl" 
                              : "bg-white dark:bg-zinc-900 border-zinc-100 dark:border-zinc-800 hover:border-zinc-200"
@@ -271,7 +271,7 @@ export default function StudentTestTakingPage({ params }: { params: { id: string
 
                  {currentQuestion.type === 'FIB' && (
                     <textarea 
-                       className="w-full p-8 rounded-[2rem] border-2 bg-white dark:bg-zinc-900 border-zinc-100 dark:border-zinc-800 focus:border-primary outline-none text-xl font-bold min-h-[200px]"
+                       className="w-full p-8 rounded-2xl border-2 bg-white dark:bg-zinc-900 border-zinc-100 dark:border-zinc-800 focus:border-primary outline-none text-xl font-bold min-h-[200px]"
                        placeholder="Enter your calculation steps and final result..."
                        value={typeof answers[currentQuestion.id] === 'string' ? answers[currentQuestion.id] as string : ''}
                        onChange={(e) => setAnswer(e.target.value)}
@@ -314,7 +314,7 @@ export default function StudentTestTakingPage({ params }: { params: { id: string
          "lg:relative lg:translate-x-0"
       )}>
          <div className="h-16 flex items-center justify-between px-6 border-b">
-            <h3 className="text-xs font-black uppercase tracking-widest italic">Question Palette</h3>
+            <h3 className="text-xs font-black uppercase tracking-widest">Question Palette</h3>
             <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setSidebarOpen(false)}>
                <ChevronRight className="h-5 w-5" />
             </Button>

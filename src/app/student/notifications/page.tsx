@@ -74,7 +74,7 @@ export default function StudentNotificationsPage() {
     <div className="space-y-8 animate-in fade-in duration-700 pb-20 p-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <h1 className="text-3xl font-black tracking-tighter italic uppercase italic leading-none">Transmission Hub</h1>
+          <h1 className="text-3xl font-black tracking-tighter uppercase leading-none">Transmission Hub</h1>
           <p className="text-muted-foreground text-sm font-medium mt-2">Manage your updates, communications, and system alerts.</p>
         </div>
         <div className="flex bg-white dark:bg-zinc-950 p-1.5 rounded-2xl border dark:border-zinc-800 shadow-sm">
@@ -110,12 +110,12 @@ export default function StudentNotificationsPage() {
            ) : (
              notifications.map((notif) => (
                 <Card key={notif.id} className={cn(
-                   "border-none shadow-xl rounded-[2.5rem] bg-white dark:bg-zinc-950 overflow-hidden relative group hover:scale-[1.01] transition-all transform duration-300",
+                   "border shadow-md rounded-2xl bg-white dark:bg-zinc-950 overflow-hidden relative group hover:scale-[1.01] transition-all transform duration-300",
                    notif.unread && "border-l-4 border-primary"
                 )}>
                    <div className="p-8 flex items-start gap-8">
                       <div className={cn(
-                         "h-16 w-16 rounded-[1.5rem] flex items-center justify-center shrink-0 shadow-inner group-hover:rotate-6 transition-transform",
+                         "h-16 w-16 rounded-2xl flex items-center justify-center shrink-0 shadow-inner group-hover:rotate-6 transition-transform",
                          notif.type === 'test' ? 'bg-blue-50 dark:bg-blue-500/10 text-blue-500' :
                          notif.type === 'result' ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500' :
                          notif.type === 'message' ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-500' :
@@ -131,12 +131,12 @@ export default function StudentNotificationsPage() {
   
                       <div className="flex-1 min-w-0 space-y-1">
                          <div className="flex justify-between items-start">
-                            <h3 className={cn("text-xl font-black italic uppercase italic tracking-tighter", notif.unread ? "text-zinc-900 dark:text-white" : "text-zinc-500")}>
+                            <h3 className={cn("text-xl font-black uppercase tracking-tighter", notif.unread ? "text-zinc-900 dark:text-white" : "text-zinc-500")}>
                                {notif.title}
                             </h3>
                             <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">{notif.time}</span>
                          </div>
-                         <p className="text-xs font-bold text-zinc-400 italic leading-relaxed max-w-lg truncate md:whitespace-normal">
+                         <p className="text-xs font-bold text-zinc-400 leading-relaxed max-w-lg truncate md:whitespace-normal">
                             {notif.body}
                          </p>
                       </div>
@@ -164,10 +164,10 @@ export default function StudentNotificationsPage() {
 
         {/* Sidebar Status */}
         <div className="lg:col-span-4 space-y-8">
-           <Card className="border-none shadow-2xl rounded-[3rem] bg-zinc-950 p-10 text-white relative overflow-hidden group">
+           <Card className="border shadow-md rounded-3xl bg-zinc-950 p-10 text-white relative overflow-hidden group">
               <div className="relative z-10 space-y-8">
                  <div className="space-y-2">
-                    <h3 className="text-4xl font-black italic tracking-tighter leading-none italic uppercase">Hub Pulse</h3>
+                    <h3 className="text-4xl font-black tracking-tighter leading-none uppercase">Hub Pulse</h3>
                     <p className="text-zinc-500 text-xs font-medium uppercase tracking-widest">Live System Activity</p>
                  </div>
                  
@@ -182,7 +182,7 @@ export default function StudentNotificationsPage() {
                              <s.icon className={cn("h-5 w-5", s.color)} />
                              <span className="text-[10px] font-black uppercase tracking-widest">{s.label}</span>
                           </div>
-                          <span className="text-lg font-black italic italic">{s.val}</span>
+                          <span className="text-lg font-black">{s.val}</span>
                        </div>
                     ))}
                  </div>
@@ -195,8 +195,8 @@ export default function StudentNotificationsPage() {
               />
            </Card>
 
-           <Card className="border-none shadow-xl rounded-[2.5rem] bg-white dark:bg-zinc-950 p-8 space-y-8">
-              <h4 className="text-sm font-black uppercase italic italic tracking-tight">Active Preferences</h4>
+           <Card className="border shadow-md rounded-2xl bg-white dark:bg-zinc-950 p-8 space-y-8">
+              <h4 className="text-sm font-black uppercase tracking-tight">Active Preferences</h4>
               <div className="space-y-6">
                  {[
                     { label: 'Desktop Push', active: true },

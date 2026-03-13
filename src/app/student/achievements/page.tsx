@@ -93,41 +93,41 @@ export default function StudentAchievementsPage() {
   return (
     <div className="space-y-8 animate-in fade-in duration-700 pb-20 p-6">
       {/* Achievement Hero */}
-      <div className="relative overflow-hidden rounded-[2.5rem] bg-zinc-950 px-8 py-16 text-white shadow-2xl">
+      <div className="relative overflow-hidden rounded-3xl bg-zinc-950 px-8 py-16 text-white shadow-2xl">
         <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-12">
            <div className="max-w-xl space-y-4">
               <Badge className="bg-primary/20 text-primary border-none text-[10px] font-black uppercase tracking-[0.2em] px-4 py-1.5">
                  Hall of Fame
               </Badge>
-              <h1 className="text-5xl font-black tracking-tighter italic uppercase leading-tight">Master the Path</h1>
+              <h1 className="text-5xl font-black tracking-tighter uppercase leading-tight">Master the Path</h1>
               <p className="text-zinc-500 text-lg font-medium">
                  Your journey is marked by milestones. Every badge earned is a step towards total mastery.
               </p>
               
               <div className="flex items-center gap-8 mt-8">
                  <div className="text-center">
-                    <p className="text-4xl font-black italic">{data.stats.badges_count}</p>
+                    <p className="text-4xl font-black">{data.stats.badges_count}</p>
                     <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Badges Earned</p>
                  </div>
                  <div className="h-12 w-[1px] bg-white/10" />
                  <div className="text-center">
-                    <p className="text-4xl font-black italic">{data.stats.mastery_points}</p>
+                    <p className="text-4xl font-black">{data.stats.mastery_points}</p>
                     <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Mastery Points</p>
                  </div>
                  <div className="h-12 w-[1px] bg-white/10" />
                  <div className="text-center">
-                    <p className="text-4xl font-black italic">{data.stats.level}</p>
+                    <p className="text-4xl font-black">{data.stats.level}</p>
                     <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">{data.stats.rank_title}</p>
                  </div>
               </div>
            </div>
 
-           <div className="bg-white/5 backdrop-blur-xl p-10 rounded-[3rem] border border-white/10 shadow-inner flex flex-col items-center gap-6">
-              <div className="h-24 w-24 rounded-[2rem] bg-primary flex items-center justify-center shadow-[0_0_30px_rgba(var(--primary),0.3)] animate-pulse">
+           <div className="bg-white/5 backdrop-blur-xl p-10 rounded-3xl border border-white/10 shadow-inner flex flex-col items-center gap-6">
+              <div className="h-24 w-24 rounded-3xl bg-primary flex items-center justify-center shadow-[0_0_30px_rgba(var(--primary),0.3)] animate-pulse">
                  <Star className="h-10 w-10 text-white" />
               </div>
               <div className="text-center space-y-2">
-                 <p className="text-xl font-black italic uppercase italic">{data.stats.global_status}</p>
+                 <p className="text-xl font-black uppercase">{data.stats.global_status}</p>
                  <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Current Global Status</p>
               </div>
            </div>
@@ -162,13 +162,13 @@ export default function StudentAchievementsPage() {
             const IconComp = iconMap[badge.icon] || Trophy;
             return (
               <Card key={badge.id} className={cn(
-                 "border-none shadow-xl rounded-[3rem] p-8 overflow-hidden relative group transition-all duration-500",
+                 "border shadow-md rounded-2xl p-8 overflow-hidden relative group transition-all duration-500",
                  badge.status === 'earned' ? "bg-white dark:bg-zinc-950" : "bg-zinc-100 dark:bg-zinc-900 opacity-80"
               )}>
                  <div className="relative z-10 flex flex-col h-full">
                     <div className="flex justify-between items-start mb-8">
                        <div className={cn(
-                          "h-16 w-16 rounded-[1.5rem] flex items-center justify-center transition-transform group-hover:rotate-12 bg-primary/5 text-primary"
+                          "h-16 w-16 rounded-2xl flex items-center justify-center transition-transform group-hover:rotate-12 bg-primary/5 text-primary"
                         )}>
                           <IconComp className="h-8 w-8" />
                        </div>
@@ -184,7 +184,7 @@ export default function StudentAchievementsPage() {
                     </div>
 
                     <div className="space-y-2 mb-8">
-                       <h3 className="text-xl font-black italic uppercase italic tracking-tighter">{badge.title}</h3>
+                       <h3 className="text-xl font-black uppercase tracking-tighter">{badge.title}</h3>
                        <p className="text-xs font-bold text-zinc-400 leading-relaxed">{badge.description}</p>
                     </div>
 
@@ -215,10 +215,10 @@ export default function StudentAchievementsPage() {
       </div>
 
       {/* Motivation Heatmap */}
-      <Card className="border-none shadow-xl rounded-[3rem] bg-white dark:bg-zinc-950 p-10">
+      <Card className="border-none shadow-xl rounded-3xl bg-white dark:bg-zinc-950 p-10">
          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
             <div>
-               <h3 className="text-2xl font-black italic uppercase italic tracking-tighter">Study Intensity Heatmap</h3>
+               <h3 className="text-2xl font-black uppercase tracking-tighter">Study Intensity Heatmap</h3>
                <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mt-1">Daily consistency over the last 6 months</p>
             </div>
             <div className="flex items-center gap-4 bg-zinc-50 dark:bg-zinc-900 px-6 py-2.5 rounded-2xl border dark:border-zinc-800">
@@ -258,11 +258,11 @@ export default function StudentAchievementsPage() {
             </div>
          </div>
          
-         <div className="mt-10 p-6 rounded-[2rem] bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800 flex items-center gap-6">
+         <div className="mt-10 p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800 flex items-center gap-6">
             <div className="h-14 w-14 rounded-2xl bg-orange-50 dark:bg-orange-500/10 flex items-center justify-center shrink-0">
                <Flame className="h-7 w-7 text-orange-500" />
             </div>
-            <p className="text-sm font-bold text-zinc-600 dark:text-zinc-400 leading-relaxed italic">
+            <p className="text-sm font-bold text-zinc-600 dark:text-zinc-400 leading-relaxed">
                &quot;The difference between ordinary and extraordinary is that little extra. Your streak is becoming <span className="text-orange-500 font-black">legendary</span>.&quot; 
                <span className="block text-[10px] font-black uppercase tracking-widest mt-2 text-zinc-400">— AI Motivation Engine</span>
             </p>
@@ -270,10 +270,10 @@ export default function StudentAchievementsPage() {
       </Card>
 
       {/* Rewards & Next Level */}
-      <Card className="border-none shadow-2xl rounded-[3rem] bg-primary p-12 text-white relative overflow-hidden group">
+      <Card className="border-none shadow-2xl rounded-3xl bg-primary p-12 text-white relative overflow-hidden group">
          <div className="relative z-10 flex flex-col lg:flex-row justify-between items-center gap-12">
             <div className="max-w-xl space-y-6">
-               <h3 className="text-4xl font-black italic tracking-tighter uppercase italic leading-none">{data.stats.level} Ascension</h3>
+               <h3 className="text-4xl font-black tracking-tighter uppercase leading-none">{data.stats.level} Ascension</h3>
                <p className="text-primary-foreground/80 text-lg font-medium leading-relaxed">
                   Earn more mastery points to reach the next level and unlock custom profile themes and prime badge indicators.
                </p>

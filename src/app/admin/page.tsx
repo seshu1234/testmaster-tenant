@@ -8,7 +8,6 @@ import Link from "next/link";
 import {
   Users,
   BookOpen,
-  TrendingUp,
   Activity,
   ShieldCheck,
   Settings,
@@ -114,7 +113,7 @@ export default function AdminDashboard() {
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         {kpis.map((kpi, i) => (
-          <Card key={i} className="border-none shadow-sm hover:shadow-md transition-all duration-300 group hover:-translate-y-1 bg-white dark:bg-zinc-900">
+          <Card key={i} className="border shadow-sm hover:shadow-md transition-all duration-300 group hover:-translate-y-1 bg-white dark:bg-zinc-900">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{kpi.label}</CardTitle>
               <div className={`${kpi.bg} ${kpi.color} p-2 rounded-xl group-hover:scale-110 transition-transform dark:bg-zinc-800`}>
@@ -123,17 +122,13 @@ export default function AdminDashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">{kpi.value}</div>
-              <div className="flex items-center gap-1.5 mt-1">
-                <TrendingUp className="h-3 w-3 text-emerald-500" />
-                <span className="text-[10px] font-bold text-emerald-600 uppercase">{kpi.trend}</span>
-              </div>
             </CardContent>
           </Card>
         ))}
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="lg:col-span-4 border-none shadow-sm bg-white dark:bg-zinc-900 overflow-hidden relative">
+        <Card className="lg:col-span-4 border shadow-sm bg-white dark:bg-zinc-900 overflow-hidden relative">
           <div className="absolute top-0 right-0 p-8 opacity-[0.02] pointer-events-none">
              <BarChart3 className="h-64 w-64 rotate-12" />
           </div>
@@ -165,7 +160,7 @@ export default function AdminDashboard() {
         </Card>
 
         <div className="lg:col-span-3 space-y-6">
-          <Card className="border-none shadow-sm bg-white dark:bg-zinc-900 h-full flex flex-col">
+          <Card className="border shadow-sm bg-white dark:bg-zinc-900 h-full flex flex-col">
             <CardHeader>
               <div className="flex items-center justify-between">
                  <CardTitle className="text-xl font-bold tracking-tight">Recent Activity</CardTitle>
@@ -209,7 +204,7 @@ export default function AdminDashboard() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-         <Card className="lg:col-span-2 border-none shadow-sm bg-zinc-900 text-white overflow-hidden relative group rounded-3xl">
+         <Card className="border shadow-sm bg-zinc-900 text-white overflow-hidden relative group rounded-2xl">
             <div className="absolute top-0 right-0 p-8 opacity-10 scale-150 rotate-12 group-hover:scale-125 transition-transform duration-1000">
                <ShieldCheck className="h-48 w-48" />
             </div>
@@ -237,7 +232,7 @@ export default function AdminDashboard() {
             </CardContent>
          </Card>
 
-         <Card className="border-none shadow-sm bg-white dark:bg-zinc-900 rounded-3xl overflow-hidden flex flex-col">
+         <Card className="border shadow-sm bg-white dark:bg-zinc-900 rounded-2xl overflow-hidden flex flex-col">
             <CardHeader className="pb-4">
                <div className="flex items-center gap-2">
                   <Sparkles className="h-5 w-5 text-amber-500" />

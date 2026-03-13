@@ -60,7 +60,7 @@ export default function CenterProfilePage() {
 
       <div className="grid gap-6 md:grid-cols-3">
         <div className="md:col-span-2 space-y-6">
-          <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Building2 className="h-5 w-5 text-primary" />
@@ -105,7 +105,7 @@ export default function CenterProfilePage() {
             </CardContent>
           </Card>
 
-          <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <GraduationCap className="h-5 w-5 text-primary" />
@@ -148,14 +148,14 @@ export default function CenterProfilePage() {
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <label className="text-sm font-bold">Negative Marking</label>
-                      <p className="text-xs text-muted-foreground italic">Enable global penalty calculation for incorrect answers.</p>
+                       <p className="text-xs text-muted-foreground">Enable global penalty calculation for incorrect answers.</p>
                     </div>
                     <Switch defaultChecked />
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <label className="text-sm font-bold">Partial Marking</label>
-                      <p className="text-xs text-muted-foreground italic">Award points for multiple-correct questions with partial matches.</p>
+                       <p className="text-xs text-muted-foreground">Award points for multiple-correct questions with partial matches.</p>
                     </div>
                     <Switch />
                   </div>
@@ -165,7 +165,7 @@ export default function CenterProfilePage() {
         </div>
 
         <div className="space-y-6">
-          <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
             <CardHeader>
               <CardTitle className="text-sm font-medium flex items-center gap-2 text-primary">
                 <Calendar className="h-4 w-4" />
@@ -201,7 +201,7 @@ export default function CenterProfilePage() {
             </CardContent>
           </Card>
 
-          <Card className="border-none shadow-sm bg-zinc-50 dark:bg-zinc-900 border-zinc-100 dark:border-zinc-800">
+          <Card className="border shadow-sm bg-zinc-50 dark:bg-zinc-900 border-zinc-100 dark:border-zinc-800">
             <CardHeader>
               <CardTitle className="text-sm font-medium flex items-center gap-2">
                 <Database className="h-4 w-4 text-primary" />
@@ -229,7 +229,7 @@ export default function CenterProfilePage() {
             </CardContent>
           </Card>
 
-          <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-medium flex items-center gap-2">
                 <Zap className="h-4 w-4 text-primary" />
@@ -241,7 +241,7 @@ export default function CenterProfilePage() {
                 <Server className="h-4 w-4 text-muted-foreground" />
                 <div className="flex-1">
                   <p className="text-[10px] font-bold">ERP Connection</p>
-                  <p className="text-[9px] text-muted-foreground italic leading-tight">Sync student data via webhooks.</p>
+                   <p className="text-[9px] text-muted-foreground leading-tight">Sync student data via webhooks.</p>
                 </div>
                 <Badge variant="outline" className="text-[8px] bg-zinc-50">Disabled</Badge>
               </div>
@@ -258,7 +258,7 @@ export default function CenterProfilePage() {
             </CardContent>
           </Card>
 
-          <Card className="border-none shadow-sm bg-red-50/30 border-red-100">
+          <Card className="border shadow-sm bg-red-50/30 border-red-100">
             <CardHeader>
               <CardTitle className="text-xs font-bold flex items-center gap-2 text-red-600 uppercase tracking-widest">
                 <ShieldAlert className="h-4 w-4" />

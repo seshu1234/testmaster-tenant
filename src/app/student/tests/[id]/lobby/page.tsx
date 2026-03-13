@@ -115,7 +115,7 @@ export default function StudentTestLobby({ params }: { params: { id: string } })
         <div className="flex justify-between items-end">
            <div>
               <Badge className="bg-primary/10 text-primary border-none text-[10px] font-black uppercase tracking-widest mb-4 px-4 py-1.5">Pre-Flight Check</Badge>
-              <h1 className="text-4xl font-black tracking-tighter uppercase italic">Assessment Lobby</h1>
+              <h1 className="text-4xl font-black tracking-tighter uppercase">Assessment Lobby</h1>
            </div>
            <Button variant="ghost" className="text-xs font-black uppercase tracking-widest text-zinc-400" onClick={() => router.back()}>
               Exit to Dashboard
@@ -125,9 +125,9 @@ export default function StudentTestLobby({ params }: { params: { id: string } })
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
            {/* Detailed Rules & Instructions */}
            <div className="lg:col-span-2 space-y-8">
-              <Card className="border-none shadow-2xl rounded-[3rem] overflow-hidden bg-white dark:bg-zinc-950">
+              <Card className="border shadow-md rounded-2xl overflow-hidden bg-white dark:bg-zinc-950">
                  <CardHeader className="p-8 border-b bg-zinc-50/50 dark:bg-zinc-900/10">
-                    <CardTitle className="text-xl font-black uppercase italic flex items-center gap-3">
+                    <CardTitle className="text-xl font-black uppercase flex items-center gap-3">
                        <FileText className="h-6 w-6 text-primary" />
                        Exam Protocol
                     </CardTitle>
@@ -143,7 +143,7 @@ export default function StudentTestLobby({ params }: { params: { id: string } })
                           <div key={i} className="p-4 rounded-3xl bg-zinc-50 dark:bg-zinc-900 flex flex-col items-center text-center gap-1 border border-zinc-100 dark:border-zinc-800">
                              <item.icon className="h-4 w-4 text-zinc-400 mb-1" />
                              <span className="text-[8px] font-black text-zinc-400 uppercase tracking-widest">{item.label}</span>
-                             <span className="text-sm font-black italic">{item.val}</span>
+                             <span className="text-sm font-black">{item.val}</span>
                           </div>
                        ))}
                     </div>
@@ -170,7 +170,7 @@ export default function StudentTestLobby({ params }: { params: { id: string } })
 
            {/* System Check Sidebar */}
            <div className="space-y-8">
-              <Card className="border-none shadow-2xl rounded-[3rem] bg-white dark:bg-zinc-950 p-8">
+              <Card className="border shadow-md rounded-2xl bg-white dark:bg-zinc-950 p-8">
                  <h3 className="text-sm font-black uppercase tracking-widest text-zinc-400 mb-8 px-2">System Readiness</h3>
                  <div className="space-y-4">
                     {[
@@ -229,7 +229,7 @@ export default function StudentTestLobby({ params }: { params: { id: string } })
                  )}
               </Card>
 
-              <Card className="border-none shadow-xl rounded-[3rem] bg-zinc-950 text-white p-8 overflow-hidden relative group">
+              <Card className="border shadow-md rounded-2xl bg-zinc-950 text-white p-6 overflow-hidden relative group">
                  <div className="relative z-10">
                     <h4 className="text-xs font-black uppercase tracking-widest text-primary mb-4">Support</h4>
                     <p className="text-xs font-bold leading-relaxed text-zinc-400">

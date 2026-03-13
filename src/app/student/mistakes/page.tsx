@@ -93,7 +93,7 @@ export default function StudentMistakesPage() {
     <div className="space-y-8 animate-in fade-in duration-700 pb-20 p-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-black tracking-tighter italic uppercase">Personal Archives</h1>
+          <h1 className="text-3xl font-black tracking-tighter uppercase">Personal Archives</h1>
           <p className="text-muted-foreground text-sm font-medium">Your personal mistake log, bookmarks, and AI-curated revision bank.</p>
         </div>
         <div className="flex gap-2">
@@ -107,13 +107,13 @@ export default function StudentMistakesPage() {
         {/* Statistics & Filters */}
         <div className="lg:col-span-12 grid grid-cols-1 md:grid-cols-4 gap-6">
             {stats.map((s, i) => (
-               <Card key={i} className="border-none shadow-xl rounded-[2.5rem] bg-white dark:bg-zinc-950 p-6 flex items-center gap-6">
+               <Card key={i} className="border shadow-md rounded-2xl bg-white dark:bg-zinc-950 p-6 flex items-center gap-6">
                   <div className="h-12 w-12 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border flex items-center justify-center">
                      <s.icon className={cn("h-5 w-5", s.color)} />
                   </div>
                   <div>
                      <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">{s.label}</p>
-                     <p className="text-xl font-black italic">{s.val}</p>
+                     <p className="text-xl font-black">{s.val}</p>
                   </div>
                </Card>
             ))}
@@ -148,9 +148,9 @@ export default function StudentMistakesPage() {
 
            <div className="space-y-4">
               {loading ? (
-                 [1,2,3].map(i => <div key={i} className="h-48 bg-secondary/10 animate-pulse rounded-[2.5rem]" />)
+                 [1,2,3].map(i => <div key={i} className="h-48 bg-secondary/10 animate-pulse rounded-2xl" />)
               ) : mistakes.length > 0 ? mistakes.map((m) => (
-                 <Card key={m.id} className="border-none shadow-xl rounded-[2.5rem] bg-white dark:bg-zinc-950 overflow-hidden group hover:scale-[1.01] transition-all">
+                 <Card key={m.id} className="border shadow-md rounded-2xl bg-white dark:bg-zinc-950 overflow-hidden group hover:scale-[1.01] transition-all">
                     <div className="flex">
                        <div className={cn(
                           "w-2 shrink-0",
@@ -187,7 +187,7 @@ export default function StudentMistakesPage() {
                           <div className="flex justify-between items-center pt-6 border-t border-dashed dark:border-zinc-800">
                              <div className="flex items-center gap-4">
                                 <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Failed Attempt</span>
-                                <span className="text-[10px] font-bold text-rose-500 uppercase tracking-tighter italic">Review Required</span>
+                                <span className="text-[10px] font-bold text-rose-500 uppercase tracking-tighter">Review Required</span>
                              </div>
                              <Button variant="ghost" className="rounded-xl text-[10px] font-black uppercase tracking-widest text-primary hover:bg-primary/5">
                                 RE-ATTEMPT NOW <ChevronRight className="ml-1 h-3 w-3" />
@@ -197,7 +197,7 @@ export default function StudentMistakesPage() {
                     </div>
                  </Card>
               )) : (
-                 <div className="text-center py-20 bg-secondary/5 rounded-[2.5rem] font-black uppercase tracking-widest text-zinc-400">
+                 <div className="text-center py-20 bg-secondary/5 rounded-2xl font-black uppercase tracking-widest text-zinc-400">
                     No mistakes found. Great work!
                  </div>
               )}
@@ -206,14 +206,14 @@ export default function StudentMistakesPage() {
 
         {/* Sidebar Intelligence */}
         <div className="lg:col-span-4 space-y-8">
-           <Card className="border-none shadow-2xl rounded-[3rem] bg-zinc-950 text-white p-8 overflow-hidden relative group">
+           <Card className="border shadow-md rounded-3xl bg-zinc-950 text-white p-8 overflow-hidden relative group">
               <div className="relative z-10">
-                 <h3 className="text-xl font-black uppercase italic italic tracking-tighter mb-6">AI Recovery</h3>
+                 <h3 className="text-xl font-black uppercase tracking-tighter mb-6">AI Recovery</h3>
                  <div className="space-y-6">
                     <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-3">
                        <p className="text-[10px] font-black uppercase tracking-widest text-primary">Insight</p>
                        <p className="text-xs font-bold leading-relaxed text-zinc-400">
-                          90% of your errors in <span className="text-white italic">Inorganic Chemistry</span> are factual. We&apos;ve compiled a list of 50 common oxidation states for you.
+                          90% of your errors in <span className="text-white font-black">Inorganic Chemistry</span> are factual. We&apos;ve compiled a list of 50 common oxidation states for you.
                        </p>
                     </div>
                     <Button className="w-full bg-white text-black font-black rounded-xl h-12 text-[10px] group-hover:bg-primary group-hover:text-white transition-all">
@@ -224,8 +224,8 @@ export default function StudentMistakesPage() {
               <History className="absolute -bottom-12 -right-12 h-48 w-48 opacity-5 rotate-12" />
            </Card>
 
-           <Card className="border-none shadow-xl rounded-[2.5rem] bg-white dark:bg-zinc-950 p-8">
-              <h4 className="text-sm font-black uppercase italic tracking-tight mb-6">Error Themes</h4>
+           <Card className="border shadow-md rounded-2xl bg-white dark:bg-zinc-950 p-6">
+              <h4 className="text-sm font-black uppercase tracking-tight mb-6">Error Themes</h4>
               <div className="space-y-4">
                   {(errorThemes.length > 0 ? errorThemes : [
                      { label: 'Conceptual', val: 0, color: 'bg-rose-500' },

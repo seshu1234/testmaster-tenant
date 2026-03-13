@@ -11,7 +11,6 @@ import {
   Trash2, 
   Mail, 
   History, 
-  TrendingUp, 
   BarChart3, 
   Search, 
   Filter, 
@@ -53,7 +52,7 @@ export default function TeachersPage() {
 
   const handleBulkInvite = () => {
     toast.success("Invitations Sent", {
-      description: "Batch registration links have been dispatched to 12 candidates.",
+      description: "Invitation emails have been sent.",
     });
   };
 
@@ -172,10 +171,10 @@ export default function TeachersPage() {
             </Button>
           </div>
 
-          <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
-            <CardHeader className="bg-zinc-900 text-white rounded-t-xl py-4">
+          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+            <CardHeader className="py-4">
               <CardTitle className="text-lg">Teacher Directory</CardTitle>
-              <CardDescription className="text-zinc-400 text-xs">
+              <CardDescription className="text-xs">
                 Active educators and their institutional access status.
               </CardDescription>
             </CardHeader>
@@ -194,12 +193,12 @@ export default function TeachersPage() {
                   {loading ? (
                     <TableRow>
                       <TableCell colSpan={5} className="text-center py-12 animate-pulse text-muted-foreground text-xs uppercase font-bold">
-                        Decrypting faculty records...
+                        Loading faculty records...
                       </TableCell>
                     </TableRow>
                   ) : filteredTeachers.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={5} className="text-center py-12 text-muted-foreground italic">
+                      <TableCell colSpan={5} className="text-center py-12 text-muted-foreground">
                         No teachers matching your criteria.
                       </TableCell>
                     </TableRow>
@@ -255,59 +254,9 @@ export default function TeachersPage() {
         </TabsContent>
 
         <TabsContent value="performance" className="mt-6 space-y-6">
-           <div className="grid gap-6 md:grid-cols-3">
-              {[
-                { label: "Tests Created", value: "248", icon: TrendingUp, color: "text-blue-600" },
-                { label: "Avg Class Performance", value: "78.4%", icon: BarChart3, color: "text-green-600" },
-                { label: "Engagement Score", value: "9.2/10", icon: History, color: "text-orange-600" },
-              ].map((stat, i) => (
-                <Card key={i} className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
-                   <CardHeader className="py-4">
-                      <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground flex items-center justify-between">
-                         {stat.label}
-                         <stat.icon className={`h-4 w-4 ${stat.color}`} />
-                      </CardTitle>
-                   </CardHeader>
-                   <CardContent className="pb-4 pt-0">
-                      <div className="text-2xl font-bold tracking-tight">{stat.value}</div>
-                   </CardContent>
-                </Card>
-              ))}
+           <div className="p-8 text-center border-2 border-dashed rounded-xl text-muted-foreground">
+              Performance metrics for faculty will appear here once test data is aggregated.
            </div>
-
-           <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
-              <CardHeader>
-                 <CardTitle>Teacher Effectiveness Ranking</CardTitle>
-                 <CardDescription>Metrics based on test difficulty vs student outcomes.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                 <div className="space-y-4">
-                    {filteredTeachers.slice(0, 3).map((teacher, i) => (
-                       <div key={i} className="flex items-center justify-between p-4 rounded-xl border border-zinc-100 bg-zinc-50/50">
-                          <div className="flex items-center gap-4">
-                             <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary">
-                                #{i+1}
-                             </div>
-                             <div>
-                                <p className="text-sm font-bold">{teacher.name}</p>
-                                <p className="text-[10px] text-muted-foreground uppercase">{teacher.subjects?.join(" & ") || "Academic staff"}</p>
-                             </div>
-                          </div>
-                          <div className="flex items-center gap-8 text-right">
-                             <div>
-                                <p className="text-[10px] text-muted-foreground font-bold uppercase">Tests</p>
-                                <p className="text-sm font-bold">12</p>
-                             </div>
-                             <div>
-                                <p className="text-[10px] text-muted-foreground font-bold uppercase">Avg. Result</p>
-                                <p className="text-sm font-bold text-green-600">84%</p>
-                             </div>
-                          </div>
-                       </div>
-                    ))}
-                 </div>
-              </CardContent>
-           </Card>
         </TabsContent>
       </Tabs>
 

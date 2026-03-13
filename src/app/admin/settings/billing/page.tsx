@@ -38,7 +38,7 @@ export default function BillingDashboard() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
-        <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+        <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium flex items-center justify-between">
               Active Plan
@@ -53,7 +53,7 @@ export default function BillingDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+        <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium flex items-center justify-between">
               Credits Balance
@@ -66,7 +66,7 @@ export default function BillingDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+        <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium flex items-center justify-between">
               Payment Method
@@ -80,7 +80,7 @@ export default function BillingDashboard() {
         </Card>
       </div>
 
-      <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+      <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
         <CardHeader>
           <CardTitle>Seat Consumption</CardTitle>
           <CardDescription>Visualizing your current resource utilization vs plan limits.</CardDescription>
@@ -110,7 +110,7 @@ export default function BillingDashboard() {
         </CardContent>
       </Card>
 
-      <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+      <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
         <CardHeader>
           <CardTitle>Invoice History</CardTitle>
           <CardDescription>View and download your institutional billing history.</CardDescription>

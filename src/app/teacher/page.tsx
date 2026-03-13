@@ -134,7 +134,7 @@ export default function TeacherDashboard() {
 
       <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
         {kpis.map((kpi, i) => (
-          <Card key={i} className={`border-none shadow-sm backdrop-blur-sm ${
+          <Card key={i} className={`border shadow-sm backdrop-blur-sm ${
             kpi.urgent ? 'bg-orange-50 dark:bg-orange-900/10' : 'bg-white/50 dark:bg-zinc-900/50'
           }`}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -150,7 +150,7 @@ export default function TeacherDashboard() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="lg:col-span-5 border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+        <Card className="lg:col-span-5 border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
           <CardHeader className="flex flex-row items-center justify-between">
             <div className="space-y-1">
               <CardTitle>Class Performance Trend</CardTitle>
@@ -180,7 +180,7 @@ export default function TeacherDashboard() {
         </Card>
 
         <div className="lg:col-span-2 space-y-6">
-          <Card className="border-none shadow-sm bg-zinc-900 text-white overflow-hidden relative">
+          <Card className="border shadow-sm bg-zinc-900 text-white overflow-hidden relative">
             <div className="absolute top-0 right-0 p-6 opacity-10">
               <Sparkles className="h-20 w-20" />
             </div>
@@ -190,8 +190,8 @@ export default function TeacherDashboard() {
             <CardContent className="space-y-4 relative z-10">
               <div className="space-y-1">
                 <p className="text-sm font-bold">Smart Insights Available</p>
-                <p className="text-[11px] text-zinc-400 leading-relaxed italic">
-                  &ldquo;{dashboard.ai_insight || "Your students are showing great progress. Want to generate a new practice set?"}&rdquo;
+                <p className="text-[11px] text-zinc-400 leading-relaxed">
+                  &ldquo;{dashboard.ai_insight || "Analyzing class performance..."}&rdquo;
                 </p>
               </div>
               <Link href="/teacher/questions/generate">
@@ -203,7 +203,7 @@ export default function TeacherDashboard() {
             </CardContent>
           </Card>
 
-          <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
             <CardHeader className="pb-3">
               <CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center justify-between">
                 Quick Actions
@@ -235,7 +235,7 @@ export default function TeacherDashboard() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <Card className="lg:col-span-2 border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+        <Card className="lg:col-span-2 border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Upcoming Assessments</CardTitle>
             <Link href="/teacher/tests">
@@ -271,7 +271,7 @@ export default function TeacherDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+        <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
           <CardHeader>
             <CardTitle>Recent Results</CardTitle>
           </CardHeader>

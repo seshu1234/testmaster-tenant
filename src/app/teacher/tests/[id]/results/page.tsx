@@ -67,7 +67,7 @@ export default function TeacherResultsPage() {
     fetchAnalytics();
   }, [testId, user, token, tenantSlug]);
 
-  if (isLoading) return <div className="p-20 text-center animate-pulse tracking-tighter text-zinc-400 font-black uppercase">Decrypting Performance Data...</div>;
+  if (isLoading) return <div className="p-20 text-center animate-pulse tracking-tighter text-zinc-400 font-bold uppercase">Loading Results Analysis...</div>;
 
   return (
     <div className="max-w-full mx-auto p-8 space-y-10 animate-in fade-in duration-700 bg-[#f8f9fa] dark:bg-zinc-950 min-h-screen">
@@ -78,13 +78,13 @@ export default function TeacherResultsPage() {
                 <ChevronLeft className="h-6 w-6" />
             </Button>
             <div>
-                <h1 className="text-4xl font-black tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-3 italic">
+                <h1 className="text-4xl font-black tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-3">
                     <TrendingUp className="h-9 w-9 text-indigo-600" />
-                    BATTLE ANALYTICS
+                    TEST ANALYTICS
                 </h1>
                 <p className="text-zinc-500 font-bold uppercase text-[10px] tracking-[0.3em] flex items-center gap-2">
                     <Calendar className="h-3 w-3" />
-                    Academic Node: {testId.slice(0, 8)} | Post-Exam Intel
+                    Test ID: {testId.slice(0, 8)} | Analysis Report
                 </p>
             </div>
         </div>

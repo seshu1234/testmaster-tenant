@@ -72,7 +72,7 @@ export default function OnboardingPage() {
   return (
     <div className="max-w-4xl mx-auto py-12 px-6 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="text-center space-y-2">
-        <h1 className="text-4xl font-extrabold tracking-tight">Institutional Setup Wizard</h1>
+        <h1 className="text-4xl font-extrabold tracking-tight">Center Setup Wizard</h1>
         <p className="text-muted-foreground text-lg">
           Welcome to TestMaster. Let&apos;s get your center ready for excellence in 4 simple steps.
         </p>
@@ -87,7 +87,7 @@ export default function OnboardingPage() {
       </div>
 
       <div className="grid md:grid-cols-[1fr_300px] gap-8">
-        <Card className="border-none shadow-xl bg-white dark:bg-zinc-900 overflow-hidden">
+        <Card className="border shadow-xl bg-white dark:bg-zinc-900 overflow-hidden">
           <CardHeader className="bg-zinc-900 text-white p-8">
             <div className="flex items-center gap-4">
               <div className="p-3 rounded-xl bg-white/10 backdrop-blur-md">
@@ -142,7 +142,7 @@ export default function OnboardingPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-xs text-zinc-600 leading-relaxed italic">
+              <p className="text-xs text-zinc-600 leading-relaxed">
                 {currentStep === 0 && "Your logo will appear on student result cards and login pages. Use a high-resolution PNG for clarity."}
                 {currentStep === 1 && "Start with your main academic batches. You can always refine subjects and grading later."}
                 {currentStep === 2 && "Invite your senior staff first. They can help with the bulk import of student data."}
@@ -151,7 +151,7 @@ export default function OnboardingPage() {
             </CardContent>
           </Card>
 
-          <Card className="border-none shadow-lg bg-zinc-50/50">
+          <Card className="border shadow-lg bg-zinc-50/50">
             <CardHeader className="pb-2">
               <CardTitle className="text-xs font-bold uppercase tracking-widest flex items-center gap-2">
                 <Database className="h-3 w-3" />

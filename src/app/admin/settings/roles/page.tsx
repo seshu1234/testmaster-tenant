@@ -105,7 +105,7 @@ export default function RolesPage() {
           ))}
         </div>
 
-        <Card className="md:col-span-3 border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+        <Card className="md:col-span-3 border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
               <CardTitle className="capitalize">{selectedRole.replace('-', ' ')} Permissions</CardTitle>
@@ -145,7 +145,7 @@ export default function RolesPage() {
                         />
                         <div className="flex-1 space-y-0.5">
                           <label htmlFor={perm.id} className="text-sm font-bold cursor-pointer">{perm.name}</label>
-                          <p className="text-xs text-muted-foreground leading-relaxed italic">{perm.description}</p>
+                          <p className="text-xs text-muted-foreground leading-relaxed">{perm.description}</p>
                         </div>
                         {selectedRole === 'admin' && (
                            <Badge variant="secondary" className="text-[9px] bg-zinc-200">Locked</Badge>

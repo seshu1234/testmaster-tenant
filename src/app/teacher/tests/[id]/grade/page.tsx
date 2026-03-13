@@ -125,7 +125,7 @@ export default function ManualGradingPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
-          <Card className="rounded-3xl border-none shadow-xl bg-white dark:bg-zinc-900 overflow-hidden">
+          <Card className="rounded-3xl border shadow-xl bg-white dark:bg-zinc-900 overflow-hidden">
             <CardHeader className="bg-zinc-50 dark:bg-zinc-800/30 border-b p-6">
                <CardTitle className="text-lg font-bold">The Question</CardTitle>
                <CardDescription className="text-zinc-600 dark:text-zinc-400 font-medium leading-relaxed">
@@ -149,7 +149,7 @@ export default function ManualGradingPage() {
                        <CheckCircle2 className="h-3 w-3" />
                        Model Reference Answer
                     </div>
-                    <div className="p-4 bg-emerald-50/50 dark:bg-emerald-900/10 rounded-xl border border-emerald-100 dark:border-emerald-900/20 text-xs text-emerald-700 dark:text-emerald-400 italic">
+                    <div className="p-4 bg-emerald-50/50 dark:bg-emerald-900/10 rounded-xl border border-emerald-100 dark:border-emerald-900/20 text-xs text-emerald-700 dark:text-emerald-400">
                        {current.model_answer}
                     </div>
                  </div>
@@ -159,7 +159,7 @@ export default function ManualGradingPage() {
         </div>
 
         <div className="space-y-6">
-           <Card className="rounded-3xl border-none shadow-xl bg-zinc-900 text-white p-6 sticky top-24">
+           <Card className="rounded-3xl border shadow-xl bg-zinc-900 text-white p-6 sticky top-24">
               <div className="space-y-6">
                  <div>
                     <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 block mb-3">Award Marks (Max: {current.max_marks})</label>

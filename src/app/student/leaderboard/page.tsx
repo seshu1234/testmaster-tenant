@@ -10,10 +10,8 @@ import {
   TrendingDown, 
   Minus, 
   ChevronRight, 
-  Users,
   Award,
-  Star,
-  Target
+  Star
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -85,7 +83,7 @@ export default function StudentLeaderboardPage() {
     <div className="space-y-8 animate-in fade-in duration-700 pb-20 p-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-black tracking-tighter italic uppercase">Champions League</h1>
+          <h1 className="text-3xl font-black tracking-tighter uppercase">Champions League</h1>
           <p className="text-muted-foreground text-sm font-medium">Real-time rankings across your batch and centre. Stay competitive.</p>
         </div>
         <div className="flex bg-white dark:bg-zinc-900 p-1 rounded-2xl border dark:border-zinc-800 shadow-sm">
@@ -110,13 +108,13 @@ export default function StudentLeaderboardPage() {
         {/* Top 3 Focus */}
         <div className="lg:col-span-12 grid grid-cols-1 md:grid-cols-3 gap-8">
            {loading ? (
-             [1,2,3].map(i => <div key={i} className="h-64 bg-secondary rounded-[3rem] animate-pulse" />)
+             [1,2,3].map(i => <div key={i} className="h-64 bg-secondary rounded-2xl animate-pulse" />)
            ) : leaderboard.length > 0 ? (
              leaderboard.slice(0, 3).map((student) => (
-                <Card key={student.id} className={cn("border-2 shadow-2xl rounded-[3rem] p-10 flex flex-col items-center text-center relative overflow-hidden group", getRankStyle(student.rank))}>
+                <Card key={student.id} className={cn("border shadow-md rounded-2xl p-8 flex flex-col items-center text-center relative overflow-hidden group", getRankStyle(student.rank))}>
                    <div className="relative z-10 space-y-4">
-                      <div className="h-24 w-24 rounded-[2rem] bg-white dark:bg-zinc-950 shadow-xl flex items-center justify-center relative mx-auto group-hover:scale-110 transition-transform">
-                         <span className="text-4xl font-black italic">{student.name.charAt(0)}</span>
+                      <div className="h-20 w-20 rounded-2xl bg-white dark:bg-zinc-950 shadow-sm flex items-center justify-center relative mx-auto group-hover:scale-105 transition-transform">
+                         <span className="text-3xl font-black">{student.name.charAt(0)}</span>
                          <div className="absolute -top-3 -right-3 h-10 w-10 rounded-xl bg-zinc-900 text-white flex items-center justify-center font-black animate-bounce shadow-xl">
                             {student.rank}
                          </div>
@@ -137,19 +135,19 @@ export default function StudentLeaderboardPage() {
                 </Card>
              ))
            ) : (
-             <div className="col-span-3 text-center py-20 bg-secondary/20 rounded-[3rem] font-black uppercase tracking-widest text-zinc-400">
+             <div className="col-span-3 text-center py-20 bg-secondary/20 rounded-2xl font-black uppercase tracking-widest text-zinc-400">
                 No rankings available yet.
              </div>
            )}
         </div>
 
         {/* Detailed Leaderboard Table */}
-        <Card className="lg:col-span-8 border-none shadow-2xl rounded-[3rem] overflow-hidden bg-white dark:bg-zinc-950">
-           <CardHeader className="p-8 border-b bg-zinc-50/50 dark:bg-zinc-900/30 flex flex-row items-center justify-between">
-              <div>
-                 <CardTitle className="text-xl font-black uppercase italic italic tracking-tighter">Ranking Roster</CardTitle>
-                 <CardDescription className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mt-1">Full standings for {view} division</CardDescription>
-              </div>
+        <Card className="lg:col-span-8 border-none shadow-2xl rounded-2xl overflow-hidden bg-white dark:bg-zinc-950">
+            <CardHeader className="p-6 border-b bg-zinc-50/50 dark:bg-zinc-900/30 flex flex-row items-center justify-between">
+               <div>
+                  <CardTitle className="text-xl font-black uppercase tracking-tighter">Ranking Roster</CardTitle>
+                  <CardDescription className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mt-1">Full standings for {view} division</CardDescription>
+               </div>
               <div className="relative">
                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400" />
                  <input 
@@ -182,7 +180,7 @@ export default function StudentLeaderboardPage() {
                     >
                        <div className="flex items-center gap-6">
                           <span className={cn(
-                             "text-lg font-black italic w-8",
+                             "text-lg font-black w-8",
                              student.rank <= 3 ? "text-primary" : "text-zinc-300"
                           )}>
                              {student.rank}
@@ -193,7 +191,7 @@ export default function StudentLeaderboardPage() {
                           <div>
                              <h4 className="font-black text-sm uppercase tracking-tight">{student.name}</h4>
                              <div className="flex items-center gap-2 mt-1">
-                                <span className="text-[10px] font-bold text-zinc-400 italic">#{student.rank} Overall</span>
+                                <span className="text-[10px] font-bold text-zinc-400">#{student.rank} Overall</span>
                              </div>
                           </div>
                        </div>
@@ -201,7 +199,7 @@ export default function StudentLeaderboardPage() {
                        <div className="flex items-center gap-12">
                           <div className="text-right">
                              <p className="text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-0.5">Score</p>
-                             <span className="text-lg font-black italic">{student.score}</span>
+                             <span className="text-lg font-black">{student.score}</span>
                           </div>
                           <div className="flex flex-col items-center gap-1">
                              <p className="text-[9px] font-black uppercase tracking-widest text-zinc-400">Trend</p>
@@ -217,62 +215,35 @@ export default function StudentLeaderboardPage() {
            </CardContent>
         </Card>
 
-        {/* Neighbors & Personal Insights Sidebar */}
-        <div className="lg:col-span-4 space-y-8">
-           <Card className="border-none shadow-2xl rounded-[3rem] bg-zinc-900 text-white p-8 overflow-hidden relative group">
-              <div className="relative z-10">
-                 <h3 className="text-xl font-black uppercase italic italic tracking-tighter mb-8">Next Target</h3>
-                 {neighbors && neighbors.target_name ? (
-                    <div className="space-y-6">
-                       <div className="flex items-center gap-4">
-                          <div className="h-12 w-12 rounded-2xl bg-white/10 flex items-center justify-center font-black text-xs text-primary animate-pulse">
-                             #{neighbors.target_rank}
-                          </div>
-                          <div>
-                             <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Beat {neighbors.target_name}</p>
-                             <p className="text-xs font-bold italic">Gap: {neighbors.gap} PTS <span className="text-[8px] opacity-60">to rank up</span></p>
-                          </div>
-                       </div>
-                       <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
-                          <p className="text-[11px] font-bold text-zinc-400 leading-relaxed uppercase tracking-tighter italic">
-                             &quot;You&apos;re closing the gap fast. Prediction: You will overtake in a few more successful tests.&quot;
-                          </p>
-                       </div>
-                       <Button className="w-full bg-white text-black font-black rounded-2xl h-12 text-[10px]">
-                          CLAIM RANK #{neighbors.target_rank}
-                       </Button>
-                    </div>
-                 ) : (
-                    <div className="text-center py-8">
-                       <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">You are at the top!</p>
-                       <p className="text-xs font-bold italic text-primary mt-2">Maintain your position.</p>
-                    </div>
-                 )}
-              </div>
-              <Target className="absolute -bottom-12 -right-12 h-48 w-48 opacity-5 rotate-[-15deg] group-hover:scale-110 transition-transform duration-700" />
-           </Card>
-
-           <Card className="border-none shadow-xl rounded-[2.5rem] bg-white dark:bg-zinc-950 p-8">
-              <div className="flex items-center gap-4 mb-6">
-                 <div className="h-10 w-10 rounded-xl bg-primary/5 flex items-center justify-center">
-                    <Users className="h-5 w-5 text-primary" />
-                 </div>
-                 <h4 className="text-sm font-black uppercase italic tracking-tight">Active Peers</h4>
-              </div>
-              <div className="space-y-4">
-                 {[1,2,3].map(i => (
-                    <div key={i} className="flex items-center gap-3">
-                       <div className="h-8 w-8 rounded-lg bg-zinc-100 dark:bg-zinc-900 border" />
-                       <div className="flex-1">
-                          <div className="h-2 w-20 bg-zinc-100 dark:bg-zinc-900 rounded-full" />
-                          <div className="h-1.5 w-12 bg-zinc-50 dark:bg-zinc-900 rounded-full mt-1.5" />
-                       </div>
-                    </div>
-                 ))}
-                 <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest text-center pt-4">12 students currently studying</p>
-              </div>
-           </Card>
-        </div>
+         {/* Neighbors & Personal Insights Sidebar */}
+         <div className="lg:col-span-4 space-y-6">
+            {neighbors && neighbors.target_name && (
+               <Card className="border shadow-md rounded-2xl bg-zinc-900 text-white p-6 overflow-hidden relative group">
+                  <div className="relative z-10">
+                     <h3 className="text-lg font-black uppercase tracking-tighter mb-4">Next Target</h3>
+                     <div className="space-y-4">
+                        <div className="flex items-center gap-4">
+                           <div className="h-10 w-10 rounded-xl bg-white/10 flex items-center justify-center font-black text-xs text-primary animate-pulse">
+                              #{neighbors.target_rank}
+                           </div>
+                           <div>
+                              <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Beat {neighbors.target_name}</p>
+                              <p className="text-xs font-bold">Gap: {neighbors.gap} PTS <span className="text-[8px] opacity-60">to rank up</span></p>
+                           </div>
+                        </div>
+                        <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+                           <p className="text-[10px] font-bold text-zinc-400 leading-relaxed uppercase tracking-tighter">
+                              &quot;You&apos;re closing the gap fast. Prediction: You will overtake soon.&quot;
+                           </p>
+                        </div>
+                        <Button size="sm" className="w-full bg-white text-black font-black rounded-xl h-10 text-[10px]">
+                           VIEW CHALLENGE
+                        </Button>
+                     </div>
+                  </div>
+               </Card>
+            )}
+         </div>
       </div>
     </div>
   );

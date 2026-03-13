@@ -98,10 +98,10 @@ export default function StudentResourcesPage() {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-700 pb-20 p-6">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-white p-10 rounded-[3rem] bg-zinc-950 shadow-2xl relative overflow-hidden group">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-white p-10 rounded-3xl bg-zinc-950 shadow-2xl relative overflow-hidden group">
         <div className="relative z-10 space-y-4">
           <Badge className="bg-primary/20 text-primary border-none text-[10px] font-black uppercase tracking-[0.2em] px-4 py-1.5">Knowledge Vault</Badge>
-          <h1 className="text-4xl font-black tracking-tighter italic uppercase leading-tight">Mastery Resources</h1>
+          <h1 className="text-4xl font-black tracking-tighter uppercase leading-tight">Mastery Resources</h1>
           <p className="text-zinc-500 text-lg font-medium max-w-xl leading-relaxed">
             Curated study material, high-octane video lectures, and AI-generated practice sheets at your fingertips.
           </p>
@@ -157,7 +157,7 @@ export default function StudentResourcesPage() {
                  </Card>
               ) : (
                 filteredResources.map((res) => (
-                   <Card key={res.id} className="border-none shadow-xl rounded-[2.5rem] bg-white dark:bg-zinc-950 overflow-hidden group hover:scale-[1.02] transition-all transform duration-500">
+                   <Card key={res.id} className="border shadow-md rounded-2xl bg-white dark:bg-zinc-950 overflow-hidden group hover:scale-[1.02] transition-all transform duration-500">
                       <div className="p-8 space-y-6">
                          <div className="flex justify-between items-start">
                             <div className={cn(
@@ -178,7 +178,7 @@ export default function StudentResourcesPage() {
                                <Badge variant="outline" className="text-[7px] font-black uppercase tracking-widest h-4 px-2">{res.subject}</Badge>
                                <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">{res.source}</span>
                             </div>
-                            <h3 className="text-xl font-black italic uppercase italic tracking-tighter leading-tight group-hover:text-primary transition-colors">{res.title}</h3>
+                             <h3 className="text-xl font-black uppercase tracking-tighter leading-tight group-hover:text-primary transition-colors">{res.title}</h3>
                          </div>
   
                          <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-zinc-400">
@@ -199,12 +199,12 @@ export default function StudentResourcesPage() {
 
         {/* Intelligence Sidebar */}
         <div className="lg:col-span-4 space-y-8">
-           <Card className="border-none shadow-2xl rounded-[3rem] bg-zinc-950 p-10 text-white relative overflow-hidden group">
+           <Card className="border shadow-md rounded-2xl bg-zinc-950 p-8 text-white relative overflow-hidden group">
               <div className="relative z-10 space-y-6">
                  <div className="h-16 w-16 rounded-[1.5rem] bg-primary/20 flex items-center justify-center">
                     <BrainCircuit className="h-8 w-8 text-primary" />
                  </div>
-                 <h3 className="text-2xl font-black italic uppercase italic tracking-tighter leading-none">AI Study Assist</h3>
+                  <h3 className="text-2xl font-black uppercase tracking-tighter leading-none">AI Study Assist</h3>
                  <p className="text-zinc-500 text-xs font-medium leading-relaxed">
                     Based on your analytics, here are the most critical focus areas to boost your current trajectory.
                  </p>
@@ -225,12 +225,12 @@ export default function StudentResourcesPage() {
               </div>
            </Card>
 
-           <Card className="border-none shadow-xl rounded-[2.5rem] bg-white dark:bg-zinc-950 p-8 space-y-6">
+           <Card className="border shadow-md rounded-2xl bg-white dark:bg-zinc-950 p-6 space-y-6">
               <div className="flex items-center gap-4">
                  <div className="h-12 w-12 rounded-2xl bg-primary/5 flex items-center justify-center">
                     <Lightbulb className="h-6 w-6 text-primary" />
                  </div>
-                 <h3 className="text-lg font-black italic uppercase italic tracking-tighter">Quick References</h3>
+                  <h3 className="text-lg font-black uppercase tracking-tighter">Quick References</h3>
               </div>
               <div className="grid grid-cols-2 gap-4">
                  {['Formulas', 'Unit List', 'Constants', 'Shortcuts'].map((ref) => (
@@ -242,14 +242,14 @@ export default function StudentResourcesPage() {
               </div>
            </Card>
 
-           <Card className="border-none shadow-xl rounded-[3rem] bg-primary p-10 text-white relative overflow-hidden group">
+           <Card className="border shadow-md rounded-2xl bg-primary p-8 text-white relative overflow-hidden group">
               <h4 className="text-[10px] font-black uppercase tracking-[0.2em] mb-4 opacity-70">Weekly Objective</h4>
-              <p className="text-xl font-black italic uppercase italic leading-tight mb-8">
+               <p className="text-xl font-black uppercase leading-tight mb-8">
                  Master your current weak topics to reach Elite Status.
               </p>
               <div className="flex items-center justify-between mb-4">
-                 <span className="text-xs font-black italic uppercase">Resource Velocity</span>
-                 <span className="text-xs font-black italic italic">{insightData?.performance_trend || 0}%</span>
+                  <span className="text-xs font-black uppercase">Resource Velocity</span>
+                  <span className="text-xs font-black">{insightData?.performance_trend || 0}%</span>
               </div>
               <Progress value={insightData?.performance_trend || 0} className="h-2 bg-white/20" />
               <TrendingUp className="absolute -bottom-8 -right-8 h-32 w-32 opacity-10 rotate-12" />

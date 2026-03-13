@@ -76,7 +76,7 @@ export default function TestInstructionsPage() {
     }
   };
 
-  if (isLoading) return <div className="p-8 text-center italic animate-pulse">Preparing your assessment...</div>;
+  if (isLoading) return <div className="p-8 text-center animate-pulse">Preparing your assessment...</div>;
 
   if (!test) {
     return (
@@ -128,7 +128,7 @@ export default function TestInstructionsPage() {
         </div>
 
         <div className="w-full md:w-80 space-y-6">
-           <Card className="border-none shadow-xl bg-primary text-primary-foreground overflow-hidden">
+           <Card className="border shadow-md rounded-2xl bg-primary text-primary-foreground overflow-hidden">
               <CardHeader>
                  <CardTitle className="text-lg">Assessment Summary</CardTitle>
               </CardHeader>
@@ -168,7 +168,7 @@ export default function TestInstructionsPage() {
                  >
                     {isStarting ? "Processing..." : "Take Test Now"}
                  </Button>
-                 <p className="text-[10px] text-center text-primary-foreground/60 italic">By clicking Start, you agree to the conditions.</p>
+                  <p className="text-[10px] text-center text-primary-foreground/60">By clicking Start, you agree to the conditions.</p>
               </CardFooter>
            </Card>
 

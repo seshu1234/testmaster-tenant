@@ -113,7 +113,7 @@ export default function TeacherAnalyticsDashboard() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="border-none shadow-lg bg-white dark:bg-zinc-900/50">
+        <Card className="border shadow-md bg-white dark:bg-zinc-900/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Tests Created</CardTitle>
             <FileText className="h-4 w-4 text-muted-foreground" />
@@ -126,7 +126,7 @@ export default function TeacherAnalyticsDashboard() {
           </CardContent>
         </Card>
         
-        <Card className="border-none shadow-lg bg-white dark:bg-zinc-900/50">
+        <Card className="border shadow-md bg-white dark:bg-zinc-900/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Avg Class Score</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
@@ -139,7 +139,7 @@ export default function TeacherAnalyticsDashboard() {
           </CardContent>
         </Card>
         
-        <Card className="border-none shadow-lg bg-white dark:bg-zinc-900/50">
+        <Card className="border shadow-md bg-white dark:bg-zinc-900/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Needs Grading</CardTitle>
             <CheckCircle className="h-4 w-4 text-amber-500" />
@@ -155,7 +155,7 @@ export default function TeacherAnalyticsDashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Subject Performance Chart */}
-        <Card className="lg:col-span-2 border-none shadow-xl bg-white dark:bg-zinc-900">
+        <Card className="lg:col-span-2 border shadow-md bg-white dark:bg-zinc-900">
           <CardHeader>
             <CardTitle>Subject Performance</CardTitle>
             <CardDescription>Accuracy percentage grouped by subject area.</CardDescription>
@@ -193,7 +193,7 @@ export default function TeacherAnalyticsDashboard() {
         </Card>
 
         {/* Weakness Radar Chart */}
-        <Card className="border-none shadow-xl bg-zinc-900 text-white overflow-hidden">
+        <Card className="border shadow-md bg-zinc-900 text-white overflow-hidden">
            <CardHeader className="bg-zinc-800/50">
               <CardTitle className="text-sm font-black uppercase tracking-widest flex items-center gap-2">
                  <Target className="h-4 w-4 text-primary" />
@@ -226,7 +226,7 @@ export default function TeacherAnalyticsDashboard() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
          {/* Top Performers */}
-         <Card className="border-none shadow-lg bg-white dark:bg-zinc-900">
+         <Card className="border shadow-md bg-white dark:bg-zinc-900">
           <CardHeader>
             <CardTitle>Top Performers</CardTitle>
             <CardDescription>Highest scoring students across recent tests.</CardDescription>
@@ -260,7 +260,7 @@ export default function TeacherAnalyticsDashboard() {
         </Card>
 
         {/* AI Growth Recommendations */}
-        <Card className="border-none shadow-lg bg-white dark:bg-zinc-900">
+        <Card className="border shadow-md bg-white dark:bg-zinc-900">
            <CardHeader>
               <CardTitle className="text-sm font-black uppercase tracking-widest flex items-center gap-2">
                  <Zap className="h-4 w-4 text-amber-500" />
@@ -277,7 +277,7 @@ export default function TeacherAnalyticsDashboard() {
                    <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{item.recommendation}</p>
                 </div>
               )) : (
-                <div className="p-8 text-center text-muted-foreground italic text-sm">
+                <div className="p-8 text-center text-muted-foreground text-sm">
                    AI is currently analyzing response patterns. Recommendations will appear shortly.
                 </div>
               )}

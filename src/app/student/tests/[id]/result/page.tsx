@@ -267,7 +267,7 @@ export default function StudentResultPage() {
                                 </div>
                             </div>
                         )) : (
-                            <div className="p-12 text-center text-zinc-400 italic font-medium">No subject breakdown available for this assessment.</div>
+                            <div className="p-12 text-center text-zinc-400 font-medium">No subject breakdown available for this assessment.</div>
                         )}
                     </div>
                     
@@ -338,7 +338,7 @@ export default function StudentResultPage() {
                                 </div>
                             </div>
                         )) : (
-                            <div className="p-20 text-center text-zinc-400 italic">No competitors yet.</div>
+                            <div className="p-20 text-center text-zinc-400">No competitors yet.</div>
                         )}
                     </div>
                 </CardContent>

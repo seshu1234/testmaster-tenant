@@ -12,12 +12,11 @@ import {
   Clock, 
   AlertCircle, 
   Activity,
-  Target, 
-  Zap,
   ShieldAlert,
-  ChevronRight,
+  Zap,
   FileText
 } from "lucide-react";
+import { toast } from "sonner";
 import {
   Table,
   TableBody,
@@ -59,12 +58,10 @@ export default function TestsOversightPage() {
       });
       setTests(response.data);
     } catch {
-      // Fallback for UI testing
-      setTests([
-        { id: "t1", title: "JEE Mains Mock 1", teacher_name: "Prof. Verma", subject: "Physics", status: "pending_approval", student_count: 0, created_at: new Date().toISOString() },
-        { id: "t2", title: "Chemical Bonding Quiz", teacher_name: "Dr. Sharma", subject: "Chemistry", status: "published", student_count: 42, created_at: new Date().toISOString() },
-        { id: "t3", title: "Algebra Basics", teacher_name: "Mrs. Kapoor", subject: "Maths", status: "draft", student_count: 0, created_at: new Date().toISOString() },
-      ]);
+      setTests([]);
+      toast.error("Error", {
+        description: "Failed to fetch assessments from the server.",
+      });
     } finally {
       setLoading(false);
     }
@@ -93,12 +90,12 @@ export default function TestsOversightPage() {
 
       <div className="grid gap-6 md:grid-cols-4">
         {[
-          { label: "Tests Scheduled", value: "24", icon: Clock, color: "text-blue-600" },
-          { label: "Live Tests", value: "2", icon: Zap, color: "text-amber-500" },
-          { label: "Avg. Pass Rate", value: "72%", icon: Target, color: "text-green-600" },
-          { label: "Incomplete", value: "8", icon: AlertCircle, color: "text-red-500" },
+          { label: "Tests Scheduled", value: tests.length, icon: Clock, color: "text-blue-600" },
+          { label: "Live Tests", value: tests.filter(t => t.status === 'published').length, icon: Zap, color: "text-amber-500" },
+          { label: "Needs Approval", value: tests.filter(t => t.status === 'pending_approval').length, icon: ShieldAlert, color: "text-orange-500" },
+          { label: "Drafts", value: tests.filter(t => t.status === 'draft').length, icon: FileText, color: "text-zinc-500" },
         ].map((stat, i) => (
-          <Card key={i} className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+          <Card key={i} className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
                 {stat.label}
@@ -141,10 +138,10 @@ export default function TestsOversightPage() {
             </div>
           </div>
 
-          <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50 overflow-hidden">
-            <CardHeader className="bg-zinc-900 text-white py-4">
+          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50 overflow-hidden">
+            <CardHeader className="py-4">
               <CardTitle className="text-lg">Assessment Queue</CardTitle>
-              <CardDescription className="text-zinc-400">Moderation and lifecycle management for all center tests.</CardDescription>
+              <CardDescription>Moderation and lifecycle management for all center tests.</CardDescription>
             </CardHeader>
             <CardContent className="p-0">
               <Table>
@@ -167,7 +164,7 @@ export default function TestsOversightPage() {
                     </TableRow>
                   ) : filteredTests.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center py-12 text-muted-foreground italic">
+                      <TableCell colSpan={6} className="text-center py-12 text-muted-foreground">
                         No active assessments detected.
                       </TableCell>
                     </TableRow>
@@ -239,7 +236,7 @@ export default function TestsOversightPage() {
 
         <TabsContent value="live-monitoring" className="mt-6">
            <div className="grid gap-6 md:grid-cols-2">
-              <Card className="border-none shadow-sm bg-zinc-900 text-white overflow-hidden relative">
+              <Card className="border shadow-sm bg-zinc-900 text-white overflow-hidden relative">
                  <div className="absolute top-0 right-0 p-8 opacity-10">
                     <Activity className="h-24 w-24 animate-pulse" />
                  </div>
@@ -251,45 +248,24 @@ export default function TestsOversightPage() {
                     <CardDescription className="text-zinc-400">Active test attempts currently in progress.</CardDescription>
                  </CardHeader>
                  <CardContent className="space-y-4">
-                    {[
-                      { student: "Aryan M.", test: "JEE Mains P-1", time: "24m elapsed", score: "84%" },
-                      { student: "Sanya K.", test: "NEET Physics", time: "12m elapsed", score: "91%" },
-                      { student: "Rahul S.", test: "JEE Mains P-1", time: "45m elapsed", score: "62%" },
-                    ].map((session, i) => (
-                      <div key={i} className="flex items-center gap-4 p-3 rounded-xl bg-white/5 shadow-inner border border-white/5 group hover:bg-white/10 transition-colors">
-                         <div className="h-8 w-8 rounded-full bg-zinc-800 flex items-center justify-center font-bold text-xs">
-                            {session.student.charAt(0)}
-                         </div>
-                         <div className="flex-1">
-                            <p className="text-xs font-bold">{session.student} <span className="text-[10px] font-normal text-zinc-500">on {session.test}</span></p>
-                            <div className="flex items-center gap-2 text-[10px] text-zinc-400">
-                               <Clock className="h-2 w-2" /> {session.time} 
-                               <span className="h-1 w-1 rounded-full bg-zinc-700" />
-                               <span className="text-green-500 font-bold">{session.score} Potential</span>
-                            </div>
-                         </div>
-                         <ChevronRight className="h-4 w-4 text-zinc-700 group-hover:text-white transition-colors" />
-                      </div>
-                    ))}
+                    <div className="p-8 text-center text-zinc-500 text-xs uppercase font-bold tracking-widest">
+                       Scanning for active sessions...
+                    </div>
                  </CardContent>
               </Card>
 
-              <Card className="border-none shadow-sm bg-white border-zinc-100">
+              <Card className="border shadow-sm bg-white">
                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                       <ShieldAlert className="h-4 w-4 text-red-500" />
+                    <CardTitle className="flex items-center gap-2 text-primary">
+                       <ShieldAlert className="h-4 w-4" />
                        Anomaly Detection
                     </CardTitle>
-                    <CardDescription>Suspicious activity detected by the AI proctor.</CardDescription>
+                    <CardDescription>Security monitoring for suspicious activity.</CardDescription>
                  </CardHeader>
                  <CardContent>
-                    <div className="rounded-xl border border-dashed border-red-100 bg-red-50/30 p-8 flex flex-col items-center justify-center text-center space-y-4">
-                       <AlertCircle className="h-12 w-12 text-red-200" />
-                       <div className="space-y-1">
-                          <p className="font-bold text-red-700">Security Breach (Mock)</p>
-                          <p className="text-xs text-red-600/70 max-w-[200px]">Tab switching detected for 3 sessions in Batch JEE-Alpha.</p>
-                       </div>
-                       <Button size="sm" variant="outline" className="border-red-200 text-red-700 hover:bg-red-100">Broadcast Alert</Button>
+                    <div className="rounded-xl border border-dashed p-8 flex flex-col items-center justify-center text-center space-y-4">
+                       <CheckCircle className="h-12 w-12 text-zinc-200" />
+                       <p className="text-xs text-muted-foreground">No security anomalies detected in active sessions.</p>
                     </div>
                  </CardContent>
               </Card>
@@ -311,26 +287,14 @@ export default function TestsOversightPage() {
       )}
 
       <TabsContent value="templates" className="mt-6">
-        <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+        <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
           <CardHeader>
             <CardTitle>Standardized Templates</CardTitle>
             <CardDescription>Reusable assessment structures for institutional consistency.</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-4 md:grid-cols-3">
-              {[
-                { name: "JEE Main (Full)", questions: 90, duration: "180m" },
-                { name: "NEET Mini-Mock", questions: 45, duration: "60m" },
-                { name: "Monthly Cumulative", questions: 60, duration: "120m" },
-              ].map((template, i) => (
-                <div key={i} className="p-4 rounded-xl border border-zinc-100 bg-white shadow-sm flex flex-col justify-between h-32">
-                  <div>
-                    <p className="font-bold text-sm">{template.name}</p>
-                    <p className="text-[10px] text-muted-foreground uppercase">{template.questions} Qs • {template.duration}</p>
-                  </div>
-                  <Button variant="outline" size="sm" className="w-full text-[10px] font-bold uppercase tracking-widest">Apply Template</Button>
-                </div>
-              ))}
+            <div className="p-12 text-center border-2 border-dashed rounded-xl text-muted-foreground">
+               No test templates configured.
             </div>
           </CardContent>
         </Card>

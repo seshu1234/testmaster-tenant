@@ -60,7 +60,7 @@ export default function StudentTestsPage() {
     <div className="space-y-8 animate-in fade-in duration-500 pb-20 p-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-black tracking-tight uppercase italic">Assessment Vault</h1>
+          <h1 className="text-3xl font-black tracking-tight uppercase">Assessment Vault</h1>
           <p className="text-muted-foreground text-sm font-medium">Manage your schedule, enter lobbies, and review upcoming challenges.</p>
         </div>
         <div className="flex gap-2">
@@ -76,9 +76,9 @@ export default function StudentTestsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column: Calendar View */}
         <div className="lg:col-span-1 space-y-6">
-           <Card className="border-none shadow-2xl rounded-[2.5rem] bg-white dark:bg-zinc-950 p-6">
+           <Card className="border shadow-md rounded-2xl bg-white dark:bg-zinc-950 p-6">
               <div className="flex justify-between items-center mb-6">
-                 <h3 className="font-black italic uppercase text-xs tracking-widest px-2">
+                 <h3 className="font-black uppercase text-xs tracking-widest px-2">
                     {new Date().toLocaleString('default', { month: 'long', year: 'numeric' })}
                  </h3>
                  <div className="flex gap-1">
@@ -118,9 +118,9 @@ export default function StudentTestsPage() {
               </div>
            </Card>
 
-           <Card className="border-none shadow-xl rounded-[2.5rem] bg-zinc-900 text-white p-8 relative overflow-hidden group">
+           <Card className="border shadow-md rounded-2xl bg-zinc-900 text-white p-6 relative overflow-hidden group">
               <div className="relative z-10">
-                 <h3 className="text-xl font-black tracking-tight uppercase italic mb-4">Integrity Pro</h3>
+                 <h3 className="text-xl font-black tracking-tight uppercase mb-4">Integrity Pro</h3>
                  <p className="text-zinc-400 text-xs font-medium leading-relaxed mb-6">
                     Our AI-powered proctoring is active. Ensure a stable connection and fullscreen mode for a smooth experience.
                  </p>
@@ -152,7 +152,7 @@ export default function StudentTestsPage() {
 
            <div className="grid gap-4">
               {tests.length > 0 ? tests.map((test) => (
-                 <Card key={test.id} className="border-none shadow-xl rounded-3xl overflow-hidden bg-white dark:bg-zinc-950 group hover:shadow-2xl transition-all duration-300">
+                 <Card key={test.id} className="border shadow-md rounded-2xl overflow-hidden bg-white dark:bg-zinc-950 group hover:shadow-lg transition-all duration-300">
                     <CardContent className="p-0">
                        <div className="flex flex-col md:flex-row items-stretch">
                           <div className="w-1.5 bg-primary shrink-0" />
@@ -160,7 +160,7 @@ export default function StudentTestsPage() {
                              <div className="flex gap-6 items-center flex-1">
                                 <div className="h-16 w-16 bg-zinc-50 dark:bg-zinc-900 rounded-2xl flex flex-col items-center justify-center border dark:border-zinc-800 group-hover:scale-110 transition-transform">
                                    <span className="text-[8px] font-black text-zinc-400 uppercase">DATE</span>
-                                   <span className="text-xl font-black italic">{new Date(test.start_time).getDate()}</span>
+                                   <span className="text-xl font-black">{new Date(test.start_time).getDate()}</span>
                                 </div>
                                 <div>
                                    <div className="flex items-center gap-2 mb-1">
@@ -190,7 +190,7 @@ export default function StudentTestsPage() {
                                       <ArrowUpRight className="ml-2 h-4 w-4" />
                                    </Button>
                                 </Link>
-                                <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-[0.2em] italic">
+                                <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-[0.2em]">
                                    {test.status === 'completed' ? 'Result available in history' : 'System ready for launch'}
                                 </p>
                              </div>
@@ -199,13 +199,13 @@ export default function StudentTestsPage() {
                     </CardContent>
                  </Card>
               )) : (
-                 <div className="text-center py-20 bg-white dark:bg-zinc-950 rounded-[3rem] border-2 border-dashed border-zinc-100 dark:border-zinc-900">
+                 <div className="text-center py-20 bg-white dark:bg-zinc-950 rounded-2xl border-2 border-dashed border-zinc-100 dark:border-zinc-900">
                     <p className="font-black uppercase tracking-widest text-zinc-300">No Assessments Available</p>
                  </div>
               )}
            </div>
            
-           <Button variant="ghost" className="w-full mt-2 rounded-[2rem] h-20 border-2 border-dashed border-zinc-100 dark:border-zinc-900 font-black text-[10px] uppercase tracking-widest text-zinc-400 hover:text-primary transition-all">
+           <Button variant="ghost" className="w-full mt-2 rounded-2xl h-16 border-2 border-dashed border-zinc-100 dark:border-zinc-900 font-black text-[10px] uppercase tracking-widest text-zinc-400 hover:text-primary transition-all">
               Load Previous History
            </Button>
         </div>

@@ -96,16 +96,15 @@ export default function TeacherCalendarPage() {
         </div>
       </div>
 
-      <Card className="border-none shadow-xl bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50 overflow-hidden">
+      <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50 overflow-hidden">
         <CardHeader className="flex flex-row items-center justify-between border-b bg-zinc-50/50 dark:bg-zinc-800/30 p-6">
           <div className="flex items-center gap-4">
              <div className="bg-primary/10 p-2 rounded-lg">
                 <CalendarIcon className="h-6 w-6 text-primary" />
              </div>
-             <div>
+              <div>
                 <CardTitle className="text-2xl font-bold">{monthName} {year}</CardTitle>
-                <p className="text-muted-foreground text-xs uppercase font-bold tracking-widest mt-0.5">Planning Phase Active</p>
-             </div>
+              </div>
           </div>
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="icon" onClick={prevMonth} className="rounded-full h-10 w-10">
@@ -173,7 +172,7 @@ export default function TeacherCalendarPage() {
       </Card>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-         <Card className="border-none shadow-lg bg-zinc-900 text-white">
+         <Card className="border shadow-sm bg-zinc-900 text-white">
             <CardHeader>
                <CardTitle className="text-sm font-bold uppercase tracking-widest text-zinc-400">Monthly Targets</CardTitle>
             </CardHeader>
@@ -183,13 +182,13 @@ export default function TeacherCalendarPage() {
                   <span>{tests.filter(t => t.status === 'published').length} / 12</span>
                </div>
                <div className="h-1.5 w-full bg-zinc-800 rounded-full overflow-hidden">
-                  <div className="h-full bg-primary transition-all duration-1000" style={{ width: '45%' }} />
+                  <div className="h-full bg-primary transition-all duration-1000" style={{ width: `${Math.min((tests.filter(t => t.status === 'published').length / 12) * 100, 100)}%` }} />
                </div>
-               <p className="text-[10px] text-zinc-500 italic">Target based on your 30-day academic pacing plan.</p>
+               <p className="text-[10px] text-zinc-500">Target based on your 30-day academic pacing plan.</p>
             </CardContent>
          </Card>
 
-         <Card className="border-none shadow-lg bg-white dark:bg-zinc-900">
+         <Card className="border shadow-sm bg-white dark:bg-zinc-900">
             <CardHeader>
                <CardTitle className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Upcoming This Week</CardTitle>
             </CardHeader>

@@ -79,7 +79,7 @@ export default function BatchDetailsPage() {
         <div className="flex items-center justify-center min-h-screen">
            <div className="flex flex-col items-center gap-4">
               <Loader2 className="h-10 w-10 text-primary animate-spin" />
-              <p className="text-sm font-bold text-zinc-400 uppercase tracking-widest">Synchronizing batch data...</p>
+              <p className="text-sm font-bold text-zinc-400 uppercase tracking-widest">Loading batch details...</p>
            </div>
         </div>
      );
@@ -96,9 +96,9 @@ export default function BatchDetailsPage() {
     <div className="space-y-8 animate-in fade-in duration-500 pb-20 p-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-zinc-900 text-white p-8 rounded-3xl shadow-2xl relative overflow-hidden">
         <div className="relative z-10">
-          <Badge className="bg-primary/20 text-primary border-none mb-4 px-3 py-1 text-[10px] font-black uppercase tracking-widest">
-            Detailed Performance Report
-          </Badge>
+            <Badge className="bg-primary/20 text-primary border-none mb-4 px-3 py-1 text-[10px] font-bold uppercase tracking-widest">
+              Batch Performance
+            </Badge>
           <h1 className="text-4xl font-black tracking-tight mb-2">{data.batch.name}</h1>
           <div className="flex items-center gap-6 text-zinc-400 text-sm font-medium">
              <div className="flex items-center gap-2"><Users className="h-4 w-4" /> {data.metrics.total_students} Students</div>
@@ -107,7 +107,7 @@ export default function BatchDetailsPage() {
           </div>
         </div>
         <div className="relative z-10 flex gap-3">
-           <Button className="rounded-xl font-bold bg-white text-black hover:bg-zinc-100">MESSAGE BATCH</Button>
+            <Button className="rounded-xl font-bold bg-white text-black hover:bg-zinc-100">SEND MESSAGE</Button>
            <Button variant="outline" className="rounded-xl font-bold border-zinc-700 text-white hover:bg-zinc-800">EXPORT DATA</Button>
         </div>
         <CardDescription className="absolute -bottom-10 -right-10 opacity-5">
@@ -119,7 +119,7 @@ export default function BatchDetailsPage() {
          <Card className="border-none shadow-xl bg-white dark:bg-zinc-900 p-6 rounded-3xl">
             <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-widest text-[10px] mb-4">Batch Average</h3>
             <div className="flex items-baseline gap-2">
-               <span className="text-4xl font-black italic">{data.metrics.avg_score}%</span>
+                <span className="text-4xl font-black">{data.metrics.avg_score}%</span>
                <TrendingUp className="h-5 w-5 text-emerald-500" />
             </div>
             <p className="text-[10px] font-bold text-zinc-400 mt-2">Center Average Comparison: Stable</p>
@@ -210,7 +210,7 @@ export default function BatchDetailsPage() {
                               </div>
                            </td>
                            <td className="px-8 py-6">
-                              <span className="text-lg font-black italic">{student.avg_score}%</span>
+                               <span className="text-lg font-black">{student.avg_score}%</span>
                            </td>
                            <td className="px-8 py-6">
                               <Badge className={cn(
@@ -233,7 +233,7 @@ export default function BatchDetailsPage() {
                      ))}
                      {filteredStudents.length === 0 && (
                         <tr>
-                           <td colSpan={5} className="px-8 py-12 text-center text-zinc-400 font-medium italic">No students found matching your search.</td>
+                            <td colSpan={5} className="px-8 py-12 text-center text-zinc-400 font-medium">No students found matching your search.</td>
                         </tr>
                      )}
                   </tbody>
