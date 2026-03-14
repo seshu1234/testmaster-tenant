@@ -60,7 +60,7 @@ export default function StudentResourcesPage() {
     async function fetchResources() {
       if (!token) return;
       try {
-        const response = await api('/v1/student/resources', {
+        const response = await api('/student/resources', {
           token,
           tenant: tenantSlug || undefined
         });
@@ -75,7 +75,7 @@ export default function StudentResourcesPage() {
     async function fetchAIInsights() {
       if (!token) return;
       try {
-        const response = await api('/v1/student/analytics/insights', {
+        const response = await api('/student/analytics/insights', {
           token,
           tenant: tenantSlug || undefined
         });

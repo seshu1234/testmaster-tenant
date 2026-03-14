@@ -63,7 +63,7 @@ export default function StudentPracticePage() {
       if (!token) return;
       setLoading(true);
       try {
-        const response = await api('/v1/student/tests?category=practice', {
+        const response = await api('/student/tests?category=practice', {
           token,
           tenant: tenantSlug || undefined
         });
@@ -81,8 +81,8 @@ export default function StudentPracticePage() {
       setSidebarLoading(true);
       try {
         const [dashRes, insightRes] = await Promise.all([
-          api('/v1/student/dashboard', { token, tenant: tenantSlug || undefined }),
-          api('/v1/student/analytics/insights', { token, tenant: tenantSlug || undefined })
+          api('/student/dashboard', { token, tenant: tenantSlug || undefined }),
+          api('/student/analytics/insights', { token, tenant: tenantSlug || undefined })
         ]);
         setDashboardData(dashRes.data);
         setInsightData(insightRes.data);

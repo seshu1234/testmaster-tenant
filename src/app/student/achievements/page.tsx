@@ -61,7 +61,7 @@ export default function StudentAchievementsPage() {
     async function fetchAchievements() {
       if (!token) return;
       try {
-        const response = await api('/v1/student/achievements', {
+        const response = await api('/student/achievements', {
           token,
           tenant: tenantSlug || undefined
         });

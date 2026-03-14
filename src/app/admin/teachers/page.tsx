@@ -57,7 +57,10 @@ export default function TeachersPage() {
   };
 
   const fetchTeachers = useCallback(async () => {
-    if (!token) return;
+    if (!token) {
+      setLoading(false);
+      return;
+    }
     try {
       setLoading(true);
       const response = await api("/admin/teachers", {
@@ -236,10 +239,10 @@ export default function TeachersPage() {
                         </TableCell>
                         <TableCell className="text-right pr-6">
                           <div className="flex justify-end gap-1">
-                            <Button variant="ghost" size="icon" className="h-8 w-8 text-zinc-400 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => handleEdit(teacher)}>
+                            <Button variant="ghost" size="icon" className="h-8 w-8 text-zinc-600" onClick={() => handleEdit(teacher)}>
                               <Pencil className="h-4 w-4" />
                             </Button>
-                            <Button variant="ghost" size="icon" className="h-8 w-8 text-zinc-400 opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-500 hover:bg-red-50" onClick={() => handleDelete(teacher)}>
+                            <Button variant="ghost" size="icon" className="h-8 w-8 text-zinc-600 hover:text-red-500 hover:bg-red-50" onClick={() => handleDelete(teacher)}>
                               <Trash2 className="h-4 w-4" />
                             </Button>
                           </div>

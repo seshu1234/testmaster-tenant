@@ -16,6 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { useState } from "react";
+import Image from "next/image";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -24,7 +25,7 @@ const loginSchema = z.object({
 });
 
 export function LoginForm() {
-  const { login } = useAuth();
+  const { login, branding } = useAuth();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -53,8 +54,15 @@ export function LoginForm() {
   return (
     <Card className="w-full max-w-md mx-auto shadow-xl border-none bg-white/80 backdrop-blur-md dark:bg-zinc-900/80">
       <CardHeader>
-        <CardTitle className="text-3xl font-bold text-center tracking-tight">Welcome Back</CardTitle>
-        <p className="text-center text-muted-foreground text-sm">Sign in to your TestMaster account</p>
+        {branding?.logo_url && (
+          <div className="flex justify-center mb-4">
+            <Image src={branding.logo_url} alt="Logo" className="h-12 w-auto object-contain" width={100} height={100} />
+          </div>
+        )}
+        <CardTitle className="text-3xl font-bold text-center tracking-tight">
+          {branding?.welcome_message || "Welcome Back"}
+        </CardTitle>
+        <p className="text-center text-muted-foreground text-sm">Sign in to your account</p>
       </CardHeader>
       <CardContent>
         <Form {...form}>

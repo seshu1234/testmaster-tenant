@@ -153,7 +153,7 @@ export default function StudentTestResultPage() {
               </p>
               <div className="flex flex-wrap gap-4 mt-4 justify-center md:justify-start">
                  <Button 
-                   onClick={() => window.open(`${process.env.NEXT_PUBLIC_API_URL}/v1/student/attempts/${attemptId}/result/pdf`, '_blank')}
+                   onClick={() => window.open(`${process.env.NEXT_PUBLIC_API_URL}/student/attempts/${attemptId}/result/pdf`, '_blank')}
                    className="bg-white text-black font-black px-8 h-12 rounded-xl"
                   >
                     <Download className="h-4 w-4 mr-2" /> PDF REPORT

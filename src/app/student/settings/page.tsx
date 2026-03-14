@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { 
@@ -75,8 +77,8 @@ export default function StudentSettingsPage() {
       if (!token) return;
       try {
         const [profRes, parentRes] = await Promise.all([
-          api('/v1/student/profile', { token, tenant: tenantSlug || undefined }),
-          api('/v1/student/parent-connect', { token, tenant: tenantSlug || undefined })
+          api('/student/profile', { token, tenant: tenantSlug || undefined }),
+          api('/student/parent-connect', { token, tenant: tenantSlug || undefined })
         ]);
         setProfile(profRes.data as StudentProfile);
         setParent(parentRes.data as ParentInfo);
@@ -99,14 +101,14 @@ export default function StudentSettingsPage() {
         name: formData.get('name'),
         phone: formData.get('phone'),
       };
-      await api('/v1/student/profile', {
+      await api('/student/profile', {
         method: 'PUT',
         token,
         tenant: tenantSlug || undefined,
         body: JSON.stringify(data)
       });
       // Refresh data
-      const res = await api('/v1/student/profile', { token, tenant: tenantSlug || undefined });
+      const res = await api('/student/profile', { token, tenant: tenantSlug || undefined });
       setProfile(res.data as StudentProfile);
     } catch (err) {
       console.error("Failed to update profile:", err);
@@ -119,7 +121,7 @@ export default function StudentSettingsPage() {
     if (!token || !profile || !profile.settings) return;
     try {
       const newSettings = { ...profile.settings, [key]: value };
-      await api('/v1/student/profile', {
+      await api('/student/profile', {
         method: 'PUT',
         token,
         tenant: tenantSlug || undefined,

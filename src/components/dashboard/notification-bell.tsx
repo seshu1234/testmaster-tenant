@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,8 +10,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Bell, Clock, Award, FileText, CheckCircle2 } from "lucide-react";
+import { Bell, Clock, Award, FileText, Loader2, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/use-auth";
+import { api } from "@/lib/api";
 
 interface Notification {
   id: string;
@@ -23,11 +25,42 @@ interface Notification {
 }
 
 export function NotificationBell() {
-  const [notifications, setNotifications] = useState<Notification[]>([
-    { id: '1', title: 'Test Starting Soon', description: 'Advanced Physics Mock starts in 30 minutes.', time: '30m ago', type: 'test', read: false },
-    { id: '2', title: 'Result Published', description: 'Vector Algebra Quiz results are now available.', time: '2h ago', type: 'result', read: true },
-    { id: '3', title: 'New Badge Earned!', description: 'You unlocked the "Fire Streak" achievement.', time: '1d ago', type: 'badge', read: true },
-  ]);
+  const { user, token, tenantSlug } = useAuth();
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+    async function fetchNotifications() {
+      if (!user || !token) {
+        if (isMounted) setLoading(false);
+        return;
+      }
+      try {
+        const response = await api(`/${user.role}/notifications?filter=unread`, {
+          token,
+          tenant: tenantSlug || undefined
+        });
+        if (response.success && Array.isArray(response.data) && isMounted) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          setNotifications(response.data.map((n: any) => ({
+            id: n.id || String(Math.random()),
+            title: n.title || 'System Alert',
+            description: n.body || n.description || '',
+            time: n.time || 'Just now',
+            type: n.type || 'info',
+            read: n.unread === false
+          })));
+        }
+      } catch (err) {
+        console.error("Failed to fetch notifications:", err);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    }
+    fetchNotifications();
+    return () => { isMounted = false; };
+  }, [user, token, tenantSlug]);
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
@@ -62,28 +95,39 @@ export function NotificationBell() {
         </div>
         <DropdownMenuSeparator className="mb-4" />
         <div className="space-y-2 max-h-[300px] overflow-y-auto">
-          {notifications.map((notification) => (
-            <DropdownMenuItem 
-               key={notification.id} 
-               className={cn(
-                  "flex items-start gap-4 p-3 rounded-2xl cursor-pointer transition-all border border-transparent",
-                  !notification.read ? "bg-primary/5 border-primary/10" : "hover:bg-zinc-50 dark:hover:bg-zinc-900"
-               )}
-            >
-              <div className={cn(
-                 "mt-1 shrink-0 h-8 w-8 rounded-xl flex items-center justify-center",
-                 !notification.read ? "bg-primary/20" : "bg-zinc-100 dark:bg-zinc-800"
-              )}>
-                {getIcon(notification.type)}
-              </div>
-              <div className="flex-1 space-y-1">
-                <p className="text-xs font-black tracking-tight">{notification.title}</p>
-                <p className="text-[10px] text-muted-foreground leading-tight font-medium">{notification.description}</p>
-                <p className="text-[9px] text-zinc-400 font-bold uppercase tracking-tighter">{notification.time}</p>
-              </div>
-              {!notification.read && <div className="h-1.5 w-1.5 rounded-full bg-primary mt-1.5" />}
-            </DropdownMenuItem>
-          ))}
+          {loading ? (
+             <div className="flex justify-center items-center py-8">
+                <Loader2 className="h-4 w-4 animate-spin text-zinc-400" />
+             </div>
+          ) : notifications.length === 0 ? (
+             <div className="flex flex-col items-center justify-center py-8 text-center space-y-2">
+                <Info className="h-6 w-6 text-zinc-200" />
+                <p className="text-xs text-zinc-500 font-medium">No new notifications</p>
+             </div>
+          ) : (
+            notifications.map((notification) => (
+              <DropdownMenuItem 
+                 key={notification.id} 
+                 className={cn(
+                    "flex items-start gap-4 p-3 rounded-2xl cursor-pointer transition-all border border-transparent",
+                    !notification.read ? "bg-primary/5 border-primary/10" : "hover:bg-zinc-50 dark:hover:bg-zinc-900"
+                 )}
+              >
+                <div className={cn(
+                   "mt-1 shrink-0 h-8 w-8 rounded-xl flex items-center justify-center",
+                   !notification.read ? "bg-primary/20" : "bg-zinc-100 dark:bg-zinc-800"
+                )}>
+                  {getIcon(notification.type)}
+                </div>
+                <div className="flex-1 space-y-1">
+                  <p className="text-xs font-black tracking-tight">{notification.title}</p>
+                  <p className="text-[10px] text-muted-foreground leading-tight font-medium">{notification.description}</p>
+                  <p className="text-[9px] text-zinc-400 font-bold uppercase tracking-tighter">{notification.time}</p>
+                </div>
+                {!notification.read && <div className="h-1.5 w-1.5 rounded-full bg-primary mt-1.5" />}
+              </DropdownMenuItem>
+            ))
+          )}
         </div>
         <DropdownMenuSeparator className="my-4" />
         <Button variant="ghost" className="w-full rounded-xl text-[10px] font-black uppercase tracking-widest text-zinc-400">

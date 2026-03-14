@@ -26,11 +26,11 @@ async function fetchBranding(): Promise<Record<string, string>> {
   if (!tenantSlug) return {};
   
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/branding`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/branding`, {
       headers: {
         'X-Tenant': tenantSlug,
       },
-      next: { revalidate: 3600 } // Cache for 1 hour
+      cache: 'no-store' // Fetch fresh from Redis-backed API
     });
     if (!res.ok) return {};
     const data = await res.json();
