@@ -55,7 +55,7 @@ export function NotificationBell() {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-80 rounded-[1.5rem] p-4 shadow-2xl border-none bg-white dark:bg-zinc-950" align="end">
         <div className="flex items-center justify-between mb-4 px-2">
-           <DropdownMenuLabel className="p-0 font-black italic uppercase text-xs tracking-widest">Notifications</DropdownMenuLabel>
+           <DropdownMenuLabel className="p-0 font-black  uppercase text-xs tracking-widest">Notifications</DropdownMenuLabel>
            <Button variant="ghost" className="h-auto p-0 text-[10px] font-black uppercase text-primary hover:bg-transparent" onClick={() => setNotifications(notifications.map(n => ({...n, read: true})))}>
               Mark all as read
            </Button>

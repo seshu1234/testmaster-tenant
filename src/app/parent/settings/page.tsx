@@ -77,7 +77,7 @@ export default function ParentSettingsPage() {
   return (
     <div className="space-y-8 animate-in fade-in duration-700 pb-20 p-6">
       <div>
-         <h1 className="text-3xl font-black tracking-tighter italic uppercase">Guardian Configurations</h1>
+         <h1 className="text-3xl font-black tracking-tighter  uppercase">Guardian Configurations</h1>
          <p className="text-muted-foreground text-sm font-medium">Managing security parameters and communication protocols.</p>
       </div>
 
@@ -99,8 +99,8 @@ export default function ParentSettingsPage() {
                  </div>
                  
                  <div>
-                    <h2 className="text-3xl font-black italic uppercase italic tracking-tighter leading-none">{user.name}</h2>
-                    <p className="text-zinc-500 text-[10px] font-black uppercase tracking-widest mt-2 italic">Authorized Guardian</p>
+                    <h2 className="text-3xl font-black  uppercase  tracking-tighter leading-none">{user.name}</h2>
+                    <p className="text-zinc-500 text-[10px] font-black uppercase tracking-widest mt-2 ">Authorized Guardian</p>
                  </div>
 
                  <div className="space-y-3 w-full">
@@ -124,9 +124,9 @@ export default function ParentSettingsPage() {
 
            <Card className="border-none shadow-xl rounded-[2.5rem] bg-gradient-to-br from-primary to-blue-600 p-8 text-white">
               <Zap className="h-10 w-10 mb-6 opacity-40" />
-              <h3 className="text-xl font-black italic uppercase italic tracking-tighter mb-2">Premium Matrix</h3>
+              <h3 className="text-xl font-black  uppercase  tracking-tighter mb-2">Premium Matrix</h3>
               <p className="text-white/70 text-xs font-medium leading-relaxed mb-6">
-                 Your subscription is active until <span className="text-white font-black italic">Dec 2026</span>. Full AI telemetry unlocked.
+                 Your subscription is active until <span className="text-white font-black ">Dec 2026</span>. Full AI telemetry unlocked.
               </p>
               <Button className="w-full bg-white text-primary font-black h-12 rounded-2xl text-[10px] uppercase tracking-widest">
                  <CreditCard className="mr-2 h-4 w-4" />
@@ -141,7 +141,7 @@ export default function ParentSettingsPage() {
               <CardHeader className="p-10 border-b bg-zinc-50/50 dark:bg-zinc-900/30">
                  <div className="flex justify-between items-center">
                     <div>
-                       <CardTitle className="text-2xl font-black tracking-tighter uppercase italic">Control Panel</CardTitle>
+                       <CardTitle className="text-2xl font-black tracking-tighter uppercase ">Control Panel</CardTitle>
                        <CardDescription className="font-bold text-[10px] uppercase tracking-widest mt-1">Configure your experience and data flow</CardDescription>
                     </div>
                     <Badge className="bg-primary text-white border-none font-black text-[10px] uppercase tracking-widest px-4 py-1.5">
@@ -160,7 +160,7 @@ export default function ParentSettingsPage() {
                        
                        <div className="flex justify-between items-center p-6 rounded-[2rem] bg-zinc-50 dark:bg-zinc-900/50 border border-transparent hover:border-zinc-200 dark:hover:border-zinc-800 transition-all">
                           <div className="space-y-0.5">
-                             <p className="font-black text-xs uppercase italic tracking-tight">Biometric Verification</p>
+                             <p className="font-black text-xs uppercase  tracking-tight">Biometric Verification</p>
                              <p className="text-[10px] font-medium text-zinc-400">Require fingerprint for high-stakes result viewing.</p>
                           </div>
                           <Switch 
@@ -185,7 +185,7 @@ export default function ParentSettingsPage() {
                        ].map((pref) => (
                           <div key={pref.id} className="flex justify-between items-center p-6 rounded-[2rem] bg-zinc-50 dark:bg-zinc-900/50 border border-transparent hover:border-zinc-200 dark:hover:border-zinc-800 transition-all">
                              <div className="space-y-0.5">
-                                <p className="font-black text-xs uppercase italic tracking-tight">{pref.label}</p>
+                                <p className="font-black text-xs uppercase  tracking-tight">{pref.label}</p>
                                 <p className="text-[10px] font-medium text-zinc-400">{pref.desc}</p>
                              </div>
                               <Switch 
@@ -206,7 +206,7 @@ export default function ParentSettingsPage() {
                        
                        <div className="flex justify-between items-center p-6 rounded-[2rem] bg-zinc-50 dark:bg-zinc-900/50 cursor-pointer hover:border-zinc-200 dark:hover:border-zinc-800 transition-all border border-transparent">
                           <div className="space-y-0.5">
-                             <p className="font-black text-xs uppercase italic tracking-tight">Regional Optimization</p>
+                             <p className="font-black text-xs uppercase  tracking-tight">Regional Optimization</p>
                              <p className="text-[10px] font-medium text-zinc-400">Currently set to English (Standard).</p>
                           </div>
                           <ChevronRight className="h-4 w-4 text-zinc-400" />

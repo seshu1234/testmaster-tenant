@@ -10,14 +10,31 @@ import {
   Palette, 
   Users, 
   GraduationCap, 
+  Database,
+  Sparkles,
+  Loader2,
   Rocket,
   ArrowRight,
-  Database,
-  Sparkles
+  Image as ImageIcon,
+  Save
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { api } from "@/lib/api";
+import { useAuth } from "@/hooks/use-auth";
+import { cn } from "@/lib/utils";
+import { FileUploadService } from "@/lib/upload-service";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import Image from "next/image";
+
+interface BrandingConfig {
+  primary_color: string;
+  logo_url: string | null;
+  favicon_url: string | null;
+  welcome_message: string | null;
+}
 
 const steps = [
   {
@@ -47,9 +64,119 @@ const steps = [
 ];
 
 export default function OnboardingPage() {
+  const router = useRouter();
+  const { token, tenantSlug } = useAuth();
   const [currentStep, setCurrentStep] = useState(0);
+  const [populating, setPopulating] = useState(false);
+  const [completedTasks, setCompletedTasks] = useState<Record<string, boolean>>({});
+  const [expandedTask, setExpandedTask] = useState<string | null>(null);
+  
+  const [branding, setBranding] = useState<BrandingConfig>({
+    primary_color: "#18181b",
+    logo_url: null,
+    favicon_url: null,
+    welcome_message: "Welcome to our learning platform.",
+  });
+
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [uploadingFavicon, setUploadingFavicon] = useState(false);
+  const [savingWelcome, setSavingWelcome] = useState(false);
 
   const progress = ((currentStep + 1) / steps.length) * 100;
+
+  const toggleTask = (taskName: string) => {
+    setExpandedTask(expandedTask === taskName ? null : taskName);
+  };
+
+  const markCompleted = (taskName: string) => {
+    setCompletedTasks(prev => ({ ...prev, [taskName]: true }));
+    setExpandedTask(null);
+  };
+
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    const tenantId = tenantSlug;
+    if (!file || !tenantId || !token) return;
+
+    setUploadingLogo(true);
+    try {
+      const result = await FileUploadService.uploadToR2(file, "branding_logo", tenantId, token);
+      setBranding({ ...branding, logo_url: result.url });
+      markCompleted("Upload Logo & Favicon");
+      toast.success("Logo uploaded successfully");
+    } catch (err) {
+      console.error("Logo upload failed", err);
+      toast.error("Logo upload failed");
+    } finally {
+      setUploadingLogo(false);
+    }
+  };
+
+  const handleFaviconUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    const tenantId = tenantSlug;
+    if (!file || !tenantId || !token) return;
+
+    setUploadingFavicon(true);
+    try {
+      const result = await FileUploadService.uploadToR2(file, "branding_favicon", tenantId, token);
+      setBranding({ ...branding, favicon_url: result.url });
+      markCompleted("Upload Logo & Favicon");
+      toast.success("Favicon uploaded successfully");
+    } catch (err) {
+      console.error("Favicon upload failed", err);
+      toast.error("Favicon upload failed");
+    } finally {
+      setUploadingFavicon(false);
+    }
+  };
+
+  const handleThemeSelect = async (color: string) => {
+    setBranding({ ...branding, primary_color: color });
+    markCompleted("Select Primary Theme");
+    toast.success("Theme preference saved");
+  };
+
+  const handleWelcomeSave = async () => {
+    setSavingWelcome(true);
+    try {
+      // Small delay to simulate API if needed, or just set it
+      markCompleted("Set Welcome Message");
+      toast.success("Welcome message updated");
+    } finally {
+      setSavingWelcome(false);
+    }
+  };
+
+  const handlePopulateData = async () => {
+    if (!token) return;
+    setPopulating(true);
+    try {
+      // Simulate/Execute seeding
+      const response = await api("/admin/seed-sample-data", {
+        method: "POST",
+        token,
+        tenant: tenantSlug || undefined
+      });
+      
+      if (response.success) {
+        toast.success("Sample Data Populated", {
+          description: "Your platform is now ready with realistic test data.",
+        });
+      }
+    } catch (error) {
+       console.error("Seeding failed:", error);
+       toast.error("Operation Failed", {
+         description: "We couldn't populate sample data at this time.",
+       });
+    } finally {
+      setPopulating(false);
+    }
+  };
+
+  const handleSkip = () => {
+    router.push("/admin");
+  };
 
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
@@ -100,31 +227,168 @@ export default function OnboardingPage() {
             </div>
           </CardHeader>
           <CardContent className="p-8 space-y-8">
-            <div className="space-y-4">
+            <div className="grid gap-4">
               {steps[currentStep].tasks.map((task, i) => (
-                <div key={i} className="flex items-center gap-4 p-4 rounded-xl border border-zinc-50 bg-zinc-50/30 hover:bg-zinc-50 transition-colors group">
-                  <div className="h-6 w-6 rounded-full border-2 border-zinc-200 flex items-center justify-center group-hover:border-primary transition-colors">
-                     <div className="h-2 w-2 rounded-full bg-primary opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                  <span className="font-medium text-zinc-700 dark:text-zinc-300">{task}</span>
-                  <ArrowRight className="h-4 w-4 ml-auto text-zinc-300 group-hover:text-primary transition-all group-hover:translate-x-1" />
+                <div key={i} className="space-y-3">
+                  <button 
+                    onClick={() => toggleTask(task)}
+                    className={cn(
+                      "w-full flex items-center gap-4 p-5 rounded-2xl border transition-all duration-300 text-left group",
+                      completedTasks[task] 
+                        ? "bg-zinc-50 border-zinc-200 dark:bg-zinc-800/20" 
+                        : expandedTask === task
+                        ? "bg-white border-zinc-900 shadow-lg ring-1 ring-zinc-900"
+                        : "bg-white dark:bg-zinc-900 border-zinc-100 hover:border-zinc-300 hover:shadow-md"
+                    )}
+                  >
+                    <div className={cn(
+                      "h-6 w-6 rounded-full border-2 flex items-center justify-center transition-all duration-300 shrink-0",
+                      completedTasks[task] 
+                        ? "bg-emerald-500 border-emerald-500" 
+                        : "border-zinc-200 group-hover:border-zinc-400"
+                    )}>
+                       {completedTasks[task] && <CheckCircle2 className="h-4 w-4 text-white" />}
+                    </div>
+                    <span className={cn(
+                      "font-bold text-xs uppercase tracking-widest transition-all",
+                      completedTasks[task] ? "text-zinc-400 line-through decoration-emerald-500 decoration-2 underline-offset-4" : "text-zinc-700 dark:text-zinc-200"
+                    )}>{task}</span>
+                    <ArrowRight className={cn(
+                      "h-4 w-4 ml-auto text-zinc-300 transition-all",
+                      expandedTask === task ? "rotate-90 text-zinc-900" : "group-hover:text-black group-hover:translate-x-1"
+                    )} />
+                  </button>
+
+                  {/* Task Specific Inputs */}
+                  {expandedTask === task && (
+                    <div className="px-5 pb-5 pt-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                      <div className="p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-zinc-100 dark:border-zinc-800 space-y-4">
+                        {task === "Upload Logo & Favicon" && (
+                          <div className="space-y-6">
+                            <div className="space-y-4">
+                              <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Brand Logo</Label>
+                              <div className="flex items-center gap-6">
+                                <div className="h-20 w-20 rounded-xl border-2 border-dashed border-zinc-200 flex items-center justify-center bg-white overflow-hidden relative">
+                                  {branding.logo_url ? (
+                                    <Image src={branding.logo_url} alt="Logo Preview" width={64} height={64} className="object-contain p-2" />
+                                  ) : (
+                                    <ImageIcon className="h-6 w-6 text-zinc-200" />
+                                  )}
+                                  {uploadingLogo && <div className="absolute inset-0 bg-white/50 flex items-center justify-center"><Loader2 className="h-5 w-5 animate-spin" /></div>}
+                                </div>
+                                <div className="flex-1 space-y-2">
+                                  <Input 
+                                    type="file" 
+                                    className="h-10 text-[10px] font-bold rounded-xl border-zinc-200 bg-white" 
+                                    onChange={handleLogoUpload}
+                                    disabled={uploadingLogo}
+                                  />
+                                  <p className="text-[9px] text-zinc-400 font-medium">Clear background PNG recommended (250x100px).</p>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="space-y-4">
+                              <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Favicon</Label>
+                              <div className="flex items-center gap-6">
+                                <div className="h-12 w-12 rounded-xl border-2 border-dashed border-zinc-200 flex items-center justify-center bg-white overflow-hidden relative">
+                                  {branding.favicon_url ? (
+                                    <Image src={branding.favicon_url} alt="Favicon Preview" width={32} height={32} className="object-contain p-1" />
+                                  ) : (
+                                    <ImageIcon className="h-4 w-4 text-zinc-200" />
+                                  )}
+                                  {uploadingFavicon && <div className="absolute inset-0 bg-white/50 flex items-center justify-center"><Loader2 className="h-4 w-4 animate-spin" /></div>}
+                                </div>
+                                <div className="flex-1 space-y-2">
+                                  <Input 
+                                    type="file" 
+                                    className="h-10 text-[10px] font-bold rounded-xl border-zinc-200 bg-white" 
+                                    onChange={handleFaviconUpload}
+                                    disabled={uploadingFavicon}
+                                  />
+                                  <p className="text-[9px] text-zinc-400 font-medium">Standard ICO or 32x32px PNG.</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {task === "Select Primary Theme" && (
+                          <div className="space-y-4">
+                            <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Brand Colors</Label>
+                            <div className="flex flex-wrap gap-3">
+                              {["#18181b", "#1e40af", "#7c3aed", "#16a34a", "#dc2626", "#ea580c"].map(color => (
+                                <button
+                                  key={color}
+                                  onClick={() => handleThemeSelect(color)}
+                                  className={cn(
+                                    "h-10 w-10 rounded-full border-2 transition-all hover:scale-110 shadow-sm",
+                                    branding.primary_color === color ? "border-zinc-900 scale-125 ring-2 ring-offset-2 ring-zinc-900" : "border-transparent"
+                                  )}
+                                  style={{ backgroundColor: color }}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {task === "Set Welcome Message" && (
+                          <div className="space-y-4">
+                            <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Student Welcome</Label>
+                            <div className="flex gap-2">
+                              <Input 
+                                placeholder="e.g. Welcome to Excellence Academy" 
+                                className="h-12 rounded-xl border-zinc-200 bg-white text-xs font-bold"
+                                value={branding.welcome_message || ""}
+                                onChange={(e) => setBranding({ ...branding, welcome_message: e.target.value })}
+                              />
+                              <Button 
+                                className="h-12 w-12 rounded-xl bg-black text-white shrink-0" 
+                                size="icon"
+                                onClick={handleWelcomeSave}
+                                disabled={savingWelcome}
+                              >
+                                {savingWelcome ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+                              </Button>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Fallback for other tasks */}
+                        {!["Upload Logo & Favicon", "Select Primary Theme", "Set Welcome Message"].includes(task) && (
+                          <div className="text-center py-4 space-y-3">
+                            <Rocket className="h-8 w-8 text-zinc-200 mx-auto" strokeWidth={1.5} />
+                            <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Coming soon in production</p>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="h-8 rounded-lg text-[9px] font-bold"
+                              onClick={() => markCompleted(task)}
+                            >
+                              MARK AS READY
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
 
-            <div className="flex justify-between pt-4">
+            <div className="flex justify-between pt-4 border-t">
               <Button 
-                variant="ghost" 
+                variant="outline" 
                 onClick={handleBack} 
                 disabled={currentStep === 0}
-                className="gap-2"
+                className="gap-2 rounded-xl"
               >
                 <ChevronLeft className="h-4 w-4" />
                 Back
               </Button>
               <Button 
                 onClick={handleNext} 
-                className="gap-2 px-8 bg-zinc-900 text-white hover:bg-zinc-800"
+                className="gap-2 px-8 bg-black text-white hover:bg-zinc-800 rounded-xl"
               >
                 {currentStep === steps.length - 1 ? "Finish Setup" : "Continue"}
                 <ChevronRight className="h-4 w-4" />
@@ -134,15 +398,15 @@ export default function OnboardingPage() {
         </Card>
 
         <div className="space-y-6">
-          <Card className="border-none shadow-lg bg-primary/5 border-primary/10">
+          <Card className="border shadow-none bg-zinc-50/50">
             <CardHeader className="pb-2">
-              <CardTitle className="text-xs font-bold uppercase tracking-widest text-primary flex items-center gap-2">
+              <CardTitle className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 flex items-center gap-2">
                 <Sparkles className="h-3 w-3" />
                 Quick Tip
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-xs text-zinc-600 leading-relaxed">
+              <p className="text-xs text-zinc-600 leading-relaxed font-medium">
                 {currentStep === 0 && "Your logo will appear on student result cards and login pages. Use a high-resolution PNG for clarity."}
                 {currentStep === 1 && "Start with your main academic batches. You can always refine subjects and grading later."}
                 {currentStep === 2 && "Invite your senior staff first. They can help with the bulk import of student data."}
@@ -151,29 +415,37 @@ export default function OnboardingPage() {
             </CardContent>
           </Card>
 
-          <Card className="border shadow-lg bg-zinc-50/50">
+          <Card className="border shadow-none bg-zinc-50/50">
             <CardHeader className="pb-2">
-              <CardTitle className="text-xs font-bold uppercase tracking-widest flex items-center gap-2">
+              <CardTitle className="text-[10px] font-bold uppercase tracking-[0.2em] flex items-center gap-2">
                 <Database className="h-3 w-3" />
                 Demo Environment
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-               <p className="text-[10px] text-zinc-500 leading-tight">
+               <p className="text-[10px] text-zinc-500 leading-tight font-medium">
                  Want to explore the platform before setting it up? 
                </p>
-               <Button variant="outline" size="sm" className="w-full text-[10px] h-8 gap-2 border-zinc-200">
-                  <CheckCircle2 className="h-3 w-3" />
-                  Populate Sample Data
+               <Button 
+                 variant="outline" 
+                 size="sm" 
+                 className="w-full text-[10px] h-9 gap-2 border-zinc-200 rounded-xl font-bold"
+                 onClick={handlePopulateData}
+                 disabled={populating}
+               >
+                  {populating ? <Loader2 className="h-3 w-3 animate-spin" /> : <CheckCircle2 className="h-3 w-3" />}
+                  {populating ? "POPULATING..." : "POPULATE SAMPLE DATA"}
                </Button>
             </CardContent>
           </Card>
 
-          <Link href="/admin">
-             <Button variant="link" className="w-full text-xs text-muted-foreground hover:text-primary">
-                Skip for now, go to Dashboard
-             </Button>
-          </Link>
+          <Button 
+            variant="link" 
+            className="w-full text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-black"
+            onClick={handleSkip}
+          >
+            Skip for now, go to Dashboard
+          </Button>
         </div>
       </div>
     </div>

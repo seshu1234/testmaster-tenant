@@ -114,7 +114,7 @@ export default function PerformancePage() {
     <div className="space-y-8 animate-in fade-in duration-700 pb-20 p-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-black tracking-tighter italic uppercase">Intelligence Metrics</h1>
+          <h1 className="text-3xl font-black tracking-tighter  uppercase">Intelligence Metrics</h1>
           <p className="text-muted-foreground text-sm font-medium">Deep analytics mapping your child&apos;s academic evolution.</p>
         </div>
         
@@ -163,7 +163,7 @@ export default function PerformancePage() {
            <CardHeader className="p-10 border-b bg-zinc-50/50 dark:bg-zinc-900/30">
               <div className="flex justify-between items-center">
                  <div>
-                    <CardTitle className="text-2xl font-black tracking-tighter uppercase italic">Growth Trajectory</CardTitle>
+                    <CardTitle className="text-2xl font-black tracking-tighter uppercase ">Growth Trajectory</CardTitle>
                     <CardDescription className="font-bold text-[10px] uppercase tracking-widest mt-1">Consistency vs Grade Benchmark</CardDescription>
                  </div>
                  <Badge className="bg-emerald-500/10 text-emerald-500 border-none font-black text-[10px] uppercase tracking-widest px-4 py-1.5">
@@ -220,7 +220,7 @@ export default function PerformancePage() {
         {/* Aptitude Radar */}
         <Card className="lg:col-span-4 border-none shadow-2xl rounded-[3rem] bg-zinc-950 text-white p-10 flex flex-col items-center">
            <div className="text-center space-y-2 mb-10 w-full">
-              <h3 className="text-xl font-black italic uppercase tracking-tighter">Cognitive Map</h3>
+              <h3 className="text-xl font-black  uppercase tracking-tighter">Cognitive Map</h3>
               <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Skill alignment across 5 dimensions</p>
            </div>
            
@@ -281,9 +281,9 @@ export default function PerformancePage() {
                   </div>
                   <Badge className="bg-zinc-50 dark:bg-zinc-950 text-zinc-500 border-none font-black text-[8px] px-3 py-1 uppercase">{subject.level}</Badge>
                 </div>
-                <h4 className="text-xl font-black italic uppercase italic tracking-tighter mb-2">{subject.subject}</h4>
+                <h4 className="text-xl font-black  uppercase  tracking-tighter mb-2">{subject.subject}</h4>
                 <div className="flex items-end gap-3">
-                  <div className="text-4xl font-black italic">{subject.score}%</div>
+                  <div className="text-4xl font-black ">{subject.score}%</div>
                   <div className={cn("text-[10px] font-black uppercase mb-1", subject.trend.startsWith('+') ? 'text-emerald-500' : 'text-rose-500')}>
                       {subject.trend}
                   </div>
@@ -304,7 +304,7 @@ export default function PerformancePage() {
                <div className="h-16 w-16 rounded-3xl bg-white/20 flex items-center justify-center">
                   <Zap className="h-8 w-8 text-white" />
                </div>
-               <h3 className="text-4xl font-black italic uppercase italic tracking-tighter leading-none">Executive Insights</h3>
+               <h3 className="text-4xl font-black  uppercase  tracking-tighter leading-none">Executive Insights</h3>
                <p className="text-primary-foreground/90 font-medium leading-relaxed max-w-md">
                  Our neural engine monitors score velocity and error mitigation patterns to provide real-time rank predictions.
                </p>
@@ -325,7 +325,7 @@ export default function PerformancePage() {
                   <div key={i} className="bg-white/10 backdrop-blur-md p-6 rounded-[2rem] border border-white/10">
                      <mod.icon className="h-5 w-5 mb-3 opacity-60" />
                      <p className="text-[10px] font-black uppercase tracking-widest opacity-60 mb-1">{mod.label}</p>
-                     <p className="text-xl font-black italic italic uppercase">{mod.value}</p>
+                     <p className="text-xl font-black   uppercase">{mod.value}</p>
                   </div>
                ))}
             </div>

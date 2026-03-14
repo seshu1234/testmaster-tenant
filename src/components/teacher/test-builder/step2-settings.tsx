@@ -42,7 +42,7 @@ export function Step2Settings({ data, onChange }: Step2Props) {
             value={data.duration_seconds / 60}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange({ duration_seconds: parseInt(e.target.value) * 60 })}
           />
-          <p className="text-xs text-muted-foreground italic">Students will be timed out automatically.</p>
+          <p className="text-xs text-muted-foreground ">Students will be timed out automatically.</p>
         </div>
 
         <div className="space-y-2">

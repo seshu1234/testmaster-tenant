@@ -96,7 +96,7 @@ export default function SupportPage() {
   return (
     <div className="space-y-8 animate-in fade-in duration-700 pb-20 p-6">
       <div className="text-center max-w-2xl mx-auto space-y-6 mb-12">
-         <h1 className="text-4xl font-black tracking-tighter italic uppercase">Support Command Center</h1>
+         <h1 className="text-4xl font-black tracking-tighter  uppercase">Support Command Center</h1>
          <p className="text-muted-foreground text-sm font-medium">Resolving technical friction and operational inquiries for the Guardian Network.</p>
          
          <div className="relative">
@@ -116,7 +116,7 @@ export default function SupportPage() {
                <MessageSquare className="h-8 w-8 text-white" />
             </div>
             <div>
-               <h3 className="text-xl font-black italic uppercase italic tracking-tighter">Live Transmission</h3>
+               <h3 className="text-xl font-black  uppercase  tracking-tighter">Live Transmission</h3>
                <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500 mt-2">REAL-TIME AGENT ACCESS</p>
             </div>
             <Button 
@@ -133,7 +133,7 @@ export default function SupportPage() {
                <Book className="h-8 w-8 text-zinc-400" />
             </div>
             <div>
-               <h3 className="text-xl font-black italic uppercase italic tracking-tighter">Onboarding Guide</h3>
+               <h3 className="text-xl font-black  uppercase  tracking-tighter">Onboarding Guide</h3>
                <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500 mt-2">SYSTEM WALKTHROUGH</p>
             </div>
             <Button variant="outline" className="w-full border-zinc-200 dark:border-zinc-800 font-black h-12 rounded-2xl text-[10px] uppercase tracking-widest">
@@ -146,7 +146,7 @@ export default function SupportPage() {
                <Phone className="h-8 w-8 text-zinc-400" />
             </div>
             <div>
-               <h3 className="text-xl font-black italic uppercase italic tracking-tighter">Direct Hotlink</h3>
+               <h3 className="text-xl font-black  uppercase  tracking-tighter">Direct Hotlink</h3>
                <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500 mt-2">TELEPHONIC ENGAGEMENT</p>
             </div>
             <Button variant="outline" className="w-full border-zinc-200 dark:border-zinc-800 font-black h-12 rounded-2xl text-[10px] uppercase tracking-widest">
@@ -160,7 +160,7 @@ export default function SupportPage() {
          <div className="lg:col-span-8 space-y-12">
             <div className="space-y-6">
                <div className="flex justify-between items-center px-4">
-                  <h3 className="text-2xl font-black italic uppercase italic tracking-tighter mb-4">Active Inquiries</h3>
+                  <h3 className="text-2xl font-black  uppercase  tracking-tighter mb-4">Active Inquiries</h3>
                   <Badge className="bg-primary/10 text-primary border-none text-[8px] font-black uppercase">{tickets.length} Open</Badge>
                </div>
                <div className="space-y-4">
@@ -177,7 +177,7 @@ export default function SupportPage() {
                             </div>
                             <div className="flex-1">
                                <div className="flex items-center gap-3 mb-1">
-                                  <h4 className="font-black text-sm uppercase italic tracking-tight">{ticket.subject}</h4>
+                                  <h4 className="font-black text-sm uppercase  tracking-tight">{ticket.subject}</h4>
                                   <Badge className="bg-zinc-100 dark:bg-zinc-800 text-[7px] font-black uppercase text-zinc-500 border-none">#{ticket.id}</Badge>
                                </div>
                                <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Status: {ticket.status} • Updated {new Date(ticket.updated_at).toLocaleDateString()}</p>
@@ -195,7 +195,7 @@ export default function SupportPage() {
             </div>
 
             <div className="space-y-6 pt-12">
-               <h3 className="text-2xl font-black italic uppercase italic tracking-tighter mb-8 px-4">Knowledge Base</h3>
+               <h3 className="text-2xl font-black  uppercase  tracking-tighter mb-8 px-4">Knowledge Base</h3>
                <div className="space-y-4">
                   {filteredFaqs.map((faq, i) => (
                      <Card key={i} className="border-none shadow-sm rounded-[2rem] bg-white dark:bg-zinc-900/50 overflow-hidden group">
@@ -204,7 +204,7 @@ export default function SupportPage() {
                               <HelpCircle className="h-5 w-5 text-zinc-400" />
                            </div>
                            <div className="flex-1 space-y-3">
-                              <h4 className="font-black text-sm uppercase italic italic tracking-tight">{faq.q}</h4>
+                              <h4 className="font-black text-sm uppercase   tracking-tight">{faq.q}</h4>
                               <p className="text-xs font-medium text-zinc-500 leading-relaxed">{faq.a}</p>
                            </div>
                            <ChevronRight className="h-5 w-5 text-zinc-300 group-hover:translate-x-1 transition-transform" />
@@ -219,7 +219,7 @@ export default function SupportPage() {
          <div className="lg:col-span-4 space-y-8">
             <Card className="border-none shadow-2xl rounded-[3rem] bg-emerald-500 text-white p-10">
                <ShieldCheck className="h-12 w-12 mb-8 opacity-40" />
-               <h3 className="text-2xl font-black italic uppercase italic tracking-tighter mb-4 leading-none">Security Guaranteed</h3>
+               <h3 className="text-2xl font-black  uppercase  tracking-tighter mb-4 leading-none">Security Guaranteed</h3>
                <p className="text-emerald-100 text-xs font-medium leading-relaxed">
                   All transmissions undergo 256-bit AES encryption. Guardian data remains isolated and protected.
                </p>

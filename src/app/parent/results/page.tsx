@@ -116,7 +116,7 @@ export default function ResultsHistoryPage() {
     <div className="space-y-8 animate-in fade-in duration-700 pb-20 p-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <h1 className="text-3xl font-black tracking-tighter italic uppercase">Academic Transmission History</h1>
+          <h1 className="text-3xl font-black tracking-tighter  uppercase">Academic Transmission History</h1>
           <p className="text-muted-foreground text-sm font-medium">Archived assessment logs and performance verification.</p>
         </div>
         
@@ -177,7 +177,7 @@ export default function ResultsHistoryPage() {
                            <div className="flex items-center gap-6">
                               <div className="h-16 w-16 rounded-[1.5rem] bg-zinc-50 dark:bg-zinc-950 flex flex-col items-center justify-center shrink-0 border dark:border-zinc-800">
                                  <span className="text-[9px] font-black uppercase text-zinc-400">{new Date(result.date).toLocaleDateString('en-US', { month: 'short' })}</span>
-                                 <span className="text-2xl font-black italic leading-none">{new Date(result.date).getDate()}</span>
+                                 <span className="text-2xl font-black  leading-none">{new Date(result.date).getDate()}</span>
                               </div>
                               <div>
                                  <div className="flex items-center gap-2 mb-1">
@@ -187,13 +187,13 @@ export default function ResultsHistoryPage() {
                                        result.status === 'Completed' ? "bg-emerald-500/10 text-emerald-500" : "bg-amber-500/10 text-amber-500"
                                     )}>{result.status}</Badge>
                                  </div>
-                                 <h4 className="text-xl font-black italic uppercase italic tracking-tighter">{result.title}</h4>
+                                 <h4 className="text-xl font-black  uppercase  tracking-tighter">{result.title}</h4>
                               </div>
                            </div>
 
                            <div className="flex items-center gap-10 w-full md:w-auto justify-between md:justify-end">
                               <div className="text-right">
-                                 <div className="text-3xl font-black italic">{result.score}<span className="text-zinc-400 text-sm">/{result.totalMarks}</span></div>
+                                 <div className="text-3xl font-black ">{result.score}<span className="text-zinc-400 text-sm">/{result.totalMarks}</span></div>
                                  <p className="text-[9px] font-black uppercase tracking-widest text-zinc-400">Class Rank: {result.rank}</p>
                               </div>
                               <Button size="icon" variant="ghost" className="h-12 w-12 rounded-2xl bg-zinc-50 dark:bg-zinc-950 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all">
@@ -207,7 +207,7 @@ export default function ResultsHistoryPage() {
               ) : (
                 <div className="py-20 text-center">
                    <BookOpen className="h-12 w-12 text-zinc-300 mx-auto mb-4" />
-                   <p className="text-zinc-500 font-black uppercase italic tracking-widest">No assessment logs found.</p>
+                   <p className="text-zinc-500 font-black uppercase  tracking-widest">No assessment logs found.</p>
                 </div>
               )}
            </div>
@@ -220,7 +220,7 @@ export default function ResultsHistoryPage() {
                  <div className="h-14 w-14 rounded-2xl bg-white/20 flex items-center justify-center mb-8">
                     <AlertCircle className="h-7 w-7 text-white" />
                  </div>
-                 <h3 className="text-2xl font-black italic uppercase italic tracking-tighter mb-4 leading-none">Performance Alert</h3>
+                 <h3 className="text-2xl font-black  uppercase  tracking-tighter mb-4 leading-none">Performance Alert</h3>
                   <p className="text-rose-100 text-xs font-medium leading-relaxed mb-10">
                      {isLoading ? "Analysing trends..." : (insight?.recommendations || "Scanning performance for trajectory volatility...")}
                   </p>
@@ -237,7 +237,7 @@ export default function ResultsHistoryPage() {
                     <TrendingUp className="h-6 w-6 text-primary" />
                  </div>
                  <div>
-                    <h4 className="text-xl font-black italic uppercase italic tracking-tighter">Rank Prediction</h4>
+                    <h4 className="text-xl font-black  uppercase  tracking-tighter">Rank Prediction</h4>
                     <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">PROJECTED TRAJECTORY</p>
                  </div>
               </div>
@@ -250,7 +250,7 @@ export default function ResultsHistoryPage() {
                  ].map((stat, i) => (
                     <div key={i} className="flex justify-between items-end border-b border-white/10 pb-4 last:border-0 last:pb-0">
                        <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">{stat.label}</span>
-                       <span className={cn("text-lg font-black italic", stat.color)}>{stat.value}</span>
+                       <span className={cn("text-lg font-black ", stat.color)}>{stat.value}</span>
                     </div>
                  ))}
               </div>
@@ -270,7 +270,7 @@ export default function ResultsHistoryPage() {
                  <Clock className="h-7 w-7 text-zinc-400" />
               </div>
               <div>
-                 <h4 className="text-xl font-black italic uppercase italic tracking-tighter">Archived Reports</h4>
+                 <h4 className="text-xl font-black  uppercase  tracking-tighter">Archived Reports</h4>
                  <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mt-1">ACCESS LEGACY DATA</p>
               </div>
               <Button variant="outline" className="w-full font-black text-[10px] uppercase h-12 rounded-2xl border-zinc-200 dark:border-zinc-800">

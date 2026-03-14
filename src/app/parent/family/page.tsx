@@ -68,7 +68,7 @@ export default function FamilyDashboardPage() {
   return (
     <div className="space-y-8 animate-in fade-in duration-700 pb-20 p-6">
       <div>
-         <h1 className="text-3xl font-black tracking-tighter italic uppercase">Family Intelligence Matrix</h1>
+         <h1 className="text-3xl font-black tracking-tighter  uppercase">Family Intelligence Matrix</h1>
          <p className="text-muted-foreground text-sm font-medium">Side-by-side performance telemetry for multi-ward synchronization.</p>
       </div>
 
@@ -98,19 +98,19 @@ export default function FamilyDashboardPage() {
                           <Badge className="bg-primary text-white border-none font-black text-[8px] px-3 py-1 uppercase tracking-widest">G-Level Optimized</Badge>
                           <Badge variant="outline" className="text-[8px] font-black uppercase px-3 py-1 border-white/20">Term 2 Active</Badge>
                        </div>
-                       <h2 className="text-4xl font-black italic uppercase italic tracking-tighter leading-none mb-4">{child.name}</h2>
+                       <h2 className="text-4xl font-black  uppercase  tracking-tighter leading-none mb-4">{child.name}</h2>
                        <div className="grid grid-cols-3 gap-6">
                           <div>
                              <p className="text-[8px] font-black uppercase text-zinc-500 mb-1">Avg Score</p>
-                             <p className="text-2xl font-black italic">{child.avgScore}%</p>
+                             <p className="text-2xl font-black ">{child.avgScore}%</p>
                           </div>
                           <div>
                              <p className="text-[8px] font-black uppercase text-zinc-500 mb-1">Streak</p>
-                             <p className="text-2xl font-black italic text-emerald-500">{child.streak}🔥</p>
+                             <p className="text-2xl font-black  text-emerald-500">{child.streak}🔥</p>
                           </div>
                           <div>
                              <p className="text-[8px] font-black uppercase text-zinc-500 mb-1">Rank</p>
-                             <p className="text-2xl font-black italic">{child.rank}</p>
+                             <p className="text-2xl font-black ">{child.rank}</p>
                           </div>
                        </div>
                     </div>
@@ -125,7 +125,7 @@ export default function FamilyDashboardPage() {
       <Card className="border-none shadow-2xl rounded-[3rem] bg-white dark:bg-zinc-950 p-12">
          <div className="flex justify-between items-center mb-12">
             <div>
-               <h3 className="text-2xl font-black italic uppercase italic tracking-tighter">Correlation Analysis</h3>
+               <h3 className="text-2xl font-black  uppercase  tracking-tighter">Correlation Analysis</h3>
                <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mt-1">CROSS-WARD COMPETENCY MAPPING</p>
             </div>
             <div className="flex items-center gap-6">
@@ -173,7 +173,7 @@ export default function FamilyDashboardPage() {
             <Card key={i} className="border-none shadow-xl rounded-[2.5rem] bg-white dark:bg-zinc-900 p-8 flex items-center justify-between group hover:border-primary transition-all">
                <div>
                   <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-1">{stat.label}</p>
-                  <p className="text-3xl font-black italic uppercase italic tracking-tighter">{stat.value}</p>
+                  <p className="text-3xl font-black  uppercase  tracking-tighter">{stat.value}</p>
                </div>
                <div className={cn("p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-950", stat.color)}>
                   <stat.icon className="h-6 w-6" />

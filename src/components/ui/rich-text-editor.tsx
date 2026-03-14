@@ -47,7 +47,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
       icon: Italic,
       title: "Italic",
       action: () => editor.chain().focus().toggleItalic().run(),
-      isActive: editor.isActive("italic"),
+      isActive: editor.isActive(""),
     },
     {
       icon: List,
@@ -196,7 +196,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
                 })}
              </div>
           ) : (
-            <span className="italic text-muted-foreground">Type math using $...$ for inline or $$...$$ for block</span>
+            <span className=" text-muted-foreground">Type math using $...$ for inline or $$...$$ for block</span>
           )}
         </div>
       </div>

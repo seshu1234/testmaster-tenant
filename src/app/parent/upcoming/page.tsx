@@ -83,7 +83,7 @@ export default function UpcomingTestsPage() {
     <div className="space-y-8 animate-in fade-in duration-700 pb-20 p-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <h1 className="text-3xl font-black tracking-tighter italic uppercase">Tactical Schedule</h1>
+          <h1 className="text-3xl font-black tracking-tighter  uppercase">Tactical Schedule</h1>
           <p className="text-muted-foreground text-sm font-medium">Monitoring upcoming assessments and study milestones.</p>
         </div>
         
@@ -129,7 +129,7 @@ export default function UpcomingTestsPage() {
                            <div className="flex items-center gap-8">
                               <div className="h-24 w-24 rounded-[2rem] bg-zinc-950 flex flex-col items-center justify-center shrink-0 shadow-2xl relative overflow-hidden group-hover:bg-primary transition-colors">
                                  <span className="text-[10px] font-black uppercase text-zinc-500 group-hover:text-white/60">{new Date(test.startTime).toLocaleDateString('en-US', { month: 'short' })}</span>
-                                 <span className="text-3xl font-black italic text-white leading-none whitespace-nowrap">{new Date(test.startTime).getDate()}</span>
+                                 <span className="text-3xl font-black  text-white leading-none whitespace-nowrap">{new Date(test.startTime).getDate()}</span>
                                  <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity" />
                               </div>
                               
@@ -140,7 +140,7 @@ export default function UpcomingTestsPage() {
                                        {test.type}
                                     </Badge>
                                  </div>
-                                 <h4 className="text-2xl font-black italic uppercase italic tracking-tighter leading-tight">{test.title}</h4>
+                                 <h4 className="text-2xl font-black  uppercase  tracking-tighter leading-tight">{test.title}</h4>
                                  <div className="flex items-center gap-6 text-[10px] font-black text-zinc-400 uppercase tracking-widest mt-2">
                                     <div className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5" /> {new Date(test.startTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} ({test.duration})</div>
                                     <div className="flex items-center gap-1.5"><BookOpen className="h-3.5 w-3.5" /> {test.qCount} Questions</div>
@@ -163,7 +163,7 @@ export default function UpcomingTestsPage() {
               ) : (
                 <div className="py-20 text-center bg-white dark:bg-zinc-900 rounded-[3rem] border-2 border-dashed border-zinc-100 dark:border-zinc-800">
                    <CalendarIcon className="h-12 w-12 text-zinc-300 mx-auto mb-4" />
-                   <p className="text-zinc-500 font-black uppercase italic tracking-widest text-xs">No imminent assessments detected.</p>
+                   <p className="text-zinc-500 font-black uppercase  tracking-widest text-xs">No imminent assessments detected.</p>
                 </div>
               )}
            </div>
@@ -176,7 +176,7 @@ export default function UpcomingTestsPage() {
                  <div className="h-14 w-14 rounded-2xl bg-white/20 flex items-center justify-center mb-8">
                     <Bell className="h-7 w-7 text-white" />
                  </div>
-                 <h3 className="text-2xl font-black italic uppercase italic tracking-tighter mb-4 leading-none">Smart Notifications</h3>
+                 <h3 className="text-2xl font-black  uppercase  tracking-tighter mb-4 leading-none">Smart Notifications</h3>
                  <p className="text-primary-foreground/80 text-xs font-medium leading-relaxed mb-10">
                     Get real-time updates on test readiness and system eligibility checks for your child.
                  </p>
@@ -195,7 +195,7 @@ export default function UpcomingTestsPage() {
                     <CheckCircle2 className="h-6 w-6 text-emerald-500" />
                  </div>
                  <div>
-                    <h4 className="text-xl font-black italic uppercase italic tracking-tighter">System Health</h4>
+                    <h4 className="text-xl font-black  uppercase  tracking-tighter">System Health</h4>
                     <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">READINESS VERIFIED</p>
                  </div>
               </div>
@@ -218,7 +218,7 @@ export default function UpcomingTestsPage() {
               <div className="flex gap-4">
                  <AlertTriangle className="h-6 w-6 text-rose-500 shrink-0" />
                  <div className="space-y-2">
-                    <h4 className="text-sm font-black uppercase italic tracking-tighter text-rose-600 dark:text-rose-400 italic">Conflict Warning</h4>
+                    <h4 className="text-sm font-black uppercase  tracking-tighter text-rose-600 dark:text-rose-400 ">Conflict Warning</h4>
                     <p className="text-[10px] font-bold text-rose-500/80 leading-relaxed uppercase">
                        Physics Drill #2 overlaps with Math Revision session on Mar 20. Please coordinate with regional head.
                     </p>

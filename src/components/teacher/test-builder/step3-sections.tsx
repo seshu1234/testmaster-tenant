@@ -114,7 +114,7 @@ export function Step3Sections({ testId, onUpdate }: Step3Props) {
 
       <div className="space-y-4">
         {loading ? (
-          <div className="p-8 text-center text-muted-foreground italic">Syncing sections...</div>
+          <div className="p-8 text-center text-muted-foreground ">Syncing sections...</div>
         ) : sections.length === 0 ? (
           <div className="border-2 border-dashed rounded-xl p-12 text-center text-muted-foreground">
             No sections defined yet. Every test needs at least one section.

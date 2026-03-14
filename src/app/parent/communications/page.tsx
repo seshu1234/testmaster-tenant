@@ -120,7 +120,7 @@ export default function CommunicationsPage() {
       <div className="w-[380px] border-r dark:border-zinc-900 flex flex-col bg-zinc-50/50 dark:bg-zinc-900/10">
         <div className="p-8 space-y-6">
            <div>
-              <h2 className="text-2xl font-black italic uppercase italic tracking-tighter">Engagement Hub</h2>
+              <h2 className="text-2xl font-black  uppercase  tracking-tighter">Engagement Hub</h2>
               <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mt-1">Direct link to subject experts</p>
            </div>
            
@@ -128,7 +128,7 @@ export default function CommunicationsPage() {
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
               <Input 
                  placeholder="SEARCH MENTORS..." 
-                 className="pl-12 h-12 rounded-2xl bg-white dark:bg-zinc-900 border-none shadow-inner text-[10px] font-black tracking-widest italic"
+                 className="pl-12 h-12 rounded-2xl bg-white dark:bg-zinc-900 border-none shadow-inner text-[10px] font-black tracking-widest "
               />
            </div>
         </div>
@@ -163,7 +163,7 @@ export default function CommunicationsPage() {
                  </div>
                  <div className="flex-1 text-left min-w-0">
                     <div className="flex justify-between items-start">
-                       <h4 className="font-black text-xs uppercase italic tracking-tight truncate">{teacher.name}</h4>
+                       <h4 className="font-black text-xs uppercase  tracking-tight truncate">{teacher.name}</h4>
                        <span className={cn(
                           "text-[8px] font-black uppercase opacity-60",
                           activeTeacher?.id === teacher.id ? "text-primary" : "text-zinc-400"
@@ -203,7 +203,7 @@ export default function CommunicationsPage() {
                        <Image src={activeTeacher.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${activeTeacher.name}`} alt={activeTeacher.name} width={40} height={40} />
                     </div>
                     <div>
-                       <h3 className="font-black text-sm uppercase italic tracking-tighter">{activeTeacher.name}</h3>
+                       <h3 className="font-black text-sm uppercase  tracking-tighter">{activeTeacher.name}</h3>
                        <div className="flex items-center gap-2">
                           <div className={cn("h-1.5 w-1.5 rounded-full", activeTeacher.status === 'online' ? "bg-emerald-500" : "bg-zinc-400")} />
                           <span className="text-[9px] font-black uppercase text-zinc-400 tracking-widest">{activeTeacher.status === 'online' ? 'Active Matrix' : 'Archived'}</span>
@@ -249,7 +249,7 @@ export default function CommunicationsPage() {
                              "flex items-center gap-2 px-2",
                              msg.isMe ? "flex-row-reverse" : "flex-row"
                           )}>
-                             <span className="text-[10px] font-black text-zinc-400 italic">
+                             <span className="text-[10px] font-black text-zinc-400 ">
                                 {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                              </span>
                              {msg.isMe && (
@@ -290,8 +290,8 @@ export default function CommunicationsPage() {
                  <MessageSquare className="h-10 w-10 text-zinc-300" />
               </div>
               <div>
-                 <h3 className="text-xl font-black italic uppercase italic tracking-tighter">Transmission Lobby</h3>
-                 <p className="text-zinc-400 text-[10px] font-black uppercase tracking-widest mt-1 italic">Select a mentor to initiate encrypted communication</p>
+                 <h3 className="text-xl font-black  uppercase  tracking-tighter">Transmission Lobby</h3>
+                 <p className="text-zinc-400 text-[10px] font-black uppercase tracking-widest mt-1 ">Select a mentor to initiate encrypted communication</p>
               </div>
            </div>
         )}

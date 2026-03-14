@@ -173,7 +173,7 @@ export function Step4Questions({ testId, sections }: Step4Props) {
         <div className="border rounded-xl bg-white dark:bg-transparent overflow-hidden">
           <div className="max-h-[500px] overflow-y-auto divide-y">
             {loading ? (
-              <div className="p-8 text-center text-muted-foreground animate-pulse italic text-sm">Loading bank...</div>
+              <div className="p-8 text-center text-muted-foreground animate-pulse  text-sm">Loading bank...</div>
             ) : bankQuestions.length === 0 ? (
               <div className="p-8 text-center text-muted-foreground text-sm">Bank is empty.</div>
             ) : (
@@ -246,7 +246,7 @@ export function Step4Questions({ testId, sections }: Step4Props) {
             ))}
             {assignedQuestions.length === 0 && (
               <div className="flex flex-col items-center justify-center h-48 text-center px-4">
-                 <p className="text-[10px] text-muted-foreground italic">No questions assigned yet.</p>
+                 <p className="text-[10px] text-muted-foreground ">No questions assigned yet.</p>
               </div>
             )}
          </div>

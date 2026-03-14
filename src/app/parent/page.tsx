@@ -111,7 +111,7 @@ export default function ParentDashboard() {
       {/* Header & Child Selector */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <h1 className="text-3xl font-black tracking-tighter italic uppercase">Family Intelligence</h1>
+          <h1 className="text-3xl font-black tracking-tighter  uppercase">Family Intelligence</h1>
           <p className="text-muted-foreground text-sm font-medium">Monitoring academic growth and consistency for your children.</p>
         </div>
         
@@ -148,7 +148,7 @@ export default function ParentDashboard() {
                  </div>
                  <div className="space-y-2">
                     <div className="flex items-center gap-3">
-                       <h2 className="text-4xl font-black italic uppercase tracking-tighter text-white">{activeWard.name}</h2>
+                       <h2 className="text-4xl font-black  uppercase tracking-tighter text-white">{activeWard.name}</h2>
                        {activeWard.rank_percentile >= 90 && (
                         <Badge className="bg-emerald-500 text-white border-none text-[8px] font-black uppercase px-3 py-1">TOP {100 - activeWard.rank_percentile}%</Badge>
                        )}
@@ -157,7 +157,7 @@ export default function ParentDashboard() {
                     <div className="flex gap-6 mt-4 pt-4 border-t border-white/10">
                       <div className="flex items-center gap-2 text-primary">
                          <Flame className="h-4 w-4" />
-                         <span className="text-xs font-black uppercase italic">{activeWard.study_streak} Day Streak</span>
+                         <span className="text-xs font-black uppercase ">{activeWard.study_streak} Day Streak</span>
                       </div>
                       <div className="flex items-center gap-2 text-zinc-500">
                          <TrendingUp className="h-4 w-4" />
@@ -171,7 +171,7 @@ export default function ParentDashboard() {
                  <div className="relative">
                     <div className="h-16 w-16 rounded-full border-4 border-emerald-500 border-t-zinc-800 animate-[spin_4s_linear_infinite]" />
                     <div className="absolute inset-0 flex items-center justify-center">
-                       <span className="text-white text-lg font-black italic">{activeWard.syllabus_progress}%</span>
+                       <span className="text-white text-lg font-black ">{activeWard.syllabus_progress}%</span>
                     </div>
                  </div>
                  <div className="text-center">
@@ -183,7 +183,7 @@ export default function ParentDashboard() {
         </Card>
       ) : (
         <div className="h-64 flex items-center justify-center bg-zinc-900 rounded-[3rem] animate-pulse">
-          <p className="text-zinc-500 font-black uppercase italic tracking-widest">Initialising Guardian Link...</p>
+          <p className="text-zinc-500 font-black uppercase  tracking-widest">Initialising Guardian Link...</p>
         </div>
       )}
 
@@ -200,7 +200,7 @@ export default function ParentDashboard() {
                </div>
                <div className="space-y-1">
                   <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">{stat.title}</p>
-                  <div className="text-3xl font-black italic tracking-tight">{stat.value}</div>
+                  <div className="text-3xl font-black  tracking-tight">{stat.value}</div>
                </div>
             </CardContent>
           </Card>
@@ -213,7 +213,7 @@ export default function ParentDashboard() {
            <CardHeader className="p-10 border-b bg-zinc-50/50 dark:bg-zinc-900/30">
               <div className="flex justify-between items-center">
                  <div>
-                    <CardTitle className="text-2xl font-black tracking-tighter uppercase italic">Academic Transmission</CardTitle>
+                    <CardTitle className="text-2xl font-black tracking-tighter uppercase ">Academic Transmission</CardTitle>
                     <CardDescription className="font-bold text-[10px] uppercase tracking-widest mt-1">Latest assessment outcomes and trends</CardDescription>
                  </div>
                  <Link href="/parent/results">
@@ -234,10 +234,10 @@ export default function ParentDashboard() {
                           "h-14 w-14 rounded-2xl flex items-center justify-center shrink-0 shadow-inner",
                           item.score >= 85 ? "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500" : "bg-amber-50 dark:bg-amber-500/10 text-amber-500"
                        )}>
-                          <span className="text-xl font-black italic">{item.score}%</span>
+                          <span className="text-xl font-black ">{item.score}%</span>
                        </div>
                        <div className="flex-1 min-w-0">
-                          <h4 className="font-black text-lg tracking-tight truncate uppercase italic">{item.name}</h4>
+                          <h4 className="font-black text-lg tracking-tight truncate uppercase ">{item.name}</h4>
                           <div className="flex items-center gap-4 text-[9px] font-black text-zinc-400 uppercase tracking-[0.1em] mt-2">
                              <span>Class Avg: {item.class_avg}%</span>
                              <span className={cn("flex items-center gap-1", item.trend === 'up' ? 'text-emerald-500' : 'text-rose-500')}>
@@ -253,7 +253,7 @@ export default function ParentDashboard() {
                   ))
                  ) : (
                    <div className="py-20 text-center">
-                     <p className="text-zinc-500 font-black uppercase italic tracking-widest">No recent transmission detected.</p>
+                     <p className="text-zinc-500 font-black uppercase  tracking-widest">No recent transmission detected.</p>
                    </div>
                  )}
               </div>
@@ -267,7 +267,7 @@ export default function ParentDashboard() {
                  <div className="h-14 w-14 rounded-2xl bg-white/20 flex items-center justify-center mb-8">
                     <MessageCircle className="h-7 w-7 text-white" />
                  </div>
-                 <h3 className="text-2xl font-black italic uppercase tracking-tighter mb-4 leading-none text-white italic">Teacher Engagement</h3>
+                 <h3 className="text-2xl font-black  uppercase tracking-tighter mb-4 leading-none text-white ">Teacher Engagement</h3>
                  <p className="text-primary-foreground/80 text-xs font-medium leading-relaxed mb-10">
                     Connect with subject experts regarding {activeWard?.name.split(' ')[0] || 'your child'}&apos;s progress.
                  </p>
@@ -290,7 +290,7 @@ export default function ParentDashboard() {
                 <Download className="h-6 w-6 text-primary" />
               </div>
               <div>
-                 <h4 className="text-xl font-black italic uppercase tracking-tighter italic">Growth Report Card</h4>
+                 <h4 className="text-xl font-black  uppercase tracking-tighter ">Growth Report Card</h4>
                  <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mt-1">LATEST GENERATION READY</p>
               </div>
               <Button variant="outline" className="w-full font-black text-[10px] uppercase h-12 rounded-2xl border-zinc-200 dark:border-zinc-800">

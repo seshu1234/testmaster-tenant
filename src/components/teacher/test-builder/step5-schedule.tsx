@@ -100,7 +100,7 @@ export function Step5Schedule({ data, onChange }: Step5Props) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {loading ? (
-            <div className="col-span-full p-4 text-center italic text-muted-foreground">Loading batches...</div>
+            <div className="col-span-full p-4 text-center  text-muted-foreground">Loading batches...</div>
           ) : batches.length === 0 ? (
             <div className="col-span-full p-4 text-center text-muted-foreground">No batches found.</div>
           ) : (

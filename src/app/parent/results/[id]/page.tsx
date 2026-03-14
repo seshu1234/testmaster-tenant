@@ -96,7 +96,7 @@ export default function DetailedResultPage() {
     );
   }
 
-  if (!data) return <div className="p-20 text-center font-black uppercase italic tracking-widest text-zinc-400">Analysis Data Not Found</div>;
+  if (!data) return <div className="p-20 text-center font-black uppercase  tracking-widest text-zinc-400">Analysis Data Not Found</div>;
 
   return (
     <div className="space-y-8 animate-in fade-in duration-700 pb-20 p-6">
@@ -106,7 +106,7 @@ export default function DetailedResultPage() {
               <ChevronLeft className="h-5 w-5" />
            </Button>
            <div>
-              <h1 className="text-3xl font-black tracking-tighter italic uppercase">{data.title}</h1>
+              <h1 className="text-3xl font-black tracking-tighter  uppercase">{data.title}</h1>
               <p className="text-muted-foreground text-sm font-medium">Post-assessment analytical decryption.</p>
            </div>
         </div>
@@ -131,7 +131,7 @@ export default function DetailedResultPage() {
                  <Target className="h-6 w-6 opacity-60" />
                  <Badge className="bg-white/20 text-white border-none font-black text-[8px] px-2 py-0.5 uppercase">Accuracy</Badge>
               </div>
-              <div className="text-4xl font-black italic">{data.accuracy}%</div>
+              <div className="text-4xl font-black ">{data.accuracy}%</div>
               <p className="text-[10px] font-black uppercase tracking-widest opacity-60 mt-1">Target precision reached</p>
            </Card>
 
@@ -140,7 +140,7 @@ export default function DetailedResultPage() {
                  <Clock className="h-6 w-6 opacity-60" />
                  <Badge className="bg-white/20 text-white border-none font-black text-[8px] px-2 py-0.5 uppercase">Tempo</Badge>
               </div>
-              <div className="text-4xl font-black italic">{data.timeTaken}</div>
+              <div className="text-4xl font-black ">{data.timeTaken}</div>
               <p className="text-[10px] font-black uppercase tracking-widest opacity-60 mt-1">Total runtime</p>
            </Card>
 
@@ -149,7 +149,7 @@ export default function DetailedResultPage() {
                  <TrendingUp className="h-6 w-6 opacity-60" />
                  <Badge className="bg-white/20 text-white border-none font-black text-[8px] px-2 py-0.5 uppercase">Rank</Badge>
               </div>
-              <div className="text-4xl font-black italic">{data.rank}</div>
+              <div className="text-4xl font-black ">{data.rank}</div>
               <p className="text-[10px] font-black uppercase tracking-widest opacity-60 mt-1">Current class position</p>
            </Card>
         </div>
@@ -158,7 +158,7 @@ export default function DetailedResultPage() {
         <div className="lg:col-span-4 space-y-6">
            <Card className="border-none shadow-2xl rounded-[3rem] bg-white dark:bg-zinc-900 p-8 flex flex-col items-center">
               <div className="w-full mb-6">
-                 <h4 className="text-sm font-black italic uppercase tracking-tighter italic">Score Distribution</h4>
+                 <h4 className="text-sm font-black  uppercase tracking-tighter ">Score Distribution</h4>
                  <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">VS CLASS TOPPERS</p>
               </div>
               <div className="h-48 w-full">
@@ -184,7 +184,7 @@ export default function DetailedResultPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
          {/* Question Review */}
          <div className="lg:col-span-8 space-y-6">
-            <h3 className="text-xl font-black italic uppercase tracking-tighter italic mb-4">Tactical Review</h3>
+            <h3 className="text-xl font-black  uppercase tracking-tighter  mb-4">Tactical Review</h3>
             <div className="space-y-4">
                {data.questions.map((q) => (
                   <Card key={q.id} className="border-none shadow-sm rounded-[2rem] bg-white dark:bg-zinc-900/50 overflow-hidden border dark:border-zinc-800">
@@ -220,7 +220,7 @@ export default function DetailedResultPage() {
                                  <BrainCircuit className="h-4 w-4 text-primary" />
                                  <span className="text-[9px] font-black uppercase text-primary">AI Explanation</span>
                               </div>
-                              <p className="text-xs font-medium text-zinc-600 dark:text-zinc-400 leading-relaxed italic">{q.explanation}</p>
+                              <p className="text-xs font-medium text-zinc-600 dark:text-zinc-400 leading-relaxed ">{q.explanation}</p>
                            </div>
                         </div>
                      </div>
@@ -236,8 +236,8 @@ export default function DetailedResultPage() {
                   <div className="h-16 w-16 rounded-3xl bg-primary/20 flex items-center justify-center mb-8">
                      <BrainCircuit className="h-8 w-8 text-primary" />
                   </div>
-                  <h3 className="text-2xl font-black italic uppercase italic tracking-tighter mb-4 leading-none text-primary">Strategic Insight</h3>
-                  <p className="text-zinc-400 text-sm font-medium leading-relaxed mb-10 italic">
+                  <h3 className="text-2xl font-black  uppercase  tracking-tighter mb-4 leading-none text-primary">Strategic Insight</h3>
+                  <p className="text-zinc-400 text-sm font-medium leading-relaxed mb-10 ">
                      &quot;{data.ai_insight}&quot;
                   </p>
                   <Button className="w-full bg-white text-black font-black h-12 rounded-2xl text-[10px] uppercase tracking-widest hover:scale-105 transition-transform shadow-2xl">
@@ -251,7 +251,7 @@ export default function DetailedResultPage() {
                   <AlertCircle className="h-5 w-5 text-amber-500" />
                   <h4 className="text-[10px] font-black uppercase tracking-widest">Mentor&apos;s Note</h4>
                </div>
-               <p className="text-xs font-medium italic text-zinc-500 leading-relaxed">
+               <p className="text-xs font-medium  text-zinc-500 leading-relaxed">
                   {data.teacher_feedback || "Excellent grasp of core concepts. Speed in section B needs calibration to avoid early fatigue."}
                </p>
             </Card>
@@ -261,7 +261,7 @@ export default function DetailedResultPage() {
                {data.subjectBreakdown.map((s, i) => (
                   <div key={i} className="p-4 rounded-2xl bg-white dark:bg-zinc-900 shadow-sm border dark:border-zinc-800 space-y-3">
                      <div className="flex justify-between items-center">
-                        <span className="text-xs font-black uppercase italic italic">{s.subject}</span>
+                        <span className="text-xs font-black uppercase  ">{s.subject}</span>
                         <span className="text-xs font-black">{s.score}%</span>
                      </div>
                      <Progress value={s.score} className="h-1.5" />
