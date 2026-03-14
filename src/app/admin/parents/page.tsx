@@ -38,8 +38,8 @@ export default function ParentManagementPage() {
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Parent Portal Management</h2>
-          <p className="text-muted-foreground">
+          <h2 className="text-xl font-bold tracking-tight">Parent Portal Management</h2>
+          <p className="text-zinc-600">
             Approve registrations, link parents to students, and monitor engagement.
           </p>
         </div>
@@ -56,14 +56,14 @@ export default function ParentManagementPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
-        <Card className="md:col-span-2 border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+        <Card className="md:col-span-2 border shadow-sm bg-white/50 backdrop-blur-sm">
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle>Approval Queue</CardTitle>
                 <CardDescription>Pending registration requests from parents.</CardDescription>
               </div>
-              <Badge variant="secondary" className="bg-orange-100 text-orange-700 hover:bg-orange-100 border-none">
+              <Badge variant="secondary" className="bg-orange-100 text-zinc-600 hover:bg-orange-100 border-none">
                 4 Pending
               </Badge>
             </div>
@@ -75,7 +75,7 @@ export default function ParentManagementPage() {
                   <TableHead>Parent Name</TableHead>
                   <TableHead>Requested Student</TableHead>
                   <TableHead>Request Date</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead className="text-zinc-600">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -86,13 +86,13 @@ export default function ParentManagementPage() {
                 ].map((req, i) => (
                   <TableRow key={i} className="border-zinc-50 hover:bg-zinc-50/50 transition-colors">
                     <TableCell className="font-medium">{req.name}</TableCell>
-                    <TableCell className="text-muted-foreground text-xs">{req.student}</TableCell>
-                    <TableCell className="text-muted-foreground text-xs">{req.date}</TableCell>
-                    <TableCell className="text-right flex justify-end gap-2">
+                    <TableCell className="text-zinc-600">{req.student}</TableCell>
+                    <TableCell className="text-zinc-600">{req.date}</TableCell>
+                    <TableCell className="text-zinc-600 flex justify-end gap-2">
                       <Button 
                         size="sm" 
                         variant="ghost" 
-                        className="h-8 w-8 p-0 text-red-500 hover:text-red-600 hover:bg-red-50"
+                        className="h-8 w-8 p-0 text-zinc-600  hover:bg-red-50"
                         onClick={() => handleAction(req.name, "rejected")}
                       >
                         <XCircle className="h-4 w-4" />
@@ -100,7 +100,7 @@ export default function ParentManagementPage() {
                       <Button 
                         size="sm" 
                         variant="ghost" 
-                        className="h-8 w-8 p-0 text-green-500 hover:text-green-600 hover:bg-green-50"
+                        className="h-8 w-8 p-0 text-zinc-600  hover:bg-green-50"
                         onClick={() => handleAction(req.name, "approved")}
                       >
                         <CheckCircle2 className="h-4 w-4" />
@@ -113,40 +113,40 @@ export default function ParentManagementPage() {
           </CardContent>
         </Card>
 
-        <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+        <Card className="border shadow-sm bg-white/50 backdrop-blur-sm">
           <CardHeader>
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <LinkIcon className="h-4 w-4 text-primary" />
+            <CardTitle className="text-zinc-600 font-medium flex items-center gap-2">
+              <LinkIcon className="h-4 w-4 text-zinc-600" />
               Quick Statistics
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
              <div className="flex items-center justify-between border-b pb-4 border-zinc-100">
                <div className="flex flex-col">
-                 <span className="text-2xl font-bold">186</span>
-                 <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Linked Parents</span>
+                 <span className="text-xl font-bold">186</span>
+                 <span className="text-[10px] text-zinc-600 uppercase font-bold tracking-wider">Linked Parents</span>
                </div>
-               <Users className="h-8 w-8 text-zinc-100" />
+               <Users className="h-8 w-8 text-zinc-600" />
              </div>
              <div className="space-y-4">
                <div>
-                  <div className="flex justify-between text-xs mb-1">
-                    <span className="text-muted-foreground">App Engagement</span>
+                  <div className="flex justify-between text-zinc-600 mb-1">
+                    <span className="text-zinc-600">App Engagement</span>
                     <span className="font-bold">64%</span>
                   </div>
                   <div className="h-1.5 w-full bg-zinc-100 rounded-full overflow-hidden">
                     <div className="h-full bg-primary w-[64%]" />
                   </div>
                </div>
-               <p className="text-[10px] text-muted-foreground leading-relaxed">
-                 &ldquo;85% of parents check their child&apos;s test results within 1 hour of publishing.&rdquo;
+               <p className="text-[10px] text-zinc-600 leading-relaxed">
+                 &ldquo;85% of parents check their child&apos;s test results within hour of publishing.&rdquo;
                </p>
              </div>
           </CardContent>
         </Card>
       </div>
 
-      <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+      <Card className="border shadow-sm bg-white/50 backdrop-blur-sm">
         <CardHeader>
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
@@ -155,7 +155,7 @@ export default function ParentManagementPage() {
             </div>
             <div className="flex items-center gap-2">
               <div className="relative w-full md:w-64">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-zinc-600" />
                 <Input
                   className="pl-9 h-9"
                   placeholder="Search parents..."
@@ -178,7 +178,7 @@ export default function ParentManagementPage() {
                 <TableHead>Linked Students</TableHead>
                 <TableHead>Last Activity</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead className="text-right">Action</TableHead>
+                <TableHead className="text-zinc-600">Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -190,27 +190,27 @@ export default function ParentManagementPage() {
                 <TableRow key={i} className="border-zinc-50 hover:bg-zinc-50/50 transition-colors">
                   <TableCell>
                     <div className="flex flex-col">
-                      <span className="text-sm font-medium">{parent.name}</span>
-                      <span className="text-[10px] text-muted-foreground">{parent.email}</span>
+                      <span className="text-zinc-600 font-medium">{parent.name}</span>
+                      <span className="text-[10px] text-zinc-600">{parent.email}</span>
                     </div>
                   </TableCell>
-                  <TableCell className="text-xs">+91 98765-XXXXX</TableCell>
+                  <TableCell className="text-zinc-600">+91 987-XXXXX</TableCell>
                   <TableCell>
                     <Badge variant="outline" className="text-[10px] font-medium border-zinc-200">{parent.student}</Badge>
                   </TableCell>
-                  <TableCell className="text-xs text-muted-foreground">{parent.activity}</TableCell>
+                  <TableCell className="text-zinc-600">{parent.activity}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1.5">
                       <div className={`h-1.5 w-1.5 rounded-full ${parent.status === 'Active' ? 'bg-green-500' : 'bg-zinc-300'}`} />
-                      <span className="text-xs font-medium">{parent.status}</span>
+                      <span className="text-zinc-600 font-medium">{parent.status}</span>
                     </div>
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-zinc-600">
                     <div className="flex justify-end gap-2">
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" title="Link Student">
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-zinc-600" title="Link Student">
                         <LinkIcon className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="sm" className="h-8 text-xs">Manage</Button>
+                      <Button variant="ghost" size="sm" className="h-8 text-zinc-600">Manage</Button>
                     </div>
                   </TableCell>
                 </TableRow>

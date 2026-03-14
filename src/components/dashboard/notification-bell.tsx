@@ -42,7 +42,7 @@ export function NotificationBell() {
           tenant: tenantSlug || undefined
         });
         if (response.success && Array.isArray(response.data) && isMounted) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          // eslint-disable-ne @typescript-eslint/no-explicit-any
           setNotifications(response.data.map((n: any) => ({
             id: n.id || String(Math.random()),
             title: n.title || 'System Alert',
@@ -66,18 +66,18 @@ export function NotificationBell() {
 
   const getIcon = (type: string) => {
     switch (type) {
-      case 'test': return <Clock className="h-4 w-4 text-primary" />;
-      case 'result': return <FileText className="h-4 w-4 text-emerald-500" />;
-      case 'badge': return <Award className="h-4 w-4 text-amber-500" />;
-      default: return <Bell className="h-4 w-4 text-zinc-400" />;
+      case 'test': return <Clock className="h-4 w-4 text-zinc-600" />;
+      case 'result': return <FileText className="h-4 w-4 text-zinc-600" />;
+      case 'badge': return <Award className="h-4 w-4 text-zinc-600" />;
+      default: return <Bell className="h-4 w-4 text-zinc-600" />;
     }
   };
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="relative h-10 w-10 rounded-xl bg-zinc-50 dark:bg-zinc-900 border dark:border-zinc-800">
-          <Bell className="h-5 w-5 text-zinc-500" />
+        <Button variant="ghost" size="icon" className="relative h-10 w-10 rounded-xl bg-zinc-50 border">
+          <Bell className="h-5 w-5 text-zinc-600" />
           {unreadCount > 0 && (
             <span className="absolute top-2 right-2 flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
@@ -86,10 +86,10 @@ export function NotificationBell() {
           )}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-80 rounded-[1.5rem] p-4 shadow-2xl border-none bg-white dark:bg-zinc-950" align="end">
+      <DropdownMenuContent className="w-80 rounded-[1.5rem] p-4 shadow-2xl border-none bg-white" align="end">
         <div className="flex items-center justify-between mb-4 px-2">
-           <DropdownMenuLabel className="p-0 font-black  uppercase text-xs tracking-widest">Notifications</DropdownMenuLabel>
-           <Button variant="ghost" className="h-auto p-0 text-[10px] font-black uppercase text-primary hover:bg-transparent" onClick={() => setNotifications(notifications.map(n => ({...n, read: true})))}>
+           <DropdownMenuLabel className="p-0 font-black  uppercase text-zinc-600 tracking-widest">Notifications</DropdownMenuLabel>
+           <Button variant="ghost" className="h-auto p-0 text-[10px] font-black uppercase text-zinc-600 hover:bg-transparent" onClick={() => setNotifications(notifications.map(n => ({...n, read: true})))}>
               Mark all as read
            </Button>
         </div>
@@ -97,12 +97,12 @@ export function NotificationBell() {
         <div className="space-y-2 max-h-[300px] overflow-y-auto">
           {loading ? (
              <div className="flex justify-center items-center py-8">
-                <Loader2 className="h-4 w-4 animate-spin text-zinc-400" />
+                <Loader2 className="h-4 w-4 animate-spin text-zinc-600" />
              </div>
           ) : notifications.length === 0 ? (
-             <div className="flex flex-col items-center justify-center py-8 text-center space-y-2">
-                <Info className="h-6 w-6 text-zinc-200" />
-                <p className="text-xs text-zinc-500 font-medium">No new notifications</p>
+             <div className="flex flex-col items-center justify-center py-8 text-zinc-600 space-y-2">
+                <Info className="h-6 w-6 text-zinc-600" />
+                <p className="text-zinc-600 font-medium">No new notifications</p>
              </div>
           ) : (
             notifications.map((notification) => (
@@ -110,19 +110,19 @@ export function NotificationBell() {
                  key={notification.id} 
                  className={cn(
                     "flex items-start gap-4 p-3 rounded-2xl cursor-pointer transition-all border border-transparent",
-                    !notification.read ? "bg-primary/5 border-primary/10" : "hover:bg-zinc-50 dark:hover:bg-zinc-900"
+                    !notification.read ? "bg-primary/5 border-primary/10" : "hover:bg-zinc-50"
                  )}
               >
                 <div className={cn(
                    "mt-1 shrink-0 h-8 w-8 rounded-xl flex items-center justify-center",
-                   !notification.read ? "bg-primary/20" : "bg-zinc-100 dark:bg-zinc-800"
+                   !notification.read ? "bg-primary/20" : "bg-zinc-100"
                 )}>
                   {getIcon(notification.type)}
                 </div>
                 <div className="flex-1 space-y-1">
-                  <p className="text-xs font-black tracking-tight">{notification.title}</p>
-                  <p className="text-[10px] text-muted-foreground leading-tight font-medium">{notification.description}</p>
-                  <p className="text-[9px] text-zinc-400 font-bold uppercase tracking-tighter">{notification.time}</p>
+                  <p className="text-zinc-600 font-black tracking-tight">{notification.title}</p>
+                  <p className="text-[10px] text-zinc-600 leading-tight font-medium">{notification.description}</p>
+                  <p className="text-[9px] text-xl font-bold uppercase tracking-tighter">{notification.time}</p>
                 </div>
                 {!notification.read && <div className="h-1.5 w-1.5 rounded-full bg-primary mt-1.5" />}
               </DropdownMenuItem>
@@ -130,7 +130,7 @@ export function NotificationBell() {
           )}
         </div>
         <DropdownMenuSeparator className="my-4" />
-        <Button variant="ghost" className="w-full rounded-xl text-[10px] font-black uppercase tracking-widest text-zinc-400">
+        <Button variant="ghost" className="w-full rounded-xl text-[10px] font-black uppercase tracking-widest text-zinc-600">
            View All Notifications
         </Button>
       </DropdownMenuContent>

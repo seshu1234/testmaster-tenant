@@ -58,7 +58,7 @@ export function TestApprovalDialog({ open, onOpenChange, testId, testTitle, onAc
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <AlertCircle className="h-5 w-5 text-primary" />
+            <AlertCircle className="h-5 w-5 text-zinc-600" />
             Review Test: {testTitle}
           </DialogTitle>
           <DialogDescription>
@@ -67,7 +67,7 @@ export function TestApprovalDialog({ open, onOpenChange, testId, testTitle, onAc
         </DialogHeader>
         
         <div className="py-4 space-y-2">
-           <label className="text-sm font-medium">Internal Feedback / Rejection Reason</label>
+           <label className="text-zinc-600 font-medium">Internal Feedback / Rejection Reason</label>
            <Textarea 
              placeholder="Optional feedback for the teacher..."
              value={feedback}
@@ -79,7 +79,7 @@ export function TestApprovalDialog({ open, onOpenChange, testId, testTitle, onAc
         <DialogFooter className="grid grid-cols-2 gap-2">
           <Button 
             variant="outline" 
-            className="w-full text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
+            className="w-full text-zinc-600 border-red-200 hover:bg-red-50 "
             onClick={() => handleAction("draft")}
             disabled={loading}
           >

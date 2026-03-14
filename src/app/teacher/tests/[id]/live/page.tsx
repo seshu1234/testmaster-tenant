@@ -120,23 +120,23 @@ export default function TeacherLiveMonitorPage() {
   }) || [];
 
   if (isLoading && !stats) {
-      return <div className="p-8 text-center animate-pulse">Establishing secure link to exam nodes...</div>;
+      return <div className="p-8 text-zinc-600 animate-pulse">Establishing secure link to exam nodes...</div>;
   }
 
   return (
     <div className="max-w-full mx-auto space-y-8 animate-in fade-in duration-500 pb-20 p-6">
       {/* 1. CONTROL HEADER */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-white dark:bg-zinc-900 p-6 rounded-3xl border shadow-lg">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-white p-6 rounded-3xl border shadow-lg">
         <div className="flex items-center gap-4">
             <Button variant="ghost" onClick={() => router.back()} className="h-10 w-10 p-0 rounded-full">
                 <ChevronLeft className="h-6 w-6" />
             </Button>
             <div>
-                <h1 className="text-3xl font-black tracking-tight text-zinc-800 dark:text-zinc-100 flex items-center gap-3">
-                    <MonitorPlay className="h-8 w-8 text-primary" />
+                <h1 className="text-zinc-600 font-black tracking-tight text-zinc-600 flex items-center gap-3">
+                    <MonitorPlay className="h-8 w-8 text-zinc-600" />
                     Live Assessment Command
                 </h1>
-                <p className="text-zinc-500 text-sm font-medium">Monitoring Test Node: <span className="text-primary font-bold">{testId.slice(0, 8)}</span></p>
+                <p className="text-zinc-600 font-medium">Monitoring Test Node: <span className="text-xl font-bold">{testId.slice(0, 8)}</span></p>
             </div>
         </div>
         
@@ -145,23 +145,23 @@ export default function TeacherLiveMonitorPage() {
                 <input 
                     type="text" 
                     placeholder="Broadcast to all students..." 
-                    className="w-full pl-4 pr-12 py-3 border-2 rounded-2xl text-sm focus:ring-2 ring-primary/20 outline-none bg-zinc-50 dark:bg-zinc-800 font-medium"
+                    className="w-full pl-4 pr-12 py-3 border-2 rounded-2xl text-zinc-600 focus:ring-2 ring-primary/20 outline-none bg-zinc-50 font-medium"
                     value={broadcastMessage}
                     onChange={(e) => setBroadcastMessage(e.target.value)}
                 />
                 <Button 
                     variant="ghost" 
                     size="sm" 
-                    className="absolute right-1.5 top-1.5 h-9 w-9 p-0 rounded-xl hover:bg-primary hover:text-white"
+                    className="absolute right-1.5 top-1.5 h-9 w-9 p-0 rounded-xl hover:bg-primary "
                     onClick={handleBroadcast}
                     disabled={isBroadcasting}
                 >
                     <MonitorPlay className="h-5 w-5" />
                 </Button>
             </div>
-            <div className="h-10 w-px bg-zinc-200 dark:bg-zinc-700 hidden md:block" />
-            <div className="flex items-center gap-3 bg-zinc-100 dark:bg-zinc-800 p-2 rounded-2xl border">
-                <Badge className="bg-emerald-500 text-white border-none py-2 px-4 rounded-xl flex items-center gap-2">
+            <div className="h-10 w-px bg-zinc-200 hidden md:block" />
+            <div className="flex items-center gap-3 bg-zinc-100 p-2 rounded-2xl border">
+                <Badge className="bg-emerald-500 text-zinc-600 border-none py-2 px-4 rounded-xl flex items-center gap-2">
                     <div className="h-2 w-2 rounded-full bg-white animate-ping" />
                     LIVE
                 </Badge>
@@ -175,24 +175,24 @@ export default function TeacherLiveMonitorPage() {
       {/* 2. REAL-TIME TELEMETRY */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <TelemetryCard 
-            icon={<Users className="text-indigo-500" />} 
+            icon={<Users className="text-zinc-600" />} 
             label="Total Participants" 
             value={stats?.total_started || 0} 
           />
           <TelemetryCard 
-            icon={<Activity className="text-amber-500" />} 
+            icon={<Activity className="text-zinc-600" />} 
             label="In Progress" 
             value={stats?.in_progress || 0} 
             subValue="Actively answering"
           />
           <TelemetryCard 
-            icon={<CheckCircle2 className="text-emerald-500" />} 
+            icon={<CheckCircle2 className="text-zinc-600" />} 
             label="Submissions" 
             value={stats?.completed || 0} 
             subValue="Final handshake done"
           />
           <TelemetryCard 
-            icon={<AlertCircle className="text-rose-500" />} 
+            icon={<AlertCircle className="text-zinc-600" />} 
             label="Integrity Alerts" 
             value={stats?.students.reduce((acc, s) => acc + (s.flags || 0), 0) || 0} 
             subValue="Tab switches/refreshes"
@@ -200,27 +200,27 @@ export default function TeacherLiveMonitorPage() {
       </div>
 
       {/* 3. MONITORING GRID */}
-      <Card className="rounded-3xl border-none shadow-xl bg-white dark:bg-zinc-900 border overflow-hidden">
-          <CardHeader className="bg-zinc-50 dark:bg-zinc-800/30 border-b p-6 flex flex-row items-center justify-between space-y-0">
+      <Card className="rounded-3xl border-none shadow-xl bg-white border overflow-hidden">
+          <CardHeader className="bg-zinc-50 border-b p-6 flex flex-row items-center justify-between space-y-0">
               <div className="flex items-center gap-6">
                 <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-600" />
                     <input 
                         type="text" 
                         placeholder="Search By Student ID..." 
-                        className="pl-10 pr-4 py-2 border rounded-xl text-sm focus:ring-2 ring-primary/20 outline-none w-64 bg-white dark:bg-zinc-900"
+                        className="pl-10 pr-4 py-2 border rounded-xl text-zinc-600 focus:ring-2 ring-primary/20 outline-none w-64 bg-white"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
                 </div>
-                <div className="flex items-center gap-1 bg-white dark:bg-zinc-800 p-1 rounded-xl border border-zinc-200 shadow-sm">
+                <div className="flex items-center gap-1 bg-white p-1 rounded-xl border border-zinc-200 shadow-sm">
                     {(['all', 'in_progress', 'completed', 'flagged'] as const).map((f) => (
                         <button
                             key={f}
                             onClick={() => setFilter(f)}
                             className={cn(
                                 "px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all",
-                                filter === f ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 shadow-lg" : "text-zinc-400 hover:text-zinc-600"
+                                filter === f ? "bg-zinc-900 text-white shadow-lg" :  "text-zinc-600 "
                             )}
                         >
                             {f.replace('_', ' ')}
@@ -229,50 +229,50 @@ export default function TeacherLiveMonitorPage() {
                 </div>
               </div>
               <div className="flex gap-2">
-                  <Button variant="outline" size="sm" className="rounded-xl border-rose-500/20 text-rose-500 hover:bg-rose-50">
+                  <Button variant="outline" size="sm" className="rounded-xl border-rose-500/20 text-zinc-600 hover:bg-rose-50">
                       <StopCircle className="h-4 w-4 mr-2" />
                       Terminate Test
                   </Button>
               </div>
           </CardHeader>
           <CardContent className="p-0">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-0 divide-x divide-y dark:divide-zinc-800">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-0 divide-x divide-y">
                   {filteredStudents.length > 0 ? filteredStudents.map(student => (
-                      <div key={student.attempt_id} className="p-6 transition-all hover:bg-zinc-50 dark:hover:bg-zinc-800/30 group">
+                      <div key={student.attempt_id} className="p-6 transition-all hover:bg-zinc-50 group">
                           <div className="flex justify-between items-start mb-6">
                               <div className="flex items-center gap-3">
-                                  <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-bold">
+                                  <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center text-xl font-bold">
                                       {student.student_id.slice(-2).toUpperCase()}
                                   </div>
                                   <div>
-                                      <h4 className="font-extrabold text-zinc-800 dark:text-zinc-100 truncate w-32 tracking-tight">ID: {student.student_id.slice(0, 10)}</h4>
+                                      <h4 className="font-extrabold text-zinc-600 truncate w-32 tracking-tight">ID: {student.student_id.slice(0, 10)}</h4>
                                       <div className="flex items-center gap-2">
                                           <div className={cn(
                                               "h-2 w-2 rounded-full",
                                               student.status === 'in_progress' ? "bg-emerald-500 animate-pulse" : "bg-zinc-300"
                                           )} />
-                                          <span className="text-[10px] font-bold text-zinc-400 uppercase">{student.status}</span>
+                                          <span className="text-[10px] font-bold text-zinc-600 uppercase">{student.status}</span>
                                       </div>
                                   </div>
                               </div>
                               {student.flags > 0 && (
-                                  <Badge className="bg-rose-500 text-white border-none animate-bounce">
+                                  <Badge className="bg-rose-500 text-zinc-600 border-none animate-bounce">
                                       {student.flags} FLAGS
                                   </Badge>
                               )}
                           </div>
                           
                           <div className="space-y-4">
-                              <div className="flex justify-between items-center bg-zinc-50 dark:bg-zinc-950 p-3 rounded-xl border">
+                              <div className="flex justify-between items-center bg-zinc-50 p-3 rounded-xl border">
                                   <div className="flex flex-col">
-                                      <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">Process Score</span>
-                                      <span className="text-xl font-black text-primary">{student.score || '--'}</span>
+                                      <span className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest">Process Score</span>
+                                      <span className="text-zinc-600 font-black text-zinc-600">{student.score || '--'}</span>
                                   </div>
-                                  <div className="text-right">
-                                      <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">Elapsed Time</span>
-                                      <div className="flex items-center gap-1 text-zinc-600 dark:text-zinc-300 font-bold">
+                                  <div className="text-zinc-600">
+                                      <span className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest">Elapsed Time</span>
+                                      <div className="flex items-center gap-1 text-xl font-bold">
                                           <Clock className="h-3 w-3" />
-                                          {Math.floor((Date.now() - new Date(student.started_at).getTime()) / 60000)}m
+                                          {Math.floor((Date.now() - new Date(student.started_at).getTime()) / 600)}m
                                       </div>
                                   </div>
                               </div>
@@ -280,8 +280,8 @@ export default function TeacherLiveMonitorPage() {
                               {/* Question Progress Heatmap */}
                               <div className="space-y-1.5">
                                  <div className="flex justify-between items-center">
-                                    <span className="text-[8px] font-black text-zinc-400 uppercase tracking-tighter">Question Telemetry</span>
-                                    <span className="text-[8px] font-bold text-primary">12 / 20 Answered</span>
+                                    <span className="text-[8px] font-black text-zinc-600 uppercase tracking-tighter">Question Telemetry</span>
+                                    <span className="text-[8px] font-bold text-zinc-600">12 / 20 Answered</span>
                                  </div>
                                  <div className="flex gap-0.5 h-1.5">
                                     {[...Array(20)].map((_, idx) => (
@@ -289,14 +289,14 @@ export default function TeacherLiveMonitorPage() {
                                           key={idx} 
                                           className={cn(
                                              "flex-1 rounded-sm",
-                                             idx < 12 ? "bg-emerald-500" : idx === 12 ? "bg-primary animate-pulse" : "bg-zinc-100 dark:bg-zinc-800"
+                                             idx < 12 ? "bg-emerald-500" : idx === 12 ? "bg-primary animate-pulse" : "bg-zinc-100"
                                           )} 
                                        />
                                     ))}
                                  </div>
                               </div>
 
-                              <div className="h-1.5 w-full bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+                              <div className="h-1.5 w-full bg-zinc-100 rounded-full overflow-hidden">
                                   <div 
                                     className={cn("h-full transition-all duration-1000", student.status === 'completed' ? "bg-emerald-500" : "bg-primary animate-pulse")} 
                                     style={{ width: `${student.status === 'completed' ? 100 : 45}%` }} 
@@ -315,7 +315,7 @@ export default function TeacherLiveMonitorPage() {
                               <Button 
                                 variant="outline" 
                                 size="sm" 
-                                className="flex-1 rounded-lg text-[10px] font-bold h-8 border-rose-500/20 text-rose-500 hover:bg-rose-50"
+                                className="flex-1 rounded-lg text-[10px] font-bold h-8 border-rose-500/20 text-zinc-600 hover:bg-rose-50"
                                 onClick={() => handleForceSubmit(student.attempt_id, student.student_id)}
                                 disabled={student.status === 'completed'}
                               >
@@ -324,10 +324,10 @@ export default function TeacherLiveMonitorPage() {
                           </div>
                       </div>
                   )) : (
-                      <div className="col-span-full p-24 text-center">
-                          <Activity className="h-16 w-16 text-zinc-200 mx-auto mb-6" />
-                          <h3 className="text-xl font-bold text-zinc-400 uppercase tracking-widest leading-loose">Waiting for Incoming Signals</h3>
-                          <p className="text-zinc-300 text-sm">Active assessment telemetry will appear here in real-time.</p>
+                      <div className="col-span-full p-24 text-zinc-600">
+                          <Activity className="h-16 w-16 text-zinc-600 mx-auto mb-6" />
+                          <h3 className="text-xl font-bold text-zinc-600 uppercase tracking-widest leading-loose">Waiting for Incoming Signals</h3>
+                          <p className="text-zinc-600">Active assessment telemetry will appear here in real-time.</p>
                       </div>
                   )}
               </div>
@@ -339,15 +339,15 @@ export default function TeacherLiveMonitorPage() {
 
 function TelemetryCard({ icon, label, value, subValue }: { icon: React.ReactNode, label: string, value: number, subValue?: string }) {
     return (
-        <Card className="rounded-3xl border-none shadow-lg bg-white dark:bg-zinc-900 border group">
+        <Card className="rounded-3xl border-none shadow-lg bg-white border group">
             <CardContent className="p-6 flex items-center gap-6">
-                <div className="h-[72px] w-[72px] rounded-2xl bg-zinc-50 dark:bg-zinc-800 flex items-center justify-center border group-hover:scale-110 transition-transform">
+                <div className="h-[72px] w-[72px] rounded-2xl bg-zinc-50 flex items-center justify-center border group-hover:scale-110 transition-transform">
                     {icon}
                 </div>
                 <div>
-                    <div className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">{label}</div>
-                    <div className="text-4xl font-black text-zinc-800 dark:text-zinc-100 tracking-tighter">{value}</div>
-                    {subValue && <div className="text-[10px] font-bold text-zinc-500 uppercase mt-1">{subValue}</div>}
+                    <div className="text-[10px] font-black text-zinc-600 uppercase tracking-widest mb-1">{label}</div>
+                    <div className="text-zinc-600 font-black text-zinc-600 tracking-tighter">{value}</div>
+                    {subValue && <div className="text-[10px] font-bold text-zinc-600 uppercase mt-1">{subValue}</div>}
                 </div>
             </CardContent>
         </Card>

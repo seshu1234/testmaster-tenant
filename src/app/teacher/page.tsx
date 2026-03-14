@@ -86,7 +86,7 @@ export default function TeacherDashboard() {
     fetchDashboard();
   }, [token, tenantSlug]);
 
-  if (loading) return <div className="p-8 text-center animate-pulse font-bold text-zinc-400">Loading Academic Command...</div>;
+  if (loading) return <div className="p-8 text-zinc-600 animate-pulse font-bold text-zinc-600">Loading Academic Command...</div>;
 
   const dashboard: TeacherDashboardData = data || {
     kpis: { my_classes: 0, my_students: 0, tests_created: 0, tests_to_grade: 0, avg_score: 0, ai_credits: 0 },
@@ -109,8 +109,8 @@ export default function TeacherDashboard() {
     <div className="space-y-6 animate-in fade-in duration-500 pb-10">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div className="space-y-1">
-          <h1 className="text-3xl font-bold tracking-tight">Academic Command</h1>
-          <p className="text-muted-foreground flex items-center gap-2">
+          <h1 className="text-xl font-bold tracking-tight">Academic Command</h1>
+          <p className="text-zinc-600 flex items-center gap-2">
             Welcome back, {user?.name || 'Instructor'} 
             <span className="h-1 w-1 rounded-full bg-zinc-300" />
             {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
@@ -135,28 +135,28 @@ export default function TeacherDashboard() {
       <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
         {kpis.map((kpi, i) => (
           <Card key={i} className={`border shadow-sm backdrop-blur-sm ${
-            kpi.urgent ? 'bg-orange-50 dark:bg-orange-900/10' : 'bg-white/50 dark:bg-zinc-900/50'
+            kpi.urgent ? 'bg-orange-50 : 'bg-white/50
           }`}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{kpi.label}</CardTitle>
-              <kpi.icon className={`h-3 w-3 ${kpi.urgent ? 'text-orange-500' : 'text-primary'}`} />
+              <CardTitle className="text-[10px] font-bold uppercase tracking-wider text-zinc-600">{kpi.label}</CardTitle>
+              <kpi.icon className={`h-3 w-3 ${kpi.urgent ? 'te' : 'te'}`} />
             </CardHeader>
             <CardContent>
               <div className="text-xl font-bold">{kpi.value}</div>
-              <p className="text-[9px] text-muted-foreground line-clamp-1">{kpi.description}</p>
+              <p className="text-[9px] text-zinc-600 line-clamp-1">{kpi.description}</p>
             </CardContent>
           </Card>
         ))}
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="lg:col-span-5 border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+        <Card className="lg:col-span-5 border shadow-sm bg-white/50 backdrop-blur-sm">
           <CardHeader className="flex flex-row items-center justify-between">
             <div className="space-y-1">
               <CardTitle>Class Performance Trend</CardTitle>
               <CardDescription>Historical average scores across all assigned batches.</CardDescription>
             </div>
-            <div className="h-8 w-8 rounded-full bg-primary/5 flex items-center justify-center text-primary">
+            <div className="h-8 w-8 rounded-full bg-primary/5 flex items-center justify-center text-zinc-600">
               <BarChart3 className="h-4 w-4" />
             </div>
           </CardHeader>
@@ -165,15 +165,15 @@ export default function TeacherDashboard() {
               <AreaChart data={dashboard.performance_trend}>
                 <defs>
                   <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#18181b" stopOpacity={0.1}/>
-                    <stop offset="95%" stopColor="#18181b" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#181b" stopOpacity={0.1}/>
+                    <stop offset="95%" stopColor="#181b" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
                 <XAxis dataKey="name" fontSize={10} axisLine={false} tickLine={false} />
                 <YAxis domain={[0, 100]} fontSize={10} axisLine={false} tickLine={false} tickFormatter={(v) => `${v}%`} />
                 <Tooltip />
-                <Area type="monotone" dataKey="score" stroke="#18181b" strokeWidth={2} fillOpacity={1} fill="url(#colorScore)" />
+                <Area type="monotone" dataKey="score" stroke="#181b" strokeWidth={2} fillOpacity={1} fill="url(#colorScore)" />
               </AreaChart>
             </ResponsiveContainer>
           </CardContent>
@@ -185,17 +185,17 @@ export default function TeacherDashboard() {
               <Sparkles className="h-20 w-20" />
             </div>
             <CardHeader>
-              <CardTitle className="text-zinc-400 text-[10px] font-bold uppercase tracking-widest">Pedagogical AI</CardTitle>
+              <CardTitle className="text-zinc-600 text-[10px] font-bold uppercase tracking-widest">Pedagogical AI</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 relative z-10">
               <div className="space-y-1">
-                <p className="text-sm font-bold">Smart Insights Available</p>
-                <p className="text-[11px] text-zinc-400 leading-relaxed">
+                <p className="text-xl font-bold">Smart Insights Available</p>
+                <p className="text-[11px] text-zinc-600 leading-relaxed">
                   &ldquo;{dashboard.ai_insight || "Analyzing class performance..."}&rdquo;
                 </p>
               </div>
               <Link href="/teacher/questions/generate">
-                <Button className="w-full bg-white text-zinc-900 hover:bg-zinc-100 gap-2 text-xs h-9 mt-2">
+                <Button className="w-full bg-white text-zinc-600 hover:bg-zinc-100 gap-2 text-zinc-600 h-9 mt-2">
                   <Zap className="h-3 w-3" />
                   Generate Questions
                 </Button>
@@ -203,30 +203,30 @@ export default function TeacherDashboard() {
             </CardContent>
           </Card>
 
-          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm">
             <CardHeader className="pb-3">
-              <CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center justify-between">
+              <CardTitle className="text-xl font-bold uppercase tracking-wider text-zinc-600 flex items-center justify-between">
                 Quick Actions
                 <Activity className="h-3 w-3" />
               </CardTitle>
             </CardHeader>
             <CardContent className="grid gap-2">
               <Link href="/teacher/tests">
-                <Button variant="ghost" className="w-full justify-between text-xs font-medium h-9 hover:bg-zinc-50 border border-transparent hover:border-zinc-100">
+                <Button variant="ghost" className="w-full justify-between text-zinc-600 font-medium h-9 hover:bg-zinc-50 border border-transparent hover:border-zinc-100">
                   Monitor Live Tests
-                  <ExternalLink className="h-3 w-3 text-zinc-400" />
+                  <ExternalLink className="h-3 w-3 text-zinc-600" />
                 </Button>
               </Link>
               <Link href="/teacher/results">
-                <Button variant="ghost" className="w-full justify-between text-xs font-medium h-9 hover:bg-zinc-50 border border-transparent hover:border-zinc-100">
+                <Button variant="ghost" className="w-full justify-between text-zinc-600 font-medium h-9 hover:bg-zinc-50 border border-transparent hover:border-zinc-100">
                   Grade Assignments
-                  <CheckCircle2 className="h-3 w-3 text-zinc-400" />
+                  <CheckCircle2 className="h-3 w-3 text-zinc-600" />
                 </Button>
               </Link>
               <Link href="/teacher/questions">
-                <Button variant="ghost" className="w-full justify-between text-xs font-medium h-9 hover:bg-zinc-50 border border-transparent hover:border-zinc-100">
+                <Button variant="ghost" className="w-full justify-between text-zinc-600 font-medium h-9 hover:bg-zinc-50 border border-transparent hover:border-zinc-100">
                   Manage Bank
-                  <BookOpen className="h-3 w-3 text-zinc-400" />
+                  <BookOpen className="h-3 w-3 text-zinc-600" />
                 </Button>
               </Link>
             </CardContent>
@@ -235,11 +235,11 @@ export default function TeacherDashboard() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <Card className="lg:col-span-2 border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+        <Card className="lg:col-span-2 border shadow-sm bg-white/50 backdrop-blur-sm">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Upcoming Assessments</CardTitle>
             <Link href="/teacher/tests">
-               <Button variant="link" size="sm" className="text-xs h-auto p-0 flex items-center gap-1 group">
+               <Button variant="link" size="sm" className="text-zinc-600 h-auto p-0 flex items-center gap-1 group">
                View All 
                <ChevronRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
                </Button>
@@ -249,29 +249,29 @@ export default function TeacherDashboard() {
             <div className="divide-y divide-zinc-100">
               {dashboard.upcoming_assessments.length > 0 ? dashboard.upcoming_assessments.map((test, i) => (
                 <div key={i} className="py-4 first:pt-0 last:pb-0 flex items-center gap-4 group">
-                  <div className="h-10 w-10 rounded-xl bg-zinc-50 border border-zinc-100 flex items-center justify-center text-zinc-400 group-hover:bg-primary/5 group-hover:text-primary transition-colors">
+                  <div className="h-10 w-10 rounded-xl bg-zinc-50 border border-zinc-100 flex items-center justify-center text-zinc-600 group-hover:bg-primary/5 group- transition-colors">
                     <Calendar className="h-5 w-5" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold truncate">{test.title}</p>
-                    <p className="text-[10px] text-muted-foreground uppercase">{test.batch_name} • {new Date(test.start_time).toLocaleString()}</p>
+                    <p className="text-xl font-bold truncate">{test.title}</p>
+                    <p className="text-[10px] text-zinc-600 uppercase">{test.batch_name} • {new Date(test.start_time).toLocaleString()}</p>
                   </div>
                   <div className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-tight ${
-                    test.status === 'Ready' || test.status === 'published' ? 'bg-green-100 text-green-700' :
-                    test.status === 'Draft' ? 'bg-orange-100 text-orange-700' :
-                    'bg-blue-100 text-blue-700'
+                    test.status === 'Ready' || test.status === 'published' ? 'bg-green-100 te' :
+                    test.status === 'Draft' ? 'bg-orange-100 te' :
+                    'bg-blue-100 te'
                   }`}>
                     {test.status}
                   </div>
                 </div>
               )) : (
-                 <p className="text-xs text-center py-8 text-zinc-400 font-medium">No upcoming assessments scheduled.</p>
+                 <p className="text-zinc-600 py-8 text-zinc-600 font-medium">No upcoming assessments scheduled.</p>
               )}
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+        <Card className="border shadow-sm bg-white/50 backdrop-blur-sm">
           <CardHeader>
             <CardTitle>Recent Results</CardTitle>
           </CardHeader>
@@ -279,21 +279,21 @@ export default function TeacherDashboard() {
              {dashboard.recent_results.length > 0 ? dashboard.recent_results.map((result, i) => (
                <div key={i} className="p-3 rounded-lg border border-zinc-50 bg-zinc-50/30 flex flex-col gap-1 hover:border-zinc-100 hover:bg-white transition-all">
                  <div className="flex justify-between items-center">
-                    <span className="text-xs font-bold line-clamp-1">{result.name}</span>
-                    <span className={`text-[8px] font-bold uppercase ${result.status === 'Published' || result.status === 'published' ? 'text-green-600' : 'text-orange-600'}`}>
+                    <span className="text-xl font-bold line-clamp-1">{result.name}</span>
+                    <span className={`text-[8px] font-bold uppercase ${result.status === 'Published' || result.status === 'published' ? 'te' : 'te'}`}>
                       {result.status}
                     </span>
                  </div>
-                 <div className="flex justify-between text-[10px] text-muted-foreground">
-                    <span>Avg Score: <strong className="text-zinc-900">{result.avg_score}%</strong></span>
-                    <span>High: <strong className="text-primary">{result.high_score}%</strong></span>
+                 <div className="flex justify-between text-[10px] text-zinc-600">
+                    <span>Avg Score: <strong className="text-zinc-600">{result.avg_score}%</strong></span>
+                    <span>High: <strong className="text-zinc-600">{result.high_score}%</strong></span>
                  </div>
                </div>
              )) : (
-                <p className="text-xs text-center py-8 text-zinc-400 font-medium">No recent results found.</p>
+                <p className="text-zinc-600 py-8 text-zinc-600 font-medium">No recent results found.</p>
              )}
              <Link href="/teacher/results" className="w-full block">
-               <Button variant="outline" className="w-full text-xs h-8 border-dashed border-zinc-200">
+               <Button variant="outline" className="w-full text-zinc-600 h-8 border-dashed border-zinc-200">
                   Access Full Analytics
                </Button>
              </Link>

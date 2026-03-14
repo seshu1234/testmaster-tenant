@@ -135,20 +135,20 @@ export default function StudentDashboard() {
   };
 
   const kpis = [
-    { title: "Tests Taken", value: dashboard.stats.tests_taken, icon: BookOpen, color: "text-blue-600" },
-    { title: "Avg Score", value: `${dashboard.stats.avg_score}%`, icon: Target, color: "text-green-600" },
-    { title: "Rank", value: `#${dashboard.stats.rank || "--"}`, icon: Trophy, color: "text-yellow-600" },
-    { title: "Streak", value: `${dashboard.student.streak} Days`, icon: Flame, color: "text-orange-600" },
+    { title: "Tests Taken", value: dashboard.stats.tests_taken, icon: BookOpen, color: "te" },
+    { title: "Avg Score", value: `${dashboard.stats.avg_score}%`, icon: Target, color: "te" },
+    { title: "Rank", value: `#${dashboard.stats.rank || "--"}`, icon: Trophy, color: "te" },
+    { title: "Streak", value: `${dashboard.student.streak} Days`, icon: Flame, color: "te" },
   ];
 
   return (
     <div className="container mx-auto p-6 space-y-8">
       {/* Header */}
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight">
+        <h1 className="text-xl font-bold tracking-tight">
           Welcome back, {user?.name?.split(" ")[0] || "Student"}
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-zinc-600">
           {dashboard.encouragement || "Track your progress and upcoming tests here."}
         </p>
       </div>
@@ -158,11 +158,11 @@ export default function StudentDashboard() {
         {kpis.map((kpi) => (
           <Card key={kpi.title}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{kpi.title}</CardTitle>
+              <CardTitle className="text-zinc-600 font-medium">{kpi.title}</CardTitle>
               <kpi.icon className={cn("h-4 w-4", kpi.color)} />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{kpi.value}</div>
+              <div className="text-xl font-bold">{kpi.value}</div>
             </CardContent>
           </Card>
         ))}
@@ -192,7 +192,7 @@ export default function StudentDashboard() {
                   >
                     <div className="space-y-1">
                       <p className="font-medium">{test.title}</p>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-zinc-600">
                         {new Date(test.start_at).toLocaleDateString()} at{" "}
                         {new Date(test.start_at).toLocaleTimeString([], {
                           hour: "2-digit",
@@ -206,7 +206,7 @@ export default function StudentDashboard() {
                   </div>
                 ))
               ) : (
-                <div className="text-center py-8 text-muted-foreground">
+                <div className="text-zinc-600 py-8 text-zinc-600">
                   <CalendarIcon className="h-8 w-8 mx-auto mb-2 opacity-50" />
                   <p>No tests scheduled at the moment</p>
                 </div>
@@ -223,12 +223,12 @@ export default function StudentDashboard() {
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-2">
-              <div className="flex justify-between text-sm">
+              <div className="flex justify-between text-zinc-600">
                 <span>Next Level Progress</span>
                 <span className="font-bold">{dashboard.achievements.progress}%</span>
               </div>
               <Progress value={dashboard.achievements.progress} className="h-2" />
-              <p className="text-xs text-muted-foreground">
+              <p className="text-zinc-600">
                 {dashboard.achievements.points} / {dashboard.achievements.next_level_points} Points
               </p>
             </div>
@@ -236,11 +236,11 @@ export default function StudentDashboard() {
             <div className="pt-4 border-t">
               <div className="flex items-center gap-4">
                 <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Award className="h-5 w-5 text-primary" />
+                  <Award className="h-5 w-5 text-zinc-600" />
                 </div>
                 <div>
-                  <p className="text-sm font-bold">{dashboard.achievements.insight}</p>
-                  <p className="text-xs text-muted-foreground">Keep it up!</p>
+                  <p className="text-xl font-bold">{dashboard.achievements.insight}</p>
+                  <p className="text-zinc-600">Keep it up!</p>
                 </div>
               </div>
             </div>

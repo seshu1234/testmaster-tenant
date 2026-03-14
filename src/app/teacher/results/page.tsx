@@ -51,35 +51,35 @@ export default function TeacherAnalytics() {
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight">Performance Analytics</h1>
-        <p className="text-muted-foreground">Monitor student progress and test performance across all batches.</p>
+        <h1 className="text-xl font-bold tracking-tight">Performance Analytics</h1>
+        <p className="text-zinc-600">Monitor student progress and test performance across all batches.</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="border shadow-sm h-full bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+        <Card className="border shadow-sm h-full bg-white/50 backdrop-blur-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Avg. Score</CardTitle>
-            <Award className="h-4 w-4 text-primary" />
+            <CardTitle className="text-zinc-600 font-medium">Avg. Score</CardTitle>
+            <Award className="h-4 w-4 text-zinc-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{data.overall_avg || "0%"}</div>
-            {data.score_change && <p className="text-xs text-muted-foreground">{data.score_change} from last month</p>}
+            <div className="text-xl font-bold">{data.overall_avg || "0%"}</div>
+            {data.score_change && <p className="text-zinc-600">{data.score_change} from last month</p>}
           </CardContent>
         </Card>
-        <Card className="border shadow-sm h-full bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+        <Card className="border shadow-sm h-full bg-white/50 backdrop-blur-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Students</CardTitle>
-            <Users className="h-4 w-4 text-primary" />
+            <CardTitle className="text-zinc-600 font-medium">Active Students</CardTitle>
+            <Users className="h-4 w-4 text-zinc-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{data.active_students || "0"}</div>
-            {data.participation_rate && <p className="text-xs text-muted-foreground">{data.participation_rate} participation rate</p>}
+            <div className="text-xl font-bold">{data.active_students || "0"}</div>
+            {data.participation_rate && <p className="text-zinc-600">{data.participation_rate} participation rate</p>}
           </CardContent>
         </Card>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+        <Card className="border shadow-sm bg-white/50 backdrop-blur-sm">
           <CardHeader>
             <CardTitle>Subject-wise Average</CardTitle>
             <CardDescription>Performance comparison across different subjects</CardDescription>
@@ -93,19 +93,19 @@ export default function TeacherAnalytics() {
                     <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12 }} />
                     <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12 }} />
                     <Tooltip 
-                      contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
+                      contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '00px5px -3px rgba(0,0,0,0.1)' }}
                     />
                     <Bar dataKey="avg" fill="var(--primary)" radius={[4, 4, 0, 0]} barSize={40} />
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
-                <div className="h-full flex items-center justify-center text-muted-foreground">No data available</div>
+                <div className="h-full flex items-center justify-center text-zinc-600">No data available</div>
               )}
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+        <Card className="border shadow-sm bg-white/50 backdrop-blur-sm">
           <CardHeader>
             <CardTitle>Score Trends</CardTitle>
             <CardDescription>Overall performance trend over time</CardDescription>
@@ -118,12 +118,12 @@ export default function TeacherAnalytics() {
                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                       <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 12 }} />
                       <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12 }} />
-                      <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }} />
+                      <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '00px5px -3px rgba(0,0,0,0.1)' }} />
                       <Line type="monotone" dataKey="score" stroke="var(--primary)" strokeWidth={3} dot={{ r: 4, fill: 'var(--primary)' }} />
                    </LineChart>
                  </ResponsiveContainer>
                ) : (
-                 <div className="h-full flex items-center justify-center text-muted-foreground">No data available</div>
+                 <div className="h-full flex items-center justify-center text-zinc-600">No data available</div>
                )}
             </div>
           </CardContent>
@@ -131,10 +131,10 @@ export default function TeacherAnalytics() {
       </div>
 
       {data.ai_analysis && (
-        <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+        <Card className="border shadow-sm bg-white/50 backdrop-blur-sm">
            <CardHeader>
               <div className="flex items-center gap-2">
-                  <Brain className="h-5 w-5 text-primary" />
+                  <Brain className="h-5 w-5 text-zinc-600" />
                   <CardTitle>AI Question Bank Analysis</CardTitle>
               </div>
               <CardDescription>AI recommendations based on student response patterns</CardDescription>
@@ -142,21 +142,21 @@ export default function TeacherAnalytics() {
            <CardContent>
               <div className="grid gap-4 md:grid-cols-2">
                  {data.ai_analysis.critical?.map((item, i) => (
-                   <div key={`crit-${i}`} className="p-4 rounded-xl border border-red-100 bg-red-50/50 dark:bg-red-900/10 dark:border-red-900/20">
-                      <h4 className="font-bold text-red-800 dark:text-red-400 flex items-center gap-2">
+                   <div key={`crit-${i}`} className="p-4 rounded-xl border border-red-100 bg-red-50/5020">
+                      <h4 className="font-bold text-zinc-600 flex items-center gap-2">
                          🚩 Critical: {item.title}
                       </h4>
-                      <p className="text-sm text-red-700/80 dark:text-red-400/80 mt-2">
+                      <p className="text-zinc-600 te/80/80 mt-2">
                          {item.description}
                       </p>
                    </div>
                  ))}
                  {data.ai_analysis.optimal?.map((item, i) => (
-                   <div key={`opt-${i}`} className="p-4 rounded-xl border border-green-100 bg-green-50/50 dark:bg-green-900/10 dark:border-green-900/20">
-                      <h4 className="font-bold text-green-800 dark:text-green-400 flex items-center gap-2">
+                   <div key={`opt-${i}`} className="p-4 rounded-xl border border-green-100 bg-green-50/5020">
+                      <h4 className="font-bold text-zinc-600 flex items-center gap-2">
                          ✅ Optimal: {item.title}
                       </h4>
-                      <p className="text-sm text-green-700/80 dark:text-green-400/80 mt-2">
+                      <p className="text-zinc-600 te/80/80 mt-2">
                          {item.description}
                       </p>
                    </div>

@@ -42,7 +42,7 @@ export function Step2Settings({ data, onChange }: Step2Props) {
             value={data.duration_seconds / 60}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange({ duration_seconds: parseInt(e.target.value) * 60 })}
           />
-          <p className="text-xs text-muted-foreground ">Students will be timed out automatically.</p>
+          <p className="text-zinc-600 ">Students will be timed out automatically.</p>
         </div>
 
         <div className="space-y-2">
@@ -76,16 +76,16 @@ export function Step2Settings({ data, onChange }: Step2Props) {
         </div>
       </div>
 
-      <div className="grid gap-4 bg-zinc-50 dark:bg-zinc-900/50 p-6 rounded-xl border border-dashed">
+      <div className="grid gap-4 bg-zinc-50 p-6 rounded-xl border border-dashed">
         <div className="flex items-center justify-between">
           <div className="space-y-0.5">
-            <Label className="text-base">Shuffle Questions</Label>
-            <p className="text-xs text-muted-foreground">Each student gets questions in a random order.</p>
+            <Label className="text-zinc-600">Shuffle Questions</Label>
+            <p className="text-zinc-600">Each student gets questions in a random order.</p>
           </div>
           {/* Using a simple custom switch since ui/switch might be missing */}
           <div 
              onClick={() => handleSettingsChange("shuffle_questions", !data.settings.shuffle_questions)}
-             className={`w-11 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors ${data.settings.shuffle_questions ? 'bg-primary' : 'bg-zinc-300 dark:bg-zinc-700'}`}
+             className={`w-11 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors ${data.settings.shuffle_questions ? 'bg-primary' : 'bg-zinc-300'}`}
           >
              <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${data.settings.shuffle_questions ? 'translate-x-5' : ''}`} />
           </div>
@@ -93,12 +93,12 @@ export function Step2Settings({ data, onChange }: Step2Props) {
 
         <div className="flex items-center justify-between">
           <div className="space-y-0.5">
-            <Label className="text-base">Free Navigation</Label>
-            <p className="text-xs text-muted-foreground">Allow students to toggle between questions before submitting.</p>
+            <Label className="text-zinc-600">Free Navigation</Label>
+            <p className="text-zinc-600">Allow students to toggle between questions before submitting.</p>
           </div>
           <div 
              onClick={() => handleSettingsChange("allow_navigation", !data.settings.allow_navigation)}
-             className={`w-11 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors ${data.settings.allow_navigation ? 'bg-primary' : 'bg-zinc-300 dark:bg-zinc-700'}`}
+             className={`w-11 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors ${data.settings.allow_navigation ? 'bg-primary' : 'bg-zinc-300'}`}
           >
              <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${data.settings.allow_navigation ? 'translate-x-5' : ''}`} />
           </div>

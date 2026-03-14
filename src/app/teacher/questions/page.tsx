@@ -121,10 +121,10 @@ export default function QuestionsPage() {
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty.toLowerCase()) {
-      case "easy": return "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400";
-      case "medium": return "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400";
-      case "hard": return "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400";
-      default: return "bg-zinc-100 text-zinc-700 dark:bg-zinc-900/30 dark:text-zinc-400";
+      case "easy": return "bg-green-100 text-zinc-600";
+      case "medium": return "bg-yellow-100 text-zinc-600";
+      case "hard": return "bg-red-100 text-zinc-600";
+      default: return "bg-zinc-100 text-zinc-600";
     }
   };
 
@@ -132,8 +132,8 @@ export default function QuestionsPage() {
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="space-y-1">
-          <h1 className="text-3xl font-bold tracking-tight">Question Bank</h1>
-          <p className="text-muted-foreground">Manage and organize your repository of testing content.</p>
+          <h1 className="text-xl font-bold tracking-tight">Question Bank</h1>
+          <p className="text-zinc-600">Manage and organize your repository of testing content.</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" className="gap-2" onClick={() => setImportOpen(true)}>
@@ -141,7 +141,7 @@ export default function QuestionsPage() {
             Import
           </Button>
           <Link href="/teacher/questions/generate">
-            <Button variant="outline" className="gap-2 border-purple-200 dark:border-purple-900 bg-purple-50/50 dark:bg-purple-900/10 text-purple-600 dark:text-purple-400">
+            <Button variant="outline" className="gap-2 border-purple-200 bg-purple-50/50 text-zinc-600">
               <Sparkles className="h-4 w-4" />
               Generate with AI
             </Button>
@@ -172,15 +172,15 @@ export default function QuestionsPage() {
       />
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-         <Card className="md:col-span-3 border-amber-200 bg-amber-50/30 dark:bg-amber-900/10 border-dashed">
+         <Card className="md:col-span-3 border-amber-200 bg-amber-50/30 border-dashed">
             <CardContent className="p-4 flex items-center justify-between">
                <div className="flex items-center gap-3">
-                  <div className="h-8 w-8 rounded-full bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center">
-                     <AlertTriangle className="h-4 w-4 text-amber-600" />
+                  <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center">
+                     <AlertTriangle className="h-4 w-4 text-zinc-600" />
                   </div>
                   <div>
-                     <p className="text-xs font-bold text-amber-900 dark:text-amber-100 uppercase tracking-tight">AI Duplicate Radar</p>
-                     <p className="text-[10px] text-amber-700/80 dark:text-amber-400">Scan for similar content before publishing new items.</p>
+                     <p className="text-xl font-bold text-zinc-600 uppercase tracking-tight">AI Duplicate Radar</p>
+                     <p className="text-[10px] te/80">Scan for similar content before publishing new items.</p>
                   </div>
                </div>
                <Button variant="outline" size="sm" className="h-8 text-[10px] font-bold uppercase tracking-widest border-amber-200 bg-white">
@@ -188,11 +188,11 @@ export default function QuestionsPage() {
                </Button>
             </CardContent>
          </Card>
-         <Card className="border-purple-200 bg-purple-50/30 dark:bg-purple-900/10 border-dashed">
+         <Card className="border-purple-200 bg-purple-50/30 border-dashed">
             <CardContent className="p-4 flex items-center justify-between">
                <div className="flex items-center gap-3">
-                  <Sparkles className="h-4 w-4 text-purple-600" />
-                  <div className="text-[10px] font-bold uppercase text-purple-900 dark:text-purple-100">AI Credits: 840</div>
+                  <Sparkles className="h-4 w-4 text-zinc-600" />
+                  <div className="text-[10px] font-bold uppercase text-zinc-600">AI Credits: 840</div>
                </div>
             </CardContent>
          </Card>
@@ -200,10 +200,10 @@ export default function QuestionsPage() {
 
       <div className="flex flex-col gap-4 md:flex-row md:items-center">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-600" />
           <Input 
             placeholder="Search questions by title or topic..." 
-            className="pl-9 bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50"
+            className="pl-9 bg-white/50 backdrop-blur-sm"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -234,7 +234,7 @@ export default function QuestionsPage() {
         </div>
       </div>
 
-      <div className="rounded-xl border bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50 overflow-hidden shadow-sm">
+      <div className="rounded-xl border bg-white/50 backdrop-blur-sm overflow-hidden shadow-sm">
         <Table>
           <TableHeader>
             <TableRow>
@@ -242,17 +242,17 @@ export default function QuestionsPage() {
               <TableHead>Subject / Topic</TableHead>
               <TableHead>Type</TableHead>
               <TableHead>Difficulty</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="text-zinc-600">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={5} className="h-24 text-center">Loading questions...</TableCell>
+                <TableCell colSpan={5} className="h-24 text-zinc-600">Loading questions...</TableCell>
               </TableRow>
             ) : questions.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="h-24 text-center text-muted-foreground">No questions found. Create your first one!</TableCell>
+                <TableCell colSpan={5} className="h-24 text-zinc-600">No questions found. Create your first one!</TableCell>
               </TableRow>
             ) : (
               questions.map((q) => (
@@ -260,13 +260,13 @@ export default function QuestionsPage() {
                   <TableCell>
                     <div className="space-y-1">
                       <div className="font-medium line-clamp-1">{q.title}</div>
-                      <div className="text-xs text-muted-foreground">ID: {q.id.split('-')[0]}...</div>
+                      <div className="text-zinc-600">ID: {q.id.split('-')[0]}...</div>
                     </div>
                   </TableCell>
                   <TableCell>
                     <div className="flex flex-col gap-1">
-                      <span className="text-sm">{q.subject || 'N/A'}</span>
-                      <span className="text-xs text-muted-foreground">{q.topic || 'N/A'}</span>
+                      <span className="text-zinc-600">{q.subject || 'N/A'}</span>
+                      <span className="text-zinc-600">{q.topic || 'N/A'}</span>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -279,7 +279,7 @@ export default function QuestionsPage() {
                       {q.difficulty}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-zinc-600">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon">
@@ -288,7 +288,7 @@ export default function QuestionsPage() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-48">
                         <DropdownMenuItem 
-                          className="gap-2 text-purple-600 dark:text-purple-400"
+                          className="gap-2 text-zinc-600"
                           onClick={() => {
                             setSelectedQuestion({ id: q.id, title: q.title });
                             setExplainOpen(true);
@@ -306,7 +306,7 @@ export default function QuestionsPage() {
                           <Copy className="h-4 w-4" /> Duplicate
                         </DropdownMenuItem>
                         <DropdownMenuItem 
-                          className="gap-2 text-destructive"
+                          className="gap-2 text-zinc-600"
                           onClick={() => handleDelete(q.id)}
                         >
                           <Trash2 className="h-4 w-4" /> Delete

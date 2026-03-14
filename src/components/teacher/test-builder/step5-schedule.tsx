@@ -64,10 +64,10 @@ export function Step5Schedule({ data, onChange }: Step5Props) {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
-      <div className="grid gap-6 md:grid-cols-2 text-sm">
+      <div className="grid gap-6 md:grid-cols-2 text-zinc-600">
         <div className="space-y-2">
           <Label className="flex items-center gap-2">
-            <CalendarIcon className="h-4 w-4 text-primary" />
+            <CalendarIcon className="h-4 w-4 text-zinc-600" />
             Start Date & Time
           </Label>
           <Input 
@@ -78,7 +78,7 @@ export function Step5Schedule({ data, onChange }: Step5Props) {
         </div>
         <div className="space-y-2">
           <Label className="flex items-center gap-2">
-            <Clock className="h-4 w-4 text-primary" />
+            <Clock className="h-4 w-4 text-zinc-600" />
             End Date & Time
           </Label>
           <Input 
@@ -91,8 +91,8 @@ export function Step5Schedule({ data, onChange }: Step5Props) {
 
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <Label className="text-base font-semibold flex items-center gap-2">
-            <Users className="h-5 w-5 text-primary" />
+          <Label className="text-zinc-600 font-semibold flex items-center gap-2">
+            <Users className="h-5 w-5 text-zinc-600" />
             Assign to Batches
           </Label>
           <Badge variant="outline">{selectedBatches.length} Batches Selected</Badge>
@@ -100,9 +100,9 @@ export function Step5Schedule({ data, onChange }: Step5Props) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {loading ? (
-            <div className="col-span-full p-4 text-center  text-muted-foreground">Loading batches...</div>
+            <div className="col-span-full p-4 text-zinc-600  text-zinc-600">Loading batches...</div>
           ) : batches.length === 0 ? (
-            <div className="col-span-full p-4 text-center text-muted-foreground">No batches found.</div>
+            <div className="col-span-full p-4 text-zinc-600">No batches found.</div>
           ) : (
             batches.map((batch) => (
               <div 
@@ -111,15 +111,15 @@ export function Step5Schedule({ data, onChange }: Step5Props) {
                 className={`flex items-center justify-between p-4 rounded-xl border cursor-pointer transition-all ${
                   selectedBatches.includes(batch.id)
                     ? "border-primary bg-primary/5 shadow-sm"
-                    : "hover:bg-zinc-50 dark:hover:bg-zinc-900/50"
+                    : "hover:bg-zinc-50"
                 }`}
               >
                 <div className="space-y-1">
                   <p className="font-medium">{batch.name}</p>
-                  <p className="text-xs text-muted-foreground">{batch.subject}</p>
+                  <p className="text-zinc-600">{batch.subject}</p>
                 </div>
                 <div className={`h-5 w-5 rounded-full border-2 flex items-center justify-center transition-colors ${
-                  selectedBatches.includes(batch.id) ? "bg-primary border-primary" : "border-zinc-300 dark:border-zinc-700"
+                  selectedBatches.includes(batch.id) ? "bg-primary border-primary" : "border-zinc-300"
                 }`}>
                   {selectedBatches.includes(batch.id) && <div className="h-2 w-2 rounded-full bg-white" />}
                 </div>

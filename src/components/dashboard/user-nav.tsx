@@ -21,7 +21,7 @@ export function UserNav() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <div className="flex bg-zinc-200 dark:bg-zinc-800 h-full w-full items-center justify-center rounded-full text-zinc-900 dark:text-zinc-50 font-bold uppercase">
+          <div className="flex bg-zinc-200 h-full w-full items-center justify-center rounded-full text-xl font-bold uppercase">
             {user.name.charAt(0)}
           </div>
         </Button>
@@ -29,8 +29,8 @@ export function UserNav() {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{user.name}</p>
-            <p className="text-xs leading-none text-muted-foreground">
+            <p className="text-zinc-600 font-medium leading-none">{user.name}</p>
+            <p className="text-zinc-600 leading-none text-zinc-600">
               {user.email}
             </p>
           </div>

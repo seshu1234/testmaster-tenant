@@ -99,8 +99,8 @@ export default function AdminQuestionBankPage() {
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Question Bank</h2>
-          <p className="text-muted-foreground">
+          <h2 className="text-xl font-bold tracking-tight">Question Bank</h2>
+          <p className="text-zinc-600">
             Maintain the highest standards of academic integrity and quality control.
           </p>
         </div>
@@ -121,7 +121,7 @@ export default function AdminQuestionBankPage() {
         <TabsContent value="directory" className="mt-6 space-y-6">
           <div className="flex flex-wrap items-center gap-4">
             <div className="relative flex-1 min-w-[300px]">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-600" />
               <Input 
                 placeholder="Search corpus identifier or content..." 
                 className="pl-9 h-10 border-zinc-100 bg-zinc-50/50"
@@ -155,13 +155,13 @@ export default function AdminQuestionBankPage() {
             </div>
           </div>
 
-          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50 overflow-hidden">
+          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm overflow-hidden">
             <CardHeader className="bg-zinc-900 text-white py-4 flex flex-row items-center justify-between">
               <div>
-                 <CardTitle className="text-lg">Questions Repository</CardTitle>
-                 <CardDescription className="text-zinc-400">Total {filteredQuestions.length} unique questions stored.</CardDescription>
+                 <CardTitle className="text-zinc-600">Questions Repository</CardTitle>
+                 <CardDescription className="text-zinc-600">Total {filteredQuestions.length} unique questions stored.</CardDescription>
               </div>
-              <Button variant="ghost" className="text-zinc-400 hover:text-white gap-2">
+              <Button variant="ghost" className="text-zinc-600  gap-2">
                  <Copy className="h-4 w-4" />
                  Export Catalog
               </Button>
@@ -171,23 +171,23 @@ export default function AdminQuestionBankPage() {
                 <TableHeader>
                   <TableRow className="bg-zinc-50 border-none">
                     <TableHead className="w-[350px] font-bold text-[10px] uppercase tracking-wider pl-6">Question Content</TableHead>
-                    <TableHead className="font-bold text-[10px] uppercase tracking-wider text-center">Audited</TableHead>
+                    <TableHead className="font-bold text-[10px] uppercase tracking-wider text-zinc-600">Audited</TableHead>
                     <TableHead className="font-bold text-[10px] uppercase tracking-wider">Academic Head</TableHead>
                     <TableHead className="font-bold text-[10px] uppercase tracking-wider">Level</TableHead>
                     <TableHead className="font-bold text-[10px] uppercase tracking-wider">Usage</TableHead>
-                    <TableHead className="text-right pr-6 font-bold text-[10px] uppercase tracking-wider">Actions</TableHead>
+                    <TableHead className="text-zinc-600 pr-6 font-bold text-[10px] uppercase tracking-wider">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {loading ? (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center py-12 animate-pulse text-muted-foreground text-xs uppercase font-bold tracking-widest">
+                      <TableCell colSpan={6} className="text-zinc-600 py-12 animate-pulse text-zinc-600 uppercase font-bold tracking-widest">
                         Loading questions bank...
                       </TableCell>
                     </TableRow>
                   ) : filteredQuestions.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center py-12 text-muted-foreground">
+                      <TableCell colSpan={6} className="text-zinc-600 py-12 text-zinc-600">
                         No questions found matching your criteria.
                       </TableCell>
                     </TableRow>
@@ -196,46 +196,46 @@ export default function AdminQuestionBankPage() {
                       <TableRow key={q.id} className="hover:bg-zinc-50/50 border-zinc-100 group transition-colors">
                         <TableCell className="pl-6">
                           <div className="flex flex-col">
-                            <span className="font-medium text-sm line-clamp-1">{q.text}</span>
-                            <span className="text-[10px] text-muted-foreground tracking-tight">ID: {q.id.substring(0, 8)}</span>
+                            <span className="font-medium text-zinc-600 line-clamp-1">{q.text}</span>
+                            <span className="text-[10px] text-zinc-600 tracking-tight">ID: {q.id.substring(0, 8)}</span>
                           </div>
                         </TableCell>
-                        <TableCell className="text-center">
+                        <TableCell className="text-zinc-600">
                           {q.last_audited ? (
                             <div className="flex flex-col items-center">
-                               <CheckCircle2 className="h-4 w-4 text-green-500 mb-0.5" />
-                               <span className="text-[8px] text-muted-foreground uppercase">{q.last_audited}</span>
+                               <CheckCircle2 className="h-4 w-4 text-zinc-600 mb-0.5" />
+                               <span className="text-[8px] text-zinc-600 uppercase">{q.last_audited}</span>
                             </div>
                           ) : (
-                            <Button variant="ghost" size="icon" className="h-8 w-8 text-zinc-300 hover:text-amber-500">
+                            <Button variant="ghost" size="icon" className="h-8 w-8 text-zinc-600 ">
                                <Flag className="h-3 w-3" />
                             </Button>
                           )}
                         </TableCell>
-                        <TableCell className="text-xs font-semibold">{q.teacher_name}</TableCell>
+                        <TableCell className="text-zinc-600 font-semibold">{q.teacher_name}</TableCell>
                         <TableCell>
                            <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-tight ${
-                             q.difficulty === 'easy' ? 'bg-green-100/50 text-green-700' :
-                             q.difficulty === 'medium' ? 'bg-zinc-100/50 text-zinc-700' :
-                             'bg-red-100/50 text-red-700'
+                             q.difficulty === 'easy' ? 'bg-green-100/50 te' :
+                             q.difficulty === 'medium' ? 'bg-zinc-100/50 te' :
+                             'bg-red-100/50 te'
                            }`}>
                              {q.difficulty}
                            </span>
                         </TableCell>
                         <TableCell>
                            <div className="flex items-center gap-2">
-                              <span className="text-xs font-bold">{q.usage_count}x</span>
+                              <span className="text-xl font-bold">{q.usage_count}x</span>
                               <div className="h-1 w-12 bg-zinc-100 rounded-full overflow-hidden">
                                  <div className="h-full bg-primary" style={{ width: `${Math.min(q.usage_count * 5, 100)}%` }} />
                               </div>
                            </div>
                         </TableCell>
-                        <TableCell className="text-right pr-6">
+                        <TableCell className="text-zinc-600 pr-6">
                            <div className="flex justify-end gap-2">
-                              <Button variant="ghost" size="icon" className="h-8 w-8 text-zinc-400 group-hover:text-primary transition-colors">
+                              <Button variant="ghost" size="icon" className="h-8 w-8 text-zinc-600 group- transition-colors">
                                 <Eye className="h-4 w-4" />
                               </Button>
-                              <Button variant="ghost" size="icon" className="h-8 w-8 text-zinc-400 group-hover:text-zinc-600">
+                              <Button variant="ghost" size="icon" className="h-8 w-8 text-zinc-600 group-">
                                 <MoreVertical className="h-4 w-4" />
                               </Button>
                            </div>
@@ -257,7 +257,7 @@ export default function AdminQuestionBankPage() {
                  </div>
                  <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                       <Zap className="h-4 w-4 text-amber-500" />
+                       <Zap className="h-4 w-4 text-zinc-600" />
                        Duplicate Detection
                     </CardTitle>
                     <CardDescription>Identifying questions with high similarity.</CardDescription>
@@ -269,12 +269,12 @@ export default function AdminQuestionBankPage() {
                     ].map((clash, i) => (
                       <div key={i} className="p-4 rounded-xl border border-zinc-100 bg-zinc-50/50 space-y-3 group hover:border-amber-200 transition-colors">
                          <div className="flex justify-between items-center">
-                            <span className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest">Similarity Match: {clash.similarity}%</span>
-                            <Badge variant="outline" className="text-[8px] bg-amber-50 border-amber-200 text-amber-700 uppercase">Requires Merge</Badge>
+                            <span className="text-[10px] font-bold uppercase text-zinc-600 tracking-widest">Similarity Match: {clash.similarity}%</span>
+                            <Badge variant="outline" className="text-[8px] bg-amber-50 border-amber-200 text-zinc-600 uppercase">Requires Merge</Badge>
                          </div>
                          <div className="flex items-center justify-between">
-                            <div className="text-xs font-medium">Item {clash.original} <span className="text-muted-foreground mx-2">vs</span> Item {clash.clash}</div>
-                            <Button variant="outline" size="sm" className="h-7 text-[10px] font-bold uppercase tracking-widest hover:bg-zinc-900 hover:text-white border-zinc-200">Solve</Button>
+                            <div className="text-zinc-600 font-medium">Item {clash.original} <span className="text-zinc-600 mx-2">vs</span> Item {clash.clash}</div>
+                            <Button variant="outline" size="sm" className="h-7 text-[10px] font-bold uppercase tracking-widest hover:bg-zinc-900  border-zinc-200">Solve</Button>
                          </div>
                          <div className="h-1 w-full bg-zinc-100 rounded-full overflow-hidden">
                             <div className="h-full bg-amber-500" style={{ width: `${clash.similarity}%` }} />
@@ -289,7 +289,7 @@ export default function AdminQuestionBankPage() {
                     <ShieldCheck className="h-24 w-24" />
                  </div>
                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-zinc-400">
+                    <CardTitle className="flex items-center gap-2 text-xl font-bold uppercase tracking-widest text-zinc-600">
                        <GraduationCap className="h-4 w-4" />
                        Quality Distribution
                     </CardTitle>
@@ -303,8 +303,8 @@ export default function AdminQuestionBankPage() {
                        ].map((stat, i) => (
                          <div key={i} className="space-y-2">
                             <div className="flex justify-between items-end">
-                               <span className="text-xs font-bold">{stat.label}</span>
-                               <span className="text-xs font-mono">{stat.value}%</span>
+                               <span className="text-xl font-bold">{stat.label}</span>
+                               <span className="text-zinc-600 font-mono">{stat.value}%</span>
                             </div>
                             <div className="h-1.5 w-full bg-zinc-800 rounded-full overflow-hidden">
                                <div className="h-full transition-all duration-1000" style={{ width: `${stat.value}%`, backgroundColor: i === 0 ? '#22c55e' : i === 1 ? '#f59e0b' : '#ef4444' }} />
@@ -313,7 +313,7 @@ export default function AdminQuestionBankPage() {
                        ))}
                     </div>
                     <div className="bg-white/5 p-4 rounded-xl space-y-3">
-                       <CardTitle className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-zinc-500">
+                       <CardTitle className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-zinc-600">
                           <BarChart3 className="h-3 w-3" />
                           Usage Heatmap
                        </CardTitle>

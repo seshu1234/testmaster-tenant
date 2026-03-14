@@ -104,8 +104,8 @@ export function Step3Sections({ testId, onUpdate }: Step3Props) {
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex items-center justify-between">
         <div className="space-y-0.5">
-          <Label className="text-base font-semibold">Test Sections</Label>
-          <p className="text-sm text-muted-foreground">Divide your test into logical parts (e.g. Physics, Chemistry, Maths).</p>
+          <Label className="text-zinc-600 font-semibold">Test Sections</Label>
+          <p className="text-zinc-600">Divide your test into logical parts (e.g. Physics, Chemistry, Maths).</p>
         </div>
         <Button size="sm" onClick={addSection} className="gap-2">
           <Plus className="h-4 w-4" /> Add Section
@@ -114,22 +114,22 @@ export function Step3Sections({ testId, onUpdate }: Step3Props) {
 
       <div className="space-y-4">
         {loading ? (
-          <div className="p-8 text-center text-muted-foreground ">Syncing sections...</div>
+          <div className="p-8 text-zinc-600 ">Syncing sections...</div>
         ) : sections.length === 0 ? (
-          <div className="border-2 border-dashed rounded-xl p-12 text-center text-muted-foreground">
+          <div className="border-2 border-dashed rounded-xl p-12 text-zinc-600">
             No sections defined yet. Every test needs at least one section.
           </div>
         ) : (
           sections.map((section) => (
             <div 
                 key={section.id} 
-                className="group flex flex-col md:flex-row items-start md:items-center gap-4 p-4 rounded-xl border bg-zinc-50 dark:bg-zinc-900/50 hover:border-primary/50 transition-all"
+                className="group flex flex-col md:flex-row items-start md:items-center gap-4 p-4 rounded-xl border bg-zinc-50 hover:border-primary/50 transition-all"
             >
               <div className="flex items-center gap-3 flex-1 w-full">
-                <GripVertical className="h-5 w-5 text-zinc-400 cursor-grab" />
+                <GripVertical className="h-5 w-5 text-zinc-600 cursor-grab" />
                 <div className="space-y-1 flex-1">
                    <Input 
-                      className="h-9 font-medium bg-transparent border-none focus-visible:ring-1 focus-visible:ring-primary/20 p-0 shadow-none text-base"
+                      className="h-9 font-medium bg-transparent border-none focus-visible:ring-1 focus-visible:ring-primary/20 p-0 shadow-none text-zinc-600"
                       value={section.name}
                       onBlur={(e: React.FocusEvent<HTMLInputElement>) => updateSection(section.id, { name: e.target.value })}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSections(sections.map(s => s.id === section.id ? { ...s, name: e.target.value } : s))}
@@ -139,7 +139,7 @@ export function Step3Sections({ testId, onUpdate }: Step3Props) {
               
               <div className="flex items-center gap-4 w-full md:w-auto">
                 <div className="flex flex-col gap-1.5 min-w-[120px]">
-                  <Label className="text-[10px] uppercase tracking-wider text-muted-foreground">Timer (mins)</Label>
+                  <Label className="text-[10px] uppercase tracking-wider text-zinc-600">Timer (mins)</Label>
                   <Input 
                     type="number"
                     placeholder="Unlimited"
@@ -153,7 +153,7 @@ export function Step3Sections({ testId, onUpdate }: Step3Props) {
                 <Button 
                     variant="ghost" 
                     size="icon" 
-                    className="mt-4 text-zinc-400 hover:text-destructive transition-colors"
+                    className="mt-4 text-zinc-600  transition-colors"
                     onClick={() => removeSection(section.id)}
                 >
                   <Trash2 className="h-4 w-4" />

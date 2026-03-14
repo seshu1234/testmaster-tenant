@@ -16,6 +16,17 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { 
+  User, 
+  Mail, 
+  Phone, 
+  BookOpen, 
+  Key, 
+  Activity,
+  Plus,
+  Save,
+  X 
+} from "lucide-react";
 import {
   Form,
   FormControl,
@@ -26,10 +37,19 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
+  phone: z.string().optional().or(z.literal("")),
+  subjects: z.string().optional().or(z.literal("")),
   password: z.string().min(8, "Password must be at least 8 characters").optional().or(z.literal("")),
   status: z.enum(["active", "inactive", "suspended"]).optional(),
 });
@@ -43,6 +63,8 @@ interface TeacherFormProps {
     id: string;
     name: string;
     email: string;
+    phone?: string;
+    subjects?: string[];
     status?: string | null;
   };
   onSuccess: () => void;
@@ -59,6 +81,8 @@ export function TeacherForm({ open, onOpenChange, teacher, onSuccess }: TeacherF
     defaultValues: {
       name: "",
       email: "",
+      phone: "",
+      subjects: "",
       password: "",
       status: "active",
     },
@@ -71,13 +95,17 @@ export function TeacherForm({ open, onOpenChange, teacher, onSuccess }: TeacherF
         form.reset({
           name: teacher.name,
           email: teacher.email,
-          password: "", // Don't show password when editing
+          phone: teacher.phone || "",
+          subjects: teacher.subjects?.join(", ") || "",
+          password: "", 
           status: (teacher.status as "active" | "inactive" | "suspended") || "active",
         });
       } else {
         form.reset({
           name: "",
           email: "",
+          phone: "",
+          subjects: "",
           password: "",
           status: "active",
         });
@@ -91,11 +119,21 @@ export function TeacherForm({ open, onOpenChange, teacher, onSuccess }: TeacherF
     try {
       setIsSubmitting(true);
       
-      // If editing, we shouldn't send empty password, so we build the payload
-      const payload: Record<string, string | undefined> = {
+      const payload: {
+        name: string;
+        email: string;
+        phone?: string;
+        status?: string;
+        subjects: string[];
+        password?: string;
+      } = {
         name: values.name,
         email: values.email,
+        phone: values.phone || undefined,
         status: values.status,
+        subjects: values.subjects 
+          ? values.subjects.split(",").map(s => s.trim()).filter(Boolean)
+          : ["General"],
       };
 
       if (values.password) {
@@ -130,102 +168,199 @@ export function TeacherForm({ open, onOpenChange, teacher, onSuccess }: TeacherF
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>{isEditing ? "Edit Teacher" : "Add New Teacher"}</DialogTitle>
-          <DialogDescription>
-            {isEditing 
-              ? "Update the details for this educator." 
-              : "Create a new teacher account. They will use these credentials to log in."}
-          </DialogDescription>
-        </DialogHeader>
-
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Full Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="John Doe" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email Address</FormLabel>
-                  <FormControl>
-                    <Input placeholder="john@example.com" type="email" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{isEditing ? "New Password (Optional)" : "Password"}</FormLabel>
-                  <FormControl>
-                    <Input 
-                      placeholder={isEditing ? "Leave blank to keep current" : "Minimum 8 characters"} 
-                      type="password" 
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {isEditing && (
-              <FormField
-                control={form.control}
-                name="status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Status</FormLabel>
-                    <FormControl>
-                      <select 
-                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                        {...field}
-                      >
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                        <option value="suspended">Suspended</option>
-                      </select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
-
-            <div className="flex justify-end pt-4 space-x-2">
-              <Button 
-                type="button" 
-                variant="outline" 
-                onClick={() => onOpenChange(false)}
-                disabled={isSubmitting}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Saving..." : isEditing ? "Save Changes" : "Create Teacher"}
-              </Button>
+      <DialogContent className="sm:max-w-[500px] bg-white border-zinc-200 p-0 overflow-hidden shadow-2xl">
+        <div className="p-6 border-b border-zinc-100 bg-zinc-50/50">
+          <DialogHeader>
+            <div className="flex items-center gap-2 mb-1">
+              <div className="p-2 rounded-md bg-zinc-900 text-white">
+                {isEditing ? <Save className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+              </div>
+              <DialogTitle className="text-xl font-bold">{isEditing ? "Edit Teacher Profile" : "Register New Teacher"}</DialogTitle>
             </div>
-          </form>
-        </Form>
+            <DialogDescription>
+              {isEditing 
+                ? "Update teacher contact details and subject specializations." 
+                : "Enter teacher details to grant them access to the platform."}
+            </DialogDescription>
+          </DialogHeader>
+        </div>
+
+        <div className="p-6">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex items-center gap-2 text-zinc-600 font-semibold text-zinc-600 uppercase tracking-wider">
+                        <User className="h-3 w-3" /> Full Name
+                      </FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="Seshu Budda" 
+                          {...field} 
+                          autoComplete="off"
+                          className="h-10 bg-white border-zinc-200 focus:ring-2 focus:ring-zinc-900 transition-all" 
+                        />
+                      </FormControl>
+                      <FormMessage className="text-[10px]" />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex items-center gap-2 text-zinc-600 font-semibold text-zinc-600 uppercase tracking-wider">
+                        <Mail className="h-3 w-3" /> Email Address
+                      </FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="teacher@demo.com" 
+                          type="email" 
+                          {...field} 
+                          autoComplete="off"
+                          className="h-10 bg-white border-zinc-200 focus:ring-2 focus:ring-zinc-900 transition-all" 
+                        />
+                      </FormControl>
+                      <FormMessage className="text-[10px]" />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex items-center gap-2 text-zinc-600 font-semibold text-zinc-600 uppercase tracking-wider">
+                        <Phone className="h-3 w-3" /> Phone Number
+                      </FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="+91..." 
+                          {...field} 
+                          autoComplete="off"
+                          className="h-10 bg-white border-zinc-200 focus:ring-2 focus:ring-zinc-900 transition-all" 
+                        />
+                      </FormControl>
+                      <FormMessage className="text-[10px]" />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="subjects"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex items-center gap-2 text-zinc-600 font-semibold text-zinc-600 uppercase tracking-wider">
+                        <BookOpen className="h-3 w-3" /> Subjects
+                      </FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="Maths, Physics..." 
+                          {...field} 
+                          autoComplete="off"
+                          className="h-10 bg-white border-zinc-200 focus:ring-2 focus:ring-zinc-900 transition-all" 
+                        />
+                      </FormControl>
+                      <FormMessage className="text-[10px]" />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="pt-4 border-t border-zinc-100 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="flex items-center gap-2 text-zinc-600 font-semibold text-zinc-600 uppercase tracking-wider">
+                          <Key className="h-3 w-3" /> {isEditing ? "New Password" : "Password"}
+                        </FormLabel>
+                        <FormControl>
+                          <Input 
+                            placeholder={isEditing ? "Keep blank to unchanged" : "Min 8 characters"} 
+                            type="password" 
+                            {...field} 
+                            autoComplete="off"
+                            className="h-10 bg-white border-zinc-200 focus:ring-2 focus:ring-zinc-900 transition-all"
+                          />
+                        </FormControl>
+                        <FormMessage className="text-[10px]" />
+                      </FormItem>
+                    )}
+                  />
+
+                  {isEditing && (
+                    <FormField
+                      control={form.control}
+                      name="status"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center gap-2 text-zinc-600 font-semibold text-zinc-600 uppercase tracking-wider">
+                            <Activity className="h-3 w-3" /> Access Status
+                          </FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger className="h-10 bg-white border-zinc-200">
+                                <SelectValue placeholder="Select status" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent className="bg-white border-zinc-200">
+                              <SelectItem value="active" className="text-zinc-600 font-medium">Active</SelectItem>
+                              <SelectItem value="inactive" className="text-zinc-600 font-medium">Inactive</SelectItem>
+                              <SelectItem value="suspended" className="text-zinc-600 font-medium">Suspended</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage className="text-[10px]" />
+                        </FormItem>
+                      )}
+                    />
+                  )}
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-3 pt-4">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => onOpenChange(false)}
+                  disabled={isSubmitting}
+                  className="px-6 h-10 font-bold text-zinc-600 uppercase tracking-widest hover:bg-zinc-50 border-zinc-200"
+                >
+                  <X className="mr-2 h-3.5 w-3.5" /> Cancel
+                </Button>
+                <Button 
+                  type="submit" 
+                  disabled={isSubmitting}
+                  className="px-8 h-10 font-bold text-zinc-600 uppercase tracking-widest bg-zinc-900 text-white hover:opacity-90 active:scale-95 transition-all shadow-lg"
+                >
+                  {isSubmitting ? (
+                    <div className="flex items-center gap-2">
+                      <div className="h-3 w-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      Saving...
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                       {isEditing ? <Save className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
+                       {isEditing ? "Save Changes" : "Create Teacher"}
+                    </div>
+                  )}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </div>
       </DialogContent>
     </Dialog>
   );

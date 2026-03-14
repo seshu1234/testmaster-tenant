@@ -71,7 +71,7 @@ export default function AdminBrandingPage() {
         body: JSON.stringify(config),
       });
       if (response.success) {
-        alert("Branding settings saved successfully! Changes apply within 1 minute.");
+        alert("Branding settings saved successfully! Changes apply within minute.");
       }
     } catch (err) {
       console.error("Failed to save branding:", err);
@@ -101,7 +101,7 @@ export default function AdminBrandingPage() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <Loader2 className="h-8 w-8 animate-spin text-zinc-600" />
       </div>
     );
   }
@@ -109,8 +109,8 @@ export default function AdminBrandingPage() {
   return (
     <div className="max-w-4xl mx-auto space-y-6 animate-in slide-in-from-bottom-4 duration-500 pb-20">
       <div className="space-y-1">
-        <h1 className="text-3xl font-bold tracking-tight">Theme & Branding</h1>
-        <p className="text-muted-foreground">Customize the look and feel of your platform for your users.</p>
+        <h1 className="text-xl font-bold tracking-tight">Theme & Branding</h1>
+        <p className="text-zinc-600">Customize the look and feel of your platform for your users.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -119,7 +119,7 @@ export default function AdminBrandingPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Palette className="h-5 w-5 text-primary" />
+                <Palette className="h-5 w-5 text-zinc-600" />
                 Color Palette
               </CardTitle>
               <CardDescription>Select the core colors that define your brand identity.</CardDescription>
@@ -181,7 +181,7 @@ export default function AdminBrandingPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <ImageIcon className="h-5 w-5 text-primary" />
+                <ImageIcon className="h-5 w-5 text-zinc-600" />
                 Imagery & Assets
               </CardTitle>
               <CardDescription>Upload your logo to appear on the sidebar and login screens.</CardDescription>
@@ -190,16 +190,16 @@ export default function AdminBrandingPage() {
               <div className="space-y-4">
                 <Label>Brand Logo</Label>
                 <div className="flex items-center gap-6">
-                  <div className="h-24 w-24 rounded-xl border-2 border-dashed flex items-center justify-center bg-zinc-50 dark:bg-zinc-900 overflow-hidden relative">
+                  <div className="h-24 w-24 rounded-xl border-2 border-dashed flex items-center justify-center bg-zinc-50 overflow-hidden relative">
                     {config.logo_url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
+                      // eslint-disable-ne @next/next/no-img-element
                       <img src={config.logo_url} alt="Logo" className="object-contain h-full w-full p-2" />
                     ) : (
-                      <ImageIcon className="h-8 w-8 text-zinc-300" />
+                      <ImageIcon className="h-8 w-8 text-zinc-600" />
                     )}
                     {uploadingLogo && (
                       <div className="absolute inset-0 bg-white/50 backdrop-blur-sm flex items-center justify-center">
-                        <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                        <Loader2 className="h-6 w-6 animate-spin text-zinc-600" />
                       </div>
                     )}
                   </div>
@@ -210,7 +210,7 @@ export default function AdminBrandingPage() {
                       onChange={handleLogoUpload}
                       disabled={uploadingLogo}
                     />
-                    <p className="text-xs text-muted-foreground">Supported formats: PNG, JPG, SVG. Max size: 2MB.</p>
+                    <p className="text-zinc-600">Supported formats: PNG, JPG, SVG. Max size: 2MB.</p>
                   </div>
                 </div>
               </div>
@@ -224,8 +224,8 @@ export default function AdminBrandingPage() {
             <CardContent className="space-y-6">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label className="text-base font-medium">Hide &quot;Powered by TestMaster&quot;</Label>
-                  <p className="text-sm text-muted-foreground">Remove the watermarks (Requires Premium plan).</p>
+                  <Label className="text-zinc-600 font-medium">Hide &quot;Powered by TestMaster&quot;</Label>
+                  <p className="text-zinc-600">Remove the watermarks (Requires Premium plan).</p>
                 </div>
                 <Switch 
                   checked={config.hide_powered_by}
@@ -233,8 +233,8 @@ export default function AdminBrandingPage() {
                 />
               </div>
             </CardContent>
-            <CardFooter className="bg-zinc-50 dark:bg-zinc-900/50 mt-4 py-4 px-6 border-t flex justify-between">
-               <p className="text-sm text-muted-foreground">Don&apos;t forget to save your changes.</p>
+            <CardFooter className="bg-zinc-50 mt-4 py-4 px-6 border-t flex justify-between">
+               <p className="text-zinc-600">Don&apos;t forget to save your changes.</p>
                <Button onClick={handleSave} disabled={saving} className="gap-2">
                  {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
                  Save Preferences
@@ -259,7 +259,7 @@ export default function AdminBrandingPage() {
               >
                  <div className="h-8 w-24 bg-white/20 rounded flex items-center px-2">
                     {config.logo_url && (
-                        // eslint-disable-next-line @next/next/no-img-element
+                        // eslint-disable-ne @next/next/no-img-element
                         <img src={config.logo_url} className="max-h-6 object-contain filter brightness-0 invert" alt="logo" />
                     )}
                  </div>
@@ -268,7 +268,7 @@ export default function AdminBrandingPage() {
               
               {/* Body chunk */}
               <div className="p-4 flex-1 space-y-4">
-                <div className="h-6 w-3/4 rounded bg-zinc-900/10 dark:bg-white/10" />
+                <div className="h-6 w-3/4 rounded bg-zinc-900/10" />
                 <div className="h-32 w-full rounded-xl bg-white shadow-sm flex flex-col justify-between p-3 border border-zinc-200/50">
                     <div className="h-4 w-1/2 rounded bg-zinc-100" />
                     <div className="flex gap-2 self-end">
@@ -282,7 +282,7 @@ export default function AdminBrandingPage() {
               </div>
             </div>
             
-            <p className="text-xs text-center text-muted-foreground mt-2 px-4">
+            <p className="text-zinc-600 mt-2 px-4">
               This is an approximation. Actual components will use these colors as foundational variables.
             </p>
           </div>

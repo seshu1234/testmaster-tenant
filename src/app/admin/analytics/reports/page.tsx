@@ -62,17 +62,17 @@ export default function ReportBuilderPage() {
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Advanced Analytics & Reports</h2>
-          <p className="text-muted-foreground">
+          <h2 className="text-xl font-bold tracking-tight">Advanced Analytics & Reports</h2>
+          <p className="text-zinc-600">
             Generate deep-dive academic reports and data exports for institutional analysis.
           </p>
         </div>
       </div>
 
-      <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+      <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Filter className="h-5 w-5 text-primary" />
+            <Filter className="h-5 w-5 text-zinc-600" />
             Report Configuration
           </CardTitle>
           <CardDescription>
@@ -82,7 +82,7 @@ export default function ReportBuilderPage() {
         <CardContent>
           <div className="grid gap-6 md:grid-cols-4">
              <div className="space-y-2">
-               <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Academic Batch</label>
+               <label className="text-xl font-bold uppercase tracking-wider text-zinc-600">Academic Batch</label>
                <Select defaultValue="all">
                  <SelectTrigger>
                    <SelectValue placeholder="Select Batch" />
@@ -95,7 +95,7 @@ export default function ReportBuilderPage() {
                </Select>
              </div>
              <div className="space-y-2">
-               <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Test Category</label>
+               <label className="text-xl font-bold uppercase tracking-wider text-zinc-600">Test Category</label>
                <Select defaultValue="all">
                  <SelectTrigger>
                    <SelectValue placeholder="Select Category" />
@@ -108,7 +108,7 @@ export default function ReportBuilderPage() {
                </Select>
              </div>
              <div className="space-y-2">
-               <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Time Period</label>
+               <label className="text-xl font-bold uppercase tracking-wider text-zinc-600">Time Period</label>
                <Select defaultValue="30d">
                  <SelectTrigger>
                    <SelectValue placeholder="Select period" />
@@ -131,7 +131,7 @@ export default function ReportBuilderPage() {
       </Card>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+        <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm">
           <CardHeader>
             <CardTitle>Batch Performance Comparison</CardTitle>
             <CardDescription>Average scores vs institutional targets.</CardDescription>
@@ -143,7 +143,7 @@ export default function ReportBuilderPage() {
                 <XAxis dataKey="name" fontSize={10} axisLine={false} tickLine={false} />
                 <YAxis fontSize={10} axisLine={false} tickLine={false} domain={[0, 100]} />
                 <Tooltip 
-                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px2px rgba(0,0,0,0.1)' }}
                   cursor={{ fill: 'rgba(0,0,0,0.02)' }}
                 />
                 <Bar dataKey="avg" fill="#000" radius={[4, 4, 0, 0]} name="Avg Score" />
@@ -153,7 +153,7 @@ export default function ReportBuilderPage() {
           </CardContent>
         </Card>
 
-        <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+        <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm">
           <CardHeader>
             <CardTitle>Activity Trend</CardTitle>
             <CardDescription>Total test attempts per month.</CardDescription>
@@ -165,7 +165,7 @@ export default function ReportBuilderPage() {
                 <XAxis dataKey="month" fontSize={10} axisLine={false} tickLine={false} />
                 <YAxis fontSize={10} axisLine={false} tickLine={false} />
                 <Tooltip 
-                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px2px rgba(0,0,0,0.1)' }}
                 />
                 <Line 
                   type="monotone" 
@@ -184,25 +184,25 @@ export default function ReportBuilderPage() {
       <div className="flex flex-wrap gap-4">
         <Button 
           variant="outline" 
-          className="gap-2 bg-white dark:bg-zinc-900" 
+          className="gap-2 bg-white" 
           onClick={() => handleExport("Excel")}
           disabled={loading}
         >
-          <FileSpreadsheet className="h-4 w-4 text-green-600" />
+          <FileSpreadsheet className="h-4 w-4 text-zinc-600" />
           Export to CSV
         </Button>
         <Button 
           variant="outline" 
-          className="gap-2 bg-white dark:bg-zinc-900" 
+          className="gap-2 bg-white" 
           onClick={() => handleExport("PDF")}
           disabled={loading}
         >
-          <FileText className="h-4 w-4 text-red-600" />
+          <FileText className="h-4 w-4 text-zinc-600" />
           Export as PDF
         </Button>
         <Button 
           variant="outline" 
-          className="gap-2 bg-white dark:bg-zinc-900" 
+          className="gap-2 bg-white" 
           onClick={() => handleExport("Print")}
           disabled={loading}
         >

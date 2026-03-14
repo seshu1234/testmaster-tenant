@@ -77,7 +77,7 @@ export function AiExplainDialog({ open, onOpenChange, questionId, questionTitle,
       <DialogContent className="sm:max-w-[600px] max-h-[80vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-purple-500" />
+            <Sparkles className="h-5 w-5 text-zinc-600" />
             AI Explanation Generator
           </DialogTitle>
           <DialogDescription>
@@ -87,13 +87,13 @@ export function AiExplainDialog({ open, onOpenChange, questionId, questionTitle,
 
         <div className="flex-1 overflow-y-auto py-4">
           {!explanation && !loading ? (
-            <div className="flex flex-col items-center justify-center py-12 text-center space-y-4">
-              <div className="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-full">
-                <FileText className="h-8 w-8 text-purple-500" />
+            <div className="flex flex-col items-center justify-center py-12 text-zinc-600 space-y-4">
+              <div className="bg-purple-5020 p-4 rounded-full">
+                <FileText className="h-8 w-8 text-zinc-600" />
               </div>
               <div className="max-w-xs">
-                <p className="text-sm font-medium">No explanation generated yet.</p>
-                <p className="text-xs text-muted-foreground mt-1">Our AI will analyze the question and create a structured solution with LaTeX support.</p>
+                <p className="text-zinc-600 font-medium">No explanation generated yet.</p>
+                <p className="text-zinc-600 mt-1">Our AI will analyze the question and create a structured solution with LaTeX support.</p>
               </div>
               <Button onClick={handleGenerate} className="gap-2 bg-purple-600 hover:bg-purple-700">
                 <Sparkles className="h-4 w-4" />
@@ -102,12 +102,12 @@ export function AiExplainDialog({ open, onOpenChange, questionId, questionTitle,
             </div>
           ) : loading ? (
             <div className="flex flex-col items-center justify-center py-20 gap-3">
-              <Loader2 className="h-8 w-8 animate-spin text-purple-500" />
-              <p className="text-sm text-muted-foreground">AI is thinking...</p>
+              <Loader2 className="h-8 w-8 animate-spin text-zinc-600" />
+              <p className="text-zinc-600">AI is thinking...</p>
             </div>
           ) : (
-            <div className="prose prose-sm dark:prose-invert max-w-none">
-                <div className="bg-zinc-50 dark:bg-zinc-900/50 p-4 rounded-lg border">
+            <div className="prose prose-sm max-w-none">
+                <div className="bg-zinc-50 p-4 rounded-lg border">
                   {explanation.split('\n').map((line, i) => {
                     // Primitive LaTeX detection for preview
                     if (line.includes('$$')) {

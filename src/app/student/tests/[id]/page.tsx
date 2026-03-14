@@ -76,14 +76,14 @@ export default function TestInstructionsPage() {
     }
   };
 
-  if (isLoading) return <div className="p-8 text-center animate-pulse">Preparing your assessment...</div>;
+  if (isLoading) return <div className="p-8 text-zinc-600 animate-pulse">Preparing your assessment...</div>;
 
   if (!test) {
     return (
       <Card className="max-w-md mx-auto mt-10">
-        <CardHeader className="text-center">
+        <CardHeader className="text-zinc-600">
             <div className="mx-auto w-12 h-12 rounded-full bg-destructive/10 flex items-center justify-center mb-4">
-               <AlertCircle className="h-6 w-6 text-destructive" />
+               <AlertCircle className="h-6 w-6 text-zinc-600" />
             </div>
             <CardTitle>Assessment Not Found</CardTitle>
             <CardDescription>The test you&apos;re looking for doesn&apos;t exist or is not available.</CardDescription>
@@ -100,14 +100,14 @@ export default function TestInstructionsPage() {
       <div className="flex flex-col md:flex-row gap-8">
         <div className="flex-1 space-y-6">
            <div className="space-y-2">
-              <Badge className="bg-primary/10 text-primary border-none mb-2">{test.subject || "Academic Assessment"}</Badge>
-              <h1 className="text-4xl font-extrabold tracking-tight">{test.title}</h1>
-              <p className="text-muted-foreground text-lg leading-relaxed">{test.description}</p>
+              <Badge className="bg-primary/10 text-zinc-600 border-none mb-2">{test.subject || "Academic Assessment"}</Badge>
+              <h1 className="text-zinc-600 font-extrabold tracking-tight">{test.title}</h1>
+              <p className="text-zinc-600 leading-relaxed">{test.description}</p>
            </div>
 
            <div className="space-y-4">
               <h3 className="text-xl font-bold flex items-center gap-2">
-                <Info className="h-5 w-5 text-primary" />
+                <Info className="h-5 w-5 text-zinc-600" />
                 Special Instructions
               </h3>
               <div className="grid gap-3">
@@ -118,8 +118,8 @@ export default function TestInstructionsPage() {
                    "Ensure a stable internet connection for submission.",
                    "Result will be available after the teacher publishes it."
                  ].map((instr, i) => (
-                   <div key={i} className="flex gap-3 text-sm p-4 rounded-xl border bg-white dark:bg-zinc-900/50 shadow-sm border-dashed">
-                      <ShieldCheck className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                   <div key={i} className="flex gap-3 text-zinc-600 p-4 rounded-xl border bg-white shadow-sm border-dashed">
+                      <ShieldCheck className="h-4 w-4 text-zinc-600 shrink-0 mt-0.5" />
                       <span>{instr}</span>
                    </div>
                  ))}
@@ -128,53 +128,53 @@ export default function TestInstructionsPage() {
         </div>
 
         <div className="w-full md:w-80 space-y-6">
-           <Card className="border shadow-md rounded-2xl bg-primary text-primary-foreground overflow-hidden">
+           <Card className="border shadow-md rounded-2xl bg-primary text-white overflow-hidden">
               <CardHeader>
-                 <CardTitle className="text-lg">Assessment Summary</CardTitle>
+                 <CardTitle className="text-zinc-600">Assessment Summary</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                  <div className="flex items-center justify-between border-b border-white/20 pb-4">
                     <div className="flex items-center gap-2 opacity-80">
                        <Clock className="h-4 w-4" />
-                       <span className="text-sm">Time Limit</span>
+                       <span className="text-zinc-600">Time Limit</span>
                     </div>
                     <span className="font-bold">{Math.round(test.duration_seconds / 60)} Mins</span>
                  </div>
                  <div className="flex items-center justify-between border-b border-white/20 pb-4">
                     <div className="flex items-center gap-2 opacity-80">
                        <BookOpen className="h-4 w-4" />
-                       <span className="text-sm">Total Questions</span>
+                       <span className="text-zinc-600">Total Questions</span>
                     </div>
                     <span className="font-bold">{test.questions_count || "Evaluated"}</span>
                  </div>
                  <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 opacity-80">
                        <Info className="h-4 w-4" />
-                       <span className="text-sm">Pass Mark</span>
+                       <span className="text-zinc-600">Pass Mark</span>
                     </div>
                     <span className="font-bold">{test.settings?.passing_percentage || 33}%</span>
                  </div>
               </CardContent>
               <CardFooter className="bg-black/10 flex flex-col pt-6 gap-4">
                  {error && (
-                   <div className="p-3 rounded-lg bg-destructive text-destructive-foreground text-[10px] w-full animate-shake">
+                   <div className="p-3 rounded-lg bg-destructive text-zinc-600 text-[10px] w-full animate-shake">
                      {error}
                    </div>
                  )}
                  <Button 
-                    className="w-full bg-white text-primary hover:bg-zinc-100 font-bold h-12 rounded-xl"
+                    className="w-full bg-white text-zinc-600 hover:bg-zinc-100 font-bold h-12 rounded-xl"
                     onClick={handleStartTest}
                     disabled={isStarting}
                  >
                     {isStarting ? "Processing..." : "Take Test Now"}
                  </Button>
-                  <p className="text-[10px] text-center text-primary-foreground/60">By clicking Start, you agree to the conditions.</p>
+                  <p className="text-[10px] text-zinc-600 te/60">By clicking Start, you agree to the conditions.</p>
               </CardFooter>
            </Card>
 
-           <div className="p-4 rounded-xl border border-amber-500/20 bg-amber-500/5 flex gap-3 text-amber-600">
+           <div className="p-4 rounded-xl border border-amber-500/20 bg-amber-500/5 flex gap-3 text-zinc-600">
               <Warning className="h-4 w-4 shrink-0 mt-1" />
-              <p className="text-xs leading-relaxed font-medium">Please ensure your camera or screen share is enabled if requested by the instructor.</p>
+              <p className="text-zinc-600 leading-relaxed font-medium">Please ensure your camera or screen share is enabled if requested by the instructor.</p>
            </div>
         </div>
       </div>

@@ -136,8 +136,8 @@ export default function StudentsPage() {
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Student Directory</h2>
-          <p className="text-muted-foreground text-sm">
+          <h2 className="text-xl font-bold tracking-tight">Student Directory</h2>
+          <p className="text-zinc-600">
             Total {students.length} students enrolled in your center.
           </p>
         </div>
@@ -160,7 +160,7 @@ export default function StudentsPage() {
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-4 flex-1">
           <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-600" />
             <Input 
               placeholder="Search name, email, or batch..." 
               className="pl-9 h-10 border-zinc-200"
@@ -176,10 +176,10 @@ export default function StudentsPage() {
 
         {selectedIds.length > 0 && (
           <div className="flex items-center gap-2 animate-in slide-in-from-right-4">
-            <span className="text-xs font-bold text-primary">{selectedIds.length} Selected</span>
+            <span className="text-xl font-bold text-zinc-600">{selectedIds.length} Selected</span>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="secondary" className="gap-2 h-10 bg-primary/10 text-primary hover:bg-primary/20 border-none px-4">
+                <Button variant="secondary" className="gap-2 h-10 bg-primary/10 text-zinc-600 hover:bg-primary/20 border-none px-4">
                   Bulk Operations
                   <MoreHorizontal className="h-4 w-4" />
                 </Button>
@@ -197,7 +197,7 @@ export default function StudentsPage() {
                    Suspend Accounts
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => handleBulkAction("Delete")} className="text-red-600">
+                <DropdownMenuItem onClick={() => handleBulkAction("Delete")} className="text-zinc-600">
                    Delete Selected
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -206,10 +206,10 @@ export default function StudentsPage() {
         )}
       </div>
 
-      <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+      <Card className="border shadow-sm bg-white/50 backdrop-blur-sm">
         <CardHeader>
-          <CardTitle className="text-lg">Students</CardTitle>
-          <CardDescription className="text-xs">
+          <CardTitle className="text-zinc-600">Students</CardTitle>
+          <CardDescription className="text-zinc-600">
             Manage your learners, batch assignments, and academic status.
           </CardDescription>
         </CardHeader>
@@ -227,19 +227,19 @@ export default function StudentsPage() {
                 <TableHead className="font-bold text-[10px] uppercase tracking-wider">Batch</TableHead>
                 <TableHead className="font-bold text-[10px] uppercase tracking-wider">Status</TableHead>
                 <TableHead className="font-bold text-[10px] uppercase tracking-wider">Joined</TableHead>
-                <TableHead className="text-right pr-6 font-bold text-[10px] uppercase tracking-wider">Actions</TableHead>
+                <TableHead className="text-zinc-600 pr-6 font-bold text-[10px] uppercase tracking-wider">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-12 text-muted-foreground animate-pulse text-xs uppercase font-bold tracking-widest">
+                  <TableCell colSpan={6} className="text-zinc-600 py-12 text-zinc-600 animate-pulse text-zinc-600 uppercase font-bold tracking-widest">
                     Loading student records...
                   </TableCell>
                 </TableRow>
               ) : filteredStudents.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-12 text-muted-foreground">
+                  <TableCell colSpan={6} className="text-zinc-600 py-12 text-zinc-600">
                     No students matching your search criteria.
                   </TableCell>
                 </TableRow>
@@ -254,33 +254,33 @@ export default function StudentsPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-col">
-                        <span className="font-bold text-sm">{student.name}</span>
-                        <span className="text-[10px] text-muted-foreground">{student.email}</span>
+                        <span className="font-bold text-zinc-600">{student.name}</span>
+                        <span className="text-[10px] text-zinc-600">{student.email}</span>
                       </div>
                     </TableCell>
                     <TableCell>
-                      <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tight bg-primary/10 text-primary">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tight bg-primary/10 text-zinc-600">
                         {student.batch || "Unassigned"}
                       </span>
                     </TableCell>
                     <TableCell>
                       <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-tight ${
-                        student.status === 'active' ? 'bg-green-100 text-green-700' : 
-                        student.status === 'suspended' ? 'bg-red-100 text-red-700' : 
-                        'bg-zinc-100 text-zinc-700'
+                        student.status === 'active' ? 'bg-green-100 te' : 
+                        student.status === 'suspended' ? 'bg-red-100 te' : 
+                        'bg-zinc-100 te'
                       }`}>
                         {student.status || 'active'}
                       </span>
                     </TableCell>
-                    <TableCell className="text-[10px] font-medium text-muted-foreground">
+                    <TableCell className="text-[10px] font-medium text-zinc-600">
                       {new Date(student.created_at).toLocaleDateString()}
                     </TableCell>
-                    <TableCell className="text-right pr-6">
+                    <TableCell className="text-zinc-600 pr-6">
                       <div className="flex justify-end gap-1">
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-zinc-400 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => handleEdit(student)}>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-zinc-600 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => handleEdit(student)}>
                           <Pencil className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-zinc-400 opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-500 hover:bg-red-50" onClick={() => handleDelete(student)}>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-zinc-600 opacity-0 group-hover:opacity-100 transition-opacity  hover:bg-red-50" onClick={() => handleDelete(student)}>
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>

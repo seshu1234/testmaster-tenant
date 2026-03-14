@@ -17,7 +17,7 @@ import { ArrowLeft, Save, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/hooks/use-auth";
 import { api } from "@/lib/api";
-import { RichTextEditor } from "@/components/ui/rich-text-editor";
+import { RichTextEditor } from "@/components/ui/rich-te";
 
 export default function CreateQuestionPage() {
   const router = useRouter();
@@ -163,11 +163,11 @@ export default function CreateQuestionPage() {
             <ArrowLeft className="h-4 w-4" />
           </Button>
         </Link>
-        <h1 className="text-3xl font-bold tracking-tight">Create Question</h1>
+        <h1 className="text-xl font-bold tracking-tight">Create Question</h1>
       </div>
 
       {validationErrors.length > 0 && (
-        <div className="bg-destructive/10 border border-destructive/20 p-4 rounded-xl text-destructive text-sm space-y-1 animate-in fade-in duration-300">
+        <div className="bg-destructive/10 border border-destructive/20 p-4 rounded-xl text-zinc-600 space-y-1 animate-in fade-in duration-300">
            <p className="font-bold">Please fix the following errors:</p>
            <ul className="list-disc pl-5">
               {validationErrors.map((err, i) => <li key={i}>{err}</li>)}
@@ -177,9 +177,9 @@ export default function CreateQuestionPage() {
 
       <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-6 pb-12">
         <div className="md:col-span-2 space-y-6">
-          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm">
             <CardHeader>
-              <CardTitle className="text-lg">Question Content</CardTitle>
+              <CardTitle className="text-zinc-600">Question Content</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -202,9 +202,9 @@ export default function CreateQuestionPage() {
             </CardContent>
           </Card>
 
-          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-lg">
+              <CardTitle className="text-zinc-600">
                 {type === "match" ? "Match Pairs" : "Options & Answer"}
               </CardTitle>
               {(type === "mcq_single" || type === "mcq_multiple" || type === "match") && (
@@ -218,13 +218,13 @@ export default function CreateQuestionPage() {
                 <div className="space-y-3">
                    {matchPairs.map((pair, idx) => (
                       <div key={pair.id} className="flex gap-2 items-center">
-                         <span className="text-xs font-bold text-zinc-400 w-4">{idx + 1}.</span>
+                         <span className="text-xl font-bold text-zinc-600 w-4">{idx + 1}.</span>
                          <Input placeholder="Left Item" value={pair.left} onChange={(e) => handleMatchChange(pair.id, 'left', e.target.value)} />
-                         <span className="text-zinc-400">↔</span>
+                         <span className="text-zinc-600">↔</span>
                          <Input placeholder="Right Item" value={pair.right} onChange={(e) => handleMatchChange(pair.id, 'right', e.target.value)} />
                          {matchPairs.length > 2 && (
                             <Button type="button" variant="ghost" size="icon" onClick={() => removeMatchPair(pair.id)}>
-                               <Trash2 className="h-4 w-4 text-destructive" />
+                               <Trash2 className="h-4 w-4 text-zinc-600" />
                             </Button>
                          )}
                       </div>
@@ -238,14 +238,14 @@ export default function CreateQuestionPage() {
                     value={shortAnswer}
                     onChange={(e) => setShortAnswer(e.target.value)}
                    />
-                   <p className="text-[10px] text-muted-foreground">Note: Short answer evaluation is case-insensitive by default in the engine.</p>
+                   <p className="text-[10px] text-zinc-600">Note: Short answer evaluation is case-insensitive by default in the engine.</p>
                 </div>
               ) : (
                 options.map((option, index) => (
                   <div key={option.id} className="flex items-center gap-3">
                     <div 
                       className={`h-6 w-6 rounded-full border-2 flex items-center justify-center cursor-pointer transition-colors ${
-                        option.isCorrect ? 'bg-primary border-primary text-white' : 'border-zinc-300 dark:border-zinc-700'
+                        option.isCorrect ? 'bg-primary border-primary te' : 'border-zinc-300'
                       }`}
                       onClick={() => handleCorrectToggle(option.id)}
                     >
@@ -259,7 +259,7 @@ export default function CreateQuestionPage() {
                     />
                     {options.length > 2 && (
                       <Button type="button" variant="ghost" size="icon" onClick={() => removeOption(option.id)}>
-                        <Trash2 className="h-4 w-4 text-destructive" />
+                        <Trash2 className="h-4 w-4 text-zinc-600" />
                       </Button>
                     )}
                   </div>
@@ -268,9 +268,9 @@ export default function CreateQuestionPage() {
             </CardContent>
           </Card>
 
-          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm">
             <CardHeader>
-              <CardTitle className="text-lg">Solution Explanation</CardTitle>
+              <CardTitle className="text-zinc-600">Solution Explanation</CardTitle>
             </CardHeader>
             <CardContent>
                <RichTextEditor 
@@ -281,9 +281,9 @@ export default function CreateQuestionPage() {
             </CardContent>
           </Card>
 
-          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm">
             <CardHeader>
-              <CardTitle className="text-lg">Version Control</CardTitle>
+              <CardTitle className="text-zinc-600">Version Control</CardTitle>
             </CardHeader>
             <CardContent>
                <div className="space-y-2">
@@ -299,9 +299,9 @@ export default function CreateQuestionPage() {
         </div>
 
         <div className="space-y-6">
-          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm">
             <CardHeader>
-              <CardTitle className="text-lg">Classification</CardTitle>
+              <CardTitle className="text-zinc-600">Classification</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">

@@ -43,15 +43,15 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 
 const roiData = [
-  { segment: "JEE-2026", cost: 4200, value: 12500, margin: 66 },
+  { segment: "JEE-2026", cost: 4200, value: 125, margin: 66 },
   { segment: "NEET-2025", cost: 3800, value: 9800, margin: 61 },
   { segment: "Foundation", cost: 1200, value: 4500, margin: 73 },
   { segment: "Crash Course", cost: 800, value: 3200, margin: 75 },
 ];
 
 const engagementData = [
-  { name: "Active Learners", value: 65, color: "#18181b" },
-  { name: "Passive Learners", value: 25, color: "#71717a" },
+  { name: "Active Learners", value: 65, color: "#181b" },
+  { name: "Passive Learners", value: 25, color: "#717a" },
   { name: "At Risk", value: 10, color: "#ef4444" },
 ];
 
@@ -65,7 +65,7 @@ const costTrend = [
 ];
 
 export default function FinancialsPage() {
-  const [manualCost, setManualCost] = useState("50000");
+  const [manualCost, setManualCost] = useState("500");
   const [studentCount, setStudentCount] = useState("500");
   
   const digitalCost = Number(studentCount) * 15; // Placeholder math
@@ -75,8 +75,8 @@ export default function FinancialsPage() {
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Financial Intelligence</h2>
-          <p className="text-muted-foreground">
+          <h2 className="text-xl font-bold tracking-tight">Financial Intelligence</h2>
+          <p className="text-zinc-600">
             Analyze institutional ROI, student lifetime value, and engagement-driven financials.
           </p>
         </div>
@@ -97,17 +97,17 @@ export default function FinancialsPage() {
             </DialogHeader>
             <div className="grid gap-4 py-4">
                <div className="space-y-2">
-                 <label className="text-[10px] font-bold uppercase text-muted-foreground">Manual Monthly Ops Cost (₹)</label>
+                 <label className="text-[10px] font-bold uppercase text-zinc-600">Manual Monthly Ops Cost (₹)</label>
                  <Input 
                    type="number" 
                    value={manualCost} 
                    onChange={(e) => setManualCost(e.target.value)}
                    className="font-mono"
                  />
-                 <p className="text-[9px] text-muted-foreground">Includes printing, proctoring, and manual grading hours.</p>
+                 <p className="text-[9px] text-zinc-600">Includes printing, proctoring, and manual grading hours.</p>
                </div>
                <div className="space-y-2">
-                 <label className="text-[10px] font-bold uppercase text-muted-foreground">Total Students</label>
+                 <label className="text-[10px] font-bold uppercase text-zinc-600">Total Students</label>
                  <Input 
                    type="number" 
                    value={studentCount} 
@@ -118,16 +118,16 @@ export default function FinancialsPage() {
                
                <div className="mt-4 p-4 rounded-xl bg-zinc-50 border border-zinc-100 flex flex-col gap-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-xs text-muted-foreground">Manual Projection</span>
-                    <span className="text-sm font-bold">₹{Number(manualCost).toLocaleString()}</span>
+                    <span className="text-zinc-600">Manual Projection</span>
+                    <span className="text-xl font-bold">₹{Number(manualCost).toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-xs text-muted-foreground">Digital Projection (TM)</span>
-                    <span className="text-sm font-bold text-primary">₹{digitalCost.toLocaleString()}</span>
+                    <span className="text-zinc-600">Digital Projection (TM)</span>
+                    <span className="text-xl font-bold text-zinc-600">₹{digitalCost.toLocaleString()}</span>
                   </div>
                   <div className="pt-2 border-t flex justify-between items-center">
-                    <span className="text-sm font-bold">Estimated Monthly Savings</span>
-                    <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
+                    <span className="text-xl font-bold">Estimated Monthly Savings</span>
+                    <Badge className="bg-green-100 text-zinc-600 hover:bg-green-100">
                       ₹{savings.toLocaleString()}
                     </Badge>
                   </div>
@@ -144,16 +144,16 @@ export default function FinancialsPage() {
           { label: "Avg LTV", value: "₹45k", icon: Target, trend: "+8%" },
           { label: "Acquisition Cost", value: "₹2.4k", icon: DollarSign, trend: "-3%" },
         ].map((stat, i) => (
-          <Card key={i} className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+          <Card key={i} className="border-none shadow-sm bg-white/50 backdrop-blur-sm">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              <CardTitle className="text-xl font-bold uppercase tracking-wider text-zinc-600">
                 {stat.label}
               </CardTitle>
-              <stat.icon className="h-4 w-4 text-primary" />
+              <stat.icon className="h-4 w-4 text-zinc-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
-              <p className={`text-[10px] font-medium mt-1 ${stat.trend.startsWith('+') ? 'text-green-600' : 'text-zinc-600'}`}>
+              <div className="text-xl font-bold">{stat.value}</div>
+              <p className={`text-[10px] font-medium mt-1 ${stat.trend.startsWith('+') ? 'te' : 'te'}`}>
                 {stat.trend} from last quarter
               </p>
             </CardContent>
@@ -162,16 +162,16 @@ export default function FinancialsPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+        <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm">
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
               <CardTitle className="flex items-center gap-2">
-                <PieChartIcon className="h-5 w-5 text-primary" />
+                <PieChartIcon className="h-5 w-5 text-zinc-600" />
                 Resource Allocation Value
               </CardTitle>
               <CardDescription>ROI analysis across major academic segments.</CardDescription>
             </div>
-            <Button variant="ghost" size="icon" className="text-muted-foreground">
+            <Button variant="ghost" size="icon" className="text-zinc-600">
               <RotateCcw className="h-4 w-4" />
             </Button>
           </CardHeader>
@@ -183,7 +183,7 @@ export default function FinancialsPage() {
                 <YAxis dataKey="segment" type="category" fontSize={10} axisLine={false} tickLine={false} width={80} />
                 <Tooltip 
                   cursor={{ fill: 'transparent' }}
-                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px2px rgba(0,0,0,0.1)' }}
                 />
                 <Bar dataKey="value" fill="#000" radius={[0, 4, 4, 0]} name="Value Gen" />
                 <Bar dataKey="cost" fill="#d4d4d8" radius={[0, 4, 4, 0]} name="Platform Cost" />
@@ -192,10 +192,10 @@ export default function FinancialsPage() {
           </CardContent>
         </Card>
 
-        <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+        <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <BarChart3 className="h-5 w-5 text-primary" />
+              <BarChart3 className="h-5 w-5 text-zinc-600" />
               Cost Per Test Trend
             </CardTitle>
             <CardDescription>Operational cost efficiency over the last 6 months.</CardDescription>
@@ -205,15 +205,15 @@ export default function FinancialsPage() {
               <AreaChart data={costTrend}>
                 <defs>
                    <linearGradient id="colorCost" x1="0" y1="0" x2="0" y2="1">
-                     <stop offset="5%" stopColor="#18181b" stopOpacity={0.1}/>
-                     <stop offset="95%" stopColor="#18181b" stopOpacity={0}/>
+                     <stop offset="5%" stopColor="#181b" stopOpacity={0.1}/>
+                     <stop offset="95%" stopColor="#181b" stopOpacity={0}/>
                    </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
                 <XAxis dataKey="month" fontSize={10} axisLine={false} tickLine={false} />
                 <YAxis fontSize={10} axisLine={false} tickLine={false} tickFormatter={(v) => `₹${v}`} />
                 <Tooltip />
-                <Area type="monotone" dataKey="cost" stroke="#18181b" fillOpacity={1} fill="url(#colorCost)" />
+                <Area type="monotone" dataKey="cost" stroke="#181b" fillOpacity={1} fill="url(#colorCost)" />
               </AreaChart>
             </ResponsiveContainer>
           </CardContent>
@@ -221,10 +221,10 @@ export default function FinancialsPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-         <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+         <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm">
            <CardHeader>
              <CardTitle className="flex items-center gap-2">
-               <Activity className="h-5 w-5 text-primary" />
+               <Activity className="h-5 w-5 text-zinc-600" />
                Engagement Distribution
              </CardTitle>
              <CardDescription>Performance vs Platform Usage correlation.</CardDescription>
@@ -254,7 +254,7 @@ export default function FinancialsPage() {
                 {engagementData.map((item, i) => (
                   <div key={i} className="flex items-center gap-2">
                      <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }} />
-                     <span className="text-[10px] uppercase font-bold text-muted-foreground">{item.name}</span>
+                     <span className="text-[10px] uppercase font-bold text-zinc-600">{item.name}</span>
                   </div>
                 ))}
              </div>
@@ -266,14 +266,14 @@ export default function FinancialsPage() {
                <TrendingUp className="h-32 w-32" />
             </div>
             <CardHeader>
-              <CardTitle className="text-zinc-400 text-xs font-bold uppercase tracking-widest">Profitability by Batch</CardTitle>
+              <CardTitle className="text-zinc-600 text-xl font-bold uppercase tracking-widest">Profitability by Batch</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
                {roiData.map((batch, i) => (
                  <div key={i} className="space-y-2 relative z-10">
                     <div className="flex justify-between items-end">
-                       <span className="text-sm font-bold">{batch.segment}</span>
-                       <span className="text-xs font-mono text-zinc-400">{batch.margin}% Margin</span>
+                       <span className="text-xl font-bold">{batch.segment}</span>
+                       <span className="text-zinc-600 font-mono text-zinc-600">{batch.margin}% Margin</span>
                     </div>
                     <div className="h-1.5 w-full bg-zinc-800 rounded-full overflow-hidden">
                        <div 
@@ -283,7 +283,7 @@ export default function FinancialsPage() {
                     </div>
                  </div>
                ))}
-               <Button variant="link" className="text-white p-0 h-auto text-[10px] uppercase font-bold tracking-widest gap-1 hover:no-underline">
+               <Button variant="link" className="text-zinc-600 p-0 h-auto text-[10px] uppercase font-bold tracking-widest gap-1 hover:no-underline">
                   View Full breakdown
                   <ChevronRight className="h-3 w-3" />
                </Button>
@@ -291,14 +291,14 @@ export default function FinancialsPage() {
          </Card>
       </div>
 
-      <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50 p-6 flex flex-col md:flex-row items-center gap-6">
-        <div className="p-4 rounded-full bg-primary/5 text-primary">
+      <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm p-6 flex flex-col md:flex-row items-center gap-6">
+        <div className="p-4 rounded-full bg-primary/5 text-zinc-600">
           <HelpCircle className="h-8 w-8" />
         </div>
-        <div className="flex-1 text-center md:text-left">
+        <div className="flex-1 text-zinc-600 md:te">
           <h4 className="font-bold">Institutional Intelligence Tip</h4>
-          <p className="text-sm text-muted-foreground">
-            Your JEE-2026 Batch shows a 15% higher engagement rate but 5% lower test completion. 
+          <p className="text-zinc-600">
+            Your JEE-2026 Batch shows a5% higher engagement rate but 5% lower test completion. 
             Consider re-allocating teacher focus for doubt-clearing sessions to improve overall ROI.
           </p>
         </div>

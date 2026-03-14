@@ -85,18 +85,18 @@ export default function StudentMistakesPage() {
   };
 
   const stats = [
-    { label: 'Unresolved Errors', val: mistakes.length, icon: AlertCircle, color: 'text-rose-500' },
-    { label: 'Bookmarks', val: mistakes.filter(m => m.status === 'bookmarked').length, icon: Bookmark, color: 'text-amber-500' },
-    { label: 'Mastery Rate', val: '65%', icon: CheckCircle2, color: 'text-emerald-500' },
-    { label: 'Revision Streak', val: '4 Days', icon: Zap, color: 'text-blue-500' }
+    { label: 'Unresolved Errors', val: mistakes.length, icon: AlertCircle, color: 'te' },
+    { label: 'Bookmarks', val: mistakes.filter(m => m.status === 'bookmarked').length, icon: Bookmark, color: 'te' },
+    { label: 'Mastery Rate', val: '65%', icon: CheckCircle2, color: 'te' },
+    { label: 'Revision Streak', val: '4 Days', icon: Zap, color: 'te' }
   ];
 
   return (
     <div className="space-y-8 animate-in fade-in duration-700 pb-20 p-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-black tracking-tighter uppercase">Personal Archives</h1>
-          <p className="text-muted-foreground text-sm font-medium">Your personal mistake log, bookmarks, and AI-curated revision bank.</p>
+          <h1 className="text-zinc-600 font-black tracking-tighter uppercase">Personal Archives</h1>
+          <p className="text-zinc-600 font-medium">Your personal mistake log, bookmarks, and AI-curated revision bank.</p>
         </div>
         <div className="flex gap-2">
            <Button className="bg-primary text-white font-black rounded-xl h-11">
@@ -109,13 +109,13 @@ export default function StudentMistakesPage() {
         {/* Statistics & Filters */}
         <div className="lg:col-span-12 grid grid-cols-1 md:grid-cols-4 gap-6">
             {stats.map((s, i) => (
-               <Card key={i} className="border shadow-md rounded-2xl bg-white dark:bg-zinc-950 p-6 flex items-center gap-6">
-                  <div className="h-12 w-12 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border flex items-center justify-center">
+               <Card key={i} className="border shadow-md rounded-2xl bg-white p-6 flex items-center gap-6">
+                  <div className="h-12 w-12 rounded-2xl bg-zinc-50 border flex items-center justify-center">
                      <s.icon className={cn("h-5 w-5", s.color)} />
                   </div>
                   <div>
-                     <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">{s.label}</p>
-                     <p className="text-xl font-black">{s.val}</p>
+                     <p className="text-[10px] font-black uppercase tracking-widest text-zinc-600">{s.label}</p>
+                     <p className="text-zinc-600 font-black">{s.val}</p>
                   </div>
                </Card>
             ))}
@@ -123,22 +123,22 @@ export default function StudentMistakesPage() {
 
         {/* Search & Main List */}
         <div className="lg:col-span-8 space-y-6">
-           <div className="flex bg-white dark:bg-zinc-950 p-4 rounded-2xl border dark:border-zinc-800 shadow-sm items-center justify-between gap-4">
+           <div className="flex bg-white p-4 rounded-2xl border shadow-sm items-center justify-between gap-4">
               <div className="relative flex-1">
-                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
+                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-600" />
                  <input 
                     type="text" 
                     placeholder="Search your history..." 
-                    className="w-full pl-10 pr-4 py-2 bg-zinc-100 dark:bg-zinc-900 rounded-xl border-none text-[10px] font-black uppercase tracking-widest outline-none"
+                    className="w-full pl-10 pr-4 py-2 bg-zinc-100 rounded-xl border-none text-[10px] font-black uppercase tracking-widest outline-none"
                  />
               </div>
-              <div className="flex bg-zinc-100 dark:bg-zinc-900 p-1 rounded-xl">
+              <div className="flex bg-zinc-100 p-1 rounded-xl">
                  {['all', 'bookmarked'].map((t) => (
                     <button
                        key={t}
                        className={cn(
                           "px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all",
-                          activeFilter === t ? "bg-white dark:bg-zinc-800 shadow-sm text-black dark:text-white" : "text-zinc-400"
+                          activeFilter === t ? "bg-white shadow-sm text-zinc-600" : "te"
                        )}
                         onClick={() => setActiveFilter(t as 'all' | 'bookmarked')}
                     >
@@ -152,7 +152,7 @@ export default function StudentMistakesPage() {
               {loading ? (
                  [1,2,3].map(i => <div key={i} className="h-48 bg-secondary/10 animate-pulse rounded-2xl" />)
               ) : mistakes.length > 0 ? mistakes.map((m) => (
-                 <Card key={m.id} className="border shadow-md rounded-2xl bg-white dark:bg-zinc-950 overflow-hidden group hover:scale-[1.01] transition-all">
+                 <Card key={m.id} className="border shadow-md rounded-2xl bg-white overflow-hidden group hover:scale-[1.01] transition-all">
                     <div className="flex">
                        <div className={cn(
                           "w-2 shrink-0",
@@ -161,11 +161,11 @@ export default function StudentMistakesPage() {
                        <div className="flex-1 p-8">
                           <div className="flex justify-between items-start mb-6">
                              <div className="flex flex-wrap gap-2">
-                                <Badge className="bg-zinc-100 dark:bg-zinc-900 text-zinc-500 border-none text-[8px] font-black uppercase px-3 py-1">{m.subject}</Badge>
-                                <Badge className="bg-zinc-100 dark:bg-zinc-900 text-zinc-500 border-none text-[8px] font-black uppercase px-3 py-1">{m.topic}</Badge>
+                                <Badge className="bg-zinc-100 text-zinc-600 border-none text-[8px] font-black uppercase px-3 py-1">{m.subject}</Badge>
+                                <Badge className="bg-zinc-100 text-zinc-600 border-none text-[8px] font-black uppercase px-3 py-1">{m.topic}</Badge>
                                 <Badge className={cn(
                                    "border-none text-[8px] font-black uppercase px-3 py-1",
-                                   m.errorType === 'Conceptual' ? "bg-rose-500/10 text-rose-500" : m.errorType === 'Calculation' ? "bg-amber-500/10 text-amber-500" : "bg-blue-500/10 text-blue-500"
+                                   m.errorType === 'Conceptual' ? "bg-rose-500/10 text-zinc-600" : m.errorType === 'Calculation' ? "bg-amber-500/10 text-zinc-600" : "bg-blue-500/10 text-zinc-600"
                                 )}>
                                    {m.errorType} Error
                                 </Badge>
@@ -174,24 +174,24 @@ export default function StudentMistakesPage() {
                                 onClick={() => toggleBookmark(m.id)}
                                 className={cn(
                                 "h-8 w-8 rounded-lg flex items-center justify-center transition-all",
-                                m.status === 'bookmarked' ? "bg-amber-500 text-white" : "bg-zinc-50 dark:bg-zinc-900"
+                                m.status === 'bookmarked' ? "bg-amber-500 text-zinc-600" : "bg-zinc-50"
                              )}>
                                 <Bookmark className="h-4 w-4" />
                              </button>
                           </div>
 
-                          <div className="text-lg font-bold leading-relaxed mb-8">
+                          <div className="text-xl font-bold leading-relaxed mb-8">
                              {m.text.split('$').map((part, idx) =>
                                 idx % 2 === 0 ? part : <InlineMath key={idx} math={part} />
                              )}
                           </div>
 
-                          <div className="flex justify-between items-center pt-6 border-t border-dashed dark:border-zinc-800">
+                          <div className="flex justify-between items-center pt-6 border-t border-dashed">
                              <div className="flex items-center gap-4">
-                                <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Failed Attempt</span>
-                                <span className="text-[10px] font-bold text-rose-500 uppercase tracking-tighter">Review Required</span>
+                                <span className="text-[10px] font-black uppercase tracking-widest text-zinc-600">Failed Attempt</span>
+                                <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-tighter">Review Required</span>
                              </div>
-                             <Button variant="ghost" className="rounded-xl text-[10px] font-black uppercase tracking-widest text-primary hover:bg-primary/5">
+                             <Button variant="ghost" className="rounded-xl text-[10px] font-black uppercase tracking-widest text-zinc-600 hover:bg-primary/5">
                                 RE-ATTEMPT NOW <ChevronRight className="ml-1 h-3 w-3" />
                              </Button>
                           </div>
@@ -199,7 +199,7 @@ export default function StudentMistakesPage() {
                     </div>
                  </Card>
               )) : (
-                 <div className="text-center py-20 bg-secondary/5 rounded-2xl font-black uppercase tracking-widest text-zinc-400">
+                 <div className="text-zinc-600 py-20 bg-secondary/5 rounded-2xl font-black uppercase tracking-widest text-zinc-600">
                     No mistakes found. Great work!
                  </div>
               )}
@@ -208,17 +208,17 @@ export default function StudentMistakesPage() {
 
         {/* Sidebar Intelligence */}
         <div className="lg:col-span-4 space-y-8">
-           <Card className="border shadow-md rounded-3xl bg-zinc-950 text-white p-8 overflow-hidden relative group">
+           <Card className="border shadow-md rounded-3xl bg-zinc-950 text-zinc-600 p-8 overflow-hidden relative group">
               <div className="relative z-10">
-                 <h3 className="text-xl font-black uppercase tracking-tighter mb-6">AI Recovery</h3>
+                 <h3 className="text-zinc-600 font-black uppercase tracking-tighter mb-6">AI Recovery</h3>
                  <div className="space-y-6">
                     <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-3">
-                       <p className="text-[10px] font-black uppercase tracking-widest text-primary">Insight</p>
-                       <p className="text-xs font-bold leading-relaxed text-zinc-400">
-                          90% of your errors in <span className="text-white font-black">Inorganic Chemistry</span> are factual. We&apos;ve compiled a list of 50 common oxidation states for you.
+                       <p className="text-[10px] font-black uppercase tracking-widest text-zinc-600">Insight</p>
+                       <p className="text-xl font-bold leading-relaxed text-zinc-600">
+                          90% of your errors in <span className="text-zinc-600 font-black">Inorganic Chemistry</span> are factual. We&apos;ve compiled a list of 50 common oxidation states for you.
                        </p>
                     </div>
-                    <Button className="w-full bg-white text-black font-black rounded-xl h-12 text-[10px] group-hover:bg-primary group-hover:text-white transition-all">
+                    <Button className="w-full bg-white text-zinc-600 font-black rounded-xl h-12 text-[10px] group-hover:bg-primary group- transition-all">
                        VIEW STUDY SHEET <ArrowUpRight className="ml-2 h-3.5 w-3.5" />
                     </Button>
                  </div>
@@ -226,8 +226,8 @@ export default function StudentMistakesPage() {
               <History className="absolute -bottom-12 -right-12 h-48 w-48 opacity-5 rotate-12" />
            </Card>
 
-           <Card className="border shadow-md rounded-2xl bg-white dark:bg-zinc-950 p-6">
-              <h4 className="text-sm font-black uppercase tracking-tight mb-6">Error Themes</h4>
+           <Card className="border shadow-md rounded-2xl bg-white p-6">
+              <h4 className="text-zinc-600 font-black uppercase tracking-tight mb-6">Error Themes</h4>
               <div className="space-y-4">
                   {(errorThemes.length > 0 ? errorThemes : [
                      { label: 'Conceptual', val: 0, color: 'bg-rose-500' },
@@ -237,9 +237,9 @@ export default function StudentMistakesPage() {
                      <div key={t.label} className="space-y-2">
                         <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
                            <span>{t.label}</span>
-                           <span className="text-zinc-400">{t.val}%</span>
+                           <span className="text-zinc-600">{t.val}%</span>
                         </div>
-                        <div className="h-1.5 w-full bg-zinc-100 dark:bg-zinc-900 rounded-full overflow-hidden">
+                        <div className="h-1.5 w-full bg-zinc-100 rounded-full overflow-hidden">
                            <div className={cn("h-full", t.color)} style={{ width: `${t.val}%` }} />
                         </div>
                      </div>

@@ -126,18 +126,18 @@ export default function AiGeneratePage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">AI Question Generator</h1>
-          <p className="text-muted-foreground">Generate high-quality questions in seconds using AI.</p>
+          <h1 className="text-xl font-bold tracking-tight">AI Question Generator</h1>
+          <p className="text-zinc-600">Generate high-quality questions in seconds using AI.</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Sidebar: Parameters */}
         <div className="lg:col-span-4 space-y-6">
-          <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50 flex flex-col h-fit sticky top-24">
+          <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm flex flex-col h-fit sticky top-24">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-purple-500" />
+                <Sparkles className="h-5 w-5 text-zinc-600" />
                 Generation Parameters
               </CardTitle>
               <CardDescription>Specify what kind of questions you need.</CardDescription>
@@ -201,7 +201,7 @@ export default function AiGeneratePage() {
 
               <Button 
                 onClick={handleGenerate} 
-                className="w-full gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white border-none h-11"
+                className="w-full gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-zinc-600 border-none h-11"
                 disabled={loading || !subject || !topic}
               >
                 {loading ? (
@@ -225,7 +225,7 @@ export default function AiGeneratePage() {
           {generatedQuestions.length > 0 ? (
             <>
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold">Generated Results ({generatedQuestions.length})</h2>
+                <h2 className="text-zinc-600 font-semibold">Generated Results ({generatedQuestions.length})</h2>
                 <div className="flex gap-2">
                    <Button variant="outline" size="sm" onClick={() => setSelectedIndices(generatedQuestions.map((_, i) => i))}>
                      Select All
@@ -241,20 +241,20 @@ export default function AiGeneratePage() {
                   <Card 
                     key={i} 
                     className={`border-2 transition-all cursor-pointer ${
-                      selectedIndices.includes(i) ? 'border-primary bg-primary/5' : 'border-zinc-200 dark:border-zinc-800'
+                      selectedIndices.includes(i) ? 'border-primary bg-primary/5' : 'border-zinc-200
                     }`}
                     onClick={() => toggleSelect(i)}
                   >
                     <CardHeader className="flex flex-row items-start justify-between py-4">
                       <div className="space-y-1 pr-8">
                         <div className="flex items-center gap-2">
-                          <CardTitle className="text-base">{q.title}</CardTitle>
+                          <CardTitle className="text-zinc-600">{q.title}</CardTitle>
                           <Badge variant="secondary" className="text-[10px] h-5">{q.difficulty}</Badge>
                         </div>
-                        <div className="text-sm text-zinc-600 dark:text-zinc-400" dangerouslySetInnerHTML={{ __html: q.content }} />
+                        <div className="text-zinc-600" dangerouslySetInnerHTML={{ __html: q.content }} />
                       </div>
                       <div className={`h-6 w-6 rounded-full border-2 flex items-center justify-center shrink-0 ${
-                        selectedIndices.includes(i) ? 'bg-primary border-primary text-white' : 'border-zinc-300'
+                        selectedIndices.includes(i) ? 'bg-primary border-primary te' : 'border-zinc-300'
                       }`}>
                         {selectedIndices.includes(i) && <Check className="h-4 w-4" />}
                       </div>
@@ -262,10 +262,10 @@ export default function AiGeneratePage() {
                     {q.options && (
                       <CardContent className="pb-4 pt-0 grid grid-cols-1 md:grid-cols-2 gap-2">
                         {q.options.map((opt, oi) => (
-                          <div key={oi} className={`text-xs p-2 rounded border ${
+                          <div key={oi} className={`text-zinc-600 p-2 rounded border ${
                             q.answer === opt || (Array.isArray(q.answer) && q.answer.includes(opt))
-                              ? 'bg-green-100 border-green-200 dark:bg-green-900/20 dark:border-green-800 text-green-700 dark:text-green-400 font-medium'
-                              : 'bg-zinc-100 dark:bg-zinc-800 border-transparent'
+                              ? 'bg-green-100 border-green-200 text-zinc-600 font-medium'
+                              : 'bg-zinc-100 border-transparent'
                           }`}>
                             {opt}
                           </div>
@@ -277,8 +277,8 @@ export default function AiGeneratePage() {
               </div>
 
               {/* Float Save Button */}
-              <div className="fixed bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-white dark:bg-zinc-950 border p-2 rounded-full shadow-2xl animate-in fade-in slide-in-from-bottom-8">
-                <div className="px-4 text-sm font-medium">
+              <div className="fixed bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-white border p-2 rounded-full shadow-2xl animate-in fade-in slide-in-from-bottom-8">
+                <div className="px-4 text-zinc-600 font-medium">
                   {selectedIndices.length} questions selected
                 </div>
                 <Button 
@@ -292,21 +292,21 @@ export default function AiGeneratePage() {
               </div>
             </>
           ) : loading ? (
-            <div className="flex flex-col items-center justify-center h-[400px] gap-4 text-center">
-               <Loader2 className="h-12 w-12 animate-spin text-primary" />
+            <div className="flex flex-col items-center justify-center h-[400px] gap-4 text-zinc-600">
+               <Loader2 className="h-12 w-12 animate-spin text-zinc-600" />
                <div className="space-y-1">
-                 <p className="font-semibold text-lg">AI is crafting your questions...</p>
-                 <p className="text-muted-foreground">This usually takes about 10-20 seconds.</p>
+                 <p className="font-semibold text-zinc-600">AI is crafting your questions...</p>
+                 <p className="text-zinc-600">This usually takes about0-20 seconds.</p>
                </div>
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center h-[400px] border-2 border-dashed rounded-xl gap-4 text-center bg-zinc-50/50 dark:bg-zinc-900/20 px-8">
-               <div className="bg-white dark:bg-zinc-900 shadow-sm p-4 rounded-full">
-                 <Sparkles className="h-8 w-8 text-purple-500" />
+            <div className="flex flex-col items-center justify-center h-[400px] border-2 border-dashed rounded-xl gap-4 text-zinc-600 bg-zinc-50/5020 px-8">
+               <div className="bg-white shadow-sm p-4 rounded-full">
+                 <Sparkles className="h-8 w-8 text-zinc-600" />
                </div>
                <div className="space-y-1 max-w-sm">
-                 <p className="font-semibold text-lg">Ready to Generate?</p>
-                 <p className="text-muted-foreground">Fill in the parameters on the left and hit generate to see the magic happen.</p>
+                 <p className="font-semibold text-zinc-600">Ready to Generate?</p>
+                 <p className="text-zinc-600">Fill in the parameters on the left and hit generate to see the magic happen.</p>
                </div>
             </div>
           )}

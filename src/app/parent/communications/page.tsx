@@ -115,20 +115,20 @@ export default function CommunicationsPage() {
   };
 
   return (
-    <div className="h-[calc(100vh-120px)] animate-in fade-in duration-700 bg-white dark:bg-zinc-950 rounded-[3rem] shadow-2xl overflow-hidden border dark:border-zinc-900 flex">
+    <div className="h-[calc(100vh-120px)] animate-in fade-in duration-700 bg-white rounded-[3rem] shadow-2xl overflow-hidden border flex">
       {/* Sidebar: Teacher List */}
-      <div className="w-[380px] border-r dark:border-zinc-900 flex flex-col bg-zinc-50/50 dark:bg-zinc-900/10">
+      <div className="w-[380px] border-r flex flex-col bg-zinc-50/50">
         <div className="p-8 space-y-6">
            <div>
-              <h2 className="text-2xl font-black  uppercase  tracking-tighter">Engagement Hub</h2>
-              <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mt-1">Direct link to subject experts</p>
+              <h2 className="text-zinc-600 font-black  uppercase  tracking-tighter">Engagement Hub</h2>
+              <p className="text-[10px] font-black text-zinc-600 uppercase tracking-widest mt-1">Direct link to subject experts</p>
            </div>
            
            <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-600" />
               <Input 
                  placeholder="SEARCH MENTORS..." 
-                 className="pl-12 h-12 rounded-2xl bg-white dark:bg-zinc-900 border-none shadow-inner text-[10px] font-black tracking-widest "
+                 className="pl-12 h-12 rounded-2xl bg-white border-none shadow-inner text-[10px] font-black tracking-widest "
               />
            </div>
         </div>
@@ -136,7 +136,7 @@ export default function CommunicationsPage() {
         <div className="flex-1 overflow-y-auto scrollbar-hide px-4 space-y-2">
            {isLoading ? (
               Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="h-20 bg-zinc-100 dark:bg-zinc-900/50 rounded-2xl animate-pulse" />
+                <div key={i} className="h-20 bg-zinc-100 rounded-2xl animate-pulse" />
               ))
            ) : teachers.map((teacher) => (
               <button
@@ -144,8 +144,8 @@ export default function CommunicationsPage() {
                  className={cn(
                     "w-full p-4 rounded-2xl flex items-center gap-4 transition-all group",
                     activeTeacher?.id === teacher.id 
-                       ? "bg-zinc-900 dark:bg-white text-white dark:text-black shadow-xl scale-[1.02]" 
-                       : "hover:bg-white dark:hover:bg-zinc-900/50"
+                       ? "bg-zinc-900 text-white shadow-xl scale-[1.02]" 
+                       : "hover:bg-white"
                  )}
                  onClick={() => setActiveTeacher(teacher)}
               >
@@ -158,25 +158,25 @@ export default function CommunicationsPage() {
                        />
                     </div>
                     {teacher.status === 'online' && (
-                       <div className="absolute -bottom-1 -right-1 h-3.5 w-3.5 bg-emerald-500 rounded-full border-2 border-white dark:border-zinc-950" />
+                       <div className="absolute -bottom-1 -right-1 h-3.5 w-3.5 bg-emerald-500 rounded-full border-2 border-white" />
                     )}
                  </div>
-                 <div className="flex-1 text-left min-w-0">
+                 <div className="flex-1 text-zinc-600 min-w-0">
                     <div className="flex justify-between items-start">
-                       <h4 className="font-black text-xs uppercase  tracking-tight truncate">{teacher.name}</h4>
+                       <h4 className="font-black text-zinc-600 uppercase  tracking-tight truncate">{teacher.name}</h4>
                        <span className={cn(
                           "text-[8px] font-black uppercase opacity-60",
-                          activeTeacher?.id === teacher.id ? "text-primary" : "text-zinc-400"
+                          activeTeacher?.id === teacher.id ? "te" : "te"
                        )}>{teacher.lastMessageTime}</span>
                     </div>
                     <p className={cn(
                        "text-[10px] font-black uppercase tracking-widest mt-0.5",
-                       activeTeacher?.id === teacher.id ? "text-zinc-400" : "text-primary"
+                       activeTeacher?.id === teacher.id ? "te" : "te"
                     )}>{teacher.subject}</p>
                     <p className="text-[10px] font-medium opacity-60 truncate mt-1">{teacher.lastMessage}</p>
                  </div>
                  {teacher.unreadCount > 0 && activeTeacher?.id !== teacher.id && (
-                    <Badge className="h-5 min-w-[20px] rounded-full bg-primary text-[10px] font-black flex items-center justify-center p-0 border-none">
+                    <Badge className="h-5 min-w-[20px] rounded-full bg-primary text-whitext-[10px] font-black flex items-center justify-center p-0 border-none">
                        {teacher.unreadCount}
                     </Badge>
                  )}
@@ -184,8 +184,8 @@ export default function CommunicationsPage() {
            ))}
         </div>
 
-        <div className="p-6 border-t dark:border-zinc-900">
-           <Button variant="outline" className="w-full rounded-2xl border-dashed border-zinc-200 dark:border-zinc-800 font-black text-[10px] uppercase tracking-widest h-12">
+        <div className="p-6 border-t">
+           <Button variant="outline" className="w-full rounded-2xl border-dashed border-zinc-200 font-black text-[10px] uppercase tracking-widest h-12">
               <Calendar className="mr-2 h-4 w-4" />
               SCHEDULE MEETING
            </Button>
@@ -193,28 +193,28 @@ export default function CommunicationsPage() {
       </div>
 
       {/* Main: Chat View */}
-      <div className="flex-1 flex flex-col bg-zinc-50 dark:bg-zinc-900/50">
+      <div className="flex-1 flex flex-col bg-zinc-50">
         {activeTeacher ? (
            <>
               {/* Header */}
-              <div className="p-6 border-b dark:border-zinc-900 flex justify-between items-center bg-white dark:bg-zinc-950/50 backdrop-blur-md">
+              <div className="p-6 border-b flex justify-between items-center bg-white backdrop-blur-md">
                  <div className="flex items-center gap-4">
-                    <div className="h-10 w-10 rounded-xl overflow-hidden border dark:border-zinc-800">
+                    <div className="h-10 w-10 rounded-xl overflow-hidden border">
                        <Image src={activeTeacher.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${activeTeacher.name}`} alt={activeTeacher.name} width={40} height={40} />
                     </div>
                     <div>
-                       <h3 className="font-black text-sm uppercase  tracking-tighter">{activeTeacher.name}</h3>
+                       <h3 className="font-black text-zinc-600 uppercase  tracking-tighter">{activeTeacher.name}</h3>
                        <div className="flex items-center gap-2">
                           <div className={cn("h-1.5 w-1.5 rounded-full", activeTeacher.status === 'online' ? "bg-emerald-500" : "bg-zinc-400")} />
-                          <span className="text-[9px] font-black uppercase text-zinc-400 tracking-widest">{activeTeacher.status === 'online' ? 'Active Matrix' : 'Archived'}</span>
+                          <span className="text-[9px] font-black uppercase text-zinc-600 tracking-widest">{activeTeacher.status === 'online' ? 'Active Matrix' : 'Archived'}</span>
                        </div>
                     </div>
                  </div>
                  <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="icon" className="rounded-xl h-10 w-10 hover:bg-zinc-100 dark:hover:bg-zinc-900">
+                    <Button variant="ghost" size="icon" className="rounded-xl h-10 w-10 hover:bg-zinc-100">
                        <Users className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" className="rounded-xl h-10 w-10 hover:bg-zinc-100 dark:hover:bg-zinc-900">
+                    <Button variant="ghost" size="icon" className="rounded-xl h-10 w-10 hover:bg-zinc-100">
                        <MoreVertical className="h-4 w-4" />
                     </Button>
                  </div>
@@ -223,7 +223,7 @@ export default function CommunicationsPage() {
               {/* Messages */}
               <div className="flex-1 overflow-y-auto p-10 space-y-6 scrollbar-hide">
                  <div className="flex flex-col items-center mb-10">
-                    <Badge variant="outline" className="rounded-full px-6 py-1 bg-white/50 dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-[8px] font-black uppercase tracking-widest">
+                    <Badge variant="outline" className="rounded-full px-6 py-1 bg-white/50 border-zinc-200 text-[8px] font-black uppercase tracking-widest">
                        Secure Encryption Enabled
                     </Badge>
                  </div>
@@ -238,10 +238,10 @@ export default function CommunicationsPage() {
                           msg.isMe ? "items-end" : "items-start"
                        )}>
                           <div className={cn(
-                             "p-6 rounded-[2rem] text-sm font-medium shadow-sm transition-all",
+                             "p-6 rounded-[2rem] text-zinc-600 font-medium shadow-sm transition-all",
                              msg.isMe 
-                                ? "bg-zinc-900 text-white dark:bg-white dark:text-black rounded-tr-none hover:scale-[1.02]" 
-                                : "bg-white dark:bg-zinc-950 rounded-tl-none border dark:border-zinc-900 hover:scale-[1.02]"
+                                ? "bg-zinc-900 text-white rounded-tr-none hover:scale-[1.02]" 
+                                : "bg-white rounded-tl-none border hover:scale-[1.02]"
                           )}>
                              {msg.text}
                           </div>
@@ -249,12 +249,12 @@ export default function CommunicationsPage() {
                              "flex items-center gap-2 px-2",
                              msg.isMe ? "flex-row-reverse" : "flex-row"
                           )}>
-                             <span className="text-[10px] font-black text-zinc-400 ">
+                             <span className="text-[10px] font-black text-zinc-600 ">
                                 {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                              </span>
                              {msg.isMe && (
-                                <div className="flex text-zinc-400">
-                                   {msg.status === 'read' ? <CheckCheck className="h-3 w-3 text-primary" /> : <Check className="h-3 w-3" />}
+                                <div className="flex text-zinc-600">
+                                   {msg.status === 'read' ? <CheckCheck className="h-3 w-3 text-zinc-600" /> : <Check className="h-3 w-3" />}
                                 </div>
                              )}
                           </div>
@@ -264,11 +264,11 @@ export default function CommunicationsPage() {
               </div>
 
               {/* Chat Input */}
-              <div className="p-8 bg-white dark:bg-zinc-950/50 backdrop-blur-md border-t dark:border-zinc-900">
-                 <div className="flex items-center gap-4 bg-zinc-50 dark:bg-zinc-900 p-2 pl-6 rounded-[2.5rem] border dark:border-zinc-800 focus-within:ring-2 ring-primary transition-all">
-                    <Paperclip className="h-5 w-5 text-zinc-400 cursor-pointer hover:text-primary transition-colors" />
+              <div className="p-8 bg-white backdrop-blur-md border-t">
+                 <div className="flex items-center gap-4 bg-zinc-50 p-2 pl-6 rounded-[2.5rem] border focus-within:ring-2 ring-primary transition-all">
+                    <Paperclip className="h-5 w-5 text-zinc-600 cursor-pointer  transition-colors" />
                     <input 
-                       className="flex-1 bg-transparent border-none outline-none py-3 text-sm font-medium placeholder:font-black placeholder:text-[10px] placeholder:uppercase placeholder:tracking-widest"
+                       className="flex-1 bg-transparent border-none outline-none py-3 text-zinc-600 font-medium placeholder:font-black placeholder:text-[10px] placeholder:uppercase placeholder:tracking-widest"
                        placeholder="TRANSMIT MESSAGE TO MENTOR..."
                        value={newMessage}
                        onChange={(e) => setNewMessage(e.target.value)}
@@ -279,19 +279,19 @@ export default function CommunicationsPage() {
                        size="icon"
                        onClick={handleSendMessage}
                     >
-                       <Send className="h-5 w-5 text-white -rotate-45 -translate-y-0.5 translate-x-0.5" />
+                       <Send className="h-5 w-5 text-zinc-600 -rotate-45 -translate-y-0.5 translate-x-0.5" />
                     </Button>
                  </div>
               </div>
            </>
         ) : (
-           <div className="flex-1 flex flex-col items-center justify-center space-y-6 text-center">
-              <div className="h-24 w-24 bg-zinc-100 dark:bg-zinc-900 rounded-[3rem] flex items-center justify-center">
-                 <MessageSquare className="h-10 w-10 text-zinc-300" />
+           <div className="flex-1 flex flex-col items-center justify-center space-y-6 text-zinc-600">
+              <div className="h-24 w-24 bg-zinc-100 rounded-[3rem] flex items-center justify-center">
+                 <MessageSquare className="h-10 w-10 text-zinc-600" />
               </div>
               <div>
-                 <h3 className="text-xl font-black  uppercase  tracking-tighter">Transmission Lobby</h3>
-                 <p className="text-zinc-400 text-[10px] font-black uppercase tracking-widest mt-1 ">Select a mentor to initiate encrypted communication</p>
+                 <h3 className="text-zinc-600 font-black  uppercase  tracking-tighter">Transmission Lobby</h3>
+                 <p className="text-zinc-600 text-[10px] font-black uppercase tracking-widest mt-1 ">Select a mentor to initiate encrypted communication</p>
               </div>
            </div>
         )}

@@ -85,38 +85,38 @@ export default function DetailedResultPage() {
   if (isLoading) {
     return (
       <div className="p-10 space-y-8 animate-pulse">
-         <div className="h-10 w-48 bg-zinc-200 dark:bg-zinc-800 rounded-xl" />
+         <div className="h-10 w-48 bg-zinc-200 rounded-xl" />
          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="h-64 bg-zinc-100 dark:bg-zinc-900 rounded-[3rem]" />
-            <div className="h-64 bg-zinc-100 dark:bg-zinc-900 rounded-[3rem]" />
-            <div className="h-64 bg-zinc-100 dark:bg-zinc-900 rounded-[3rem]" />
+            <div className="h-64 bg-zinc-100 rounded-[3rem]" />
+            <div className="h-64 bg-zinc-100 rounded-[3rem]" />
+            <div className="h-64 bg-zinc-100 rounded-[3rem]" />
          </div>
-         <div className="h-96 bg-zinc-100 dark:bg-zinc-900 rounded-[3rem]" />
+         <div className="h-96 bg-zinc-100 rounded-[3rem]" />
       </div>
     );
   }
 
-  if (!data) return <div className="p-20 text-center font-black uppercase  tracking-widest text-zinc-400">Analysis Data Not Found</div>;
+  if (!data) return <div className="p-20 text-zinc-600 font-black uppercase  tracking-widest text-zinc-600">Analysis Data Not Found</div>;
 
   return (
     <div className="space-y-8 animate-in fade-in duration-700 pb-20 p-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div className="flex items-center gap-4">
-           <Button variant="ghost" size="icon" className="rounded-2xl h-12 w-12 bg-zinc-100 dark:bg-zinc-900" onClick={() => router.back()}>
+           <Button variant="ghost" size="icon" className="rounded-2xl h-12 w-12 bg-zinc-100" onClick={() => router.back()}>
               <ChevronLeft className="h-5 w-5" />
            </Button>
            <div>
-              <h1 className="text-3xl font-black tracking-tighter  uppercase">{data.title}</h1>
-              <p className="text-muted-foreground text-sm font-medium">Post-assessment analytical decryption.</p>
+              <h1 className="text-zinc-600 font-black tracking-tighter  uppercase">{data.title}</h1>
+              <p className="text-zinc-600 font-medium">Post-assessment analytical decryption.</p>
            </div>
         </div>
         
         <div className="flex gap-3">
-           <Button variant="outline" className="rounded-2xl border-zinc-200 dark:border-zinc-800 font-black text-[10px] uppercase tracking-widest px-6 h-12">
+           <Button variant="outline" className="rounded-2xl border-zinc-200 font-black text-[10px] uppercase tracking-widest px-6 h-12">
               <Share2 className="mr-2 h-4 w-4" />
               SHARE RESULTS
            </Button>
-           <Button className="rounded-2xl bg-zinc-950 dark:bg-white text-white dark:text-black font-black text-[10px] uppercase tracking-widest px-6 h-12 shadow-xl hover:scale-105 transition-all">
+           <Button className="rounded-2xl bg-zinc-950 text-zinc-600 font-black text-[10px] uppercase tracking-widest px-6 h-12 shadow-xl hover:scale-105 transition-all">
               <Download className="mr-2 h-4 w-4" />
               DOWNLOAD PDF
            </Button>
@@ -126,40 +126,40 @@ export default function DetailedResultPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* KPI Row */}
         <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-           <Card className="border-none shadow-xl rounded-[2.5rem] bg-emerald-500 text-white p-8">
+           <Card className="border-none shadow-xl rounded-[2.5rem] bg-emerald-500 text-zinc-600 p-8">
               <div className="flex justify-between items-start mb-4">
                  <Target className="h-6 w-6 opacity-60" />
-                 <Badge className="bg-white/20 text-white border-none font-black text-[8px] px-2 py-0.5 uppercase">Accuracy</Badge>
+                 <Badge className="bg-white/20 text-zinc-600 border-none font-black text-[8px] px-2 py-0.5 uppercase">Accuracy</Badge>
               </div>
-              <div className="text-4xl font-black ">{data.accuracy}%</div>
+              <div className="text-zinc-600 font-black ">{data.accuracy}%</div>
               <p className="text-[10px] font-black uppercase tracking-widest opacity-60 mt-1">Target precision reached</p>
            </Card>
 
-           <Card className="border-none shadow-xl rounded-[2.5rem] bg-zinc-900 dark:bg-zinc-950 text-white p-8">
+           <Card className="border-none shadow-xl rounded-[2.5rem] bg-zinc-900 text-white p-8">
               <div className="flex justify-between items-start mb-4">
                  <Clock className="h-6 w-6 opacity-60" />
-                 <Badge className="bg-white/20 text-white border-none font-black text-[8px] px-2 py-0.5 uppercase">Tempo</Badge>
+                 <Badge className="bg-white/20 text-zinc-600 border-none font-black text-[8px] px-2 py-0.5 uppercase">Tempo</Badge>
               </div>
-              <div className="text-4xl font-black ">{data.timeTaken}</div>
+              <div className="text-zinc-600 font-black ">{data.timeTaken}</div>
               <p className="text-[10px] font-black uppercase tracking-widest opacity-60 mt-1">Total runtime</p>
            </Card>
 
            <Card className="border-none shadow-xl rounded-[2.5rem] bg-primary text-white p-8">
               <div className="flex justify-between items-start mb-4">
                  <TrendingUp className="h-6 w-6 opacity-60" />
-                 <Badge className="bg-white/20 text-white border-none font-black text-[8px] px-2 py-0.5 uppercase">Rank</Badge>
+                 <Badge className="bg-white/20 text-zinc-600 border-none font-black text-[8px] px-2 py-0.5 uppercase">Rank</Badge>
               </div>
-              <div className="text-4xl font-black ">{data.rank}</div>
+              <div className="text-zinc-600 font-black ">{data.rank}</div>
               <p className="text-[10px] font-black uppercase tracking-widest opacity-60 mt-1">Current class position</p>
            </Card>
         </div>
 
         {/* Comparison Radar / Sidebar */}
         <div className="lg:col-span-4 space-y-6">
-           <Card className="border-none shadow-2xl rounded-[3rem] bg-white dark:bg-zinc-900 p-8 flex flex-col items-center">
+           <Card className="border-none shadow-2xl rounded-[3rem] bg-white p-8 flex flex-col items-center">
               <div className="w-full mb-6">
-                 <h4 className="text-sm font-black  uppercase tracking-tighter ">Score Distribution</h4>
-                 <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">VS CLASS TOPPERS</p>
+                 <h4 className="text-zinc-600 font-black  uppercase tracking-tighter ">Score Distribution</h4>
+                 <p className="text-[10px] font-black uppercase tracking-widest text-zinc-600">VS CLASS TOPPERS</p>
               </div>
               <div className="h-48 w-full">
                  <ResponsiveContainer width="100%" height="100%">
@@ -175,7 +175,7 @@ export default function DetailedResultPage() {
               </div>
               <div className="mt-6 flex justify-between w-full text-[9px] font-black uppercase tracking-widest">
                  <span>Avg: 72%</span>
-                 <span className="text-emerald-500">Child: {data.percentage}%</span>
+                 <span className="text-zinc-600">Child: {data.percentage}%</span>
               </div>
            </Card>
         </div>
@@ -184,43 +184,43 @@ export default function DetailedResultPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
          {/* Question Review */}
          <div className="lg:col-span-8 space-y-6">
-            <h3 className="text-xl font-black  uppercase tracking-tighter  mb-4">Tactical Review</h3>
+            <h3 className="text-zinc-600 font-black  uppercase tracking-tighter  mb-4">Tactical Review</h3>
             <div className="space-y-4">
                {data.questions.map((q) => (
-                  <Card key={q.id} className="border-none shadow-sm rounded-[2rem] bg-white dark:bg-zinc-900/50 overflow-hidden border dark:border-zinc-800">
+                  <Card key={q.id} className="border-none shadow-sm rounded-[2rem] bg-white overflow-hidden border">
                      <div className="p-8 flex gap-6">
                         <div className={cn(
                            "h-12 w-12 rounded-2xl flex items-center justify-center shrink-0 shadow-lg",
                            q.correct ? "bg-emerald-500" : "bg-rose-500"
                         )}>
-                           {q.correct ? <CheckCircle2 className="h-6 w-6 text-white" /> : <XCircle className="h-6 w-6 text-white" />}
+                           {q.correct ? <CheckCircle2 className="h-6 w-6 text-zinc-600" /> : <XCircle className="h-6 w-6 text-zinc-600" />}
                         </div>
                         <div className="flex-1 space-y-4">
                            <div className="flex justify-between items-start">
-                              <h4 className="text-sm font-bold leading-relaxed">{q.text}</h4>
+                              <h4 className="text-xl font-bold leading-relaxed">{q.text}</h4>
                               <Badge className={cn(
                                  "text-[8px] font-black uppercase px-2 h-5 border-none ml-4 whitespace-nowrap",
-                                 q.difficulty === 'Hard' ? 'bg-rose-500/10 text-rose-500' : 'bg-emerald-500/10 text-emerald-500'
+                                 q.difficulty === 'Hard' ? 'bg-rose-500/10 te' : 'bg-emerald-500/10 te'
                               )}>{q.difficulty}</Badge>
                            </div>
                            
                            <div className="grid grid-cols-2 gap-4">
-                              <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900 border dark:border-zinc-800">
-                                 <p className="text-[8px] font-black uppercase text-zinc-400 mb-1">Child Answer</p>
-                                 <p className="text-xs font-bold">{q.yourAnswer}</p>
+                              <div className="p-3 rounded-xl bg-zinc-50 border">
+                                 <p className="text-[8px] font-black uppercase text-zinc-600 mb-1">Child Answer</p>
+                                 <p className="text-xl font-bold">{q.yourAnswer}</p>
                               </div>
-                              <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900 border dark:border-zinc-800">
-                                 <p className="text-[8px] font-black uppercase text-zinc-400 mb-1">Correct Answer</p>
-                                 <p className="text-xs font-bold text-emerald-500">{q.correctAnswer}</p>
+                              <div className="p-3 rounded-xl bg-zinc-50 border">
+                                 <p className="text-[8px] font-black uppercase text-zinc-600 mb-1">Correct Answer</p>
+                                 <p className="text-xl font-bold text-zinc-600">{q.correctAnswer}</p>
                               </div>
                            </div>
 
                            <div className="p-4 rounded-2xl bg-primary/5 border border-primary/10">
                               <div className="flex gap-2 items-center mb-1">
-                                 <BrainCircuit className="h-4 w-4 text-primary" />
-                                 <span className="text-[9px] font-black uppercase text-primary">AI Explanation</span>
+                                 <BrainCircuit className="h-4 w-4 text-zinc-600" />
+                                 <span className="text-[9px] font-black uppercase text-zinc-600">AI Explanation</span>
                               </div>
-                              <p className="text-xs font-medium text-zinc-600 dark:text-zinc-400 leading-relaxed ">{q.explanation}</p>
+                              <p className="text-zinc-600 font-medium text-zinc-600 leading-relaxed ">{q.explanation}</p>
                            </div>
                         </div>
                      </div>
@@ -231,38 +231,38 @@ export default function DetailedResultPage() {
 
          {/* AI Analysis Sidebar */}
          <div className="lg:col-span-4 space-y-8">
-            <Card className="border-none shadow-2xl rounded-[3rem] bg-zinc-950 text-white p-10 relative overflow-hidden group">
+            <Card className="border-none shadow-2xl rounded-[3rem] bg-zinc-950 text-zinc-600 p-10 relative overflow-hidden group">
                <div className="relative z-10">
                   <div className="h-16 w-16 rounded-3xl bg-primary/20 flex items-center justify-center mb-8">
-                     <BrainCircuit className="h-8 w-8 text-primary" />
+                     <BrainCircuit className="h-8 w-8 text-zinc-600" />
                   </div>
-                  <h3 className="text-2xl font-black  uppercase  tracking-tighter mb-4 leading-none text-primary">Strategic Insight</h3>
-                  <p className="text-zinc-400 text-sm font-medium leading-relaxed mb-10 ">
+                  <h3 className="text-zinc-600 font-black  uppercase  tracking-tighter mb-4 leading-none text-zinc-600">Strategic Insight</h3>
+                  <p className="text-zinc-600 font-medium leading-relaxed mb-10 ">
                      &quot;{data.ai_insight}&quot;
                   </p>
-                  <Button className="w-full bg-white text-black font-black h-12 rounded-2xl text-[10px] uppercase tracking-widest hover:scale-105 transition-transform shadow-2xl">
+                  <Button className="w-full bg-white text-zinc-600 font-black h-12 rounded-2xl text-[10px] uppercase tracking-widest hover:scale-105 transition-transform shadow-2xl">
                      UNPACK FULL META-DATA
                   </Button>
                </div>
             </Card>
 
-            <Card className="border-none shadow-xl rounded-[2.5rem] bg-white dark:bg-zinc-900 p-8">
+            <Card className="border-none shadow-xl rounded-[2.5rem] bg-white p-8">
                <div className="flex items-center gap-3 mb-6">
-                  <AlertCircle className="h-5 w-5 text-amber-500" />
+                  <AlertCircle className="h-5 w-5 text-zinc-600" />
                   <h4 className="text-[10px] font-black uppercase tracking-widest">Mentor&apos;s Note</h4>
                </div>
-               <p className="text-xs font-medium  text-zinc-500 leading-relaxed">
+               <p className="text-zinc-600 font-medium  text-zinc-600 leading-relaxed">
                   {data.teacher_feedback || "Excellent grasp of core concepts. Speed in section B needs calibration to avoid early fatigue."}
                </p>
             </Card>
 
             <div className="space-y-4">
-               <h4 className="text-[10px] font-black uppercase tracking-widest text-zinc-400 px-4">Subject Efficiency</h4>
+               <h4 className="text-[10px] font-black uppercase tracking-widest text-zinc-600 px-4">Subject Efficiency</h4>
                {data.subjectBreakdown.map((s, i) => (
-                  <div key={i} className="p-4 rounded-2xl bg-white dark:bg-zinc-900 shadow-sm border dark:border-zinc-800 space-y-3">
+                  <div key={i} className="p-4 rounded-2xl bg-white shadow-sm border space-y-3">
                      <div className="flex justify-between items-center">
-                        <span className="text-xs font-black uppercase  ">{s.subject}</span>
-                        <span className="text-xs font-black">{s.score}%</span>
+                        <span className="text-zinc-600 font-black uppercase  ">{s.subject}</span>
+                        <span className="text-zinc-600 font-black">{s.score}%</span>
                      </div>
                      <Progress value={s.score} className="h-1.5" />
                   </div>

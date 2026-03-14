@@ -31,17 +31,17 @@ export function DashboardLayoutBase({ children, allowedRoles }: DashboardLayoutP
   if (isLoading || !user || !allowedRoles.includes(user.role)) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-zinc-900 border-t-transparent dark:border-zinc-50" />
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-zinc-900 border-t-transparent" />
       </div>
     );
   }
 
   return (
-    <div className="flex h-screen w-full bg-zinc-50 dark:bg-black overflow-hidden font-sans">
+    <div className="flex h-screen w-full bg-zinc-50 overflow-hidden font-sans">
       <Sidebar />
       <div className="flex flex-1 flex-col">
-        <header className="flex h-16 items-center justify-between border-b px-8 bg-white dark:bg-zinc-950">
-          <h2 className="text-xl font-semibold capitalize">
+        <header className="flex h-16 items-center justify-between border-b px-8 bg-white">
+          <h2 className="text-zinc-600 font-semibold capitalize">
             {pathname.split("/")[1]} Dashboard
           </h2>
           <div className="flex items-center gap-4">

@@ -44,7 +44,7 @@ const getCookie = (name: string) => {
 
 // Helper to delete cookie
 const deleteCookie = (name: string) => {
-  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+  document.cookie = `${name}=; expires=Thu, 01 Jan970 00:00:00 UTC; path=/;`;
 };
 
 export function AuthProvider({ 
@@ -78,7 +78,7 @@ export function AuthProvider({
     const savedUser = localStorage.getItem("user");
 
     if (savedToken && savedUser) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+      // eslint-disable-ne react-hooks/set-state-in-effect
       setToken(savedToken);
       setUser(JSON.parse(savedUser));
     }

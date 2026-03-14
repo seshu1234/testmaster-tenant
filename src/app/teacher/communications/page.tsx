@@ -110,28 +110,28 @@ export default function TeacherCommunicationsPage() {
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center">
-         <Loader2 className="h-8 w-8 animate-spin text-zinc-400" />
+         <Loader2 className="h-8 w-8 animate-spin text-zinc-600" />
       </div>
     );
   }
 
   return (
-    <div className="flex h-[calc(100vh-140px)] -mt-2 -mx-8 overflow-hidden bg-white dark:bg-zinc-950 border-t">
+    <div className="flex h-[calc(100vh-140px)] -mt-2 -mx-8 overflow-hidden bg-white border-t">
        {/* Sidebar: Chat List */}
-       <div className="w-80 border-r flex flex-col bg-zinc-50/50 dark:bg-zinc-900/30">
-          <div className="p-4 border-b space-y-4 bg-white dark:bg-zinc-950">
+       <div className="w-80 border-r flex flex-col bg-zinc-50/50">
+          <div className="p-4 border-b space-y-4 bg-white">
              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-black tracking-tight">Messages</h2>
+                <h2 className="text-zinc-600 font-black tracking-tight">Messages</h2>
                 <Button variant="ghost" size="icon" className="rounded-full">
-                   <Plus className="h-5 w-5 text-zinc-400" />
+                   <Plus className="h-5 w-5 text-zinc-600" />
                 </Button>
              </div>
              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-600" />
                 <input 
                   type="text" 
                   placeholder="Search messages..." 
-                  className="w-full pl-9 pr-4 py-2 border rounded-xl bg-zinc-50 dark:bg-zinc-900 border-none text-[10px] font-bold uppercase tracking-wider focus:ring-2 ring-primary/20 outline-none"
+                  className="w-full pl-9 pr-4 py-2 border rounded-xl bg-zinc-50 border-none text-[10px] font-bold uppercase tracking-wider focus:ring-2 ring-primary/20 outline-none"
                 />
              </div>
           </div>
@@ -142,29 +142,29 @@ export default function TeacherCommunicationsPage() {
                   onClick={() => setSelectedChat(chat)}
                   className={cn(
                     "p-3 rounded-2xl cursor-pointer transition-all flex items-center gap-3 relative group",
-                    selectedChat?.id === chat.id ? "bg-white dark:bg-zinc-800 shadow-lg ring-1 ring-zinc-200 dark:ring-zinc-700" : "hover:bg-zinc-100 dark:hover:bg-zinc-800/50"
+                    selectedChat?.id === chat.id ? "bg-white shadow-lg ring-1 ring-zinc-200" : "hover:bg-zinc-100"
                   )}
                 >
                    <div className="relative">
                       <div className={cn(
-                        "h-12 w-12 rounded-2xl flex items-center justify-center font-black text-white",
+                        "h-12 w-12 rounded-2xl flex items-center justify-center font-black text-zinc-600",
                         chat.type === 'batch' ? "bg-indigo-500 shadow-indigo-500/20" : "bg-primary shadow-primary/20"
                       )}>
                          {chat.name.charAt(0)}
                       </div>
                       {chat.online && (
-                         <div className="absolute -bottom-1 -right-1 h-3.5 w-3.5 rounded-full bg-emerald-500 border-2 border-white dark:border-zinc-950" />
+                         <div className="absolute -bottom-1 -right-1 h-3.5 w-3.5 rounded-full bg-emerald-500 border-2 border-white" />
                       )}
                    </div>
                    <div className="flex-1 overflow-hidden">
                       <div className="flex justify-between items-center mb-0.5">
                          <span className="font-extrabold text-[11px] uppercase tracking-tighter truncate">{chat.name}</span>
-                         <span className="text-[9px] font-bold text-zinc-400 uppercase">{chat.timestamp}</span>
+                         <span className="text-[9px] font-bold text-zinc-600 uppercase">{chat.timestamp}</span>
                       </div>
-                      <p className="text-[10px] text-zinc-500 truncate font-medium">{chat.lastMessage}</p>
+                      <p className="text-[10px] text-zinc-600 truncate font-medium">{chat.lastMessage}</p>
                    </div>
                    {chat.unread > 0 && (
-                      <div className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 rounded-full bg-primary flex items-center justify-center text-[10px] font-black text-white shadow-xl ring-2 ring-white dark:ring-zinc-900">
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 rounded-full bg-primary flex items-center justify-center text-[10px] font-black text-zinc-600 shadow-xl ring-2 ring-white">
                          {chat.unread}
                       </div>
                    )}
@@ -174,26 +174,26 @@ export default function TeacherCommunicationsPage() {
        </div>
 
        {/* Main: Chat View */}
-       <div className="flex-1 flex flex-col items-center justify-center relative bg-white dark:bg-zinc-950">
+       <div className="flex-1 flex flex-col items-center justify-center relative bg-white">
           {selectedChat ? (
             <>
               {/* Chat Header */}
-              <div className="absolute top-0 left-0 right-0 h-16 bg-white dark:bg-zinc-950 border-b flex items-center justify-between px-6 z-10">
+              <div className="absolute top-0 left-0 right-0 h-16 bg-white border-b flex items-center justify-between px-6 z-10">
                  <div className="flex items-center gap-4">
                     <div className={cn(
-                      "h-10 w-10 rounded-xl flex items-center justify-center font-black text-white shadow-md",
+                      "h-10 w-10 rounded-xl flex items-center justify-center font-black text-zinc-600 shadow-md",
                       selectedChat.type === 'batch' ? "bg-indigo-500" : "bg-primary"
                     )}>
                        {selectedChat.name.charAt(0)}
                     </div>
                     <div>
-                       <h3 className="font-black uppercase text-sm tracking-tight">{selectedChat.name}</h3>
-                       <p className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">Online</p>
+                       <h3 className="font-black uppercase text-zinc-600 tracking-tight">{selectedChat.name}</h3>
+                       <p className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest">Online</p>
                     </div>
                  </div>
                  <div className="flex gap-2">
-                    <Button variant="ghost" size="icon" className="rounded-full"><Search className="h-4 w-4 text-zinc-400" /></Button>
-                    <Button variant="ghost" size="icon" className="rounded-full"><MoreVertical className="h-4 w-4 text-zinc-400" /></Button>
+                    <Button variant="ghost" size="icon" className="rounded-full"><Search className="h-4 w-4 text-zinc-600" /></Button>
+                    <Button variant="ghost" size="icon" className="rounded-full"><MoreVertical className="h-4 w-4 text-zinc-600" /></Button>
                  </div>
               </div>
 
@@ -201,32 +201,32 @@ export default function TeacherCommunicationsPage() {
               <div className="flex-1 w-full overflow-y-auto p-8 space-y-6 flex flex-col pt-24">
                  {msgLoading ? (
                    <div className="flex-1 flex items-center justify-center">
-                     <Loader2 className="h-6 w-6 animate-spin text-zinc-300" />
+                     <Loader2 className="h-6 w-6 animate-spin text-zinc-600" />
                    </div>
                  ) : messages.length > 0 ? (
                    messages.map((msg) => (
                     <div key={msg.id} className={cn("flex gap-4 max-w-[80%]", msg.isMe ? "ml-auto flex-row-reverse" : "")}>
-                       <div className={cn("h-8 w-8 rounded-xl flex-shrink-0 flex items-center justify-center font-black text-[10px]", msg.isMe ? "bg-zinc-900 text-white" : "bg-zinc-100 text-zinc-400")}>
+                       <div className={cn("h-8 w-8 rounded-xl flex-shrink-0 flex items-center justify-center font-black text-[10px]", msg.isMe ? "bg-zinc-900 text-white" : "bg-zinc-100 text-zinc-600")}>
                           {msg.isMe ? 'Y' : selectedChat.name.charAt(0)}
                        </div>
-                       <div className={cn("space-y-1", msg.isMe ? "text-right" : "")}>
-                          <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">{msg.isMe ? 'You' : selectedChat.name} • {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                       <div className={cn("space-y-1", msg.isMe ? "te" : "")}>
+                          <span className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest">{msg.isMe ? 'You' : selectedChat.name} • {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                           <div className={cn(
                             "p-4 rounded-2xl text-[11px] font-bold leading-relaxed shadow-sm",
-                            msg.isMe ? "bg-primary text-white" : "bg-zinc-50 dark:bg-zinc-900 border dark:border-zinc-800 text-zinc-800 dark:text-zinc-200"
+                            msg.isMe ? "bg-primary text-white" : "bg-zinc-50 border text-zinc-600"
                           )}>
                              {msg.text}
                           </div>
                           {msg.isMe && (
                              <div className="flex justify-end gap-1 pt-1 opacity-50">
-                                <CheckCheck className="h-3 w-3 text-emerald-500" />
+                                <CheckCheck className="h-3 w-3 text-zinc-600" />
                              </div>
                           )}
                        </div>
                     </div>
                    ))
                  ) : (
-                   <div className="flex-1 flex flex-col items-center justify-center text-zinc-300 gap-4 opacity-30">
+                   <div className="flex-1 flex flex-col items-center justify-center text-zinc-600 gap-4 opacity-30">
                      <MessageSquare className="h-10 w-10" />
                       <p className="text-[10px] font-bold uppercase tracking-widest">No messages yet.</p>
                    </div>
@@ -235,18 +235,18 @@ export default function TeacherCommunicationsPage() {
 
               {/* Chat Input */}
               <div className="p-6 w-full max-w-4xl">
-                <div className="bg-zinc-50 dark:bg-zinc-900 rounded-[2rem] border dark:border-zinc-800 shadow-2xl flex items-center px-6 gap-3 focus-within:ring-2 ring-primary/20 transition-all">
-                   <Button variant="ghost" size="icon" className="rounded-full text-zinc-400"><Paperclip className="h-4 w-4" /></Button>
+                <div className="bg-zinc-50 rounded-[2rem] border shadow-2xl flex items-center px-6 gap-3 focus-within:ring-2 ring-primary/20 transition-all">
+                   <Button variant="ghost" size="icon" className="rounded-full text-zinc-600"><Paperclip className="h-4 w-4" /></Button>
                     <input 
                       type="text" 
                       placeholder="Type a message..." 
-                      className="flex-1 bg-transparent border-none py-5 text-xs font-bold outline-none placeholder:text-[10px] placeholder:font-bold placeholder:uppercase placeholder:tracking-wider"
+                      className="flex-1 bg-transparent border-none py-5 text-xl font-bold outline-none placeholder:text-[10px] placeholder:font-bold placeholder:uppercase placeholder:tracking-wider"
                      value={messageText}
                      onChange={(e) => setMessageText(e.target.value)}
                      onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                    />
                    <div className="flex items-center gap-2">
-                     <Button variant="ghost" size="icon" className="rounded-full text-zinc-400 hidden md:flex"><Smile className="h-4 w-4" /></Button>
+                     <Button variant="ghost" size="icon" className="rounded-full text-zinc-600 hidden md:flex"><Smile className="h-4 w-4" /></Button>
                      <Button 
                        onClick={handleSendMessage}
                        className="h-12 px-8 rounded-2xl shadow-xl flex items-center justify-center gap-2 font-black text-[10px] uppercase tracking-widest"
@@ -258,8 +258,8 @@ export default function TeacherCommunicationsPage() {
               </div>
             </>
           ) : (
-            <div className="flex flex-col items-center gap-4 text-zinc-300">
-               <div className="h-20 w-20 rounded-[2.5rem] bg-zinc-50 dark:bg-zinc-900 flex items-center justify-center mb-4">
+            <div className="flex flex-col items-center gap-4 text-zinc-600">
+               <div className="h-20 w-20 rounded-[2.5rem] bg-zinc-50 flex items-center justify-center mb-4">
                   <MessageSquare className="h-10 w-10" />
                </div>
                 <p className="font-bold uppercase tracking-widest text-[10px]">Select a chat to start messaging</p>

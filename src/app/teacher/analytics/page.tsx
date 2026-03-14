@@ -80,15 +80,15 @@ export default function TeacherAnalyticsDashboard() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <Loader2 className="h-8 w-8 animate-spin text-zinc-600" />
       </div>
     );
   }
 
   if (!data) {
     return (
-      <div className="p-8 text-center text-muted-foreground">
-        <AlertCircle className="h-8 w-8 mx-auto mb-2 text-destructive" />
+      <div className="p-8 text-zinc-600">
+        <AlertCircle className="h-8 w-8 mx-auto mb-2 text-zinc-600" />
         <p>Could not load analytics data. Please try again later.</p>
       </div>
     );
@@ -100,53 +100,53 @@ export default function TeacherAnalyticsDashboard() {
     <div className="space-y-6 animate-in fade-in zoom-in-95 duration-500 pb-20">
       <div className="flex justify-between items-end border-b pb-6">
         <div className="space-y-1">
-          <h1 className="text-3xl font-bold tracking-tight">Class Intelligence</h1>
-          <p className="text-muted-foreground">AI-driven insights into your student performance and growth areas.</p>
+          <h1 className="text-xl font-bold tracking-tight">Class Intelligence</h1>
+          <p className="text-zinc-600">AI-driven insights into your student performance and growth areas.</p>
         </div>
         <div className="flex gap-2">
-           <div className="flex items-center gap-2 px-4 py-2 bg-purple-50 dark:bg-purple-900/10 rounded-xl border border-purple-100 dark:border-purple-900/20">
-              <Brain className="h-4 w-4 text-purple-600" />
-              <span className="text-xs font-bold text-purple-700 uppercase tracking-widest">AI Engine Active</span>
+           <div className="flex items-center gap-2 px-4 py-2 bg-purple-50 rounded-xl border border-purple-100">
+              <Brain className="h-4 w-4 text-zinc-600" />
+              <span className="text-xl font-bold text-zinc-600 uppercase tracking-widest">AI Engine Active</span>
            </div>
         </div>
       </div>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="border shadow-md bg-white dark:bg-zinc-900/50">
+        <Card className="border shadow-md bg-white">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tests Created</CardTitle>
-            <FileText className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-zinc-600 font-medium">Tests Created</CardTitle>
+            <FileText className="h-4 w-4 text-zinc-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{overview.tests_created}</div>
-            <p className="text-xs text-muted-foreground mt-1">
+            <div className="text-xl font-bold">{overview.tests_created}</div>
+            <p className="text-zinc-600 mt-1">
               Active tests in the platform
             </p>
           </CardContent>
         </Card>
         
-        <Card className="border shadow-md bg-white dark:bg-zinc-900/50">
+        <Card className="border shadow-md bg-white">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Avg Class Score</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-zinc-600 font-medium">Avg Class Score</CardTitle>
+            <TrendingUp className="h-4 w-4 text-zinc-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{overview.average_class_score}%</div>
-            <p className="text-xs text-muted-foreground mt-1">
+            <div className="text-xl font-bold">{overview.average_class_score}%</div>
+            <p className="text-zinc-600 mt-1">
               Across all tests you created
             </p>
           </CardContent>
         </Card>
         
-        <Card className="border shadow-md bg-white dark:bg-zinc-900/50">
+        <Card className="border shadow-md bg-white">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Needs Grading</CardTitle>
-            <CheckCircle className="h-4 w-4 text-amber-500" />
+            <CardTitle className="text-zinc-600 font-medium">Needs Grading</CardTitle>
+            <CheckCircle className="h-4 w-4 text-zinc-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{overview.attempts_needing_grading}</div>
-            <p className="text-xs text-muted-foreground mt-1 text-amber-500 font-medium">
+            <div className="text-xl font-bold">{overview.attempts_needing_grading}</div>
+            <p className="text-zinc-600 mt-1 text-zinc-600 font-medium">
               Pending manual review
             </p>
           </CardContent>
@@ -155,7 +155,7 @@ export default function TeacherAnalyticsDashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Subject Performance Chart */}
-        <Card className="lg:col-span-2 border shadow-md bg-white dark:bg-zinc-900">
+        <Card className="lg:col-span-2 border shadow-md bg-white">
           <CardHeader>
             <CardTitle>Subject Performance</CardTitle>
             <CardDescription>Accuracy percentage grouped by subject area.</CardDescription>
@@ -175,7 +175,7 @@ export default function TeacherAnalyticsDashboard() {
                   />
                   <Tooltip 
                     cursor={{ fill: 'transparent' }}
-                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
+                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '00px5px -3px rgba(0,0,0,0.1)' }}
                   />
                   <Bar dataKey="accuracy" radius={[4, 4, 0, 0]}>
                     {subject_performance.map((entry, index) => (
@@ -185,7 +185,7 @@ export default function TeacherAnalyticsDashboard() {
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <div className="h-full flex items-center justify-center text-muted-foreground text-sm">
+              <div className="h-full flex items-center justify-center text-zinc-600">
                 No subject data available yet.
               </div>
             )}
@@ -195,8 +195,8 @@ export default function TeacherAnalyticsDashboard() {
         {/* Weakness Radar Chart */}
         <Card className="border shadow-md bg-zinc-900 text-white overflow-hidden">
            <CardHeader className="bg-zinc-800/50">
-              <CardTitle className="text-sm font-black uppercase tracking-widest flex items-center gap-2">
-                 <Target className="h-4 w-4 text-primary" />
+              <CardTitle className="text-zinc-600 font-black uppercase tracking-widest flex items-center gap-2">
+                 <Target className="h-4 w-4 text-zinc-600" />
                  Weakness Radar
               </CardTitle>
            </CardHeader>
@@ -216,7 +216,7 @@ export default function TeacherAnalyticsDashboard() {
                    </RadarChart>
                 </ResponsiveContainer>
               ) : (
-                <div className="text-zinc-500 text-xs text-center px-8">
+                <div className="text-zinc-600 px-8">
                    Insufficient data for radar mapping. Continue publishing tests to enable AI analysis.
                 </div>
               )}
@@ -226,7 +226,7 @@ export default function TeacherAnalyticsDashboard() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
          {/* Top Performers */}
-         <Card className="border shadow-md bg-white dark:bg-zinc-900">
+         <Card className="border shadow-md bg-white">
           <CardHeader>
             <CardTitle>Top Performers</CardTitle>
             <CardDescription>Highest scoring students across recent tests.</CardDescription>
@@ -235,24 +235,24 @@ export default function TeacherAnalyticsDashboard() {
              {top_performers && top_performers.length > 0 ? (
                <div className="space-y-6">
                  {top_performers.map((student, i) => (
-                   <div key={i} className="flex items-center justify-between p-2 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors">
+                   <div key={i} className="flex items-center justify-between p-2 rounded-xl hover:bg-zinc-50 transition-colors">
                      <div className="flex items-center gap-4">
-                       <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary">
+                       <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-zinc-600">
                           {student.name.charAt(0)}
                        </div>
                        <div>
-                         <p className="text-sm font-black text-zinc-800 dark:text-zinc-100">{student.name}</p>
-                         <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{student.test_title}</p>
+                         <p className="text-zinc-600 font-black text-zinc-600">{student.name}</p>
+                         <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">{student.test_title}</p>
                        </div>
                      </div>
-                     <div className="font-black text-lg text-emerald-600 dark:text-emerald-400">
+                     <div className="font-black text-zinc-600">
                        {student.percentage}%
                      </div>
                    </div>
                  ))}
                </div>
              ) : (
-                <div className="h-40 flex items-center justify-center text-muted-foreground text-sm">
+                <div className="h-40 flex items-center justify-center text-zinc-600">
                   No top performers identified yet. 
                 </div>
              )}
@@ -260,24 +260,24 @@ export default function TeacherAnalyticsDashboard() {
         </Card>
 
         {/* AI Growth Recommendations */}
-        <Card className="border shadow-md bg-white dark:bg-zinc-900">
+        <Card className="border shadow-md bg-white">
            <CardHeader>
-              <CardTitle className="text-sm font-black uppercase tracking-widest flex items-center gap-2">
-                 <Zap className="h-4 w-4 text-amber-500" />
+              <CardTitle className="text-zinc-600 font-black uppercase tracking-widest flex items-center gap-2">
+                 <Zap className="h-4 w-4 text-zinc-600" />
                  Growth Recommendations
               </CardTitle>
            </CardHeader>
            <CardContent className="space-y-4">
               {weakness_analysis && weakness_analysis.length > 0 ? weakness_analysis.slice(0, 3).map((item, i) => (
-                <div key={i} className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-800">
+                <div key={i} className="p-4 rounded-2xl bg-zinc-50 border border-zinc-100">
                    <div className="flex justify-between items-start mb-2">
-                      <span className="text-xs font-black uppercase tracking-tighter text-zinc-400">{item.topic}</span>
-                      <Badge className="bg-amber-100 text-amber-700 border-none text-[8px] font-bold">Action Required</Badge>
+                      <span className="text-zinc-600 font-black uppercase tracking-tighter text-zinc-600">{item.topic}</span>
+                      <Badge className="bg-amber-100 text-zinc-600 border-none text-[8px] font-bold">Action Required</Badge>
                    </div>
-                   <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{item.recommendation}</p>
+                   <p className="text-zinc-600 font-medium text-zinc-600">{item.recommendation}</p>
                 </div>
               )) : (
-                <div className="p-8 text-center text-muted-foreground text-sm">
+                <div className="p-8 text-zinc-600">
                    AI is currently analyzing response patterns. Recommendations will appear shortly.
                 </div>
               )}

@@ -76,7 +76,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
   ];
 
   return (
-    <div className="flex flex-wrap gap-1 p-2 border-b bg-zinc-50 dark:bg-zinc-900/50">
+    <div className="flex flex-wrap gap-1 p-2 border-b bg-zinc-50">
       <TooltipProvider>
         {buttons.map((btn, i) => (
           <SafeTooltip key={i} content={btn.title}>
@@ -92,7 +92,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
           </SafeTooltip>
         ))}
         
-        <div className="w-px h-6 bg-zinc-300 dark:bg-zinc-700 mx-1 self-center" />
+        <div className="w-px h-6 bg-zinc-300 mx-1 self-center" />
         
         <SafeTooltip content="Undo">
           <Button
@@ -161,20 +161,20 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
     editorProps: {
       attributes: {
         class:
-          "prose prose-sm dark:prose-invert max-w-none focus:outline-none min-h-[200px] p-4",
+          "prose prose-sm max-w-none focus:outline-none min-h-[200px] p-4",
         placeholder: placeholder || "Start typing...",
       },
     },
   });
 
   return (
-    <div className="rounded-md border bg-white dark:bg-zinc-950 overflow-hidden">
+    <div className="rounded-md border bg-white overflow-hidden">
       <MenuBar editor={editor} />
       <EditorContent editor={editor} />
       
       {/* Preview Section for LaTeX */}
-      <div className="p-4 border-t bg-zinc-50/50 dark:bg-zinc-900/30 text-xs">
-        <div className="font-semibold mb-1 text-muted-foreground uppercase tracking-wider">Math Preview</div>
+      <div className="p-4 border-t bg-zinc-50/50 text-zinc-600">
+        <div className="font-semibold mb-1 text-zinc-600 uppercase tracking-wider">Math Preview</div>
         <div className="min-h-[20px] overflow-x-auto">
           {content.includes('$') ? (
              <div className="space-y-2">
@@ -196,7 +196,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
                 })}
              </div>
           ) : (
-            <span className=" text-muted-foreground">Type math using $...$ for inline or $$...$$ for block</span>
+            <span className=" text-zinc-600">Type math using $...$ for inline or $$...$$ for block</span>
           )}
         </div>
       </div>

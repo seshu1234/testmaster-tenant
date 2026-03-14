@@ -109,7 +109,7 @@ export default function CommunicationsPage() {
   if (fetching) {
      return (
         <div className="flex items-center justify-center min-h-[400px]">
-           <Loader2 className="h-8 w-8 animate-spin text-primary" />
+           <Loader2 className="h-8 w-8 animate-spin text-zinc-600" />
         </div>
      );
   }
@@ -118,8 +118,8 @@ export default function CommunicationsPage() {
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Communications</h2>
-          <p className="text-muted-foreground">
+          <h2 className="text-xl font-bold tracking-tight">Communications</h2>
+          <p className="text-zinc-600">
             Send announcements and broadcasts to your center audience.
           </p>
         </div>
@@ -139,10 +139,10 @@ export default function CommunicationsPage() {
 
         <TabsContent value="compose" className="mt-6 space-y-6">
           <div className="grid gap-6 md:grid-cols-3">
-            <Card className="md:col-span-2 border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+            <Card className="md:col-span-2 border shadow-sm bg-white/50 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <MessageSquare className="h-5 w-5 text-primary" />
+                  <MessageSquare className="h-5 w-5 text-zinc-600" />
                   Broadcast Message
                 </CardTitle>
                 <CardDescription>Draft and distribute institutional communications in real-time.</CardDescription>
@@ -150,7 +150,7 @@ export default function CommunicationsPage() {
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Notification Channel</label>
+                    <label className="text-xl font-bold uppercase tracking-wider text-zinc-600">Notification Channel</label>
                     <Select value={channel} onValueChange={setChannel}>
                       <SelectTrigger className="h-10">
                         <SelectValue />
@@ -164,7 +164,7 @@ export default function CommunicationsPage() {
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Target Audience</label>
+                    <label className="text-xl font-bold uppercase tracking-wider text-zinc-600">Target Audience</label>
                     <Select value={target} onValueChange={setTarget}>
                       <SelectTrigger className="h-10">
                         <SelectValue />
@@ -179,7 +179,7 @@ export default function CommunicationsPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Subject / Headline</label>
+                  <label className="text-xl font-bold uppercase tracking-wider text-zinc-600">Subject / Headline</label>
                   <Input 
                     placeholder="e.g., Mandatory Mock Test Schedule - October 2026" 
                     className="h-10" 
@@ -189,7 +189,7 @@ export default function CommunicationsPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Body Content</label>
+                  <label className="text-xl font-bold uppercase tracking-wider text-zinc-600">Body Content</label>
                   <Textarea 
                     placeholder="Type your message here..." 
                     className="min-h-[160px] resize-none border-zinc-100 bg-zinc-50/50"
@@ -199,12 +199,12 @@ export default function CommunicationsPage() {
                 </div>
 
                 <div className="flex justify-between items-center pt-2">
-                  <Badge variant="secondary" className="bg-primary/5 text-primary border-primary/10 gap-1.5 py-1">
+                  <Badge variant="secondary" className="bg-primary/5 text-zinc-600 border-primary/10 gap-1.5 py-1">
                     <Zap className="h-3 w-3" />
                     Estimated Reach: {summary?.audience.total || 0} Users
                   </Badge>
                   <div className="flex gap-3">
-                    <Button variant="ghost" disabled={loading} className="text-zinc-500">Save Template</Button>
+                    <Button variant="ghost" disabled={loading} className="text-zinc-600">Save Template</Button>
                     <Button onClick={handleSend} disabled={loading} className="gap-2 px-8 bg-zinc-900 text-white">
                       <Send className="h-4 w-4" />
                       {loading ? "Transmitting..." : "Broadcast Now"}
@@ -215,16 +215,16 @@ export default function CommunicationsPage() {
             </Card>
 
             <div className="space-y-6">
-              <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+              <Card className="border shadow-sm bg-white/50 backdrop-blur-sm">
                 <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-medium flex items-center gap-2">
-                    <BarChart2 className="h-4 w-4 text-primary" />
+                  <CardTitle className="text-zinc-600 font-medium flex items-center gap-2">
+                    <BarChart2 className="h-4 w-4 text-zinc-600" />
                     Institutional Reach
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                    <div className="space-y-1">
-                     <div className="flex justify-between text-xs">
+                     <div className="flex justify-between text-zinc-600">
                        <span>Total Audience</span>
                        <span className="font-bold">{summary?.audience.total || 0}</span>
                      </div>
@@ -232,34 +232,34 @@ export default function CommunicationsPage() {
                        <div className="h-full bg-primary w-full" />
                      </div>
                    </div>
-                   <div className="text-[10px] text-muted-foreground">
+                   <div className="text-[10px] text-zinc-600">
                      Data synchronized from center roster.
                    </div>
                 </CardContent>
               </Card>
 
-              <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+              <Card className="border shadow-sm bg-white/50 backdrop-blur-sm">
                 <CardHeader className="pb-3 flex flex-row items-center justify-between">
-                  <CardTitle className="text-sm font-medium flex items-center gap-2">
-                    <History className="h-4 w-4 text-primary" />
+                  <CardTitle className="text-zinc-600 font-medium flex items-center gap-2">
+                    <History className="h-4 w-4 text-zinc-600" />
                     Dispatcher Log
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                    {summary?.recent_broadcasts.map((item, i) => (
                      <div key={i} className="flex items-center gap-3 group">
-                       <div className="h-8 w-8 rounded bg-zinc-50 border border-zinc-100 flex items-center justify-center text-zinc-400">
+                       <div className="h-8 w-8 rounded bg-zinc-50 border border-zinc-100 flex items-center justify-center text-zinc-600">
                           <MessageSquare className="h-4 w-4" />
                        </div>
                        <div className="flex-1 flex flex-col min-w-0">
-                         <span className="text-xs font-bold line-clamp-1">{item.subject}</span>
-                         <span className="text-[9px] text-muted-foreground uppercase">{new Date(item.created_at).toLocaleString()}</span>
+                         <span className="text-xl font-bold line-clamp-1">{item.subject}</span>
+                         <span className="text-[9px] text-zinc-600 uppercase">{new Date(item.created_at).toLocaleString()}</span>
                        </div>
                        <Badge variant="outline" className="text-[8px] h-4 font-bold border-zinc-100 uppercase">Sent</Badge>
                      </div>
                    ))}
                    {(!summary?.recent_broadcasts || summary.recent_broadcasts.length === 0) && (
-                      <p className="text-xs text-muted-foreground text-center py-4">No recent broadcasts found.</p>
+                      <p className="text-zinc-600 py-4">No recent broadcasts found.</p>
                    )}
                 </CardContent>
               </Card>
@@ -268,7 +268,7 @@ export default function CommunicationsPage() {
         </TabsContent>
 
         <TabsContent value="campaigns" className="mt-6">
-          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm">
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
                 <CardTitle>Email Campaigns</CardTitle>
@@ -280,13 +280,13 @@ export default function CommunicationsPage() {
               </Button>
             </CardHeader>
             <CardContent>
-               <div className="mt-8 rounded-xl border border-dashed border-zinc-200 bg-zinc-50/30 p-12 flex flex-col items-center justify-center text-center space-y-4">
-                  <div className="h-12 w-12 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-300">
+               <div className="mt-8 rounded-xl border border-dashed border-zinc-200 bg-zinc-50/30 p-12 flex flex-col items-center justify-center text-zinc-600 space-y-4">
+                  <div className="h-12 w-12 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-600">
                     <Mail className="h-6 w-6" />
                   </div>
                   <div className="space-y-1">
-                    <h5 className="font-bold text-sm">No Active Campaigns</h5>
-                    <p className="text-xs text-muted-foreground max-w-[250px]">Start an automated email campaign to re-engage passive students.</p>
+                    <h5 className="font-bold text-zinc-600">No Active Campaigns</h5>
+                    <p className="text-zinc-600 max-w-[250px]">Start an automated email campaign to re-engage passive students.</p>
                   </div>
                   <Button variant="outline" size="sm">Launch Campaign Wizard</Button>
                </div>

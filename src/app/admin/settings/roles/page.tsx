@@ -65,8 +65,8 @@ export default function RolesPage() {
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Roles & Permissions</h2>
-          <p className="text-muted-foreground">
+          <h2 className="text-xl font-bold tracking-tight">Roles & Permissions</h2>
+          <p className="text-zinc-600">
             Define granular access levels for your staff and academic departments.
           </p>
         </div>
@@ -79,10 +79,10 @@ export default function RolesPage() {
       <div className="grid gap-6 md:grid-cols-4">
         <div className="space-y-3">
           {[
-            { id: "admin", name: "Super Admin", count: 2, icon: ShieldCheck, color: "text-red-600 bg-red-50" },
-            { id: "hod", name: "Dept Head", count: 4, icon: Shield, color: "text-blue-600 bg-blue-50" },
-            { id: "teacher", name: "Standard Teacher", count: 12, icon: Users, color: "text-zinc-600 bg-zinc-50" },
-            { id: "moderator", name: "Content Mod", count: 3, icon: Lock, color: "text-orange-600 bg-orange-50" },
+            { id: "admin", name: "Super Admin", count: 2, icon: ShieldCheck, color:  "text-zinc-600 bg-red-50" },
+            { id: "hod", name: "Dept Head", count: 4, icon: Shield, color:  "text-zinc-600 bg-blue-50" },
+            { id: "teacher", name: "Standard Teacher", count: 12, icon: Users, color:  "text-zinc-600 bg-zinc-50" },
+            { id: "moderator", name: "Content Mod", count: 3, icon: Lock, color:  "text-zinc-600 bg-orange-50" },
           ].map((role) => (
             <div 
               key={role.id}
@@ -96,23 +96,23 @@ export default function RolesPage() {
                   <role.icon className="h-4 w-4" />
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-sm font-bold tracking-tight">{role.name}</span>
-                  <span className="text-[10px] text-muted-foreground">{role.count} Users</span>
+                  <span className="text-xl font-bold tracking-tight">{role.name}</span>
+                  <span className="text-[10px] text-zinc-600">{role.count} Users</span>
                 </div>
               </div>
-              <ChevronRight className={`h-4 w-4 transition-transform ${selectedRole === role.id ? 'text-primary translate-x-1' : 'text-zinc-300'}`} />
+              <ChevronRight className={`h-4 w-4 transition-transform ${selectedRole === role.id ?  'text-zinc-600 translate-x-1' : 'te'}`} />
             </div>
           ))}
         </div>
 
-        <Card className="md:col-span-3 border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+        <Card className="md:col-span-3 border shadow-sm bg-white/50 backdrop-blur-sm">
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
               <CardTitle className="capitalize">{selectedRole.replace('-', ' ')} Permissions</CardTitle>
               <CardDescription>Configure what this role can see and do.</CardDescription>
             </div>
             {selectedRole !== 'admin' && (
-              <Button variant="ghost" size="sm" className="h-8 text-xs text-red-500 hover:text-red-600 hover:bg-red-50 gap-2">
+              <Button variant="ghost" size="sm" className="h-8 text-zinc-600  hover:bg-red-50 gap-2">
                 <Trash2 className="h-3 w-3" />
                 Delete Role
               </Button>
@@ -120,7 +120,7 @@ export default function RolesPage() {
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-2">
-              <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Role Name</label>
+              <label className="text-xl font-bold uppercase tracking-wider text-zinc-600">Role Name</label>
               <div className="flex gap-2">
                 <Input defaultValue={selectedRole.toUpperCase()} className="max-w-xs" />
                 <Button variant="outline" size="sm" className="gap-2">
@@ -133,7 +133,7 @@ export default function RolesPage() {
             <div className="space-y-6 border-t pt-6">
               {permissionGroups.map((group) => (
                 <div key={group.group} className="space-y-3">
-                  <h4 className="text-xs font-bold uppercase tracking-widest text-primary/70">{group.group}</h4>
+                  <h4 className="text-xl font-bold uppercase tracking-widest te/70">{group.group}</h4>
                   <div className="grid gap-4">
                     {group.permissions.map((perm) => (
                       <div key={perm.id} className="flex items-start gap-3 p-3 rounded-lg border border-zinc-100 bg-zinc-50/30 hover:bg-white transition-colors group">
@@ -144,8 +144,8 @@ export default function RolesPage() {
                           className="mt-1"
                         />
                         <div className="flex-1 space-y-0.5">
-                          <label htmlFor={perm.id} className="text-sm font-bold cursor-pointer">{perm.name}</label>
-                          <p className="text-xs text-muted-foreground leading-relaxed">{perm.description}</p>
+                          <label htmlFor={perm.id} className="text-xl font-bold cursor-pointer">{perm.name}</label>
+                          <p className="text-zinc-600 leading-relaxed">{perm.description}</p>
                         </div>
                         {selectedRole === 'admin' && (
                            <Badge variant="secondary" className="text-[9px] bg-zinc-200">Locked</Badge>

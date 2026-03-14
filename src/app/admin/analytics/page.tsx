@@ -57,15 +57,15 @@ export default function AdminAnalyticsDashboard() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <Loader2 className="h-8 w-8 animate-spin text-zinc-600" />
       </div>
     );
   }
 
   if (!data) {
     return (
-      <div className="p-8 text-center text-muted-foreground">
-        <AlertCircle className="h-8 w-8 mx-auto mb-2 text-destructive" />
+      <div className="p-8 text-zinc-600">
+        <AlertCircle className="h-8 w-8 mx-auto mb-2 text-zinc-600" />
         <p>Could not load analytics data. Please try again later.</p>
       </div>
     );
@@ -76,53 +76,53 @@ export default function AdminAnalyticsDashboard() {
   return (
     <div className="space-y-6 animate-in slide-in-from-bottom-4 duration-500 pb-20">
       <div className="space-y-1">
-        <h1 className="text-3xl font-bold tracking-tight">Platform Overview</h1>
-        <p className="text-muted-foreground">High-level metrics and usage trends across your entire tenant.</p>
+        <h1 className="text-xl font-bold tracking-tight">Platform Overview</h1>
+        <p className="text-zinc-600">High-level metrics and usage trends across your entire tenant.</p>
       </div>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="border shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Students</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-zinc-600 font-medium">Active Students</CardTitle>
+            <Users className="h-4 w-4 text-zinc-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{overview.active_students}</div>
-            <p className="text-xs text-muted-foreground mt-1">Total registered</p>
+            <div className="text-xl font-bold">{overview.active_students}</div>
+            <p className="text-zinc-600 mt-1">Total registered</p>
           </CardContent>
         </Card>
         
         <Card className="border shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Platform Tests</CardTitle>
-            <FileText className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-zinc-600 font-medium">Platform Tests</CardTitle>
+            <FileText className="h-4 w-4 text-zinc-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{overview.total_tests}</div>
-            <p className="text-xs text-muted-foreground mt-1">Created by teachers</p>
+            <div className="text-xl font-bold">{overview.total_tests}</div>
+            <p className="text-zinc-600 mt-1">Created by teachers</p>
           </CardContent>
         </Card>
         
         <Card className="border shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Test Attempts</CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-zinc-600 font-medium">Test Attempts</CardTitle>
+            <Activity className="h-4 w-4 text-zinc-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{overview.total_attempts}</div>
-            <p className="text-xs text-muted-foreground mt-1">Completed or graded</p>
+            <div className="text-xl font-bold">{overview.total_attempts}</div>
+            <p className="text-zinc-600 mt-1">Completed or graded</p>
           </CardContent>
         </Card>
 
         <Card className="border shadow-sm border-emerald-100 bg-emerald-50/30">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-emerald-600">Platform Health</CardTitle>
-            <TrendingUp className="h-4 w-4 text-emerald-600" />
+            <CardTitle className="text-zinc-600 font-medium text-zinc-600">Platform Health</CardTitle>
+            <TrendingUp className="h-4 w-4 text-zinc-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">Stable</div>
-            <p className="text-xs text-muted-foreground mt-1">All systems operational</p>
+            <div className="text-xl font-bold">Stable</div>
+            <p className="text-zinc-600 mt-1">All systems operational</p>
           </CardContent>
         </Card>
       </div>
@@ -160,23 +160,23 @@ export default function AdminAnalyticsDashboard() {
                 </AreaChart>
               </ResponsiveContainer>
             ) : (
-              <div className="h-full flex items-center justify-center text-muted-foreground text-sm">
+              <div className="h-full flex items-center justify-center text-zinc-600">
                 No activity registered in the last 7 days.
               </div>
             )}
           </CardContent>
         </Card>
 
-        <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+        <Card className="border shadow-sm bg-white/50 backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Bell className="h-4 w-4 text-zinc-400" />
+              <Bell className="h-4 w-4 text-zinc-600" />
               Notices
             </CardTitle>
             <CardDescription>System notices and platform updates.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-             <div className="p-8 text-center text-muted-foreground text-xs uppercase font-bold tracking-widest">
+             <div className="p-8 text-zinc-600 uppercase font-bold tracking-widest">
                 No new notices.
              </div>
           </CardContent>

@@ -159,21 +159,21 @@ export default function TestBuilderPage() {
   };
 
   const handleBack = () => {
-    if (currentStep > 1) setCurrentStep(currentStep - 1);
+    if (currentStep > 1) setCurrentStep(currentStep -);
   };
 
-  if (loading) return <div className="p-8 text-center animate-pulse">Initializing builder...</div>;
+  if (loading) return <div className="p-8 text-zinc-600 animate-pulse">Initializing builder...</div>;
 
   return (
     <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in duration-500">
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight">Test Builder</h1>
-        <p className="text-muted-foreground">Designing: <span className="text-primary font-medium">{test?.title}</span></p>
+        <h1 className="text-xl font-bold tracking-tight">Test Builder</h1>
+        <p className="text-zinc-600">Designing: <span className="text-zinc-600 font-medium">{test?.title}</span></p>
       </div>
 
       {/* Stepper */}
       <div className="relative flex justify-between">
-        <div className="absolute top-1/2 left-0 w-full h-0.5 bg-zinc-200 dark:bg-zinc-800 -translate-y-1/2 -z-10" />
+        <div className="absolute top-1/2 left-0 w-full h-0.5 bg-zinc-200 -translate-y-1/2 -z-10" />
         {steps.map((step) => {
           const Icon = step.icon;
           const isCompleted = currentStep > step.id;
@@ -184,15 +184,15 @@ export default function TestBuilderPage() {
               <div 
                 className={`h-10 w-10 rounded-full flex items-center justify-center transition-all duration-300 border-2 ${
                   isCompleted 
-                    ? "bg-primary border-primary text-white" 
+                    ? "bg-primary border-primary text-zinc-600" 
                     : isActive 
-                      ? "bg-white border-primary text-primary dark:bg-zinc-950 shadow-[0_0_15px_rgba(var(--primary),0.3)]" 
-                      : "bg-white border-zinc-300 text-zinc-400 dark:bg-zinc-950 dark:border-zinc-800"
+                      ? "bg-white border-primary text-zinc-600 shadow-[0_0_15px_rgba(var(--primary),0.3)]" 
+                      : "bg-white border-zinc-300 text-zinc-600"
                 }`}
               >
                 {isCompleted ? <Check className="h-5 w-5" /> : <Icon className="h-5 w-5" />}
               </div>
-              <span className={`text-xs font-medium ${isActive ? "text-primary" : "text-muted-foreground"}`}>
+              <span className={`text-zinc-600 font-medium ${isActive ? "te" : "te"}`}>
                 {step.title}
               </span>
             </div>
@@ -201,7 +201,7 @@ export default function TestBuilderPage() {
       </div>
 
       {/* Wizard Content */}
-      <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50 min-h-[400px]">
+      <Card className="border-none shadow-sm bg-white/50 backdrop-blur-sm min-h-[400px]">
         <CardHeader>
           <CardTitle>Step {currentStep}: {steps[currentStep-1].title}</CardTitle>
           <CardDescription>
@@ -222,14 +222,14 @@ export default function TestBuilderPage() {
            {currentStep === 6 && (
              <div className="space-y-6 animate-in fade-in">
                 <div className="p-6 rounded-xl border bg-primary/5 border-primary/10">
-                   <h3 className="font-semibold text-lg mb-2 text-primary">Ready to Publish?</h3>
-                   <p className="text-sm text-muted-foreground">Review your test configuration. Once published, students in the assigned batches will be able to see it at the scheduled time.</p>
+                   <h3 className="font-semibold text-zinc-600 mb-2 text-zinc-600">Ready to Publish?</h3>
+                   <p className="text-zinc-600">Review your test configuration. Once published, students in the assigned batches will be able to see it at the scheduled time.</p>
                 </div>
-                <div className="grid gap-4 text-sm">
-                   <div className="flex justify-between border-b pb-2"><span className="text-muted-foreground">Title</span><span>{test.title}</span></div>
-                   <div className="flex justify-between border-b pb-2"><span className="text-muted-foreground">Duration</span><span>{test.duration_seconds / 60} mins</span></div>
-                   <div className="flex justify-between border-b pb-2"><span className="text-muted-foreground">Sections</span><span>{test.sections?.length || 0}</span></div>
-                   <div className="flex justify-between border-b pb-2"><span className="text-muted-foreground">Active Batches</span><span>{test.batch_ids?.length || 0}</span></div>
+                <div className="grid gap-4 text-zinc-600">
+                   <div className="flex justify-between border-b pb-2"><span className="text-zinc-600">Title</span><span>{test.title}</span></div>
+                   <div className="flex justify-between border-b pb-2"><span className="text-zinc-600">Duration</span><span>{test.duration_seconds / 60} mins</span></div>
+                   <div className="flex justify-between border-b pb-2"><span className="text-zinc-600">Sections</span><span>{test.sections?.length || 0}</span></div>
+                   <div className="flex justify-between border-b pb-2"><span className="text-zinc-600">Active Batches</span><span>{test.batch_ids?.length || 0}</span></div>
                 </div>
              </div>
            )}

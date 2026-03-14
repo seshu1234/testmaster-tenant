@@ -52,17 +52,17 @@ export function LoginForm() {
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto shadow-xl border-none bg-white/80 backdrop-blur-md dark:bg-zinc-900/80">
+    <Card className="w-full max-w-md mx-auto shadow-xl border-none bg-white/80 backdrop-blur-md">
       <CardHeader>
         {branding?.logo_url && (
           <div className="flex justify-center mb-4">
             <Image src={branding.logo_url} alt="Logo" className="h-12 w-auto object-contain" width={100} height={100} />
           </div>
         )}
-        <CardTitle className="text-3xl font-bold text-center tracking-tight">
+        <CardTitle className="text-xl font-bold text-zinc-600 tracking-tight">
           {branding?.welcome_message || "Welcome Back"}
         </CardTitle>
-        <p className="text-center text-muted-foreground text-sm">Sign in to your account</p>
+        <p className="text-zinc-600 text-zinc-600">Sign in to your account</p>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -76,7 +76,7 @@ export function LoginForm() {
                   <FormControl>
                     <select 
                       {...field}
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-accent/50 transition-colors cursor-pointer"
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-zinc-600 ring-offset-background file:border-0 file:bg-transparent file :text-zinc-600 file:font-medium placeholder :text-zinc-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-accent/50 transition-colors cursor-pointer"
                     >
                       <option value="student">Student</option>
                       <option value="teacher">Teacher</option>
@@ -124,14 +124,14 @@ export function LoginForm() {
               )}
             />
             {error && (
-              <div className="text-sm font-medium text-destructive bg-destructive/10 p-3 rounded-md animate-in fade-in slide-in-from-top-1 duration-300">
+              <div className="text-zinc-600 font-medium text-zinc-600 bg-destructive/10 p-3 rounded-md animate-in fade-in slide-in-from-top-1 duration-300">
                 {error}
               </div>
             )}
             <Button 
               type="submit" 
               variant="default"
-              className="w-full py-6 text-base font-semibold bg-black text-white hover:bg-black/90 transition-all hover:scale-[1.02] hover:shadow-lg active:scale-[0.98] active:shadow-md disabled:hover:scale-100 disabled:active:scale-100" 
+              className="w-full py-6 text-zinc-600 font-semibold bg-black text-zinc-600 hover:bg-black/90 transition-all hover:scale-[1.02] hover:shadow-lg active:scale-[0.98] active:shadow-md disabled:hover:scale-100 disabled:active:scale-100" 
               disabled={isLoading}
             >
               {isLoading ? "Authenticating..." : "Sign In"}

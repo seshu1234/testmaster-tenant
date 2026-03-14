@@ -110,8 +110,8 @@ export default function BatchesPage() {
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Batch Management</h2>
-          <p className="text-muted-foreground">
+          <h2 className="text-xl font-bold tracking-tight">Batch Management</h2>
+          <p className="text-zinc-600">
             Organize students into groups and monitor their collective performance.
           </p>
         </div>
@@ -122,33 +122,33 @@ export default function BatchesPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
-         <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+         <Card className="border shadow-sm bg-white/50 backdrop-blur-sm">
            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-             <CardTitle className="text-sm font-medium">Total Batches</CardTitle>
-             <BookOpen className="h-4 w-4 text-primary" />
+             <CardTitle className="text-zinc-600 font-medium">Total Batches</CardTitle>
+             <BookOpen className="h-4 w-4 text-zinc-600" />
            </CardHeader>
            <CardContent>
-             <div className="text-2xl font-bold">{batches.length}</div>
+             <div className="text-xl font-bold">{batches.length}</div>
            </CardContent>
          </Card>
-         <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+         <Card className="border shadow-sm bg-white/50 backdrop-blur-sm">
            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-             <CardTitle className="text-sm font-medium">Avg Student/Batch</CardTitle>
-             <Users className="h-4 w-4 text-primary" />
+             <CardTitle className="text-zinc-600 font-medium">Avg Student/Batch</CardTitle>
+             <Users className="h-4 w-4 text-zinc-600" />
            </CardHeader>
            <CardContent>
-             <div className="text-2xl font-bold">
+             <div className="text-xl font-bold">
                {batches.length > 0 ? Math.round(batches.reduce((acc, b) => acc + b.student_count, 0) / batches.length) : 0}
              </div>
            </CardContent>
          </Card>
-         <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+         <Card className="border shadow-sm bg-white/50 backdrop-blur-sm">
            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-             <CardTitle className="text-sm font-medium">Top Performance</CardTitle>
-             <TrendingUp className="h-4 w-4 text-primary" />
+             <CardTitle className="text-zinc-600 font-medium">Top Performance</CardTitle>
+             <TrendingUp className="h-4 w-4 text-zinc-600" />
            </CardHeader>
            <CardContent>
-             <div className="text-2xl font-bold">
+             <div className="text-xl font-bold">
                {batches.length > 0 ? Math.max(...batches.map(b => b.avg_score)) : 0}%
              </div>
            </CardContent>
@@ -168,7 +168,7 @@ export default function BatchesPage() {
         </TabsList>
 
         <TabsContent value="directory" className="mt-6 space-y-6">
-          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm">
             <CardHeader>
               <CardTitle>Batch Directory</CardTitle>
               <CardDescription>
@@ -184,19 +184,19 @@ export default function BatchesPage() {
                     <TableHead className="font-bold text-[10px] uppercase tracking-wider">Students</TableHead>
                     <TableHead className="font-bold text-[10px] uppercase tracking-wider">Avg Score</TableHead>
                     <TableHead className="font-bold text-[10px] uppercase tracking-wider">Status</TableHead>
-                    <TableHead className="text-right font-bold text-[10px] uppercase tracking-wider">Actions</TableHead>
+                    <TableHead className="text-xl font-bold text-[10px] uppercase tracking-wider">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {loading ? (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center py-8 animate-pulse text-muted-foreground">
+                      <TableCell colSpan={6} className="text-zinc-600 py-8 animate-pulse text-zinc-600">
                         Loading batches...
                       </TableCell>
                     </TableRow>
                   ) : batches.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                      <TableCell colSpan={6} className="text-zinc-600 py-8 text-zinc-600">
                         No batches found. Click &quot;New Batch&quot; to begin.
                       </TableCell>
                     </TableRow>
@@ -206,7 +206,7 @@ export default function BatchesPage() {
                         <TableCell>
                           <div className="flex flex-col">
                             <span className="font-semibold">{batch.name}</span>
-                            <span className="text-[10px] text-muted-foreground line-clamp-1 max-w-[200px]">{batch.description}</span>
+                            <span className="text-[10px] text-zinc-600 line-clamp-1 max-w-[200px]">{batch.description}</span>
                           </div>
                         </TableCell>
                         <TableCell>
@@ -235,21 +235,21 @@ export default function BatchesPage() {
                         </TableCell>
                         <TableCell>
                            <span className={`px-2 py-0.5 rounded-full text-[10px] uppercase font-bold tracking-tight ${
-                             batch.status === 'active' ? 'bg-green-100 text-green-700' :
-                             batch.status === 'completed' ? 'bg-zinc-100 text-zinc-700' :
-                             'bg-zinc-50 text-zinc-400'
+                             batch.status === 'active' ? 'bg-green-100 te' :
+                             batch.status === 'completed' ? 'bg-zinc-100 te' :
+                             'bg-zinc-50 te'
                            }`}>
                              {batch.status}
                            </span>
                         </TableCell>
-                        <TableCell className="text-right">
+                        <TableCell className="text-zinc-600">
                           <Button variant="ghost" size="icon" onClick={() => handleEdit(batch)} title="Edit Batch">
                             <Pencil className="h-4 w-4" />
                           </Button>
                           <Button variant="ghost" size="icon" title="Transfer Students">
                             <ArrowRightLeft className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="icon" onClick={() => handleDelete(batch)} className="text-red-500 hover:text-red-600 hover:bg-red-50" title="Delete Batch">
+                          <Button variant="ghost" size="icon" onClick={() => handleDelete(batch)} className="text-zinc-600  hover:bg-red-50" title="Delete Batch">
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </TableCell>
@@ -263,7 +263,7 @@ export default function BatchesPage() {
         </TabsContent>
 
         <TabsContent value="calendar" className="mt-6">
-          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50">
+          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm">
             <CardHeader>
               <CardTitle>Institutional Calendar</CardTitle>
               <CardDescription>Manage holidays, exam schedules, and academic events.</CardDescription>
@@ -271,7 +271,7 @@ export default function BatchesPage() {
             <CardContent>
                <div className="grid gap-6 md:grid-cols-2">
                  <div className="space-y-4">
-                   <h4 className="text-sm font-bold uppercase tracking-wider text-primary">Upcoming Events</h4>
+                   <h4 className="text-xl font-bold uppercase tracking-wider text-zinc-600">Upcoming Events</h4>
                    {[
                      { date: "Oct 24", event: "Mid-Term Examination", type: "exam" },
                      { date: "Oct 31", event: "Diwali Break", type: "holiday" },
@@ -279,26 +279,26 @@ export default function BatchesPage() {
                    ].map((item, i) => (
                      <div key={i} className="flex items-center gap-4 p-3 rounded-lg border border-zinc-100 bg-zinc-50/50">
                        <div className="flex flex-col items-center justify-center h-12 w-12 rounded bg-white border border-zinc-200">
-                         <span className="text-[10px] uppercase font-bold text-muted-foreground">{item.date.split(' ')[0]}</span>
-                         <span className="text-lg font-bold leading-none">{item.date.split(' ')[1]}</span>
+                         <span className="text-[10px] uppercase font-bold text-zinc-600">{item.date.split(' ')[0]}</span>
+                         <span className="text-xl font-bold leading-none">{item.date.split(' ')[1]}</span>
                        </div>
                        <div className="flex-1">
-                         <p className="text-sm font-bold">{item.event}</p>
+                         <p className="text-xl font-bold">{item.event}</p>
                          <Badge variant="secondary" className="text-[9px] uppercase font-bold bg-zinc-200">{item.type}</Badge>
                        </div>
                        <Button variant="ghost" size="sm">Edit</Button>
                      </div>
                    ))}
-                   <Button variant="outline" className="w-full gap-2 text-xs">
+                   <Button variant="outline" className="w-full gap-2 text-zinc-600">
                      <Plus className="h-3 w-3" />
                      Add Event
                    </Button>
                  </div>
-                 <div className="rounded-xl border border-zinc-100 bg-zinc-50/30 p-8 flex flex-col items-center justify-center text-center space-y-4">
-                    <CalendarIcon className="h-12 w-12 text-zinc-200" />
+                 <div className="rounded-xl border border-zinc-100 bg-zinc-50/30 p-8 flex flex-col items-center justify-center text-zinc-600 space-y-4">
+                    <CalendarIcon className="h-12 w-12 text-zinc-600" />
                     <div className="space-y-1">
                       <p className="font-bold">Full Calendar View</p>
-                      <p className="text-xs text-muted-foreground">Manage academic events and scheduling.</p>
+                      <p className="text-zinc-600">Manage academic events and scheduling.</p>
                     </div>
                     <Button size="sm">Launch Full Scheduler</Button>
                  </div>

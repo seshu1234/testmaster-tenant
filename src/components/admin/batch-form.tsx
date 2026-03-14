@@ -171,7 +171,7 @@ export function BatchForm({ open, onOpenChange, batch, onSuccess }: BatchFormPro
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Phase 1 preparation for JEE Mains..." {...field} />
+                    <Textarea placeholder="Phase preparation for JEE Mains..." {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -186,7 +186,7 @@ export function BatchForm({ open, onOpenChange, batch, onSuccess }: BatchFormPro
                   return teacher ? (
                     <Badge key={id} variant="secondary" className="gap-1 px-3 py-1">
                       {teacher.name}
-                      <X className="h-3 w-3 cursor-pointer hover:text-red-500" onClick={() => handleToggleTeacher(id)} />
+                      <X className="h-3 w-3 cursor-pointer " onClick={() => handleToggleTeacher(id)} />
                     </Badge>
                   ) : null;
                 })}
@@ -205,7 +205,7 @@ export function BatchForm({ open, onOpenChange, batch, onSuccess }: BatchFormPro
                 </SelectContent>
               </Select>
               {form.formState.errors.teacher_ids && (
-                <p className="text-[0.8rem] font-medium text-destructive">{form.formState.errors.teacher_ids.message}</p>
+                <p className="text-[0.8rem] font-medium text-zinc-600">{form.formState.errors.teacher_ids.message}</p>
               )}
             </div>
 

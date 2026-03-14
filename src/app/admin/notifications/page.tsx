@@ -78,7 +78,7 @@ export default function NotificationSettingsPage() {
   if (loading) {
     return (
       <div className="flex h-64 items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <Loader2 className="h-8 w-8 animate-spin text-zinc-600" />
       </div>
     );
   }
@@ -87,17 +87,17 @@ export default function NotificationSettingsPage() {
     <div className="max-w-4xl mx-auto space-y-6 pb-20 animate-in fade-in slide-in-from-bottom-2 duration-500">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Notification Settings</h1>
-          <p className="text-muted-foreground">Customize emails and alerts sent to your students and teachers.</p>
+          <h1 className="text-xl font-bold tracking-tight">Notification Settings</h1>
+          <p className="text-zinc-600">Customize emails and alerts sent to your students and teachers.</p>
         </div>
-        <Bell className="h-10 w-10 text-primary/20" />
+        <Bell className="h-10 w-10 te/20" />
       </div>
 
       {message && (
         <Card className={`${message.type === 'success' ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}`}>
           <CardContent className="py-3 flex items-center gap-3">
-             {message.type === 'success' ? <CheckCircle2 className="h-5 w-5 text-emerald-600" /> : <AlertCircle className="h-5 w-5 text-rose-600" />}
-             <p className={`text-sm font-medium ${message.type === 'success' ? 'text-emerald-800' : 'text-rose-800'}`}>
+             {message.type === 'success' ? <CheckCircle2 className="h-5 w-5 text-zinc-600" /> : <AlertCircle className="h-5 w-5 text-zinc-600" />}
+             <p className={`text-zinc-600 font-medium ${message.type === 'success' ? 'te' : 'te'}`}>
                 {message.text}
              </p>
           </CardContent>
@@ -110,11 +110,11 @@ export default function NotificationSettingsPage() {
             <CardHeader className="bg-zinc-50/50 border-b">
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-lg font-bold">{template.name}</CardTitle>
-                  <CardDescription>Trigger: <code className="text-xs bg-zinc-200 px-1 rounded">{template.trigger}</code></CardDescription>
+                  <CardTitle className="text-xl font-bold">{template.name}</CardTitle>
+                  <CardDescription>Trigger: <code className="text-zinc-600 bg-zinc-200 px-1 rounded">{template.trigger}</code></CardDescription>
                 </div>
                 <div className="flex items-center gap-2">
-                   <Label htmlFor={`active-${template.id}`} className="text-xs font-semibold text-muted-foreground uppercase">Active</Label>
+                   <Label htmlFor={`active-${template.id}`} className="text-zinc-600 font-semibold text-zinc-600 uppercase">Active</Label>
                    <Switch 
                       id={`active-${template.id}`}
                       checked={template.is_active} 
@@ -125,7 +125,7 @@ export default function NotificationSettingsPage() {
             </CardHeader>
             <CardContent className="p-6 space-y-6">
               <div className="space-y-2">
-                <Label className="text-sm font-bold">Email Subject</Label>
+                <Label className="text-xl font-bold">Email Subject</Label>
                 <Input 
                   value={template.subject}
                   onChange={(e) => updateTemplateState(template.id, { subject: e.target.value })}
@@ -134,16 +134,16 @@ export default function NotificationSettingsPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label className="text-sm font-bold">Email Body</Label>
+                <Label className="text-xl font-bold">Email Body</Label>
                 <Textarea 
                   value={template.body}
                   onChange={(e) => updateTemplateState(template.id, { body: e.target.value })}
                   rows={6}
-                  className="font-mono text-sm leading-relaxed"
+                  className="font-mono text-zinc-600 leading-relaxed"
                 />
                 <div className="flex items-start gap-2 rounded-lg bg-blue-50 p-3 mt-2">
-                   <Info className="h-4 w-4 text-blue-600 mt-0.5" />
-                   <p className="text-[11px] text-blue-700 leading-normal">
+                   <Info className="h-4 w-4 text-zinc-600 mt-0.5" />
+                   <p className="text-[11px] text-zinc-600 leading-normal">
                       Available dynamic tags: <code className="bg-blue-100 px-1 rounded">{"{{student_name}}"}</code>, <code className="bg-blue-100 px-1 rounded">{"{{test_name}}"}</code>, <code className="bg-blue-100 px-1 rounded">{"{{percentage}}"}</code>, <code className="bg-blue-100 px-1 rounded">{"{{tenant_name}}"}</code>
                    </p>
                 </div>

@@ -72,7 +72,7 @@ export default function OnboardingPage() {
   const [expandedTask, setExpandedTask] = useState<string | null>(null);
   
   const [branding, setBranding] = useState<BrandingConfig>({
-    primary_color: "#18181b",
+    primary_color: "#181b",
     logo_url: null,
     favicon_url: null,
     welcome_message: "Welcome to our learning platform.",
@@ -179,7 +179,7 @@ export default function OnboardingPage() {
   };
 
   const handleNext = () => {
-    if (currentStep < steps.length - 1) {
+    if (currentStep < steps.length -) {
       setCurrentStep(prev => prev + 1);
     } else {
       toast.success("Center Setup Complete!", {
@@ -190,7 +190,7 @@ export default function OnboardingPage() {
 
   const handleBack = () => {
     if (currentStep > 0) {
-      setCurrentStep(prev => prev - 1);
+      setCurrentStep(prev => prev -);
     }
   };
 
@@ -198,15 +198,15 @@ export default function OnboardingPage() {
 
   return (
     <div className="max-w-4xl mx-auto py-12 px-6 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div className="text-center space-y-2">
-        <h1 className="text-4xl font-extrabold tracking-tight">Center Setup Wizard</h1>
-        <p className="text-muted-foreground text-lg">
+      <div className="text-zinc-600 space-y-2">
+        <h1 className="text-zinc-600 font-extrabold tracking-tight">Center Setup Wizard</h1>
+        <p className="text-zinc-600">
           Welcome to TestMaster. Let&apos;s get your center ready for excellence in 4 simple steps.
         </p>
       </div>
 
       <div className="space-y-4">
-        <div className="flex justify-between text-xs font-bold uppercase tracking-widest text-muted-foreground px-1">
+        <div className="flex justify-between text-xl font-bold uppercase tracking-widest text-zinc-600 px-1">
           <span>Step {currentStep + 1} of {steps.length}</span>
           <span>{Math.round(progress)}% Complete</span>
         </div>
@@ -214,15 +214,15 @@ export default function OnboardingPage() {
       </div>
 
       <div className="grid md:grid-cols-[1fr_300px] gap-8">
-        <Card className="border shadow-xl bg-white dark:bg-zinc-900 overflow-hidden">
+        <Card className="border shadow-xl bg-white overflow-hidden">
           <CardHeader className="bg-zinc-900 text-white p-8">
             <div className="flex items-center gap-4">
               <div className="p-3 rounded-xl bg-white/10 backdrop-blur-md">
-                <StepIcon className="h-8 w-8 text-primary-foreground" />
+                <StepIcon className="h-8 w-8 text-zinc-600" />
               </div>
               <div className="space-y-1">
-                <CardTitle className="text-2xl">{steps[currentStep].title}</CardTitle>
-                <CardDescription className="text-zinc-400">{steps[currentStep].description}</CardDescription>
+                <CardTitle className="text-zinc-600">{steps[currentStep].title}</CardTitle>
+                <CardDescription className="text-zinc-600">{steps[currentStep].description}</CardDescription>
               </div>
             </div>
           </CardHeader>
@@ -233,12 +233,12 @@ export default function OnboardingPage() {
                   <button 
                     onClick={() => toggleTask(task)}
                     className={cn(
-                      "w-full flex items-center gap-4 p-5 rounded-2xl border transition-all duration-300 text-left group",
+                      "w-full flex items-center gap-4 p-5 rounded-2xl border transition-all duration-300 text-zinc-600 group",
                       completedTasks[task] 
-                        ? "bg-zinc-50 border-zinc-200 dark:bg-zinc-800/20" 
+                        ? "bg-zinc-50 border-zinc-200" 
                         : expandedTask === task
                         ? "bg-white border-zinc-900 shadow-lg ring-1 ring-zinc-900"
-                        : "bg-white dark:bg-zinc-900 border-zinc-100 hover:border-zinc-300 hover:shadow-md"
+                        : "bg-white border-zinc-100 hover:border-zinc-300 hover:shadow-md"
                     )}
                   >
                     <div className={cn(
@@ -247,32 +247,32 @@ export default function OnboardingPage() {
                         ? "bg-emerald-500 border-emerald-500" 
                         : "border-zinc-200 group-hover:border-zinc-400"
                     )}>
-                       {completedTasks[task] && <CheckCircle2 className="h-4 w-4 text-white" />}
+                       {completedTasks[task] && <CheckCircle2 className="h-4 w-4 text-zinc-600" />}
                     </div>
                     <span className={cn(
-                      "font-bold text-xs uppercase tracking-widest transition-all",
-                      completedTasks[task] ? "text-zinc-400 line-through decoration-emerald-500 decoration-2 underline-offset-4" : "text-zinc-700 dark:text-zinc-200"
+                      "font-bold text-zinc-600 uppercase tracking-widest transition-all",
+                      completedTasks[task] ?  "text-zinc-600 line-through decoration-emerald-500 decoration-2 underline-offset-4" : "te"
                     )}>{task}</span>
                     <ArrowRight className={cn(
-                      "h-4 w-4 ml-auto text-zinc-300 transition-all",
-                      expandedTask === task ? "rotate-90 text-zinc-900" : "group-hover:text-black group-hover:translate-x-1"
+                      "h-4 w-4 ml-auto text-zinc-600 transition-all",
+                      expandedTask === task ? "rotate-90 text-zinc-600" : "group- group-hover:translate-x-1"
                     )} />
                   </button>
 
                   {/* Task Specific Inputs */}
                   {expandedTask === task && (
                     <div className="px-5 pb-5 pt-2 animate-in fade-in slide-in-from-top-2 duration-300">
-                      <div className="p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-zinc-100 dark:border-zinc-800 space-y-4">
+                      <div className="p-6 bg-zinc-50 rounded-2xl border border-zinc-100 space-y-4">
                         {task === "Upload Logo & Favicon" && (
                           <div className="space-y-6">
                             <div className="space-y-4">
-                              <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Brand Logo</Label>
+                              <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-600">Brand Logo</Label>
                               <div className="flex items-center gap-6">
                                 <div className="h-20 w-20 rounded-xl border-2 border-dashed border-zinc-200 flex items-center justify-center bg-white overflow-hidden relative">
                                   {branding.logo_url ? (
                                     <Image src={branding.logo_url} alt="Logo Preview" width={64} height={64} className="object-contain p-2" />
                                   ) : (
-                                    <ImageIcon className="h-6 w-6 text-zinc-200" />
+                                    <ImageIcon className="h-6 w-6 text-zinc-600" />
                                   )}
                                   {uploadingLogo && <div className="absolute inset-0 bg-white/50 flex items-center justify-center"><Loader2 className="h-5 w-5 animate-spin" /></div>}
                                 </div>
@@ -283,19 +283,19 @@ export default function OnboardingPage() {
                                     onChange={handleLogoUpload}
                                     disabled={uploadingLogo}
                                   />
-                                  <p className="text-[9px] text-zinc-400 font-medium">Clear background PNG recommended (250x100px).</p>
+                                  <p className="text-[9px] text-zinc-600 font-medium">Clear background PNG recommended (250x100px).</p>
                                 </div>
                               </div>
                             </div>
 
                             <div className="space-y-4">
-                              <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Favicon</Label>
+                              <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-600">Favicon</Label>
                               <div className="flex items-center gap-6">
                                 <div className="h-12 w-12 rounded-xl border-2 border-dashed border-zinc-200 flex items-center justify-center bg-white overflow-hidden relative">
                                   {branding.favicon_url ? (
                                     <Image src={branding.favicon_url} alt="Favicon Preview" width={32} height={32} className="object-contain p-1" />
                                   ) : (
-                                    <ImageIcon className="h-4 w-4 text-zinc-200" />
+                                    <ImageIcon className="h-4 w-4 text-zinc-600" />
                                   )}
                                   {uploadingFavicon && <div className="absolute inset-0 bg-white/50 flex items-center justify-center"><Loader2 className="h-4 w-4 animate-spin" /></div>}
                                 </div>
@@ -306,7 +306,7 @@ export default function OnboardingPage() {
                                     onChange={handleFaviconUpload}
                                     disabled={uploadingFavicon}
                                   />
-                                  <p className="text-[9px] text-zinc-400 font-medium">Standard ICO or 32x32px PNG.</p>
+                                  <p className="text-[9px] text-zinc-600 font-medium">Standard ICO or 32x32px PNG.</p>
                                 </div>
                               </div>
                             </div>
@@ -315,9 +315,9 @@ export default function OnboardingPage() {
 
                         {task === "Select Primary Theme" && (
                           <div className="space-y-4">
-                            <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Brand Colors</Label>
+                            <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-600">Brand Colors</Label>
                             <div className="flex flex-wrap gap-3">
-                              {["#18181b", "#1e40af", "#7c3aed", "#16a34a", "#dc2626", "#ea580c"].map(color => (
+                              {["#181b", "#1e40af", "#7c3aed", "#16a34a", "#dc2626", "#ea580c"].map(color => (
                                 <button
                                   key={color}
                                   onClick={() => handleThemeSelect(color)}
@@ -334,16 +334,16 @@ export default function OnboardingPage() {
 
                         {task === "Set Welcome Message" && (
                           <div className="space-y-4">
-                            <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Student Welcome</Label>
+                            <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-600">Student Welcome</Label>
                             <div className="flex gap-2">
                               <Input 
                                 placeholder="e.g. Welcome to Excellence Academy" 
-                                className="h-12 rounded-xl border-zinc-200 bg-white text-xs font-bold"
+                                className="h-12 rounded-xl border-zinc-200 bg-white text-xl font-bold"
                                 value={branding.welcome_message || ""}
                                 onChange={(e) => setBranding({ ...branding, welcome_message: e.target.value })}
                               />
                               <Button 
-                                className="h-12 w-12 rounded-xl bg-black text-white shrink-0" 
+                                className="h-12 w-12 rounded-xl bg-black text-zinc-600 shrink-0" 
                                 size="icon"
                                 onClick={handleWelcomeSave}
                                 disabled={savingWelcome}
@@ -356,9 +356,9 @@ export default function OnboardingPage() {
 
                         {/* Fallback for other tasks */}
                         {!["Upload Logo & Favicon", "Select Primary Theme", "Set Welcome Message"].includes(task) && (
-                          <div className="text-center py-4 space-y-3">
-                            <Rocket className="h-8 w-8 text-zinc-200 mx-auto" strokeWidth={1.5} />
-                            <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Coming soon in production</p>
+                          <div className="text-zinc-600 py-4 space-y-3">
+                            <Rocket className="h-8 w-8 text-zinc-600 mx-auto" strokeWidth={1.5} />
+                            <p className="text-[10px] font-black uppercase tracking-widest text-zinc-600">Coming soon in production</p>
                             <Button 
                               variant="outline" 
                               size="sm" 
@@ -388,9 +388,9 @@ export default function OnboardingPage() {
               </Button>
               <Button 
                 onClick={handleNext} 
-                className="gap-2 px-8 bg-black text-white hover:bg-zinc-800 rounded-xl"
+                className="gap-2 px-8 bg-black text-zinc-600 hover:bg-zinc-800 rounded-xl"
               >
-                {currentStep === steps.length - 1 ? "Finish Setup" : "Continue"}
+                {currentStep === steps.length - ? "Finish Setup" : "Continue"}
                 <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
@@ -400,13 +400,13 @@ export default function OnboardingPage() {
         <div className="space-y-6">
           <Card className="border shadow-none bg-zinc-50/50">
             <CardHeader className="pb-2">
-              <CardTitle className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 flex items-center gap-2">
+              <CardTitle className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-600 flex items-center gap-2">
                 <Sparkles className="h-3 w-3" />
                 Quick Tip
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-xs text-zinc-600 leading-relaxed font-medium">
+              <p className="text-zinc-600 leading-relaxed font-medium">
                 {currentStep === 0 && "Your logo will appear on student result cards and login pages. Use a high-resolution PNG for clarity."}
                 {currentStep === 1 && "Start with your main academic batches. You can always refine subjects and grading later."}
                 {currentStep === 2 && "Invite your senior staff first. They can help with the bulk import of student data."}
@@ -423,7 +423,7 @@ export default function OnboardingPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-               <p className="text-[10px] text-zinc-500 leading-tight font-medium">
+               <p className="text-[10px] text-zinc-600 leading-tight font-medium">
                  Want to explore the platform before setting it up? 
                </p>
                <Button 
@@ -441,7 +441,7 @@ export default function OnboardingPage() {
 
           <Button 
             variant="link" 
-            className="w-full text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-black"
+            className="w-full text-[10px] font-bold uppercase tracking-widest text-zinc-600 "
             onClick={handleSkip}
           >
             Skip for now, go to Dashboard

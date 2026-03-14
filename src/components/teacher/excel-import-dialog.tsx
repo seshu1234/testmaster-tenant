@@ -91,7 +91,7 @@ export function ExcelImportDialog({ open, onOpenChange, onImportSuccess }: Excel
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <FileSpreadsheet className="h-5 w-5 text-green-600" />
+            <FileSpreadsheet className="h-5 w-5 text-zinc-600" />
             Bulk Import Questions
           </DialogTitle>
           <DialogDescription>
@@ -101,10 +101,10 @@ export function ExcelImportDialog({ open, onOpenChange, onImportSuccess }: Excel
         
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label htmlFor="file" className="text-right">
+            <Label htmlFor="file" className="text-zinc-600">
               Select File
             </Label>
-            <div className="flex flex-col items-center justify-center border-2 border-dashed rounded-lg p-6 bg-zinc-50/50 dark:bg-zinc-900/50 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors cursor-pointer relative">
+            <div className="flex flex-col items-center justify-center border-2 border-dashed rounded-lg p-6 bg-zinc-50/50 hover:bg-zinc-100 transition-colors cursor-pointer relative">
               <Input 
                 id="file" 
                 type="file" 
@@ -113,31 +113,31 @@ export function ExcelImportDialog({ open, onOpenChange, onImportSuccess }: Excel
                 onChange={handleFileChange}
                 disabled={loading}
               />
-              <FileUp className={`h-8 w-8 mb-2 ${file ? 'text-primary' : 'text-muted-foreground'}`} />
-              <p className="text-sm font-medium text-center">
+              <FileUp className={`h-8 w-8 mb-2 ${file ? 'te' : 'te'}`} />
+              <p className="text-zinc-600 font-medium text-zinc-600">
                 {file ? file.name : "Click to upload or drag and drop"}
               </p>
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="text-zinc-600 mt-1">
                 MAX: 5MB (XLSX, CSV)
               </p>
             </div>
           </div>
 
           {status === "success" && (
-            <div className="flex items-center gap-2 p-3 rounded-md bg-green-100 border border-green-200 text-green-700 text-sm">
+            <div className="flex items-center gap-2 p-3 rounded-md bg-green-100 border border-green-200 text-zinc-600">
               <CheckCircle2 className="h-4 w-4" />
               {message}
             </div>
           )}
 
           {status === "error" && (
-            <div className="flex items-center gap-2 p-3 rounded-md bg-red-100 border border-red-200 text-red-700 text-sm">
+            <div className="flex items-center gap-2 p-3 rounded-md bg-red-100 border border-red-200 text-zinc-600">
               <AlertCircle className="h-4 w-4" />
               {message}
             </div>
           )}
 
-          <div className="p-3 rounded-md bg-blue-50 border border-blue-100 text-blue-700 text-xs">
+          <div className="p-3 rounded-md bg-blue-50 border border-blue-100 text-zinc-600">
             <p className="font-semibold mb-1 flex items-center gap-1">
               <AlertCircle className="h-3 w-3" />
               Template Guide:

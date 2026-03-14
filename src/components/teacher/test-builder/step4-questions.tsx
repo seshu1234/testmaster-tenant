@@ -98,10 +98,10 @@ export function Step4Questions({ testId, sections }: Step4Props) {
     if (!user || !token || !activeSectionId) return;
     const index = assignedQuestions.findIndex(q => q.question_id === questionId);
     if (direction === 'up' && index === 0) return;
-    if (direction === 'down' && index === assignedQuestions.length - 1) return;
+    if (direction === 'down' && index === assignedQuestions.length -) return;
 
     const newAssigned = [...assignedQuestions];
-    const swapIndex = direction === 'up' ? index - 1 : index + 1;
+    const swapIndex = direction === 'up' ? index - : index + 1;
     [newAssigned[index], newAssigned[swapIndex]] = [newAssigned[swapIndex], newAssigned[index]];
     
     setAssignedQuestions(newAssigned);
@@ -141,16 +141,16 @@ export function Step4Questions({ testId, sections }: Step4Props) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-12 gap-6 animate-in fade-in duration-500">
       <div className="md:col-span-2 space-y-4">
-        <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Sections</Label>
+        <Label className="text-[10px] font-bold uppercase tracking-wider text-zinc-600">Sections</Label>
         <div className="space-y-1">
           {sections.map((section) => (
             <button
               key={section.id}
               onClick={() => setActiveSectionId(section.id)}
-              className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all truncate ${
+              className={`w-full text-zinc-600 px-3 py-2 rounded-lg text-zinc-600 transition-all truncate ${
                 activeSectionId === section.id 
                   ? "bg-primary text-white shadow-md font-bold" 
-                  : "hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                  : "hover:bg-zinc-100"
               }`}
             >
               {section.name}
@@ -161,37 +161,37 @@ export function Step4Questions({ testId, sections }: Step4Props) {
 
       <div className="md:col-span-6 space-y-4">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-600" />
           <input 
             placeholder="Search bank..." 
-            className="w-full pl-9 h-10 rounded-lg border-none bg-zinc-100/50 dark:bg-zinc-900/50 text-sm focus:ring-1 focus:ring-primary/20"
+            className="w-full pl-9 h-10 rounded-lg border-none bg-zinc-100/50 text-zinc-600 focus:ring-1 focus:ring-primary/20"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
 
-        <div className="border rounded-xl bg-white dark:bg-transparent overflow-hidden">
+        <div className="border rounded-xl bg-white overflow-hidden">
           <div className="max-h-[500px] overflow-y-auto divide-y">
             {loading ? (
-              <div className="p-8 text-center text-muted-foreground animate-pulse  text-sm">Loading bank...</div>
+              <div className="p-8 text-zinc-600 animate-pulse  text-zinc-600">Loading bank...</div>
             ) : bankQuestions.length === 0 ? (
-              <div className="p-8 text-center text-muted-foreground text-sm">Bank is empty.</div>
+              <div className="p-8 text-zinc-600">Bank is empty.</div>
             ) : (
               bankQuestions.map((q: Question) => {
                 const isAssigned = assignedQuestions.some(aq => aq.question_id === q.id);
                 return (
-                  <div key={q.id} className="p-4 flex items-center justify-between group hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors">
+                  <div key={q.id} className="p-4 flex items-center justify-between group hover:bg-zinc-50 transition-colors">
                     <div className="space-y-1">
-                      <p className="text-sm font-medium line-clamp-1">{q.title || "Untitled Question"}</p>
+                      <p className="text-zinc-600 font-medium line-clamp-1">{q.title || "Untitled Question"}</p>
                       <div className="flex items-center gap-2">
                          <Badge variant="outline" className="text-[9px] h-3.5 px-1">{q.type}</Badge>
-                         <span className="text-[10px] text-muted-foreground">{q.subject} • {q.topic}</span>
+                         <span className="text-[10px] text-zinc-600">{q.subject} • {q.topic}</span>
                       </div>
                     </div>
                     <Button 
                       size="sm" 
                       variant={isAssigned ? "secondary" : "ghost"} 
-                      className={cn("h-8 w-8 p-0 rounded-full", isAssigned ? "text-destructive" : "text-primary opacity-0 group-hover:opacity-100 transition-opacity")}
+                      className={cn("h-8 w-8 p-0 rounded-full", isAssigned ? "te" :  "text-zinc-600 opacity-0 group-hover:opacity-100 transition-opacity")}
                       onClick={() => assignToSection(q)}
                       disabled={!activeSectionId}
                     >
@@ -206,13 +206,13 @@ export function Step4Questions({ testId, sections }: Step4Props) {
       </div>
 
       <div className="md:col-span-4 space-y-4">
-         <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Assigned ({assignedQuestions.length})</Label>
-         <div className="border rounded-xl bg-zinc-50 dark:bg-zinc-900/50 min-h-[400px] p-2 space-y-2">
+         <Label className="text-[10px] font-bold uppercase tracking-wider text-zinc-600">Assigned ({assignedQuestions.length})</Label>
+         <div className="border rounded-xl bg-zinc-50 min-h-[400px] p-2 space-y-2">
             {assignedQuestions.map((q, idx) => (
-              <div key={q.question_id} className="p-2.5 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 flex items-center gap-3 shadow-sm group">
-                 <div className="text-[10px] font-bold text-zinc-400 w-4">{idx + 1}.</div>
+              <div key={q.question_id} className="p-2.5 rounded-lg bg-white border border-zinc-100 flex items-center gap-3 shadow-sm group">
+                 <div className="text-[10px] font-bold text-zinc-600 w-4">{idx + 1}.</div>
                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold truncate">{q.title || "Untitled"}</p>
+                    <p className="text-zinc-600 font-semibold truncate">{q.title || "Untitled"}</p>
                  </div>
                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <Button 
@@ -229,14 +229,14 @@ export function Step4Questions({ testId, sections }: Step4Props) {
                         size="icon" 
                         className="h-6 w-6"
                         onClick={() => reorder(q.question_id, 'down')}
-                        disabled={idx === assignedQuestions.length - 1}
+                        disabled={idx === assignedQuestions.length -}
                     >
                        <Plus className="h-3 w-3" />
                     </Button>
                     <Button 
                         variant="ghost" 
                         size="icon" 
-                        className="h-6 w-6 text-destructive"
+                        className="h-6 w-6 text-zinc-600"
                         onClick={() => assignToSection({ id: q.question_id, title: q.title })}
                     >
                        <Trash2 className="h-3 w-3" />
@@ -245,8 +245,8 @@ export function Step4Questions({ testId, sections }: Step4Props) {
               </div>
             ))}
             {assignedQuestions.length === 0 && (
-              <div className="flex flex-col items-center justify-center h-48 text-center px-4">
-                 <p className="text-[10px] text-muted-foreground ">No questions assigned yet.</p>
+              <div className="flex flex-col items-center justify-center h-48 text-zinc-600 px-4">
+                 <p className="text-[10px] text-zinc-600 ">No questions assigned yet.</p>
               </div>
             )}
          </div>
@@ -254,8 +254,8 @@ export function Step4Questions({ testId, sections }: Step4Props) {
 
       <div className="md:col-span-12">
         <div className="p-4 rounded-lg bg-primary/5 border border-primary/10 flex items-start gap-3">
-          <HelpCircle className="h-4 w-4 text-primary mt-0.5" />
-          <p className="text-xs text-primary/80">
+          <HelpCircle className="h-4 w-4 text-zinc-600 mt-0.5" />
+          <p className="text-zinc-600 te/80">
             Selected questions will be added to the highlighted section. Use arrows to reorder.
           </p>
         </div>

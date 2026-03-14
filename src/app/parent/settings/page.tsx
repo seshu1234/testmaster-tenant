@@ -77,14 +77,14 @@ export default function ParentSettingsPage() {
   return (
     <div className="space-y-8 animate-in fade-in duration-700 pb-20 p-6">
       <div>
-         <h1 className="text-3xl font-black tracking-tighter  uppercase">Guardian Configurations</h1>
-         <p className="text-muted-foreground text-sm font-medium">Managing security parameters and communication protocols.</p>
+         <h1 className="text-zinc-600 font-black tracking-tighter  uppercase">Guardian Configurations</h1>
+         <p className="text-zinc-600 font-medium">Managing security parameters and communication protocols.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Profile Section */}
         <div className="lg:col-span-4 space-y-8">
-           <Card className="border-none shadow-2xl rounded-[3rem] bg-zinc-950 text-white p-10 flex flex-col items-center text-center overflow-hidden relative">
+           <Card className="border-none shadow-2xl rounded-[3rem] bg-zinc-950 text-zinc-600 p-10 flex flex-col items-center text-zinc-600 overflow-hidden relative">
               <div className="relative z-10 space-y-6">
                  <div className="h-32 w-32 rounded-[3.5rem] bg-primary p-1 shadow-2xl relative">
                     <Image 
@@ -94,41 +94,41 @@ export default function ParentSettingsPage() {
                        className="rounded-[3.3rem] object-cover"
                     />
                     <div className="absolute -bottom-2 -right-2 h-10 w-10 bg-emerald-500 rounded-2xl border-4 border-zinc-950 flex items-center justify-center">
-                       <Shield className="h-5 w-5 text-white" />
+                       <Shield className="h-5 w-5 text-zinc-600" />
                     </div>
                  </div>
                  
                  <div>
-                    <h2 className="text-3xl font-black  uppercase  tracking-tighter leading-none">{user.name}</h2>
-                    <p className="text-zinc-500 text-[10px] font-black uppercase tracking-widest mt-2 ">Authorized Guardian</p>
+                    <h2 className="text-zinc-600 font-black  uppercase  tracking-tighter leading-none">{user.name}</h2>
+                    <p className="text-zinc-600 text-[10px] font-black uppercase tracking-widest mt-2 ">Authorized Guardian</p>
                  </div>
 
                  <div className="space-y-3 w-full">
-                    <div className="flex items-center gap-3 p-4 rounded-2xl bg-white/5 border border-white/10 text-left">
-                       <Mail className="h-4 w-4 text-primary" />
+                    <div className="flex items-center gap-3 p-4 rounded-2xl bg-white/5 border border-white/10 text-zinc-600">
+                       <Mail className="h-4 w-4 text-zinc-600" />
                        <span className="text-[10px] font-black uppercase tracking-widest truncate">{user.email}</span>
                     </div>
-                    <div className="flex items-center gap-3 p-4 rounded-2xl bg-white/5 border border-white/10 text-left">
-                       <Smartphone className="h-4 w-4 text-primary" />
+                    <div className="flex items-center gap-3 p-4 rounded-2xl bg-white/5 border border-white/10 text-zinc-600">
+                       <Smartphone className="h-4 w-4 text-zinc-600" />
                        <span className="text-[10px] font-black uppercase tracking-widest">+91 ••••• ••420</span>
                     </div>
                  </div>
 
-                 <Button variant="ghost" className="w-full text-rose-500 font-bold hover:bg-rose-500/10 rounded-2xl h-12" onClick={() => logout()}>
+                 <Button variant="ghost" className="w-full text-xl font-bold hover:bg-rose-500/10 rounded-2xl h-12" onClick={() => logout()}>
                     <LogOut className="mr-2 h-4 w-4" />
                     REVOKE ACCESS
                  </Button>
               </div>
-              <User className="absolute -bottom-20 -left-20 h-64 w-64 text-white opacity-5 rotate-12" />
+              <User className="absolute -bottom-20 -left-20 h-64 w-64 text-zinc-600 opacity-5 rotate-12" />
            </Card>
 
-           <Card className="border-none shadow-xl rounded-[2.5rem] bg-gradient-to-br from-primary to-blue-600 p-8 text-white">
+           <Card className="border-none shadow-xl rounded-[2.5rem] bg-gradient-to-br from-primary to-blue-600 p-8 text-zinc-600">
               <Zap className="h-10 w-10 mb-6 opacity-40" />
-              <h3 className="text-xl font-black  uppercase  tracking-tighter mb-2">Premium Matrix</h3>
-              <p className="text-white/70 text-xs font-medium leading-relaxed mb-6">
-                 Your subscription is active until <span className="text-white font-black ">Dec 2026</span>. Full AI telemetry unlocked.
+              <h3 className="text-zinc-600 font-black  uppercase  tracking-tighter mb-2">Premium Matrix</h3>
+              <p className="te/70 text-zinc-600 font-medium leading-relaxed mb-6">
+                 Your subscription is active until <span className="text-zinc-600 font-black ">Dec 2026</span>. Full AI telemetry unlocked.
               </p>
-              <Button className="w-full bg-white text-primary font-black h-12 rounded-2xl text-[10px] uppercase tracking-widest">
+              <Button className="w-full bg-white text-zinc-600 font-black h-12 rounded-2xl text-[10px] uppercase tracking-widest">
                  <CreditCard className="mr-2 h-4 w-4" />
                  MANAGE BILLING
               </Button>
@@ -137,11 +137,11 @@ export default function ParentSettingsPage() {
 
         {/* Configurations List */}
         <div className="lg:col-span-8 space-y-6">
-           <Card className="border-none shadow-2xl rounded-[3rem] bg-white dark:bg-zinc-950 overflow-hidden">
-              <CardHeader className="p-10 border-b bg-zinc-50/50 dark:bg-zinc-900/30">
+           <Card className="border-none shadow-2xl rounded-[3rem] bg-white overflow-hidden">
+              <CardHeader className="p-10 border-b bg-zinc-50/50">
                  <div className="flex justify-between items-center">
                     <div>
-                       <CardTitle className="text-2xl font-black tracking-tighter uppercase ">Control Panel</CardTitle>
+                       <CardTitle className="text-zinc-600 font-black tracking-tighter uppercase ">Control Panel</CardTitle>
                        <CardDescription className="font-bold text-[10px] uppercase tracking-widest mt-1">Configure your experience and data flow</CardDescription>
                     </div>
                     <Badge className="bg-primary text-white border-none font-black text-[10px] uppercase tracking-widest px-4 py-1.5">
@@ -154,14 +154,14 @@ export default function ParentSettingsPage() {
                     {/* Security */}
                     <div className="space-y-4">
                        <div className="flex items-center gap-3 mb-6">
-                          <Fingerprint className="h-5 w-5 text-primary" />
-                          <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Security & Privacy</h4>
+                          <Fingerprint className="h-5 w-5 text-zinc-600" />
+                          <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-600">Security & Privacy</h4>
                        </div>
                        
-                       <div className="flex justify-between items-center p-6 rounded-[2rem] bg-zinc-50 dark:bg-zinc-900/50 border border-transparent hover:border-zinc-200 dark:hover:border-zinc-800 transition-all">
+                       <div className="flex justify-between items-center p-6 rounded-[2rem] bg-zinc-50 border border-transparent hover:border-zinc-200 transition-all">
                           <div className="space-y-0.5">
-                             <p className="font-black text-xs uppercase  tracking-tight">Biometric Verification</p>
-                             <p className="text-[10px] font-medium text-zinc-400">Require fingerprint for high-stakes result viewing.</p>
+                             <p className="font-black text-zinc-600 uppercase  tracking-tight">Biometric Verification</p>
+                             <p className="text-[10px] font-medium text-zinc-600">Require fingerprint for high-stakes result viewing.</p>
                           </div>
                           <Switch 
                              checked={settings.two_factor} 
@@ -174,8 +174,8 @@ export default function ParentSettingsPage() {
                     {/* Notifications */}
                     <div className="space-y-4">
                        <div className="flex items-center gap-3 mb-6">
-                          <Bell className="h-5 w-5 text-primary" />
-                          <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Transmission Protocols</h4>
+                          <Bell className="h-5 w-5 text-zinc-600" />
+                          <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-600">Transmission Protocols</h4>
                        </div>
                        
                        {[
@@ -183,10 +183,10 @@ export default function ParentSettingsPage() {
                          { id: 'whatsapp_sync', label: 'WhatsApp Velocity', desc: 'Instant score alerts and attendance logs.', active: settings.whatsapp_sync },
                          { id: 'sms_alerts', label: 'Legacy SMS Sync', desc: 'Critical alerts via cellular network.', active: settings.sms_alerts },
                        ].map((pref) => (
-                          <div key={pref.id} className="flex justify-between items-center p-6 rounded-[2rem] bg-zinc-50 dark:bg-zinc-900/50 border border-transparent hover:border-zinc-200 dark:hover:border-zinc-800 transition-all">
+                          <div key={pref.id} className="flex justify-between items-center p-6 rounded-[2rem] bg-zinc-50 border border-transparent hover:border-zinc-200 transition-all">
                              <div className="space-y-0.5">
-                                <p className="font-black text-xs uppercase  tracking-tight">{pref.label}</p>
-                                <p className="text-[10px] font-medium text-zinc-400">{pref.desc}</p>
+                                <p className="font-black text-zinc-600 uppercase  tracking-tight">{pref.label}</p>
+                                <p className="text-[10px] font-medium text-zinc-600">{pref.desc}</p>
                              </div>
                               <Switch 
                                  checked={pref.active} 
@@ -200,16 +200,16 @@ export default function ParentSettingsPage() {
                     {/* Interface */}
                     <div className="space-y-4">
                        <div className="flex items-center gap-3 mb-6">
-                          <Globe className="h-5 w-5 text-primary" />
-                          <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Terminal interface</h4>
+                          <Globe className="h-5 w-5 text-zinc-600" />
+                          <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-600">Terminal interface</h4>
                        </div>
                        
-                       <div className="flex justify-between items-center p-6 rounded-[2rem] bg-zinc-50 dark:bg-zinc-900/50 cursor-pointer hover:border-zinc-200 dark:hover:border-zinc-800 transition-all border border-transparent">
+                       <div className="flex justify-between items-center p-6 rounded-[2rem] bg-zinc-50 cursor-pointer hover:border-zinc-200 transition-all border border-transparent">
                           <div className="space-y-0.5">
-                             <p className="font-black text-xs uppercase  tracking-tight">Regional Optimization</p>
-                             <p className="text-[10px] font-medium text-zinc-400">Currently set to English (Standard).</p>
+                             <p className="font-black text-zinc-600 uppercase  tracking-tight">Regional Optimization</p>
+                             <p className="text-[10px] font-medium text-zinc-600">Currently set to English (Standard).</p>
                           </div>
-                          <ChevronRight className="h-4 w-4 text-zinc-400" />
+                          <ChevronRight className="h-4 w-4 text-zinc-600" />
                        </div>
                     </div>
                  </div>
@@ -217,7 +217,7 @@ export default function ParentSettingsPage() {
                      <Button 
                         disabled={isSaving}
                         onClick={saveSettings}
-                        className="h-14 px-12 rounded-[2rem] bg-zinc-900 dark:bg-white text-white dark:text-black font-black text-xs uppercase tracking-widest hover:scale-105 transition-all shadow-xl"
+                        className="h-14 px-12 rounded-[2rem] bg-zinc-900 text-white font-black text-zinc-600 uppercase tracking-widest hover:scale-105 transition-all shadow-xl"
                      >
                         {isSaving ? "SYCHRONIZING..." : "SAVE GLOBAL CONFIGS"}
                      </Button>

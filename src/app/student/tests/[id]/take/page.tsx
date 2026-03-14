@@ -99,7 +99,7 @@ export default function StudentTestTakingPage({ params }: { params: { id: string
           handleSubmit();
           return 0;
         }
-        return prev - 1;
+        return prev -;
       });
     }, 1000);
     return () => clearInterval(timer);
@@ -123,7 +123,7 @@ export default function StudentTestTakingPage({ params }: { params: { id: string
       } finally {
         setTimeout(() => setIsSyncing(false), 800);
       }
-    }, 30000);
+    }, 300);
     return () => clearInterval(saveTimer);
   }, [token, attemptId, tenantSlug, answers]);
 
@@ -153,28 +153,28 @@ export default function StudentTestTakingPage({ params }: { params: { id: string
   };
 
 
-  if (loading) return <div className="p-12 text-center animate-pulse font-black uppercase tracking-widest text-zinc-400">Arming assessment environment...</div>;
-  if (!currentQuestion) return <div className="p-12 text-center font-black uppercase tracking-widest text-rose-500">Assessment questions not synchronized.</div>;
+  if (loading) return <div className="p-12 text-zinc-600 animate-pulse font-black uppercase tracking-widest text-zinc-600">Arming assessment environment...</div>;
+  if (!currentQuestion) return <div className="p-12 text-zinc-600 font-black uppercase tracking-widest text-zinc-600">Assessment questions not synchronized.</div>;
 
   return (
-    <div className="flex h-screen w-full bg-zinc-50 dark:bg-black overflow-hidden select-none">
+    <div className="flex h-screen w-full bg-zinc-50 overflow-hidden select-none">
       {/* Main Container */}
       <div className="flex flex-col flex-1 h-full min-w-0">
         {/* Top bar */}
-        <header className="h-16 border-b bg-white dark:bg-zinc-950 px-6 flex items-center justify-between z-20">
+        <header className="h-16 border-b bg-white px-6 flex items-center justify-between z-20">
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setSidebarOpen(true)}>
               <Menu className="h-5 w-5" />
             </Button>
             <div className="hidden md:block">
-               <h2 className="text-sm font-black tracking-tight uppercase">{testTitle}</h2>
+               <h2 className="text-zinc-600 font-black tracking-tight uppercase">{testTitle}</h2>
             </div>
           </div>
 
           <div className="flex items-center gap-6">
              <div className={cn(
                 "flex items-center gap-2 px-4 py-1.5 rounded-full font-black tabular-nums transition-colors",
-                timeLeft < 600 ? "bg-rose-500 text-white animate-pulse" : "bg-zinc-100 dark:bg-zinc-900 border"
+                timeLeft < 600 ? "bg-rose-500 text-zinc-600 animate-pulse" : "bg-zinc-100 border"
              )}>
                 <Clock className="h-4 w-4" />
                 {formatTime(timeLeft)}
@@ -182,17 +182,17 @@ export default function StudentTestTakingPage({ params }: { params: { id: string
              
              <div className="flex items-center gap-2">
                 {isSyncing ? (
-                   <span className="text-[10px] font-black uppercase text-zinc-400 flex items-center gap-2">
+                   <span className="text-[10px] font-black uppercase text-zinc-600 flex items-center gap-2">
                       <Save className="h-3 w-3 animate-bounce" /> SYNCING...
                    </span>
                 ) : (
-                   <span className="text-[10px] font-black uppercase text-emerald-500 flex items-center gap-2">
+                   <span className="text-[10px] font-black uppercase text-zinc-600 flex items-center gap-2">
                       <CheckCircle2 className="h-3 w-3" /> SECURE
                    </span>
                 )}
              </div>
 
-             <Button className="bg-rose-500 hover:bg-rose-600 text-white font-black text-xs px-6 rounded-xl" onClick={handleSubmit}>
+             <Button className="bg-rose-500 hover:bg-rose-600 text-zinc-600 font-black text-zinc-600 px-6 rounded-xl" onClick={handleSubmit}>
                 FINISH TEST
              </Button>
           </div>
@@ -204,10 +204,10 @@ export default function StudentTestTakingPage({ params }: { params: { id: string
               <div className="flex justify-between items-start">
                  <div className="space-y-4 flex-1">
                     <div className="flex items-center gap-3">
-                       <Badge className="bg-primary/10 text-primary border-none text-[10px] font-black uppercase px-3 py-1">Q {currentIdx + 1}</Badge>
-                       <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">{currentQuestion.type} • {currentQuestion.marks} MARKS</span>
+                       <Badge className="bg-primary/10 text-zinc-600 border-none text-[10px] font-black uppercase px-3 py-1">Q {currentIdx + 1}</Badge>
+                       <span className="text-[10px] font-black text-zinc-600 uppercase tracking-widest">{currentQuestion.type} • {currentQuestion.marks} MARKS</span>
                     </div>
-                    <div className="text-2xl font-bold leading-relaxed text-zinc-800 dark:text-zinc-200">
+                    <div className="text-xl font-bold leading-relaxed text-zinc-600">
                        {currentQuestion.text.split('$').map((part, i) => 
                           i % 2 === 0 ? part : <InlineMath key={i} math={part} />
                        )}
@@ -217,7 +217,7 @@ export default function StudentTestTakingPage({ params }: { params: { id: string
                     variant="ghost" 
                     className={cn(
                        "h-12 w-12 rounded-2xl transition-all",
-                       flagged.has(currentQuestion.id) ? "bg-amber-500 text-white" : "bg-zinc-100 dark:bg-zinc-900"
+                       flagged.has(currentQuestion.id) ? "bg-amber-500 text-zinc-600" : "bg-zinc-100"
                     )}
                     onClick={toggleFlag}
                  >
@@ -231,20 +231,20 @@ export default function StudentTestTakingPage({ params }: { params: { id: string
                     <button 
                        key={i}
                        className={cn(
-                          "w-full text-left p-6 rounded-2xl border-2 transition-all flex items-center gap-6 group",
+                          "w-full text-zinc-600 p-6 rounded-2xl border-2 transition-all flex items-center gap-6 group",
                           answers[currentQuestion.id] === opt 
                              ? "bg-primary/5 border-primary shadow-xl ring-2 ring-primary/10" 
-                             : "bg-white dark:bg-zinc-900 border-zinc-100 dark:border-zinc-800 hover:border-zinc-200 dark:hover:border-zinc-700"
+                             : "bg-white border-zinc-100 hover:border-zinc-200"
                        )}
                        onClick={() => setAnswer(opt)}
                     >
                        <div className={cn(
                           "h-10 w-10 rounded-xl border-2 flex items-center justify-center font-black transition-all",
-                          answers[currentQuestion.id] === opt ? "bg-primary border-primary text-white" : "border-zinc-200 dark:border-zinc-800 text-zinc-400 group-hover:border-zinc-400"
+                          answers[currentQuestion.id] === opt ? "bg-primary border-primary text-zinc-600" : "border-zinc-200 text-zinc-600 group-hover:border-zinc-400"
                        )}>
                           {String.fromCharCode(65 + i)}
                        </div>
-                       <span className="text-lg font-bold">{opt}</span>
+                       <span className="text-xl font-bold">{opt}</span>
                     </button>
                  ))}
 
@@ -252,26 +252,26 @@ export default function StudentTestTakingPage({ params }: { params: { id: string
                     <button 
                        key={val.toString()}
                        className={cn(
-                          "w-full text-left p-6 rounded-2xl border-2 transition-all flex items-center gap-6",
+                          "w-full text-zinc-600 p-6 rounded-2xl border-2 transition-all flex items-center gap-6",
                           answers[currentQuestion.id] === val 
                              ? "bg-primary/5 border-primary shadow-xl" 
-                             : "bg-white dark:bg-zinc-900 border-zinc-100 dark:border-zinc-800 hover:border-zinc-200"
+                             : "bg-white border-zinc-100 hover:border-zinc-200"
                        )}
                        onClick={() => setAnswer(val.toString())}
                     >
                        <div className={cn(
                           "h-10 w-10 rounded-xl border-2 flex items-center justify-center font-black transition-all",
-                          answers[currentQuestion.id] === val ? "bg-primary border-primary text-white" : "border-zinc-200 text-zinc-400"
+                          answers[currentQuestion.id] === val ? "bg-primary border-primary text-zinc-600" : "border-zinc-200 text-zinc-600"
                        )}>
                           {val ? 'TRUE' : 'FALSE'}
                        </div>
-                       <span className="text-lg font-bold uppercase">{val ? 'Correct Statement' : 'Incorrect Statement'}</span>
+                       <span className="text-xl font-bold uppercase">{val ? 'Correct Statement' : 'Incorrect Statement'}</span>
                     </button>
                  ))}
 
                  {currentQuestion.type === 'FIB' && (
                     <textarea 
-                       className="w-full p-8 rounded-2xl border-2 bg-white dark:bg-zinc-900 border-zinc-100 dark:border-zinc-800 focus:border-primary outline-none text-xl font-bold min-h-[200px]"
+                       className="w-full p-8 rounded-2xl border-2 bg-white border-zinc-100 focus:border-primary outline-none text-xl font-bold min-h-[200px]"
                        placeholder="Enter your calculation steps and final result..."
                        value={typeof answers[currentQuestion.id] === 'string' ? answers[currentQuestion.id] as string : ''}
                        onChange={(e) => setAnswer(e.target.value)}
@@ -282,25 +282,25 @@ export default function StudentTestTakingPage({ params }: { params: { id: string
         </main>
 
         {/* Bottom Nav */}
-        <footer className="h-20 bg-white dark:bg-zinc-950 border-t px-8 flex items-center justify-between z-20">
+        <footer className="h-20 bg-white border-t px-8 flex items-center justify-between z-20">
            <Button 
               variant="outline" 
-              className="rounded-xl font-black text-xs uppercase h-12 px-8"
-              onClick={() => setCurrentIdx(prev => Math.max(0, prev - 1))}
+              className="rounded-xl font-black text-zinc-600 uppercase h-12 px-8"
+              onClick={() => setCurrentIdx(prev => Math.max(0, prev -))}
               disabled={currentIdx === 0}
            >
               PREVIOUS
            </Button>
 
            <div className="flex items-center gap-2">
-              <span className="text-[10px] font-black uppercase text-zinc-400 mr-2">SECURED PROCTORING ACTIVE</span>
-              <Maximize className="h-4 w-4 text-primary" />
+              <span className="text-[10px] font-black uppercase text-zinc-600 mr-2">SECURED PROCTORING ACTIVE</span>
+              <Maximize className="h-4 w-4 text-zinc-600" />
            </div>
 
            <Button 
-              className="bg-black dark:bg-white text-white dark:text-black rounded-xl font-black text-xs uppercase h-12 px-8"
-              onClick={() => setCurrentIdx(prev => Math.min(questionsPool.length - 1, prev + 1))}
-              disabled={currentIdx === questionsPool.length - 1}
+              className="bg-black text-zinc-600 rounded-xl font-black text-zinc-600 uppercase h-12 px-8"
+              onClick={() => setCurrentIdx(prev => Math.min(questionsPool.length -, prev + 1))}
+              disabled={currentIdx === questionsPool.length -}
             >
               NEXT QUESTION
            </Button>
@@ -309,12 +309,12 @@ export default function StudentTestTakingPage({ params }: { params: { id: string
 
       {/* Sidebar Palette */}
       <aside className={cn(
-         "fixed inset-y-0 right-0 w-80 bg-white dark:bg-zinc-950 border-l shadow-2xl transition-transform transform z-30",
+         "fixed inset-y-0 right-0 w-80 bg-white border-l shadow-2xl transition-transform transform z-30",
          sidebarOpen ? "translate-x-0" : "translate-x-full",
          "lg:relative lg:translate-x-0"
       )}>
          <div className="h-16 flex items-center justify-between px-6 border-b">
-            <h3 className="text-xs font-black uppercase tracking-widest">Question Palette</h3>
+            <h3 className="text-zinc-600 font-black uppercase tracking-widest">Question Palette</h3>
             <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setSidebarOpen(false)}>
                <ChevronRight className="h-5 w-5" />
             </Button>
@@ -326,11 +326,11 @@ export default function StudentTestTakingPage({ params }: { params: { id: string
                   <button 
                      key={q.id}
                      className={cn(
-                        "h-12 w-12 rounded-xl border flex items-center justify-center text-xs font-black transition-all",
-                        currentIdx === i ? "ring-2 ring-primary ring-offset-2 dark:ring-offset-black" : "",
-                        flagged.has(q.id) ? "bg-amber-500 text-white border-amber-600" : 
-                        answers[q.id] !== undefined ? "bg-emerald-500 text-white border-emerald-600" : 
-                        "bg-zinc-100 dark:bg-zinc-900 text-zinc-400 border-zinc-200 dark:border-zinc-800"
+                        "h-12 w-12 rounded-xl border flex items-center justify-center text-zinc-600 font-black transition-all",
+                        currentIdx === i ? "ring-2 ring-primary ring-offset-2" : "",
+                        flagged.has(q.id) ? "bg-amber-500 text-zinc-600 border-amber-600" : 
+                        answers[q.id] !== undefined ? "bg-emerald-500 text-zinc-600 border-emerald-600" : 
+                        "bg-zinc-100 text-zinc-600 border-zinc-200"
                      )}
                      onClick={() => handleSelect(i)}
                   >
@@ -339,17 +339,17 @@ export default function StudentTestTakingPage({ params }: { params: { id: string
                ))}
             </div>
 
-            <div className="space-y-4 pt-4 border-t border-zinc-100 dark:border-zinc-800">
-               <h4 className="text-[9px] font-black uppercase tracking-widest text-zinc-400">Legend</h4>
+            <div className="space-y-4 pt-4 border-t border-zinc-100">
+               <h4 className="text-[9px] font-black uppercase tracking-widest text-zinc-600">Legend</h4>
                <div className="grid grid-cols-2 gap-4">
                   {[
                      { label: 'Answered', color: 'bg-emerald-500' },
                      { label: 'Flagged', color: 'bg-amber-500' },
-                     { label: 'Unvisited', color: 'bg-zinc-100 dark:bg-zinc-900 border' }
+                     { label: 'Unvisited', color: 'bg-zinc-100 border' }
                   ].map((l, i) => (
                      <div key={i} className="flex items-center gap-2">
                         <div className={cn("h-3 w-3 rounded-md", l.color)} />
-                        <span className="text-[10px] font-bold text-zinc-500">{l.label}</span>
+                        <span className="text-[10px] font-bold text-zinc-600">{l.label}</span>
                      </div>
                   ))}
                </div>
@@ -357,8 +357,8 @@ export default function StudentTestTakingPage({ params }: { params: { id: string
 
             <Card className="bg-primary/5 border-primary/10 rounded-2xl p-4">
                <div className="flex gap-3">
-                  <AlertCircle className="h-4 w-4 text-primary shrink-0" />
-                  <p className="text-[10px] font-bold text-primary leading-tight uppercase tracking-tight">
+                  <AlertCircle className="h-4 w-4 text-zinc-600 shrink-0" />
+                  <p className="text-[10px] font-bold text-zinc-600 leading-tight uppercase tracking-tight">
                      TAB SWITCHING OR EXITING FULLSCREEN WILL RESULT IN AUTO-SUBMISSION.
                   </p>
                </div>
