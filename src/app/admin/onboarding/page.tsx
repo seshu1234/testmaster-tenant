@@ -179,7 +179,7 @@ export default function OnboardingPage() {
   };
 
   const handleNext = () => {
-    if (currentStep < steps.length -) {
+    if (currentStep < steps.length - 1) {
       setCurrentStep(prev => prev + 1);
     } else {
       toast.success("Center Setup Complete!", {
@@ -190,7 +190,7 @@ export default function OnboardingPage() {
 
   const handleBack = () => {
     if (currentStep > 0) {
-      setCurrentStep(prev => prev -);
+      setCurrentStep(prev => prev - 1);
     }
   };
 
@@ -248,14 +248,14 @@ export default function OnboardingPage() {
                         : "border-zinc-200 group-hover:border-zinc-400"
                     )}>
                        {completedTasks[task] && <CheckCircle2 className="h-4 w-4 text-zinc-600" />}
-                    </div>
-                    <span className={cn(
-                      "font-bold text-zinc-600 uppercase tracking-widest transition-all",
-                      completedTasks[task] ?  "text-zinc-600 line-through decoration-emerald-500 decoration-2 underline-offset-4" : "te"
-                    )}>{task}</span>
+                     </div>
+                     <span className={cn(
+                       "font-bold text-zinc-600 uppercase tracking-widest transition-all",
+                       completedTasks[task] ?  "text-zinc-600 line-through decoration-emerald-500 decoration-2 underline-offset-4" : ""
+                     )}>{task}</span>
                     <ArrowRight className={cn(
                       "h-4 w-4 ml-auto text-zinc-600 transition-all",
-                      expandedTask === task ? "rotate-90 text-zinc-600" : "group- group-hover:translate-x-1"
+                      expandedTask === task ? "rotate-90 text-zinc-600" : "group-hover:translate-x-1"
                     )} />
                   </button>
 
@@ -390,7 +390,7 @@ export default function OnboardingPage() {
                 onClick={handleNext} 
                 className="gap-2 px-8 bg-black text-zinc-600 hover:bg-zinc-800 rounded-xl"
               >
-                {currentStep === steps.length - ? "Finish Setup" : "Continue"}
+                {currentStep === steps.length - 1 ? "Finish Setup" : "Continue"}
                 <ChevronRight className="h-4 w-4" />
               </Button>
             </div>

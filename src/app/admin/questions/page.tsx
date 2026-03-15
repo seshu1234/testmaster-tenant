@@ -156,7 +156,7 @@ export default function AdminQuestionBankPage() {
           </div>
 
           <Card className="border shadow-sm bg-white/50 backdrop-blur-sm overflow-hidden">
-            <CardHeader className="bg-zinc-900 text-white py-4 flex flex-row items-center justify-between">
+            <CardHeader className="bg-zinc-900 py-4 flex flex-row items-center justify-between">
               <div>
                  <CardTitle className="text-zinc-600">Questions Repository</CardTitle>
                  <CardDescription className="text-zinc-600">Total {filteredQuestions.length} unique questions stored.</CardDescription>
@@ -215,9 +215,9 @@ export default function AdminQuestionBankPage() {
                         <TableCell className="text-zinc-600 font-semibold">{q.teacher_name}</TableCell>
                         <TableCell>
                            <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-tight ${
-                             q.difficulty === 'easy' ? 'bg-green-100/50 te' :
-                             q.difficulty === 'medium' ? 'bg-zinc-100/50 te' :
-                             'bg-red-100/50 te'
+                             q.difficulty === 'easy' ? 'bg-green-100/50 text-green-700' :
+                             q.difficulty === 'medium' ? 'bg-zinc-100/50 text-zinc-600' :
+                             'bg-red-100/50 text-red-700'
                            }`}>
                              {q.difficulty}
                            </span>
@@ -232,10 +232,10 @@ export default function AdminQuestionBankPage() {
                         </TableCell>
                         <TableCell className="text-zinc-600 pr-6">
                            <div className="flex justify-end gap-2">
-                              <Button variant="ghost" size="icon" className="h-8 w-8 text-zinc-600 group- transition-colors">
+                              <Button variant="ghost" size="icon" className="h-8 w-8 text-zinc-600 transition-colors">
                                 <Eye className="h-4 w-4" />
                               </Button>
-                              <Button variant="ghost" size="icon" className="h-8 w-8 text-zinc-600 group-">
+                               <Button variant="ghost" size="icon" className="h-8 w-8 text-zinc-600">
                                 <MoreVertical className="h-4 w-4" />
                               </Button>
                            </div>

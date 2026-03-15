@@ -142,21 +142,21 @@ export default function TeacherAnalytics() {
            <CardContent>
               <div className="grid gap-4 md:grid-cols-2">
                  {data.ai_analysis.critical?.map((item, i) => (
-                   <div key={`crit-${i}`} className="p-4 rounded-xl border border-red-100 bg-red-50/5020">
+                   <div key={`crit-${i}`} className="p-4 rounded-xl border border-red-100 bg-red-50/20">
                       <h4 className="font-bold text-zinc-600 flex items-center gap-2">
                          🚩 Critical: {item.title}
                       </h4>
-                      <p className="text-zinc-600 te/80/80 mt-2">
+                      <p className="text-zinc-600 mt-2">
                          {item.description}
                       </p>
                    </div>
                  ))}
                  {data.ai_analysis.optimal?.map((item, i) => (
-                   <div key={`opt-${i}`} className="p-4 rounded-xl border border-green-100 bg-green-50/5020">
+                   <div key={`opt-${i}`} className="p-4 rounded-xl border border-green-100 bg-green-50/20">
                       <h4 className="font-bold text-zinc-600 flex items-center gap-2">
                          ✅ Optimal: {item.title}
                       </h4>
-                      <p className="text-zinc-600 te/80/80 mt-2">
+                      <p className="text-zinc-600 mt-2">
                          {item.description}
                       </p>
                    </div>

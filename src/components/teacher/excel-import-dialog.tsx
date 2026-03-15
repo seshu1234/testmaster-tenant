@@ -113,11 +113,11 @@ export function ExcelImportDialog({ open, onOpenChange, onImportSuccess }: Excel
                 onChange={handleFileChange}
                 disabled={loading}
               />
-              <FileUp className={`h-8 w-8 mb-2 ${file ? 'te' : 'te'}`} />
-              <p className="text-zinc-600 font-medium text-zinc-600">
+              <FileUp className={`h-8 w-8 mb-2 ${file ? 'text-emerald-600' : 'text-zinc-400'}`} />
+              <p className="text-zinc-600 font-medium">
                 {file ? file.name : "Click to upload or drag and drop"}
               </p>
-              <p className="text-zinc-600 mt-1">
+              <p className="text-zinc-600 opacity-80">
                 MAX: 5MB (XLSX, CSV)
               </p>
             </div>

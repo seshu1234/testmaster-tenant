@@ -182,9 +182,9 @@ export default function TeacherProfilePage() {
          <div className="lg:col-span-3">
             <Tabs defaultValue="info" className="space-y-6">
                <TabsList className="bg-white p-1.5 rounded-xl shadow-sm h-auto border">
-                  <TabsTrigger value="info" className="rounded-lg px-6 py-3 font-bold text-zinc-600 uppercase tracking-tighter data-[state=active]:bg-zinc-900 data-[state=active]:te">Profile Info</TabsTrigger>
-                  <TabsTrigger value="signature" className="rounded-lg px-6 py-3 font-bold text-zinc-600 uppercase tracking-tighter data-[state=active]:bg-zinc-900 data-[state=active]:te">Signature</TabsTrigger>
-                  <TabsTrigger value="notifications" className="rounded-lg px-6 py-3 font-bold text-zinc-600 uppercase tracking-tighter data-[state=active]:bg-zinc-900 data-[state=active]:te">Notifications</TabsTrigger>
+                  <TabsTrigger value="info" className="rounded-lg px-6 py-3 font-bold text-zinc-600 uppercase tracking-tighter data-[state=active]:bg-zinc-900 data-[state=active]:text-white">Profile Info</TabsTrigger>
+                  <TabsTrigger value="signature" className="rounded-lg px-6 py-3 font-bold text-zinc-600 uppercase tracking-tighter data-[state=active]:bg-zinc-900 data-[state=active]:text-white">Signature</TabsTrigger>
+                  <TabsTrigger value="notifications" className="rounded-lg px-6 py-3 font-bold text-zinc-600 uppercase tracking-tighter data-[state=active]:bg-zinc-900 data-[state=active]:text-white">Notifications</TabsTrigger>
                </TabsList>
 
                <TabsContent value="info">
@@ -239,7 +239,7 @@ export default function TeacherProfilePage() {
                      <p className="text-zinc-600 mb-8 font-medium">This signature will appear on reports and certifications.</p>
                      
                      <div className="h-64 border-2 border-dashed border-zinc-200 rounded-2xl bg-zinc-50 flex flex-col items-center justify-center group cursor-pointer hover:border-primary transition-all">
-                        <SignatureIcon className="h-16 w-16 text-zinc-600 group- transition-all mb-4" />
+                        <SignatureIcon className="h-16 w-16 text-zinc-600 transition-all mb-4" />
                         <span className="text-[10px] font-black uppercase tracking-widest text-zinc-600">Drag & Drop Image or Draw Here</span>
                      </div>
                      <div className="mt-6 flex justify-between items-center bg-zinc-50 p-4 rounded-xl border border-zinc-100">

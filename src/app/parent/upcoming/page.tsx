@@ -177,7 +177,7 @@ export default function UpcomingTestsPage() {
                     <Bell className="h-7 w-7 text-zinc-600" />
                  </div>
                  <h3 className="text-zinc-600 font-black  uppercase  tracking-tighter mb-4 leading-none">Smart Notifications</h3>
-                 <p className="te/80 text-zinc-600 font-medium leading-relaxed mb-10">
+                 <p className="opacity-80 text-zinc-600 font-medium leading-relaxed mb-10">
                     Get real-time updates on test readiness and system eligibility checks for your child.
                  </p>
                  <Button className="w-full bg-white text-zinc-600 font-black h-12 rounded-2xl text-[10px] uppercase tracking-widest hover:scale-105 transition-transform">
@@ -202,9 +202,9 @@ export default function UpcomingTestsPage() {
 
               <div className="space-y-6">
                  {[
-                   { label: 'Device Compatible', value: 'YES', color: 'te' },
-                   { label: 'Guardian App Link', value: 'SYNCED', color: 'te' },
-                   { label: 'Avg Prep Level', value: 'OPTIMAL', color: 'te' }
+                   { label: 'Device Compatible', value: 'YES', color: 'text-emerald-600' },
+                   { label: 'Guardian App Link', value: 'SYNCED', color: 'text-blue-600' },
+                   { label: 'Avg Prep Level', value: 'OPTIMAL', color: 'text-zinc-600' }
                  ].map((stat, i) => (
                     <div key={i} className="flex justify-between items-end border-b border-white/10 pb-4 last:border-0 last:pb-0">
                        <span className="text-[10px] font-black uppercase tracking-widest text-zinc-600">{stat.label}</span>
@@ -219,7 +219,7 @@ export default function UpcomingTestsPage() {
                  <AlertTriangle className="h-6 w-6 text-zinc-600 shrink-0" />
                  <div className="space-y-2">
                     <h4 className="text-zinc-600 font-black uppercase  tracking-tighter text-zinc-600 ">Conflict Warning</h4>
-                    <p className="text-[10px] font-bold te/80 leading-relaxed uppercase">
+                    <p className="text-[10px] font-bold opacity-80 leading-relaxed uppercase">
                        Physics Drill #2 overlaps with Math Revision session on Mar 20. Please coordinate with regional head.
                     </p>
                  </div>

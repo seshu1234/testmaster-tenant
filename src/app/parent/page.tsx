@@ -98,10 +98,10 @@ export default function ParentDashboard() {
   }, [token, tenantSlug, activeWard]);
 
   const kpis = [
-    { title: "Avg Score", value: stats?.avg_score || "0%", icon: Target, color: "te", bg: "bg-emerald-5020" },
-    { title: "Class Rank", value: stats?.class_rank || "N/A", icon: TrendingUp, color: "te", bg: "bg-blue-5020" },
-    { title: "Attendance", value: stats?.attendance || "0%", icon: ShieldCheck, color: "te", bg: "bg-purple-5020" },
-    { title: "Study Hours", value: stats?.study_hours || "0h", icon: Clock, color: "te", bg: "bg-amber-5020" },
+    { title: "Avg Score", value: stats?.avg_score || "0%", icon: Target, color: "text-emerald-600", bg: "bg-emerald-50" },
+    { title: "Class Rank", value: stats?.class_rank || "N/A", icon: TrendingUp, color: "text-blue-600", bg: "bg-blue-50" },
+    { title: "Attendance", value: stats?.attendance || "0%", icon: ShieldCheck, color: "text-purple-600", bg: "bg-purple-50" },
+    { title: "Study Hours", value: stats?.study_hours || "0h", icon: Clock, color: "text-amber-600", bg: "bg-amber-50" },
   ];
 
   if (!user) return null;
@@ -148,7 +148,7 @@ export default function ParentDashboard() {
                  </div>
                  <div className="space-y-2">
                     <div className="flex items-center gap-3">
-                       <h2 className="text-zinc-600 font-black  uppercase tracking-tighter text-zinc-600">{activeWard.name}</h2>
+                       <h2 className="text-zinc-600 font-black uppercase tracking-tighter">{activeWard.name}</h2>
                        {activeWard.rank_percentile >= 90 && (
                         <Badge className="bg-emerald-500 text-zinc-600 border-none text-[8px] font-black uppercase px-3 py-1">TOP {100 - activeWard.rank_percentile}%</Badge>
                        )}
@@ -240,7 +240,7 @@ export default function ParentDashboard() {
                           <h4 className="font-black text-zinc-600 tracking-tight truncate uppercase ">{item.name}</h4>
                           <div className="flex items-center gap-4 text-[9px] font-black text-zinc-600 uppercase tracking-[0.1em] mt-2">
                              <span>Class Avg: {item.class_avg}%</span>
-                             <span className={cn("flex items-center gap-1", item.trend === 'up' ? 'te' : 'te')}>
+                             <span className={cn("flex items-center gap-1", item.trend === 'up' ? 'text-emerald-600' : 'text-rose-600')}>
                                 {item.trend === 'up' ? <ArrowUpRight className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
                                 {item.trend === 'up' ? 'Exceeding' : 'Below Avg'}
                              </span>
@@ -268,7 +268,7 @@ export default function ParentDashboard() {
                     <MessageCircle className="h-7 w-7 text-zinc-600" />
                  </div>
                  <h3 className="text-zinc-600 font-black  uppercase tracking-tighter mb-4 leading-none text-zinc-600 ">Teacher Engagement</h3>
-                 <p className="te/80 text-zinc-600 font-medium leading-relaxed mb-10">
+                 <p className="text-zinc-600 font-medium leading-relaxed mb-10 opacity-80">
                     Connect with subject experts regarding {activeWard?.name.split(' ')[0] || 'your child'}&apos;s progress.
                  </p>
                  <Link href="/parent/communications">

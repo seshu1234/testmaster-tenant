@@ -100,7 +100,7 @@ export default function RolesPage() {
                   <span className="text-[10px] text-zinc-600">{role.count} Users</span>
                 </div>
               </div>
-              <ChevronRight className={`h-4 w-4 transition-transform ${selectedRole === role.id ?  'text-zinc-600 translate-x-1' : 'te'}`} />
+              <ChevronRight className={`h-4 w-4 transition-transform ${selectedRole === role.id ?  'text-zinc-600 translate-x-1' : 'text-zinc-400'}`} />
             </div>
           ))}
         </div>
@@ -133,7 +133,7 @@ export default function RolesPage() {
             <div className="space-y-6 border-t pt-6">
               {permissionGroups.map((group) => (
                 <div key={group.group} className="space-y-3">
-                  <h4 className="text-xl font-bold uppercase tracking-widest te/70">{group.group}</h4>
+                  <h4 className="text-xl font-bold uppercase tracking-widest opacity-70">{group.group}</h4>
                   <div className="grid gap-4">
                     {group.permissions.map((perm) => (
                       <div key={perm.id} className="flex items-start gap-3 p-3 rounded-lg border border-zinc-100 bg-zinc-50/30 hover:bg-white transition-colors group">

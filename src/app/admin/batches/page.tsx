@@ -235,9 +235,9 @@ export default function BatchesPage() {
                         </TableCell>
                         <TableCell>
                            <span className={`px-2 py-0.5 rounded-full text-[10px] uppercase font-bold tracking-tight ${
-                             batch.status === 'active' ? 'bg-green-100 te' :
-                             batch.status === 'completed' ? 'bg-zinc-100 te' :
-                             'bg-zinc-50 te'
+                             batch.status === 'active' ? 'bg-green-100 text-green-700' :
+                             batch.status === 'completed' ? 'bg-zinc-100 text-zinc-700' :
+                             'bg-zinc-50 text-zinc-500'
                            }`}>
                              {batch.status}
                            </span>

@@ -17,7 +17,7 @@ import { ArrowLeft, Save, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/hooks/use-auth";
 import { api } from "@/lib/api";
-import { RichTextEditor } from "@/components/ui/rich-te";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
 
 export default function CreateQuestionPage() {
   const router = useRouter();
@@ -245,7 +245,7 @@ export default function CreateQuestionPage() {
                   <div key={option.id} className="flex items-center gap-3">
                     <div 
                       className={`h-6 w-6 rounded-full border-2 flex items-center justify-center cursor-pointer transition-colors ${
-                        option.isCorrect ? 'bg-primary border-primary te' : 'border-zinc-300'
+                        option.isCorrect ? 'bg-primary border-primary text-white' : 'border-zinc-300'
                       }`}
                       onClick={() => handleCorrectToggle(option.id)}
                     >

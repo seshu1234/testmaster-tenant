@@ -265,9 +265,9 @@ export default function StudentsPage() {
                     </TableCell>
                     <TableCell>
                       <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-tight ${
-                        student.status === 'active' ? 'bg-green-100 te' : 
-                        student.status === 'suspended' ? 'bg-red-100 te' : 
-                        'bg-zinc-100 te'
+                        student.status === 'active' ? 'bg-green-100 text-green-700' : 
+                        student.status === 'suspended' ? 'bg-red-100 text-red-700' : 
+                        'bg-zinc-100 text-zinc-600'
                       }`}>
                         {student.status || 'active'}
                       </span>

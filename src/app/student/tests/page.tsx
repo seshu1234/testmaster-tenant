@@ -105,7 +105,7 @@ export default function StudentTestsPage() {
                           className={cn(
                              "h-10 rounded-xl flex flex-col items-center justify-center relative cursor-pointer transition-all",
                              isToday ? "bg-primary text-white font-black" : "hover:bg-zinc-50 text-xl font-bold",
-                             hasTest && !isToday && "te"
+                             hasTest && !isToday && "text-primary/10"
                           )}
                        >
                           {day}

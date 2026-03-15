@@ -49,7 +49,7 @@ export default function TeacherCalendarPage() {
   const daysInMonth = (year: number, month: number) => new Date(year, month + 1, 0).getDate();
   const firstDayOfMonth = (year: number, month: number) => new Date(year, month, 1).getDay();
 
-  const prevMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() -, 1));
+  const prevMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
   const nextMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
 
   const monthName = currentDate.toLocaleString('default', { month: 'long' });
@@ -140,7 +140,7 @@ export default function TeacherCalendarPage() {
                   <div className="space-y-2">
                     <div className={cn(
                         "text-xl font-bold h-6 w-6 flex items-center justify-center rounded-full ml-auto",
-                        day === new Date().getDate() && currentDate.getMonth() === new Date().getMonth() ? "bg-primary text-white" : "te"
+                        day === new Date().getDate() && currentDate.getMonth() === new Date().getMonth() ? "bg-primary text-white" : "text-zinc-600"
                     )}>
                       {day}
                     </div>
@@ -149,7 +149,7 @@ export default function TeacherCalendarPage() {
                         <Link key={test.id} href={`/teacher/tests/${test.id}/build`}>
                            <div className={cn(
                                "p-1.5 rounded-lg border text-[10px] font-medium truncate cursor-pointer hover:scale-105 transition-transform",
-                               test.status === 'published' ? 'bg-emerald-50 border-emerald-100 te' : 'bg-zinc-50 border-zinc-100 te'
+                               test.status === 'published' ? 'bg-emerald-50 border-emerald-100 text-emerald-700' : 'bg-zinc-50 border-zinc-100 text-zinc-600'
                            )}>
                              {test.title}
                            </div>

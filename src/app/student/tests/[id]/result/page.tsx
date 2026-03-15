@@ -100,12 +100,15 @@ export default function StudentResultPage() {
   }, [attemptId, user, token, tenantSlug, fetchLeaderboard]);
 
   useEffect(() => {
-    // eslint-disable-ne react-hooks/set-state-in-effect
-    fetchResult();
+    if (status === 'loading') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      fetchResult();
+    }
     
     // Poll if grading is in progress
     let interval: NodeJS.Timeout;
     if (status === 'grading') {
+        fetchResult(); // Immediate check
         interval = setInterval(fetchResult, 3000);
     }
     return () => clearInterval(interval);
@@ -202,7 +205,7 @@ export default function StudentResultPage() {
             </CardHeader>
             <CardContent className="flex flex-col items-center py-8">
                 <div className="text-zinc-600 font-black tracking-tighter mb-2">{result.score}</div>
-                <div className="te/60 font-bold text-zinc-600 uppercase">Out of {result.max_score}</div>
+                <div className="opacity-60 font-bold text-zinc-600 uppercase">Out of {result.max_score}</div>
                 <div className="mt-8 flex items-center gap-3 bg-white/10 px-6 py-2 rounded-full border border-white/20">
                     <Award className="h-5 w-5" />
                     <span className="font-bold">{result.percentage}% Accuracy</span>
@@ -318,7 +321,7 @@ export default function StudentResultPage() {
                                 )}
                             >
                                 <div className={cn(
-                                    "h-10 w-10 rounded-2xl flex items-center justify-center font-black text-zinc-600 shadow-sm border text-zinc-600",
+                                    "h-10 w-10 rounded-2xl flex items-center justify-center font-black text-zinc-600 shadow-sm border",
                                     idx === 0 ? "bg-amber-500 scale-110 shadow-amber-500/20" : 
                                     idx === 1 ? "bg-zinc-400" : 
                                     idx === 2 ? "bg-amber-700" : "bg-zinc-100 text-zinc-600"

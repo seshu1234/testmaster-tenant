@@ -341,7 +341,7 @@ function TelemetryCard({ icon, label, value, subValue }: { icon: React.ReactNode
     return (
         <Card className="rounded-3xl border-none shadow-lg bg-white border group">
             <CardContent className="p-6 flex items-center gap-6">
-                <div className="h-[72px] w-[72px] rounded-2xl bg-zinc-50 flex items-center justify-center border group-hover:scale-110 transition-transform">
+                  <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center text-xl font-bold transition-colors">
                     {icon}
                 </div>
                 <div>

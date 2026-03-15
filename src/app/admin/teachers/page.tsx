@@ -245,8 +245,8 @@ export default function TeachersPage() {
                         </TableCell>
                         <TableCell>
                           <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-tight ${
-                            teacher.status === 'active' ? 'bg-green-100 te' : 
-                            'bg-zinc-100 te'
+                            teacher.status === 'active' ? 'bg-green-100 text-green-700' : 
+                            'bg-zinc-100 text-zinc-700'
                           }`}>
                             {teacher.status || 'active'}
                           </span>

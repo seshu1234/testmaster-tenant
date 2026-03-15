@@ -135,7 +135,7 @@ export default function StudentResourcesPage() {
                        key={tab}
                        className={cn(
                           "px-6 py-2 text-[9px] font-black uppercase tracking-widest rounded-xl transition-all whitespace-nowrap",
-                           activeTab === tab ? "bg-white shadow-sm text-zinc-600" : "te"
+                           activeTab === tab ? "bg-white shadow-sm text-zinc-600" : "text-zinc-400"
                        )}
                        onClick={() => setActiveTab(tab as 'all' | 'video' | 'pdf' | 'notes')}
                     >
@@ -178,7 +178,7 @@ export default function StudentResourcesPage() {
                                <Badge variant="outline" className="text-[7px] font-black uppercase tracking-widest h-4 px-2">{res.subject}</Badge>
                                <span className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest">{res.source}</span>
                             </div>
-                             <h3 className="text-zinc-600 font-black uppercase tracking-tighter leading-tight group- transition-colors">{res.title}</h3>
+                             <h3 className="text-zinc-600 font-black uppercase tracking-tighter leading-tight transition-colors">{res.title}</h3>
                          </div>
   
                          <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-zinc-600">

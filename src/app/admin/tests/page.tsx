@@ -90,10 +90,10 @@ export default function TestsOversightPage() {
 
       <div className="grid gap-6 md:grid-cols-4">
         {[
-          { label: "Tests Scheduled", value: tests.length, icon: Clock, color: "te" },
-          { label: "Live Tests", value: tests.filter(t => t.status === 'published').length, icon: Zap, color: "te" },
-          { label: "Needs Approval", value: tests.filter(t => t.status === 'pending_approval').length, icon: ShieldAlert, color: "te" },
-          { label: "Drafts", value: tests.filter(t => t.status === 'draft').length, icon: FileText, color: "te" },
+          { label: "Tests Scheduled", value: tests.length, icon: Clock, color: "text-zinc-600" },
+          { label: "Live Tests", value: tests.filter(t => t.status === 'published').length, icon: Zap, color: "text-zinc-600" },
+          { label: "Needs Approval", value: tests.filter(t => t.status === 'pending_approval').length, icon: ShieldAlert, color: "text-zinc-600" },
+          { label: "Drafts", value: tests.filter(t => t.status === 'draft').length, icon: FileText, color: "text-zinc-600" },
         ].map((stat, i) => (
           <Card key={i} className="border shadow-sm bg-white/50 backdrop-blur-sm">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -210,7 +210,7 @@ export default function TestsOversightPage() {
                         </TableCell>
                         <TableCell className="text-zinc-600 pr-6">
                            <div className="flex justify-end gap-2">
-                              <Button variant="ghost" size="icon" className="h-8 w-8 text-zinc-600 group- transition-colors">
+                              <Button variant="ghost" size="icon" className="h-8 w-8 text-zinc-600 transition-colors">
                                 <Eye className="h-4 w-4" />
                               </Button>
                               {test.status === "pending_approval" && (

@@ -105,7 +105,7 @@ export default function StudentPracticePage() {
           <div className="space-y-4">
             <Badge variant="secondary" className="bg-primary-foreground/20 text-zinc-600">Growth Engine</Badge>
             <h1 className="text-xl font-bold uppercase tracking-tight">Precision Practice</h1>
-            <p className="te/80">
+            <p className="opacity-80">
               AI-curated drills designed to eliminate your weak spots and maximize score velocity.
             </p>
           </div>
@@ -113,7 +113,7 @@ export default function StudentPracticePage() {
           <div className="bg-primary-foreground/10 p-6 rounded-lg flex items-center gap-4">
             <Gem className="h-8 w-8 text-zinc-600" />
             <div>
-              <p className="text-zinc-600 te/60 uppercase font-bold tracking-wider">Practice Multiplier</p>
+              <p className="text-zinc-600 opacity-60 uppercase font-bold tracking-wider">Practice Multiplier</p>
                <p className="text-zinc-600 font-black uppercase tracking-tight">1.5x Rewards Active</p>
             </div>
           </div>
@@ -169,9 +169,9 @@ export default function StudentPracticePage() {
                     <div className="h-20 w-20 bg-muted rounded-lg flex flex-col items-center justify-center transition-transform group-hover:scale-105">
                       <Zap className={cn(
                         "h-6 w-6",
-                        set.settings?.difficulty?.toLowerCase() === 'hard' ? 'te' : 
-                        set.settings?.difficulty?.toLowerCase() === 'medium' ? 'te' : 
-                        'te'
+                        set.settings?.difficulty?.toLowerCase() === 'hard' ? 'text-rose-600' : 
+                        set.settings?.difficulty?.toLowerCase() === 'medium' ? 'text-amber-600' : 
+                        'text-emerald-600'
                       )} />
                       <span className="text-[10px] font-black uppercase tracking-widest text-zinc-600 mt-1">
                         {Math.floor(set.duration_seconds / 60)} min

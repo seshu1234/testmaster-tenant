@@ -284,7 +284,7 @@ export default function PerformancePage() {
                 <h4 className="text-zinc-600 font-black  uppercase  tracking-tighter mb-2">{subject.subject}</h4>
                 <div className="flex items-end gap-3">
                   <div className="text-zinc-600 font-black ">{subject.score}%</div>
-                  <div className={cn("text-[10px] font-black uppercase mb-1", subject.trend.startsWith('+') ? 'te' : 'te')}>
+                  <div className={cn("text-[10px] font-black uppercase mb-1", subject.trend.startsWith('+') ? "text-emerald-600" : "text-rose-600")}>
                       {subject.trend}
                   </div>
                 </div>
@@ -305,7 +305,7 @@ export default function PerformancePage() {
                   <Zap className="h-8 w-8 text-zinc-600" />
                </div>
                <h3 className="text-zinc-600 font-black  uppercase  tracking-tighter leading-none">Executive Insights</h3>
-               <p className="te/90 font-medium leading-relaxed max-w-md">
+               <p className="opacity-90 font-medium leading-relaxed max-w-md">
                  Our neural engine monitors score velocity and error mitigation patterns to provide real-time rank predictions.
                </p>
                <div className="flex gap-4">

@@ -86,7 +86,7 @@ export default function TeacherTestsPage() {
                 <CardHeader>
                    <div className="flex justify-between items-start">
                      <CardTitle className="line-clamp-1">{test.title}</CardTitle>
-                     <span className={`text-zinc-600 px-2 py-1 rounded-full ${test.status === 'published' ? 'bg-green-100 te' : 'bg-yellow-100 te'}`}>
+                     <span className={`text-[10px] font-black uppercase px-2 py-1 rounded-full ${test.status === 'published' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
                         {test.status}
                      </span>
                    </div>

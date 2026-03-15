@@ -85,7 +85,7 @@ export default function StudentNotificationsPage() {
                  "px-8 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all",
                  activeTab === t 
                    ? "bg-zinc-900 text-white shadow-lg" 
-                   : "te"
+                   : "text-zinc-500"
                )}
                onClick={() => setActiveTab(t as 'all' | 'unread')}
              >
@@ -116,11 +116,11 @@ export default function StudentNotificationsPage() {
                    <div className="p-8 flex items-start gap-8">
                       <div className={cn(
                          "h-16 w-16 rounded-2xl flex items-center justify-center shrink-0 shadow-inner group-hover:rotate-6 transition-transform",
-                         notif.type === 'test' ? 'bg-blue-50 te' :
-                         notif.type === 'result' ? 'bg-emerald-50 te' :
-                         notif.type === 'message' ? 'bg-amber-50 te' :
-                         notif.type === 'achievement' ? 'bg-purple-50 te' :
-                         'bg-rose-50 te'
+                         notif.type === 'test' ? 'bg-blue-50 text-blue-700' :
+                         notif.type === 'result' ? 'bg-emerald-50 text-emerald-700' :
+                         notif.type === 'message' ? 'bg-amber-50 text-amber-700' :
+                         notif.type === 'achievement' ? 'bg-purple-50 text-purple-700' :
+                         'bg-rose-50 text-rose-700'
                       )}>
                          {notif.type === 'test' ? <Calendar className="h-8 w-8" /> :
                           notif.type === 'result' ? <Target className="h-8 w-8" /> :
@@ -131,7 +131,7 @@ export default function StudentNotificationsPage() {
   
                       <div className="flex-1 min-w-0 space-y-1">
                          <div className="flex justify-between items-start">
-                            <h3 className={cn( "text-zinc-600 font-black uppercase tracking-tighter", notif.unread ? "te" : "te")}>
+                            <h3 className={cn( "text-zinc-600 font-black uppercase tracking-tighter", notif.unread ? "text-zinc-900" : "text-zinc-500")}>
                                {notif.title}
                             </h3>
                             <span className="text-[10px] font-black uppercase tracking-widest text-zinc-600">{notif.time}</span>
@@ -173,9 +173,9 @@ export default function StudentNotificationsPage() {
                  
                  <div className="space-y-6">
                     {[
-                       { label: 'Total Unread', val: notifications.filter(n => n.unread).length, icon: Bell, color: 'te' },
-                       { label: 'Active Streams', val: 3, icon: Mail, color: 'te' },
-                       { label: 'System Health', val: '99%', icon: Zap, color: 'te' }
+                       { label: 'Total Unread', val: notifications.filter(n => n.unread).length, icon: Bell, color: 'text-zinc-600' },
+                       { label: 'Active Streams', val: 3, icon: Mail, color: 'text-zinc-600' },
+                       { label: 'System Health', val: '99%', icon: Zap, color: 'text-zinc-600' }
                     ].map((s, i) => (
                        <div key={i} className="flex items-center justify-between p-5 rounded-3xl bg-white/5 border border-white/10">
                           <div className="flex items-center gap-4">

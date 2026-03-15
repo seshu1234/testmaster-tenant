@@ -274,7 +274,7 @@ export default function StudentAchievementsPage() {
          <div className="relative z-10 flex flex-col lg:flex-row justify-between items-center gap-12">
             <div className="max-w-xl space-y-6">
                <h3 className="text-zinc-600 font-black tracking-tighter uppercase leading-none">{data.stats.level} Ascension</h3>
-               <p className="te/80 text-zinc-600 font-medium leading-relaxed">
+               <p className="opacity-80 text-zinc-600 font-medium leading-relaxed">
                   Earn more mastery points to reach the next level and unlock custom profile themes and prime badge indicators.
                </p>
                <Button className="bg-white text-zinc-600 font-black px-10 h-14 rounded-2xl group-hover:scale-105 transition-all">

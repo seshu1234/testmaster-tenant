@@ -241,7 +241,7 @@ export default function AiGeneratePage() {
                   <Card 
                     key={i} 
                     className={`border-2 transition-all cursor-pointer ${
-                      selectedIndices.includes(i) ? 'border-primary bg-primary/5' : 'border-zinc-200
+                      selectedIndices.includes(i) ? 'border-primary bg-primary/5' : 'border-zinc-200'
                     }`}
                     onClick={() => toggleSelect(i)}
                   >
@@ -254,7 +254,7 @@ export default function AiGeneratePage() {
                         <div className="text-zinc-600" dangerouslySetInnerHTML={{ __html: q.content }} />
                       </div>
                       <div className={`h-6 w-6 rounded-full border-2 flex items-center justify-center shrink-0 ${
-                        selectedIndices.includes(i) ? 'bg-primary border-primary te' : 'border-zinc-300'
+                        selectedIndices.includes(i) ? 'bg-primary border-primary text-white' : 'border-zinc-300'
                       }`}>
                         {selectedIndices.includes(i) && <Check className="h-4 w-4" />}
                       </div>
@@ -296,11 +296,11 @@ export default function AiGeneratePage() {
                <Loader2 className="h-12 w-12 animate-spin text-zinc-600" />
                <div className="space-y-1">
                  <p className="font-semibold text-zinc-600">AI is crafting your questions...</p>
-                 <p className="text-zinc-600">This usually takes about0-20 seconds.</p>
+                 <p className="text-zinc-600">This usually takes about 10-20 seconds.</p>
                </div>
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center h-[400px] border-2 border-dashed rounded-xl gap-4 text-zinc-600 bg-zinc-50/5020 px-8">
+            <div className="flex flex-col items-center justify-center h-[400px] border-2 border-dashed rounded-xl gap-4 text-zinc-600 bg-zinc-50/20 px-8">
                <div className="bg-white shadow-sm p-4 rounded-full">
                  <Sparkles className="h-8 w-8 text-zinc-600" />
                </div>

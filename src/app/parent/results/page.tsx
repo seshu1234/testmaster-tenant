@@ -116,7 +116,7 @@ export default function ResultsHistoryPage() {
     <div className="space-y-8 animate-in fade-in duration-700 pb-20 p-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <h1 className="text-zinc-600 font-black tracking-tighter  uppercase">Academic Transmission History</h1>
+          <h1 className="text-zinc-600 font-black tracking-tighter uppercase">Academic Transmission History</h1>
           <p className="text-zinc-600 font-medium">Archived assessment logs and performance verification.</p>
         </div>
         
@@ -220,7 +220,7 @@ export default function ResultsHistoryPage() {
                  <div className="h-14 w-14 rounded-2xl bg-white/20 flex items-center justify-center mb-8">
                     <AlertCircle className="h-7 w-7 text-zinc-600" />
                  </div>
-                 <h3 className="text-zinc-600 font-black  uppercase  tracking-tighter mb-4 leading-none">Performance Alert</h3>
+                 <h3 className="text-zinc-600 font-black uppercase tracking-tighter mb-4 leading-none">Performance Alert</h3>
                   <p className="text-zinc-600 font-medium leading-relaxed mb-10">
                      {isLoading ? "Analysing trends..." : (insight?.recommendations || "Scanning performance for trajectory volatility...")}
                   </p>
@@ -244,9 +244,9 @@ export default function ResultsHistoryPage() {
 
               <div className="space-y-6">
                  {[
-                   { label: 'Current percentile', value: insight?.percentile ? `${insight.percentile.toFixed(1)}%` : 'TBD', color: 'te' },
-                   { label: 'Confidence Score', value: insight?.confidence ? `${(insight.confidence * 100).toFixed(0)}%` : 'TBD', color: 'te' },
-                   { label: 'Focus Area', value: insight?.recommendations ? insight.recommendations.split(' ')[0].toUpperCase() : 'TBD', color: 'te' }
+                   { label: 'Current percentile', value: insight?.percentile ? `${insight.percentile.toFixed(1)}%` : 'TBD', color: 'text-primary' },
+                   { label: 'Confidence Score', value: insight?.confidence ? `${(insight.confidence * 100).toFixed(0)}%` : 'TBD', color: 'text-emerald-600' },
+                   { label: 'Focus Area', value: insight?.recommendations ? insight.recommendations.split(' ')[0].toUpperCase() : 'TBD', color: 'text-amber-600' }
                  ].map((stat, i) => (
                     <div key={i} className="flex justify-between items-end border-b border-white/10 pb-4 last:border-0 last:pb-0">
                        <span className="text-[10px] font-black uppercase tracking-widest text-zinc-600">{stat.label}</span>

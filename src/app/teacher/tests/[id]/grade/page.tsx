@@ -76,7 +76,7 @@ export default function ManualGradingPage() {
       });
 
       if (response.success) {
-        if (currentIndex < responses.length -) {
+        if (currentIndex < responses.length - 1) {
           setCurrentIndex(currentIndex + 1);
           setCurrentMarks("");
           setCurrentFeedback("");
@@ -194,7 +194,7 @@ export default function ManualGradingPage() {
                       disabled={submitting || !currentMarks}
                     >
                        {submitting ? <Loader2 className="h-5 w-5 animate-spin" /> : <CheckCircle2 className="h-5 w-5" />}
-                       {currentIndex < responses.length - ? 'Save & Next' : 'Finish Grading'}
+                       {currentIndex < responses.length - 1 ? 'Save & Next' : 'Finish Grading'}
                     </Button>
                     <Button variant="ghost" className="text-zinc-600  hover:bg-zinc-800 font-bold" onClick={() => setCurrentIndex(currentIndex + 1)}>
                        Skip for Now

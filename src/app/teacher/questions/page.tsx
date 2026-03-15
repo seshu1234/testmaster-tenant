@@ -180,7 +180,7 @@ export default function QuestionsPage() {
                   </div>
                   <div>
                      <p className="text-xl font-bold text-zinc-600 uppercase tracking-tight">AI Duplicate Radar</p>
-                     <p className="text-[10px] te/80">Scan for similar content before publishing new items.</p>
+                     <p className="text-[10px] text-zinc-600 opacity-80">Scan for similar content before publishing new items.</p>
                   </div>
                </div>
                <Button variant="outline" size="sm" className="h-8 text-[10px] font-bold uppercase tracking-widest border-amber-200 bg-white">

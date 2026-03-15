@@ -168,7 +168,7 @@ export default function TestInstructionsPage() {
                  >
                     {isStarting ? "Processing..." : "Take Test Now"}
                  </Button>
-                  <p className="text-[10px] text-zinc-600 te/60">By clicking Start, you agree to the conditions.</p>
+                  <p className="text-[10px] text-zinc-600 opacity-60">By clicking Start, you agree to the conditions.</p>
               </CardFooter>
            </Card>
 

@@ -132,7 +132,7 @@ export default function StudentTestResultPage() {
     score: data.score,
     total: data.totalQuestions, // Using totalQuestions as total for now
     accuracy: data.totalQuestions > 0 ? Math.round((data.correctCount / data.totalQuestions) * 100) : 0,
-    color: 'te' // Placeholder color, could be dynamic
+    color: 'text-primary'
   }));
 
 
@@ -193,7 +193,7 @@ export default function StudentTestResultPage() {
                key={tab}
                className={cn(
                   "px-6 py-3 text-zinc-600 font-black uppercase tracking-widest transition-all relative",
-                  activeTab === tab ? "te" :  "text-zinc-600 "
+                   activeTab === tab ? "text-primary" :  "text-zinc-600 "
                )}
                onClick={() => setActiveTab(tab as 'overview' | 'review')}
             >
@@ -313,7 +313,7 @@ export default function StudentTestResultPage() {
                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                               <div className="p-4 rounded-2xl bg-zinc-50 border">
                                  <p className="text-[9px] font-black uppercase tracking-widest text-zinc-600 mb-1">Your Selected Answer</p>
-                                  <div className={cn( "text-zinc-600 font-black", ans.status === 'correct' ? "te" : "te")}>{ans.user_answer || 'SKIPPED'}</div>
+                                   <div className={cn( "text-zinc-600 font-black", ans.status === 'correct' ? "text-emerald-600" : "text-rose-600")}>{ans.user_answer || 'SKIPPED'}</div>
                               </div>
                               <div className="p-4 rounded-2xl bg-zinc-50 border">
                                  <p className="text-[9px] font-black uppercase tracking-widest text-zinc-600 mb-1">Authenticated Correct Answer</p>
@@ -345,13 +345,13 @@ export default function StudentTestResultPage() {
                   <div className="grid gap-4">
                      {[
                         { label: 'All Queries', count: result.answers.length, icon: BookOpen },
-                        { label: 'Correct', count: result.answers.filter(a => a.status === 'correct').length, icon: CheckCircle2, color: 'te' },
-                        { label: 'Incorrect', count: result.answers.filter(a => a.status === 'incorrect').length, icon: XCircle, color: 'te' },
-                        { label: 'Unattempted', count: result.answers.filter(a => a.status === 'unattempted').length, icon: AlertCircle, color: 'te' }
+                         { label: 'Correct', count: result.answers.filter(a => a.status === 'correct').length, icon: CheckCircle2, color: 'text-emerald-500' },
+                         { label: 'Incorrect', count: result.answers.filter(a => a.status === 'incorrect').length, icon: XCircle, color: 'text-rose-500' },
+                         { label: 'Unattempted', count: result.answers.filter(a => a.status === 'unattempted').length, icon: AlertCircle, color: 'text-zinc-400' }
                      ].map((f) => (
                         <button key={f.label} className="flex items-center justify-between p-4 rounded-2xl bg-zinc-50 hover:scale-[1.02] transition-transform group text-zinc-600">
                            <div className="flex items-center gap-3">
-                              <f.icon className={cn("h-4 w-4", f.color || "te")} />
+                               <f.icon className={cn("h-4 w-4", f.color || "text-zinc-600")} />
                               <span className="text-[11px] font-black uppercase tracking-tight">{f.label}</span>
                            </div>
                            <Badge variant="ghost" className="bg-white font-black text-zinc-600 h-7 w-7 rounded-lg flex items-center justify-center p-0">{f.count}</Badge>

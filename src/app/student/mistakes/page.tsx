@@ -85,10 +85,10 @@ export default function StudentMistakesPage() {
   };
 
   const stats = [
-    { label: 'Unresolved Errors', val: mistakes.length, icon: AlertCircle, color: 'te' },
-    { label: 'Bookmarks', val: mistakes.filter(m => m.status === 'bookmarked').length, icon: Bookmark, color: 'te' },
-    { label: 'Mastery Rate', val: '65%', icon: CheckCircle2, color: 'te' },
-    { label: 'Revision Streak', val: '4 Days', icon: Zap, color: 'te' }
+    { label: 'Unresolved Errors', val: mistakes.length, icon: AlertCircle, color: 'text-rose-600' },
+    { label: 'Bookmarks', val: mistakes.filter(m => m.status === 'bookmarked').length, icon: Bookmark, color: 'text-amber-600' },
+    { label: 'Mastery Rate', val: '65%', icon: CheckCircle2, color: 'text-emerald-600' },
+    { label: 'Revision Streak', val: '4 Days', icon: Zap, color: 'text-amber-600' }
   ];
 
   return (
@@ -138,7 +138,7 @@ export default function StudentMistakesPage() {
                        key={t}
                        className={cn(
                           "px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all",
-                          activeFilter === t ? "bg-white shadow-sm text-zinc-600" : "te"
+                          activeFilter === t ? "bg-white shadow-sm text-zinc-600" : "text-zinc-500"
                        )}
                         onClick={() => setActiveFilter(t as 'all' | 'bookmarked')}
                     >
@@ -218,7 +218,7 @@ export default function StudentMistakesPage() {
                           90% of your errors in <span className="text-zinc-600 font-black">Inorganic Chemistry</span> are factual. We&apos;ve compiled a list of 50 common oxidation states for you.
                        </p>
                     </div>
-                    <Button className="w-full bg-white text-zinc-600 font-black rounded-xl h-12 text-[10px] group-hover:bg-primary group- transition-all">
+                    <Button className="w-full bg-white text-zinc-600 font-black rounded-xl h-12 text-[10px] group-hover:bg-primary transition-all">
                        VIEW STUDY SHEET <ArrowUpRight className="ml-2 h-3.5 w-3.5" />
                     </Button>
                  </div>

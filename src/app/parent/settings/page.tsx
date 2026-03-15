@@ -125,7 +125,7 @@ export default function ParentSettingsPage() {
            <Card className="border-none shadow-xl rounded-[2.5rem] bg-gradient-to-br from-primary to-blue-600 p-8 text-zinc-600">
               <Zap className="h-10 w-10 mb-6 opacity-40" />
               <h3 className="text-zinc-600 font-black  uppercase  tracking-tighter mb-2">Premium Matrix</h3>
-              <p className="te/70 text-zinc-600 font-medium leading-relaxed mb-6">
+              <p className="opacity-70 text-zinc-600 font-medium leading-relaxed mb-6">
                  Your subscription is active until <span className="text-zinc-600 font-black ">Dec 2026</span>. Full AI telemetry unlocked.
               </p>
               <Button className="w-full bg-white text-zinc-600 font-black h-12 rounded-2xl text-[10px] uppercase tracking-widest">

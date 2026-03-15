@@ -159,7 +159,7 @@ export default function TestBuilderPage() {
   };
 
   const handleBack = () => {
-    if (currentStep > 1) setCurrentStep(currentStep -);
+    if (currentStep > 1) setCurrentStep(currentStep - 1);
   };
 
   if (loading) return <div className="p-8 text-zinc-600 animate-pulse">Initializing builder...</div>;
@@ -192,7 +192,7 @@ export default function TestBuilderPage() {
               >
                 {isCompleted ? <Check className="h-5 w-5" /> : <Icon className="h-5 w-5" />}
               </div>
-              <span className={`text-zinc-600 font-medium ${isActive ? "te" : "te"}`}>
+              <span className={`text-zinc-600 font-medium ${isActive ? "text-primary" : "text-zinc-600"}`}>
                 {step.title}
               </span>
             </div>

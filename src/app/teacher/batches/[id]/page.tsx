@@ -144,7 +144,7 @@ export default function BatchDetailsPage() {
             <div className="flex items-baseline gap-2">
                <span className={cn(
                    "text-zinc-600 font-black",
-                  data.metrics.critical_students > 0 ? "te" : "te"
+                  data.metrics.critical_students > 0 ? "text-rose-600" : "text-emerald-600"
                )}>{data.metrics.critical_students.toString().padStart(2, '0')}</span>
                <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest leading-none">Underperforming</span>
             </div>

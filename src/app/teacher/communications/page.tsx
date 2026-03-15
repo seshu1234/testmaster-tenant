@@ -209,7 +209,7 @@ export default function TeacherCommunicationsPage() {
                        <div className={cn("h-8 w-8 rounded-xl flex-shrink-0 flex items-center justify-center font-black text-[10px]", msg.isMe ? "bg-zinc-900 text-white" : "bg-zinc-100 text-zinc-600")}>
                           {msg.isMe ? 'Y' : selectedChat.name.charAt(0)}
                        </div>
-                       <div className={cn("space-y-1", msg.isMe ? "te" : "")}>
+                       <div className={cn("space-y-1", msg.isMe ? "text-primary" : "text-zinc-600")}>
                           <span className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest">{msg.isMe ? 'You' : selectedChat.name} • {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                           <div className={cn(
                             "p-4 rounded-2xl text-[11px] font-bold leading-relaxed shadow-sm",

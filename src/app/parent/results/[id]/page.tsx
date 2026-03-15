@@ -200,7 +200,7 @@ export default function DetailedResultPage() {
                               <h4 className="text-xl font-bold leading-relaxed">{q.text}</h4>
                               <Badge className={cn(
                                  "text-[8px] font-black uppercase px-2 h-5 border-none ml-4 whitespace-nowrap",
-                                 q.difficulty === 'Hard' ? 'bg-rose-500/10 te' : 'bg-emerald-500/10 te'
+                                 q.difficulty === 'Hard' ? 'bg-rose-500/10 text-rose-600' : 'bg-emerald-500/10 text-emerald-600'
                               )}>{q.difficulty}</Badge>
                            </div>
                            

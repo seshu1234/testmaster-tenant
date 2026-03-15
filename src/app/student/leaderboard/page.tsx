@@ -72,7 +72,7 @@ export default function StudentLeaderboardPage() {
 
   const getRankStyle = (rank: number) => {
     switch (rank) {
-      case: return "bg-amber-100 text-zinc-600 border-amber-200 shadow-[0_0_20px_rgba(245,158,11,0.2)]";
+      case 1: return "bg-amber-100 text-zinc-600 border-amber-200 shadow-[0_0_20px_rgba(245,158,11,0.2)]";
       case 2: return "bg-zinc-100 text-zinc-600 border-zinc-200 shadow-[0_0_20px_rgba(113,113,122,0.2)]";
       case 3: return "bg-orange-100 text-zinc-600 border-orange-200 shadow-[0_0_20px_rgba(249,115,22,0.2)]";
       default: return "bg-zinc-50 text-zinc-600 border-zinc-100";
@@ -131,7 +131,7 @@ export default function StudentLeaderboardPage() {
                          ))}
                       </div>
                    </div>
-                   {student.rank === 1 && <Star className="absolute top-6 right-6 h-12 w-12 te/10 rotate-12" />}
+                   {student.rank === 1 && <Star className="absolute top-6 right-6 h-12 w-12 text-zinc-900/10 rotate-12" />}
                 </Card>
              ))
            ) : (
@@ -181,7 +181,7 @@ export default function StudentLeaderboardPage() {
                        <div className="flex items-center gap-6">
                           <span className={cn(
                               "text-zinc-600 font-black w-8",
-                             student.rank <= 3 ? "te" : "te"
+                             student.rank <= 3 ? "text-primary" : "text-zinc-500"
                           )}>
                              {student.rank}
                           </span>
@@ -205,7 +205,7 @@ export default function StudentLeaderboardPage() {
                              <p className="text-[9px] font-black uppercase tracking-widest text-zinc-600">Trend</p>
                              {getTrendIcon(student.trend)}
                           </div>
-                          <Button variant="ghost" size="icon" className="rounded-xl group-hover:bg-primary group- transition-all">
+                          <Button variant="ghost" size="icon" className="rounded-xl group-hover:bg-primary transition-all">
                              <ChevronRight className="h-4 w-4" />
                           </Button>
                        </div>

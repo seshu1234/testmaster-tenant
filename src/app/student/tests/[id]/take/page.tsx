@@ -99,7 +99,7 @@ export default function StudentTestTakingPage({ params }: { params: { id: string
           handleSubmit();
           return 0;
         }
-        return prev -;
+        return prev - 1;
       });
     }, 1000);
     return () => clearInterval(timer);
@@ -286,7 +286,7 @@ export default function StudentTestTakingPage({ params }: { params: { id: string
            <Button 
               variant="outline" 
               className="rounded-xl font-black text-zinc-600 uppercase h-12 px-8"
-              onClick={() => setCurrentIdx(prev => Math.max(0, prev -))}
+              onClick={() => setCurrentIdx(prev => Math.max(0, prev - 1))}
               disabled={currentIdx === 0}
            >
               PREVIOUS
@@ -299,8 +299,8 @@ export default function StudentTestTakingPage({ params }: { params: { id: string
 
            <Button 
               className="bg-black text-zinc-600 rounded-xl font-black text-zinc-600 uppercase h-12 px-8"
-              onClick={() => setCurrentIdx(prev => Math.min(questionsPool.length -, prev + 1))}
-              disabled={currentIdx === questionsPool.length -}
+              onClick={() => setCurrentIdx(prev => Math.min(questionsPool.length - 1, prev + 1))}
+              disabled={currentIdx === questionsPool.length - 1}
             >
               NEXT QUESTION
            </Button>

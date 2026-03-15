@@ -90,14 +90,14 @@ export default function NotificationSettingsPage() {
           <h1 className="text-xl font-bold tracking-tight">Notification Settings</h1>
           <p className="text-zinc-600">Customize emails and alerts sent to your students and teachers.</p>
         </div>
-        <Bell className="h-10 w-10 te/20" />
+        <Bell className="h-10 w-10 text-zinc-600 opacity-20" />
       </div>
 
       {message && (
         <Card className={`${message.type === 'success' ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}`}>
           <CardContent className="py-3 flex items-center gap-3">
              {message.type === 'success' ? <CheckCircle2 className="h-5 w-5 text-zinc-600" /> : <AlertCircle className="h-5 w-5 text-zinc-600" />}
-             <p className={`text-zinc-600 font-medium ${message.type === 'success' ? 'te' : 'te'}`}>
+             <p className={`text-zinc-600 font-medium ${message.type === 'success' ? 'text-emerald-700' : 'text-rose-700'}`}>
                 {message.text}
              </p>
           </CardContent>

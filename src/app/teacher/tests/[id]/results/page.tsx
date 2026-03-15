@@ -183,7 +183,7 @@ export default function TeacherResultsPage() {
                                 <tr key={q.id} className="hover:bg-zinc-50 transition-colors group">
                                     <td className="p-6">
                                         <div className="flex items-center gap-4">
-                                            <div className="h-10 w-10 rounded-xl bg-zinc-100 flex items-center justify-center font-black text-zinc-600 border group-hover:bg-primary group- group-hover:border-primary transition-all">
+                                            <div className="h-10 w-10 rounded-xl bg-zinc-100 flex items-center justify-center font-black text-zinc-600 border group-hover:bg-primary group-hover:border-primary transition-all">
                                                 #{q.order}
                                             </div>
                                             <div className="truncate max-w-[300px] text-xl font-bold text-zinc-600">

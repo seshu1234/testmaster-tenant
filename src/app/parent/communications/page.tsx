@@ -166,12 +166,12 @@ export default function CommunicationsPage() {
                        <h4 className="font-black text-zinc-600 uppercase  tracking-tight truncate">{teacher.name}</h4>
                        <span className={cn(
                           "text-[8px] font-black uppercase opacity-60",
-                          activeTeacher?.id === teacher.id ? "te" : "te"
+                          activeTeacher?.id === teacher.id ? "text-primary" : "text-zinc-600"
                        )}>{teacher.lastMessageTime}</span>
                     </div>
                     <p className={cn(
                        "text-[10px] font-black uppercase tracking-widest mt-0.5",
-                       activeTeacher?.id === teacher.id ? "te" : "te"
+                       activeTeacher?.id === teacher.id ? "text-primary" : "text-zinc-500"
                     )}>{teacher.subject}</p>
                     <p className="text-[10px] font-medium opacity-60 truncate mt-1">{teacher.lastMessage}</p>
                  </div>

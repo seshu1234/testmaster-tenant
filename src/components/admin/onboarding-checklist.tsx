@@ -66,26 +66,27 @@ export function OnboardingChecklist() {
       </div>
 
       <div className="grid gap-3">
-        {steps.map((step) => (
+        {steps.map((step, i) => (
           <Link key={step.id} href={step.href}>
             <div className={`p-3 rounded-xl border transition-all hover:shadow-md group flex items-start gap-3 ${
               step.completed ? 'bg-green-50/50 border-green-100 opacity-80' : 'bg-white border-zinc-100 hover:border-primary/20'
             }`}>
-              <div className={`mt-0.5 p-2 rounded-lg ${step.completed ? 'bg-green-100 te' : 'bg-zinc-50 text-zinc-600 group-hover:bg-primary/10 group-hover:te'}`}>
-                <step.icon className="h-4 w-4" />
+              <div className={`mt-0.5 p-2 rounded-lg ${step.completed ? 'bg-green-100 text-green-700' : 'bg-zinc-50 text-zinc-600 group-hover:bg-primary/10 group-hover:text-primary'}`}>
+                <div className={`h-6 w-6 rounded-md border-2 flex items-center justify-center ${step.completed ? 'bg-green-500 border-green-500 text-white' : 'border-zinc-200'}`}>
+                  {step.completed ? <CheckCircle2 className="h-4 w-4" /> : <span className="text-[10px] font-black">{i + 1}</span>}
+                </div>
               </div>
-              <div className="flex-1 space-y-0.5">
-                <div className="flex items-center gap-2">
-                  <span className={`text-xl font-bold ${step.completed ? 'te' : 'te'}`}>
+              <div className="flex-1">
+                <div className="flex items-center justify-between mb-1">
+                  <span className={`text-xl font-bold ${step.completed ? 'text-zinc-500 line-through' : 'text-zinc-600'}`}>
                     {step.title}
                   </span>
-                  {step.completed && <CheckCircle2 className="h-3 w-3 text-zinc-600" />}
+                  {!step.completed && (
+                    <ArrowRight className="h-4 w-4 text-zinc-600 mt-1" />
+                  )}
                 </div>
                 <p className="text-zinc-600 leading-relaxed">{step.description}</p>
               </div>
-              {!step.completed && (
-                <ArrowRight className="h-4 w-4 text-zinc-600 group- mt-1" />
-              )}
             </div>
           </Link>
         ))}

@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { useState, useEffect, useCallback } from "react";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -98,10 +97,10 @@ export function Step4Questions({ testId, sections }: Step4Props) {
     if (!user || !token || !activeSectionId) return;
     const index = assignedQuestions.findIndex(q => q.question_id === questionId);
     if (direction === 'up' && index === 0) return;
-    if (direction === 'down' && index === assignedQuestions.length -) return;
+    if (direction === 'down' && index === assignedQuestions.length - 1) return;
 
     const newAssigned = [...assignedQuestions];
-    const swapIndex = direction === 'up' ? index - : index + 1;
+    const swapIndex = direction === 'up' ? index - 1 : index + 1;
     [newAssigned[index], newAssigned[swapIndex]] = [newAssigned[swapIndex], newAssigned[index]];
     
     setAssignedQuestions(newAssigned);
@@ -191,7 +190,7 @@ export function Step4Questions({ testId, sections }: Step4Props) {
                     <Button 
                       size="sm" 
                       variant={isAssigned ? "secondary" : "ghost"} 
-                      className={cn("h-8 w-8 p-0 rounded-full", isAssigned ? "te" :  "text-zinc-600 opacity-0 group-hover:opacity-100 transition-opacity")}
+                      className={cn("h-8 w-8 p-0 rounded-full", isAssigned ? "text-primary" :  "text-zinc-600 opacity-0 group-hover:opacity-100 transition-opacity")}
                       onClick={() => assignToSection(q)}
                       disabled={!activeSectionId}
                     >
@@ -229,7 +228,7 @@ export function Step4Questions({ testId, sections }: Step4Props) {
                         size="icon" 
                         className="h-6 w-6"
                         onClick={() => reorder(q.question_id, 'down')}
-                        disabled={idx === assignedQuestions.length -}
+                        disabled={idx === assignedQuestions.length - 1}
                     >
                        <Plus className="h-3 w-3" />
                     </Button>
@@ -255,7 +254,7 @@ export function Step4Questions({ testId, sections }: Step4Props) {
       <div className="md:col-span-12">
         <div className="p-4 rounded-lg bg-primary/5 border border-primary/10 flex items-start gap-3">
           <HelpCircle className="h-4 w-4 text-zinc-600 mt-0.5" />
-          <p className="text-zinc-600 te/80">
+          <p className="text-zinc-600 opacity-80">
             Selected questions will be added to the highlighted section. Use arrows to reorder.
           </p>
         </div>

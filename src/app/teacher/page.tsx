@@ -135,11 +135,11 @@ export default function TeacherDashboard() {
       <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
         {kpis.map((kpi, i) => (
           <Card key={i} className={`border shadow-sm backdrop-blur-sm ${
-            kpi.urgent ? 'bg-orange-50 : 'bg-white/50
+            kpi.urgent ? 'bg-orange-50' : 'bg-white/50'
           }`}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-[10px] font-bold uppercase tracking-wider text-zinc-600">{kpi.label}</CardTitle>
-              <kpi.icon className={`h-3 w-3 ${kpi.urgent ? 'te' : 'te'}`} />
+              <kpi.icon className={`h-3 w-3 ${kpi.urgent ? 'text-red-600' : 'text-zinc-600'}`} />
             </CardHeader>
             <CardContent>
               <div className="text-xl font-bold">{kpi.value}</div>
@@ -249,7 +249,7 @@ export default function TeacherDashboard() {
             <div className="divide-y divide-zinc-100">
               {dashboard.upcoming_assessments.length > 0 ? dashboard.upcoming_assessments.map((test, i) => (
                 <div key={i} className="py-4 first:pt-0 last:pb-0 flex items-center gap-4 group">
-                  <div className="h-10 w-10 rounded-xl bg-zinc-50 border border-zinc-100 flex items-center justify-center text-zinc-600 group-hover:bg-primary/5 group- transition-colors">
+                  <div className="h-10 w-10 rounded-xl bg-zinc-50 border border-zinc-100 flex items-center justify-center text-zinc-600 group-hover:bg-primary/5 transition-colors">
                     <Calendar className="h-5 w-5" />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -257,9 +257,9 @@ export default function TeacherDashboard() {
                     <p className="text-[10px] text-zinc-600 uppercase">{test.batch_name} • {new Date(test.start_time).toLocaleString()}</p>
                   </div>
                   <div className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-tight ${
-                    test.status === 'Ready' || test.status === 'published' ? 'bg-green-100 te' :
-                    test.status === 'Draft' ? 'bg-orange-100 te' :
-                    'bg-blue-100 te'
+                    test.status === 'Ready' || test.status === 'published' ? 'bg-green-100 text-green-700' :
+                    test.status === 'Draft' ? 'bg-orange-100 text-orange-700' :
+                    'bg-blue-100 text-blue-700'
                   }`}>
                     {test.status}
                   </div>
@@ -280,7 +280,7 @@ export default function TeacherDashboard() {
                <div key={i} className="p-3 rounded-lg border border-zinc-50 bg-zinc-50/30 flex flex-col gap-1 hover:border-zinc-100 hover:bg-white transition-all">
                  <div className="flex justify-between items-center">
                     <span className="text-xl font-bold line-clamp-1">{result.name}</span>
-                    <span className={`text-[8px] font-bold uppercase ${result.status === 'Published' || result.status === 'published' ? 'te' : 'te'}`}>
+                    <span className={`text-[8px] font-bold uppercase ${result.status === 'Published' || result.status === 'published' ? 'text-green-600' : 'text-zinc-600'}`}>
                       {result.status}
                     </span>
                  </div>

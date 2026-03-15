@@ -145,7 +145,7 @@ export default function TeacherResourcesPage() {
                      Upgrade Storage
                   </Button>
                </div>
-               <FolderOpen className="absolute -bottom-10 -right-10 h-40 w-40 te/10 rotate-12" />
+                <FolderOpen className="absolute -bottom-10 -right-10 h-40 w-40 text-primary/10 rotate-12" />
             </Card>
 
             <Card className="border shadow-sm bg-zinc-900 text-white p-6 rounded-2xl">

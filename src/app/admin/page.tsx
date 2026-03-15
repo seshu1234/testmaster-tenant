@@ -82,10 +82,10 @@ export default function AdminDashboard() {
   const dashboard = data!;
 
   const kpis = [
-    { label: "Total Students", value: dashboard.stats.total_students, icon: Users, trend: "+12.5%", color: "te", bg: "bg-blue-50" },
-    { label: "Active Tests", value: dashboard.stats.active_tests, icon: BookOpen, trend: "+3", color: "te", bg: "bg-emerald-50" },
-    { label: "Avg Performance", value: `${dashboard.stats.avg_performance}%`, icon: Activity, trend: "+5.2%", color: "te", bg: "bg-amber-50" },
-    { label: "Centre Health", value: "Optimal", icon: ShieldCheck, trend: "Status: OK", color: "te", bg: "bg-purple-50" },
+    { label: "Total Students", value: dashboard.stats.total_students, icon: Users, trend: "+12.5%", color: "text-zinc-600", bg: "bg-blue-50" },
+    { label: "Active Tests", value: dashboard.stats.active_tests, icon: BookOpen, trend: "+3", color: "text-zinc-600", bg: "bg-emerald-50" },
+    { label: "Avg Performance", value: `${dashboard.stats.avg_performance}%`, icon: Activity, trend: "+5.2%", color: "text-zinc-600", bg: "bg-amber-50" },
+    { label: "Centre Health", value: "Optimal", icon: ShieldCheck, trend: "Status: OK", color: "text-zinc-600", bg: "bg-purple-50" },
   ];
 
   return (
@@ -116,7 +116,7 @@ export default function AdminDashboard() {
           <Card key={i} className="border shadow-sm hover:shadow-md transition-all duration-300 group hover:-translate-y-1 bg-white">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-zinc-600">{kpi.label}</CardTitle>
-              <div className={`${kpi.bg} ${kpi.color} p-2 rounded-xl group-hover:scale-110 transition-transform
+              <div className={`${kpi.bg} ${kpi.color} p-2 rounded-xl group-hover:scale-110 transition-transform`}>
                 <kpi.icon className="h-4 w-4" />
               </div>
             </CardHeader>
@@ -176,12 +176,12 @@ export default function AdminDashboard() {
                        <div className="h-10 w-10 rounded-2xl bg-zinc-50 flex items-center justify-center shrink-0 border border-zinc-100 group-hover:bg-zinc-100 transition-colors">
                           <Users className="h-5 w-5 text-zinc-600" />
                        </div>
-                       {i !== dashboard.recent_activity.length - && (
+                       {i !== dashboard.recent_activity.length - 1 && (
                           <div className="absolute top-11 left-5 w-[1px] h-6 bg-zinc-100" />
                        )}
                     </div>
                     <div className="space-y-1 py-1">
-                      <p className="text-[13px] font-bold leading-none group- transition-colors text-zinc-600">{activity.user || 'System user'}</p>
+                       <p className="text-[13px] font-bold leading-none transition-colors text-zinc-600">{activity.user || 'System user'}</p>
                       <p className="text-[11px] text-zinc-600">{activity.action}</p>
                       <p className="text-[9px] text-zinc-600 uppercase font-black tracking-widest">{activity.time}</p>
                     </div>
@@ -243,7 +243,7 @@ export default function AdminDashboard() {
                {dashboard.upcoming_events.length > 0 ? dashboard.upcoming_events.map((event, i) => (
                   <div key={i} className="p-4 rounded-2xl border bg-zinc-50/50 space-y-2 border-zinc-100 shadow-sm first:border-l-4 first:border-l-zinc-900 group hover:bg-zinc-50 transition-colors">
                      <div className="flex justify-between items-center">
-                        <span className="text-[13px] font-bold group- transition-colors text-zinc-600">{event.title}</span>
+                         <span className="text-[13px] font-bold transition-colors text-zinc-600">{event.title}</span>
                         <ChevronRight className="h-3 w-3 text-zinc-600" />
                      </div>
                      <div className="flex gap-2 items-center">

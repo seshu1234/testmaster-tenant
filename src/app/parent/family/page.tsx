@@ -166,9 +166,9 @@ export default function FamilyDashboardPage() {
       {/* Strategic Synergy */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
          {[
-           { label: 'Combined Points', value: '18.4k', icon: Gem, color: 'te' },
-           { label: 'Weekly Velocity', value: '+22%', icon: TrendingUp, color: 'te' },
-           { label: 'Global Ranking', value: 'Top 2%', icon: Zap, color: 'te' }
+           { label: 'Combined Points', value: '18.4k', icon: Gem, color: 'text-indigo-600' },
+           { label: 'Weekly Velocity', value: '+22%', icon: TrendingUp, color: 'text-emerald-600' },
+           { label: 'Global Ranking', value: 'Top 2%', icon: Zap, color: 'text-amber-600' }
          ].map((stat, i) => (
             <Card key={i} className="border-none shadow-xl rounded-[2.5rem] bg-white p-8 flex items-center justify-between group hover:border-primary transition-all">
                <div>

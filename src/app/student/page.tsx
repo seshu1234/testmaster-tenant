@@ -135,10 +135,10 @@ export default function StudentDashboard() {
   };
 
   const kpis = [
-    { title: "Tests Taken", value: dashboard.stats.tests_taken, icon: BookOpen, color: "te" },
-    { title: "Avg Score", value: `${dashboard.stats.avg_score}%`, icon: Target, color: "te" },
-    { title: "Rank", value: `#${dashboard.stats.rank || "--"}`, icon: Trophy, color: "te" },
-    { title: "Streak", value: `${dashboard.student.streak} Days`, icon: Flame, color: "te" },
+    { title: "Tests Taken", value: dashboard.stats.tests_taken, icon: BookOpen, color: "text-blue-600" },
+    { title: "Avg Score", value: `${dashboard.stats.avg_score}%`, icon: Target, color: "text-emerald-600" },
+    { title: "Rank", value: `#${dashboard.stats.rank || "--"}`, icon: Trophy, color: "text-amber-600" },
+    { title: "Streak", value: `${dashboard.student.streak} Days`, icon: Flame, color: "text-orange-600" },
   ];
 
   return (

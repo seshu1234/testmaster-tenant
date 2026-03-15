@@ -153,7 +153,7 @@ export default function FinancialsPage() {
             </CardHeader>
             <CardContent>
               <div className="text-xl font-bold">{stat.value}</div>
-              <p className={`text-[10px] font-medium mt-1 ${stat.trend.startsWith('+') ? 'te' : 'te'}`}>
+              <p className={`text-[10px] font-medium mt-1 ${stat.trend.startsWith('+') ? 'text-emerald-600' : 'text-rose-600'}`}>
                 {stat.trend} from last quarter
               </p>
             </CardContent>

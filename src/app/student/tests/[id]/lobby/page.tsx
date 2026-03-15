@@ -181,7 +181,7 @@ export default function StudentTestLobby({ params }: { params: { id: string } })
                     ].map((check) => (
                        <div key={check.id} className="flex items-center justify-between p-4 rounded-2xl bg-zinc-50 border">
                           <div className="flex items-center gap-3">
-                             <check.icon className={cn("h-4 w-4", check.status ? "te" : "te")} />
+                              <check.icon className={cn("h-4 w-4", check.status ? "text-emerald-500" : "text-zinc-400")} />
                              <span className="text-[11px] font-bold">{check.label}</span>
                           </div>
                           {check.status ? (
