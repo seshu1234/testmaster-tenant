@@ -60,7 +60,7 @@ export function SyncWorker() {
     sync();
 
     // Periodic sync every 30 seconds
-    const interval = setInterval(sync, 300);
+    const interval = setInterval(sync, 30000);
 
     // Sync on window beforeunload
     const handleBeforeUnload = () => sync();

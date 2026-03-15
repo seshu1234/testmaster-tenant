@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
 import { AuthProvider } from '@/hooks/use-auth';
+import { SWRProvider } from '@/components/providers/swr-provider';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -41,6 +42,8 @@ async function fetchBranding(): Promise<Record<string, string>> {
   }
 }
 
+import { Toaster } from 'sonner';
+
 export default async function RootLayout({
   children,
 }: {
@@ -60,7 +63,10 @@ export default async function RootLayout({
     <html lang="en" style={cssVars}>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <AuthProvider branding={branding}>
-          {children}
+          <SWRProvider>
+            {children}
+            <Toaster position="top-center" richColors />
+          </SWRProvider>
         </AuthProvider>
       </body>
     </html>

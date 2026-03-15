@@ -148,14 +148,14 @@ export default function CommunicationsPage() {
                 <CardDescription>Draft and distribute institutional communications in real-time.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="text-xl font-bold uppercase tracking-wider text-zinc-600">Notification Channel</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-zinc-600">Notification Channel</label>
                     <Select value={channel} onValueChange={setChannel}>
-                      <SelectTrigger className="h-10">
+                      <SelectTrigger className="h-10 sm:h-11 bg-white border-zinc-200">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-white border-zinc-200">
                         <SelectItem value="announcement">App Announcement</SelectItem>
                         <SelectItem value="email">Email</SelectItem>
                         <SelectItem value="sms">SMS</SelectItem>
@@ -164,12 +164,12 @@ export default function CommunicationsPage() {
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xl font-bold uppercase tracking-wider text-zinc-600">Target Audience</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-zinc-600">Target Audience</label>
                     <Select value={target} onValueChange={setTarget}>
-                      <SelectTrigger className="h-10">
+                      <SelectTrigger className="h-10 sm:h-11 bg-white border-zinc-200">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-white border-zinc-200">
                         <SelectItem value="all-students">All Students ({summary?.audience.students || 0})</SelectItem>
                         <SelectItem value="all-teachers">Faculty Members ({summary?.audience.teachers || 0})</SelectItem>
                         <SelectItem value="all-parents">Registered Parents ({summary?.audience.parents || 0})</SelectItem>
@@ -198,16 +198,16 @@ export default function CommunicationsPage() {
                   />
                 </div>
 
-                <div className="flex justify-between items-center pt-2">
-                  <Badge variant="secondary" className="bg-primary/5 text-zinc-600 border-primary/10 gap-1.5 py-1">
+                <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-2">
+                  <Badge variant="secondary" className="w-full sm:w-auto bg-primary/5 text-zinc-600 border-primary/10 gap-1.5 py-1.5 justify-center">
                     <Zap className="h-3 w-3" />
                     Estimated Reach: {summary?.audience.total || 0} Users
                   </Badge>
-                  <div className="flex gap-3">
-                    <Button variant="ghost" disabled={loading} className="text-zinc-600">Save Template</Button>
-                    <Button onClick={handleSend} disabled={loading} className="gap-2 px-8 bg-zinc-900 text-white">
+                  <div className="flex gap-3 w-full sm:w-auto">
+                    <Button variant="ghost" disabled={loading} className="flex-1 sm:flex-none text-zinc-600">Save</Button>
+                    <Button onClick={handleSend} disabled={loading} className="flex-1 sm:flex-none gap-2 px-8 bg-zinc-900 text-white">
                       <Send className="h-4 w-4" />
-                      {loading ? "Transmitting..." : "Broadcast Now"}
+                      {loading ? "Transmitting..." : "Broadcast"}
                     </Button>
                   </div>
                 </div>

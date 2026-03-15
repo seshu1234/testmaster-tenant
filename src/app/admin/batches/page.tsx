@@ -178,39 +178,39 @@ export default function BatchesPage() {
             <CardContent>
               <Table>
                 <TableHeader>
-                  <TableRow className="bg-zinc-50">
-                    <TableHead className="font-bold text-[10px] uppercase tracking-wider">Batch Name</TableHead>
-                    <TableHead className="font-bold text-[10px] uppercase tracking-wider">Teachers</TableHead>
-                    <TableHead className="font-bold text-[10px] uppercase tracking-wider">Students</TableHead>
-                    <TableHead className="font-bold text-[10px] uppercase tracking-wider">Avg Score</TableHead>
-                    <TableHead className="font-bold text-[10px] uppercase tracking-wider">Status</TableHead>
-                    <TableHead className="text-xl font-bold text-[10px] uppercase tracking-wider">Actions</TableHead>
+                  <TableRow className="hover:bg-transparent border-b border-zinc-100 bg-zinc-50/30">
+                    <TableHead className="py-4 pl-4 sm:pl-6 font-semibold text-[10px] sm:text-xs text-zinc-500 uppercase tracking-tight text-left sm:text-center border-x border-zinc-100">Batch Name</TableHead>
+                    <TableHead className="py-4 font-semibold text-xs text-zinc-500 uppercase tracking-tight text-center border-r border-zinc-100 hidden md:table-cell">Teachers</TableHead>
+                    <TableHead className="py-4 font-semibold text-xs text-zinc-500 uppercase tracking-tight text-center border-r border-zinc-100">Students</TableHead>
+                    <TableHead className="py-4 font-semibold text-xs text-zinc-500 uppercase tracking-tight text-center border-r border-zinc-100 hidden sm:table-cell">Avg Score</TableHead>
+                    <TableHead className="py-4 font-semibold text-xs text-zinc-500 uppercase tracking-tight text-center border-r border-zinc-100">Status</TableHead>
+                    <TableHead className="py-4 font-semibold text-xs text-zinc-500 uppercase tracking-tight text-center border-r border-zinc-100 pr-4 sm:pr-6">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {loading ? (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-zinc-600 py-8 animate-pulse text-zinc-600">
+                      <TableCell colSpan={6} className="text-zinc-600 py-8 animate-pulse text-zinc-600 border-x border-zinc-100 text-center">
                         Loading batches...
                       </TableCell>
                     </TableRow>
                   ) : batches.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-zinc-600 py-8 text-zinc-600">
+                      <TableCell colSpan={6} className="text-zinc-600 py-8 text-zinc-600 border-x border-zinc-100 text-center">
                         No batches found. Click &quot;New Batch&quot; to begin.
                       </TableCell>
                     </TableRow>
                   ) : (
                     batches.map((batch) => (
-                      <TableRow key={batch.id}>
-                        <TableCell>
-                          <div className="flex flex-col">
-                            <span className="font-semibold">{batch.name}</span>
-                            <span className="text-[10px] text-zinc-600 line-clamp-1 max-w-[200px]">{batch.description}</span>
+                      <TableRow key={batch.id} className="group hover:bg-zinc-100/50 transition-colors border-b border-zinc-100 even:bg-zinc-50/50">
+                        <TableCell className="py-4 pl-4 sm:pl-6 text-left sm:text-center border-x border-zinc-100">
+                          <div className="flex flex-col items-start sm:items-center">
+                            <span className="text-zinc-900 font-bold text-xs sm:text-sm">{batch.name}</span>
+                            <span className="text-[10px] text-zinc-500 line-clamp-1 max-w-[120px] sm:max-w-[200px]">{batch.description}</span>
                           </div>
                         </TableCell>
-                        <TableCell>
-                          <div className="flex -space-x-2">
+                        <TableCell className="py-4 text-center border-r border-zinc-100 hidden md:table-cell">
+                          <div className="flex justify-center -space-x-2">
                             {batch.teacher_ids.map((id) => (
                                <div key={id} className="h-6 w-6 rounded-full border-2 border-background bg-zinc-200 flex items-center justify-center text-[8px] font-bold" title={id}>
                                   {id.charAt(0).toUpperCase()}
@@ -218,23 +218,21 @@ export default function BatchesPage() {
                             ))}
                           </div>
                         </TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className="font-mono text-[10px]">
+                        <TableCell className="py-4 text-center border-r border-zinc-100">
+                          <Badge variant="outline" className="font-mono text-[9px] sm:text-[10px] font-bold border-zinc-200 bg-zinc-50 px-1.5 py-0">
                             {batch.student_count}
                           </Badge>
                         </TableCell>
-                        <TableCell>
-                           <div className="flex flex-col gap-1 w-24">
-                              <div className="flex justify-between text-[10px]">
-                                <span>{batch.avg_score}%</span>
-                              </div>
-                              <div className="h-1 w-full bg-zinc-100 rounded-full overflow-hidden">
+                        <TableCell className="py-4 text-center border-r border-zinc-100 hidden sm:table-cell">
+                           <div className="flex flex-col items-center gap-1">
+                              <span className="text-xs font-bold text-zinc-700">{batch.avg_score}%</span>
+                              <div className="h-1 w-16 bg-zinc-100 rounded-full overflow-hidden">
                                  <div className="h-full bg-primary" style={{ width: `${batch.avg_score}%` }} />
                               </div>
                            </div>
                         </TableCell>
-                        <TableCell>
-                           <span className={`px-2 py-0.5 rounded-full text-[10px] uppercase font-bold tracking-tight ${
+                        <TableCell className="py-4 text-center border-r border-zinc-100">
+                           <span className={`px-2 py-0.5 rounded-full text-[9px] uppercase font-bold tracking-tight ${
                              batch.status === 'active' ? 'bg-green-100 text-green-700' :
                              batch.status === 'completed' ? 'bg-zinc-100 text-zinc-700' :
                              'bg-zinc-50 text-zinc-500'
@@ -242,16 +240,18 @@ export default function BatchesPage() {
                              {batch.status}
                            </span>
                         </TableCell>
-                        <TableCell className="text-zinc-600">
-                          <Button variant="ghost" size="icon" onClick={() => handleEdit(batch)} title="Edit Batch">
-                            <Pencil className="h-4 w-4" />
-                          </Button>
-                          <Button variant="ghost" size="icon" title="Transfer Students">
-                            <ArrowRightLeft className="h-4 w-4" />
-                          </Button>
-                          <Button variant="ghost" size="icon" onClick={() => handleDelete(batch)} className="text-zinc-600  hover:bg-red-50" title="Delete Batch">
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+                        <TableCell className="py-4 text-center border-r border-zinc-100 pr-4 sm:pr-6">
+                          <div className="flex justify-center gap-1">
+                            <Button variant="ghost" size="icon" className="h-7 w-7 sm:h-8 sm:w-8 text-zinc-400 hover:text-zinc-900" onClick={() => handleEdit(batch)} title="Edit Batch">
+                              <Pencil className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                            </Button>
+                            <Button variant="ghost" size="icon" className="h-7 w-7 sm:h-8 sm:w-8 text-zinc-400 hover:text-zinc-900 hidden xs:inline-flex" title="Transfer Students">
+                              <ArrowRightLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                            </Button>
+                            <Button variant="ghost" size="icon" className="h-7 w-7 sm:h-8 sm:w-8 text-zinc-400 hover:text-red-600 hover:bg-red-50" onClick={() => handleDelete(batch)} title="Delete Batch">
+                              <Trash2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                            </Button>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))

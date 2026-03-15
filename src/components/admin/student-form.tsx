@@ -88,14 +88,16 @@ export function StudentForm({ open, onOpenChange, student, onSuccess }: StudentF
       
       const method = student ? "PUT" : "POST";
 
-      await api(url, {
+      const response = await api(url, {
         method,
         token: token || undefined,
         tenant: tenantSlug || undefined,
         body: JSON.stringify(values),
       });
 
-      toast.success(student ? "Student updated" : "Student created");
+      toast.success(student ? "Update Complete" : "Student Created", {
+        description: response.message || (student ? "Student updated successfully" : "Student created successfully"),
+      });
       onSuccess();
     } catch (err: unknown) {
       toast.error("Error", {
@@ -106,80 +108,82 @@ export function StudentForm({ open, onOpenChange, student, onSuccess }: StudentF
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
+      <DialogContent className="w-[95vw] sm:max-w-[425px] p-0 overflow-hidden flex flex-col max-h-[90vh] rounded-2xl">
+        <DialogHeader className="p-6 border-b border-zinc-100 bg-zinc-50/50 shrink-0">
           <DialogTitle>{student ? "Edit Student" : "Add Student"}</DialogTitle>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Full Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="John Doe" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email Address</FormLabel>
-                  <FormControl>
-                    <Input placeholder="john@example.com" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="batch"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Batch (Optional)</FormLabel>
-                  <FormControl>
-                    <Input placeholder="JEE-2026-A" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Status</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+        <div className="p-6 overflow-y-auto custom-scrollbar">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Full Name</FormLabel>
                     <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select status" />
-                      </SelectTrigger>
+                      <Input placeholder="John Doe" {...field} />
                     </FormControl>
-                    <SelectContent>
-                      <SelectItem value="active">Active</SelectItem>
-                      <SelectItem value="inactive">Inactive</SelectItem>
-                      <SelectItem value="suspended">Suspended</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <DialogFooter className="pt-4">
-              <Button type="submit" disabled={form.formState.isSubmitting}>
-                {student ? "Update Details" : "Create Student"}
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email Address</FormLabel>
+                    <FormControl>
+                      <Input placeholder="john@example.com" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="batch"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Batch (Optional)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="JEE-2026-A" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Status</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="active">Active</SelectItem>
+                        <SelectItem value="inactive">Inactive</SelectItem>
+                        <SelectItem value="suspended">Suspended</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <DialogFooter className="pt-4">
+                <Button type="submit" disabled={form.formState.isSubmitting}>
+                  {student ? "Update Details" : "Create Student"}
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </div>
       </DialogContent>
     </Dialog>
   );

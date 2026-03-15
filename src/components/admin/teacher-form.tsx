@@ -145,15 +145,15 @@ export function TeacherForm({ open, onOpenChange, teacher, onSuccess }: TeacherF
         return;
       }
 
-      await api(isEditing ? `/admin/teachers/${teacher.id}` : "/admin/teachers", {
+      const response = await api(isEditing ? `/admin/teachers/${teacher.id}` : "/admin/teachers", {
         method: isEditing ? "PUT" : "POST",
         token,
         tenant: tenantSlug || undefined,
         body: JSON.stringify(payload)
       });
 
-      toast.success("Success", {
-        description: isEditing ? "Teacher updated successfully" : "Teacher created successfully",
+      toast.success(isEditing ? "Update Complete" : "Teacher Created", {
+        description: response.message || (isEditing ? "Teacher updated successfully" : "Teacher created successfully"),
       });
       
       onSuccess();
@@ -168,16 +168,16 @@ export function TeacherForm({ open, onOpenChange, teacher, onSuccess }: TeacherF
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] bg-white border-zinc-200 p-0 overflow-hidden shadow-2xl">
-        <div className="p-6 border-b border-zinc-100 bg-zinc-50/50">
+      <DialogContent className="w-[95vw] sm:max-w-[550px] bg-white border-zinc-200 p-0 overflow-hidden shadow-2xl rounded-2xl max-h-[90vh] flex flex-col">
+        <div className="p-4 sm:p-6 border-b border-zinc-100 bg-zinc-50/50 shrink-0">
           <DialogHeader>
             <div className="flex items-center gap-2 mb-1">
-              <div className="p-2 rounded-md bg-zinc-900 text-white">
+              <div className="p-1.5 sm:p-2 rounded-lg bg-zinc-900 text-white">
                 {isEditing ? <Save className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
               </div>
-              <DialogTitle className="text-xl font-bold">{isEditing ? "Edit Teacher Profile" : "Register New Teacher"}</DialogTitle>
+              <DialogTitle className="text-lg sm:text-xl font-bold">{isEditing ? "Edit Teacher Profile" : "Register New Teacher"}</DialogTitle>
             </div>
-            <DialogDescription>
+            <DialogDescription className="text-xs sm:text-sm">
               {isEditing 
                 ? "Update teacher contact details and subject specializations." 
                 : "Enter teacher details to grant them access to the platform."}
@@ -185,16 +185,16 @@ export function TeacherForm({ open, onOpenChange, teacher, onSuccess }: TeacherF
           </DialogHeader>
         </div>
 
-        <div className="p-6">
+        <div className="p-4 sm:p-6 overflow-y-auto overflow-x-hidden custom-scrollbar">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 sm:space-y-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="flex items-center gap-2 text-zinc-600 font-semibold text-zinc-600 uppercase tracking-wider">
+                      <FormLabel className="flex items-center gap-2 text-zinc-600 font-semibold uppercase tracking-wider text-[10px]">
                         <User className="h-3 w-3" /> Full Name
                       </FormLabel>
                       <FormControl>
@@ -202,7 +202,7 @@ export function TeacherForm({ open, onOpenChange, teacher, onSuccess }: TeacherF
                           placeholder="Seshu Budda" 
                           {...field} 
                           autoComplete="off"
-                          className="h-10 bg-white border-zinc-200 focus:ring-2 focus:ring-zinc-900 transition-all" 
+                          className="h-10 bg-white border-zinc-200 focus:ring-2 focus:ring-zinc-900 transition-all rounded-xl" 
                         />
                       </FormControl>
                       <FormMessage className="text-[10px]" />
@@ -215,7 +215,7 @@ export function TeacherForm({ open, onOpenChange, teacher, onSuccess }: TeacherF
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="flex items-center gap-2 text-zinc-600 font-semibold text-zinc-600 uppercase tracking-wider">
+                      <FormLabel className="flex items-center gap-2 text-zinc-600 font-semibold uppercase tracking-wider text-[10px]">
                         <Mail className="h-3 w-3" /> Email Address
                       </FormLabel>
                       <FormControl>
@@ -224,7 +224,7 @@ export function TeacherForm({ open, onOpenChange, teacher, onSuccess }: TeacherF
                           type="email" 
                           {...field} 
                           autoComplete="off"
-                          className="h-10 bg-white border-zinc-200 focus:ring-2 focus:ring-zinc-900 transition-all" 
+                          className="h-10 bg-white border-zinc-200 focus:ring-2 focus:ring-zinc-900 transition-all rounded-xl" 
                         />
                       </FormControl>
                       <FormMessage className="text-[10px]" />
@@ -233,13 +233,13 @@ export function TeacherForm({ open, onOpenChange, teacher, onSuccess }: TeacherF
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
                   name="phone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="flex items-center gap-2 text-zinc-600 font-semibold text-zinc-600 uppercase tracking-wider">
+                      <FormLabel className="flex items-center gap-2 text-zinc-600 font-semibold uppercase tracking-wider text-[10px]">
                         <Phone className="h-3 w-3" /> Phone Number
                       </FormLabel>
                       <FormControl>
@@ -247,7 +247,7 @@ export function TeacherForm({ open, onOpenChange, teacher, onSuccess }: TeacherF
                           placeholder="+91..." 
                           {...field} 
                           autoComplete="off"
-                          className="h-10 bg-white border-zinc-200 focus:ring-2 focus:ring-zinc-900 transition-all" 
+                          className="h-10 bg-white border-zinc-200 focus:ring-2 focus:ring-zinc-900 transition-all rounded-xl" 
                         />
                       </FormControl>
                       <FormMessage className="text-[10px]" />
@@ -260,7 +260,7 @@ export function TeacherForm({ open, onOpenChange, teacher, onSuccess }: TeacherF
                   name="subjects"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="flex items-center gap-2 text-zinc-600 font-semibold text-zinc-600 uppercase tracking-wider">
+                      <FormLabel className="flex items-center gap-2 text-zinc-600 font-semibold uppercase tracking-wider text-[10px]">
                         <BookOpen className="h-3 w-3" /> Subjects
                       </FormLabel>
                       <FormControl>
@@ -268,7 +268,7 @@ export function TeacherForm({ open, onOpenChange, teacher, onSuccess }: TeacherF
                           placeholder="Maths, Physics..." 
                           {...field} 
                           autoComplete="off"
-                          className="h-10 bg-white border-zinc-200 focus:ring-2 focus:ring-zinc-900 transition-all" 
+                          className="h-10 bg-white border-zinc-200 focus:ring-2 focus:ring-zinc-900 transition-all rounded-xl" 
                         />
                       </FormControl>
                       <FormMessage className="text-[10px]" />
@@ -278,13 +278,13 @@ export function TeacherForm({ open, onOpenChange, teacher, onSuccess }: TeacherF
               </div>
 
               <div className="pt-4 border-t border-zinc-100 space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
                     name="password"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="flex items-center gap-2 text-zinc-600 font-semibold text-zinc-600 uppercase tracking-wider">
+                        <FormLabel className="flex items-center gap-2 text-zinc-600 font-semibold uppercase tracking-wider text-[10px]">
                           <Key className="h-3 w-3" /> {isEditing ? "New Password" : "Password"}
                         </FormLabel>
                         <FormControl>
@@ -293,7 +293,7 @@ export function TeacherForm({ open, onOpenChange, teacher, onSuccess }: TeacherF
                             type="password" 
                             {...field} 
                             autoComplete="off"
-                            className="h-10 bg-white border-zinc-200 focus:ring-2 focus:ring-zinc-900 transition-all"
+                            className="h-10 bg-white border-zinc-200 focus:ring-2 focus:ring-zinc-900 transition-all rounded-xl"
                           />
                         </FormControl>
                         <FormMessage className="text-[10px]" />
@@ -307,12 +307,12 @@ export function TeacherForm({ open, onOpenChange, teacher, onSuccess }: TeacherF
                       name="status"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="flex items-center gap-2 text-zinc-600 font-semibold text-zinc-600 uppercase tracking-wider">
+                          <FormLabel className="flex items-center gap-2 text-zinc-600 font-semibold uppercase tracking-wider text-[10px]">
                             <Activity className="h-3 w-3" /> Access Status
                           </FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
-                              <SelectTrigger className="h-10 bg-white border-zinc-200">
+                              <SelectTrigger className="h-10 bg-white border-zinc-200 rounded-xl">
                                 <SelectValue placeholder="Select status" />
                               </SelectTrigger>
                             </FormControl>
@@ -330,30 +330,30 @@ export function TeacherForm({ open, onOpenChange, teacher, onSuccess }: TeacherF
                 </div>
               </div>
 
-              <div className="flex justify-end gap-3 pt-4">
+              <div className="flex justify-end gap-3 pt-6 border-t border-zinc-100">
                 <Button 
                   type="button" 
                   variant="outline" 
                   onClick={() => onOpenChange(false)}
                   disabled={isSubmitting}
-                  className="px-6 h-10 font-bold text-zinc-600 uppercase tracking-widest hover:bg-zinc-50 border-zinc-200"
+                  className="px-6 h-10 font-bold text-zinc-600 uppercase tracking-widest hover:bg-zinc-50 border-zinc-100 rounded-xl"
                 >
                   <X className="mr-2 h-3.5 w-3.5" /> Cancel
                 </Button>
                 <Button 
                   type="submit" 
                   disabled={isSubmitting}
-                  className="px-8 h-10 font-bold text-zinc-600 uppercase tracking-widest bg-zinc-900 text-white hover:opacity-90 active:scale-95 transition-all shadow-lg"
+                  className="px-8 h-10 font-bold uppercase tracking-widest bg-zinc-900 text-white hover:opacity-90 active:scale-95 transition-all shadow-lg rounded-xl"
                 >
                   {isSubmitting ? (
                     <div className="flex items-center gap-2">
-                      <div className="h-3 w-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      Saving...
+                       <div className="h-3 w-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                       Saving...
                     </div>
                   ) : (
                     <div className="flex items-center gap-2">
                        {isEditing ? <Save className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
-                       {isEditing ? "Save Changes" : "Create Teacher"}
+                       {isEditing ? "Save" : "Create"}
                     </div>
                   )}
                 </Button>

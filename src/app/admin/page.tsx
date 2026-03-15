@@ -95,33 +95,35 @@ export default function AdminDashboard() {
           <h1 className="text-xl font-bold tracking-tight text-zinc-600">Strategic Overview</h1>
           <p className="text-zinc-600 font-medium">Monitoring platform health and performance metrics for {tenantSlug || 'Global'}.</p>
         </div>
-        <div className="flex items-center gap-3">
-          <Link href="/admin/settings">
-            <Button variant="outline" className="gap-2 border-zinc-200 hover:bg-zinc-50 rounded-xl px-5">
+        <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
+          <Link href="/admin/settings" className="flex-1 sm:flex-none">
+            <Button variant="outline" className="w-full gap-2 border-zinc-200 hover:bg-zinc-50 rounded-xl px-5">
                <Settings className="h-4 w-4" />
-               Configuration
+               <span className="hidden sm:inline">Configuration</span>
+               <span className="sm:hidden text-xs">Settings</span>
             </Button>
           </Link>
-          <Link href="/admin/reports">
-            <Button className="gap-2 bg-zinc-900 text-white hover:bg-zinc-800 rounded-xl px-5 shadow-lg shadow-zinc-200">
+          <Link href="/admin/reports" className="flex-1 sm:flex-none">
+            <Button className="w-full gap-2 bg-zinc-900 text-white hover:bg-zinc-800 rounded-xl px-5 shadow-lg shadow-zinc-200">
               <Plus className="h-4 w-4" />
-              Generate Report
+              <span className="hidden sm:inline">Generate Report</span>
+              <span className="sm:hidden text-xs">Report</span>
             </Button>
           </Link>
         </div>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
         {kpis.map((kpi, i) => (
           <Card key={i} className="border shadow-sm hover:shadow-md transition-all duration-300 group hover:-translate-y-1 bg-white">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-zinc-600">{kpi.label}</CardTitle>
-              <div className={`${kpi.bg} ${kpi.color} p-2 rounded-xl group-hover:scale-110 transition-transform`}>
-                <kpi.icon className="h-4 w-4" />
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 sm:pb-2 p-3 sm:p-6">
+              <CardTitle className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-zinc-600 truncate mr-1">{kpi.label}</CardTitle>
+              <div className={`${kpi.bg} ${kpi.color} p-1.5 sm:p-2 rounded-lg sm:rounded-xl group-hover:scale-110 transition-transform hidden sm:block`}>
+                <kpi.icon className="h-3 w-3 sm:h-4 sm:w-4" />
               </div>
             </CardHeader>
-            <CardContent>
-              <div className="text-xl font-bold tracking-tight text-zinc-600">{kpi.value}</div>
+            <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
+              <div className="text-lg sm:text-xl font-bold tracking-tight text-zinc-600 truncate">{kpi.value}</div>
             </CardContent>
           </Card>
         ))}
@@ -132,17 +134,17 @@ export default function AdminDashboard() {
           <div className="absolute top-0 right-0 p-8 opacity-[0.02] pointer-events-none">
              <BarChart3 className="h-64 w-64 rotate-12" />
           </div>
-          <CardHeader className="flex flex-row items-center justify-between pb-8">
+          <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-8 gap-4">
             <div className="space-y-1">
-              <CardTitle className="text-xl font-bold tracking-tight">Analytical Insights</CardTitle>
-              <CardDescription>Visualizing student engagement and performance trends.</CardDescription>
+              <CardTitle className="text-lg sm:text-xl font-bold tracking-tight">Analytical Insights</CardTitle>
+              <CardDescription className="text-xs sm:text-sm">Visualizing student engagement and performance trends.</CardDescription>
             </div>
-            <div className="flex gap-2 bg-zinc-100 p-1 rounded-xl">
-               <Button variant="ghost" size="sm" className="h-8 text-[10px] font-bold rounded-lg bg-white700 shadow-sm">30D</Button>
-               <Button variant="ghost" size="sm" className="h-8 text-[10px] font-bold rounded-lg">90D</Button>
+            <div className="flex gap-2 bg-zinc-100 p-1 rounded-xl w-full sm:w-auto overflow-hidden">
+               <Button variant="ghost" size="sm" className="flex-1 sm:flex-none h-8 text-[10px] font-bold rounded-lg bg-white shadow-sm">30D</Button>
+               <Button variant="ghost" size="sm" className="flex-1 sm:flex-none h-8 text-[10px] font-bold rounded-lg hover:bg-white/50">90D</Button>
             </div>
           </CardHeader>
-          <CardContent className="h-[350px]">
+          <CardContent className="h-[250px] sm:h-[350px] p-2 sm:p-6">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={dashboard.revenue_data}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} strokeOpacity={0.1} />

@@ -127,14 +127,16 @@ export function BatchForm({ open, onOpenChange, batch, onSuccess }: BatchFormPro
       const url = batch ? `/admin/batches/${batch.id}` : "/admin/batches";
       const method = batch ? "PUT" : "POST";
 
-      await api(url, {
+      const response = await api(url, {
         method,
         token: token || undefined,
         tenant: tenantSlug || undefined,
         body: JSON.stringify(values),
       });
 
-      toast.success(batch ? "Batch updated" : "Batch created");
+      toast.success(batch ? "Update Complete" : "Batch Created", {
+        description: response.message || (batch ? "Batch updated successfully" : "Batch created successfully"),
+      });
       onSuccess();
     } catch (err: unknown) {
       toast.error("Error", {
@@ -145,100 +147,102 @@ export function BatchForm({ open, onOpenChange, batch, onSuccess }: BatchFormPro
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
+      <DialogContent className="w-[95vw] sm:max-w-[450px] p-0 overflow-hidden flex flex-col max-h-[90vh] rounded-2xl">
+        <DialogHeader className="p-6 border-b border-zinc-100 bg-zinc-50/50 shrink-0">
           <DialogTitle>{batch ? "Edit Batch" : "Create New Batch"}</DialogTitle>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Batch Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="JEE-2026-Alpha" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea placeholder="Phase preparation for JEE Mains..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <div className="space-y-2">
-              <FormLabel>Assign Teachers</FormLabel>
-              <div className="flex flex-wrap gap-2 mb-2">
-                {watchedTeacherIds.map((id: string) => {
-                  const teacher = teachers.find(t => t.id === id);
-                  return teacher ? (
-                    <Badge key={id} variant="secondary" className="gap-1 px-3 py-1">
-                      {teacher.name}
-                      <X className="h-3 w-3 cursor-pointer " onClick={() => handleToggleTeacher(id)} />
-                    </Badge>
-                  ) : null;
-                })}
-              </div>
-              <Select onValueChange={handleToggleTeacher}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Add teacher to batch..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {teachers
-                    .filter(t => !watchedTeacherIds.includes(t.id))
-                    .map(t => (
-                      <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
-                    ))
-                  }
-                </SelectContent>
-              </Select>
-              {form.formState.errors.teacher_ids && (
-                <p className="text-[0.8rem] font-medium text-zinc-600">{form.formState.errors.teacher_ids.message}</p>
-              )}
-            </div>
-
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Lifecycle Status</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+        <div className="p-6 overflow-y-auto custom-scrollbar">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Batch Name</FormLabel>
                     <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select status" />
-                      </SelectTrigger>
+                      <Input placeholder="JEE-2026-Alpha" {...field} />
                     </FormControl>
-                    <SelectContent>
-                      <SelectItem value="active">Active</SelectItem>
-                      <SelectItem value="completed">Completed</SelectItem>
-                      <SelectItem value="archived">Archived</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Phase preparation for JEE Mains..." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <div className="space-y-2">
+                <FormLabel>Assign Teachers</FormLabel>
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {watchedTeacherIds.map((id: string) => {
+                    const teacher = teachers.find(t => t.id === id);
+                    return teacher ? (
+                      <Badge key={id} variant="secondary" className="gap-1 px-3 py-1">
+                        {teacher.name}
+                        <X className="h-3 w-3 cursor-pointer " onClick={() => handleToggleTeacher(id)} />
+                      </Badge>
+                    ) : null;
+                  })}
+                </div>
+                <Select onValueChange={handleToggleTeacher}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Add teacher to batch..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {teachers
+                      .filter(t => !watchedTeacherIds.includes(t.id))
+                      .map(t => (
+                        <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
+                      ))
+                    }
+                  </SelectContent>
+                </Select>
+                {form.formState.errors.teacher_ids && (
+                  <p className="text-[0.8rem] font-medium text-zinc-600">{form.formState.errors.teacher_ids.message}</p>
+                )}
+              </div>
 
-            <DialogFooter className="pt-4">
-              <Button type="submit" disabled={form.formState.isSubmitting}>
-                {batch ? "Update Batch" : "Create Batch"}
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Lifecycle Status</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="active">Active</SelectItem>
+                        <SelectItem value="completed">Completed</SelectItem>
+                        <SelectItem value="archived">Archived</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <DialogFooter className="pt-4">
+                <Button type="submit" disabled={form.formState.isSubmitting}>
+                  {batch ? "Update Batch" : "Create Batch"}
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </div>
       </DialogContent>
     </Dialog>
   );
