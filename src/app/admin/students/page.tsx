@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import useSWR from "swr";
 import { api } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
+import { useDebounce } from "@/hooks/use-debounce";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
@@ -21,7 +22,8 @@ import {
   CalendarDays,
   Users,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Key
 } from "lucide-react";
 import {
   Table,
@@ -50,7 +52,10 @@ interface Student {
   id: string;
   name: string;
   email: string;
-  batch?: string;
+  batch?: {
+    id: string;
+    name: string;
+  };
   status: string;
   created_at: string;
 }
@@ -58,11 +63,12 @@ interface Student {
 export default function StudentsPage() {
   const { token, tenantSlug } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const [currentPage, setCurrentPage] = useState(1);
   const [entriesPerPage, setEntriesPerPage] = useState(5);
 
   const { data, error: swrError, isLoading: swrLoading, mutate } = useSWR(
-    token ? [`/admin/students`, currentPage, entriesPerPage, searchTerm] : null,
+    token ? [`/admin/students`, currentPage, entriesPerPage, debouncedSearchTerm] : null,
     ([url, page, limit, search]) => api(url, { 
       token: token || undefined, 
       tenant: tenantSlug || undefined,
@@ -79,7 +85,16 @@ export default function StudentsPage() {
     }
   );
   
-  const students: Student[] = useMemo(() => data?.data || [], [data]);
+  const students: Student[] = useMemo(() => {
+    const rawData = data?.data || [];
+    if (!searchTerm) return rawData;
+
+    return rawData.filter((s: Student) => 
+      (s.name?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+      (s.email?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+      (s.batch?.name?.toLowerCase() || "").includes(searchTerm.toLowerCase())
+    );
+  }, [data, searchTerm]);
   const pagination = data?.meta || { current_page: 1, last_page: 1, total: 0 };
   const loading = swrLoading;
   const error = swrError?.message || null;
@@ -133,6 +148,26 @@ export default function StudentsPage() {
     } catch (err: unknown) {
       toast.error("Delete Failed", {
         description: err instanceof Error ? err.message : "Failed to delete student",
+      });
+    }
+  };
+
+  const handleResetPassword = async (student: Student) => {
+    if (!confirm(`Are you sure you want to reset the password for ${student.name}? A new temporary password will be sent to ${student.email}.`)) return;
+
+    try {
+      await api(`/admin/students/${student.id}/reset-password`, {
+        method: "POST",
+        token: token || undefined,
+        tenant: tenantSlug || undefined,
+      });
+      
+      toast.success("Password Reset", {
+        description: `Password has been reset for ${student.name}.`,
+      });
+    } catch (err: unknown) {
+      toast.error("Failed to Reset Password", {
+        description: err instanceof Error ? err.message : "Something went wrong",
       });
     }
   };
@@ -198,7 +233,10 @@ export default function StudentsPage() {
               placeholder="Search by name, email, or batch..." 
               className="pl-9 h-11 border-zinc-200 bg-white shadow-sm focus:ring-2 focus:ring-zinc-900 transition-all"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
             />
           </div>
           <Button variant="outline" className="h-11 border-zinc-200 bg-white group" size="icon" onClick={() => mutate()}>
@@ -349,7 +387,7 @@ export default function StudentsPage() {
                       </TableCell>
                       <TableCell className="py-4 hidden md:table-cell text-zinc-600 border-r border-zinc-100 text-center">
                         <Badge variant="secondary" className="bg-zinc-100 text-zinc-600 border-transparent font-bold text-[10px] uppercase">
-                          {student.batch || "Unassigned"}
+                          {student.batch?.name || "Unassigned"}
                         </Badge>
                       </TableCell>
                       <TableCell className="py-4 text-center border-r border-zinc-100">
@@ -371,6 +409,9 @@ export default function StudentsPage() {
                         <div className="flex justify-center gap-1 transition-opacity">
                           <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-9 sm:w-9 text-zinc-500 hover:text-zinc-900" onClick={() => handleEdit(student)}>
                             <Pencil className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                          </Button>
+                          <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-9 sm:w-9 text-zinc-500 hover:text-zinc-900" onClick={() => handleResetPassword(student)}>
+                            <Key className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                           </Button>
                           <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-9 sm:w-9 text-zinc-500 hover:text-red-600 hover:bg-red-50" onClick={() => handleDelete(student)}>
                             <Trash2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />

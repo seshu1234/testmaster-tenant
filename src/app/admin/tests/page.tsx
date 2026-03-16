@@ -284,6 +284,19 @@ export default function TestsOversightPage() {
               </Card>
            </div>
         </TabsContent>
+        <TabsContent value="templates" className="mt-6">
+          <Card className="border shadow-sm bg-white/50 backdrop-blur-sm">
+            <CardHeader>
+              <CardTitle>Standardized Templates</CardTitle>
+              <CardDescription>Reusable assessment structures for institutional consistency.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="p-12 text-zinc-600 border-2 border-dashed rounded-xl text-zinc-600">
+                 No test templates configured.
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
       </Tabs>
 
       {selectedTest && (
@@ -298,20 +311,6 @@ export default function TestsOversightPage() {
           }}
         />
       )}
-
-      <TabsContent value="templates" className="mt-6">
-        <Card className="border shadow-sm bg-white/50 backdrop-blur-sm">
-          <CardHeader>
-            <CardTitle>Standardized Templates</CardTitle>
-            <CardDescription>Reusable assessment structures for institutional consistency.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="p-12 text-zinc-600 border-2 border-dashed rounded-xl text-zinc-600">
-               No test templates configured.
-            </div>
-          </CardContent>
-        </Card>
-      </TabsContent>
     </div>
   );
 }

@@ -60,7 +60,7 @@ export default async function RootLayout({
     }), {} as React.CSSProperties);
 
   return (
-    <html lang="en" style={cssVars}>
+    <html lang="en" style={cssVars} suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <AuthProvider branding={branding}>
           <SWRProvider>

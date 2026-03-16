@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -29,7 +29,7 @@ import { toast } from "sonner";
 const studentSchema = z.object({
   name: z.string().min(2, "Name is required"),
   email: z.string().email("Invalid email"),
-  batch: z.string().optional(),
+  batch_id: z.string().optional(),
   status: z.enum(["active", "inactive", "suspended"]),
 });
 
@@ -39,8 +39,16 @@ interface Student {
   id: string;
   name: string;
   email: string;
-  batch?: string;
+  batch?: {
+    id: string;
+    name: string;
+  };
   status: string;
+}
+
+interface Batch {
+  id: string;
+  name: string;
 }
 
 interface StudentFormProps {
@@ -52,29 +60,46 @@ interface StudentFormProps {
 
 export function StudentForm({ open, onOpenChange, student, onSuccess }: StudentFormProps) {
   const { token, tenantSlug } = useAuth();
+  const [batches, setBatches] = useState<Batch[]>([]);
+
   const form = useForm<StudentFormValues>({
     resolver: zodResolver(studentSchema),
     defaultValues: {
       name: "",
       email: "",
-      batch: "",
+      batch_id: "",
       status: "active",
     },
   });
+
+  useEffect(() => {
+    async function fetchBatches() {
+      if (!token) return;
+      try {
+        const response = await api("/admin/batches", { token, tenant: tenantSlug || undefined });
+        setBatches(response.data);
+      } catch {
+        setBatches([]);
+      }
+    }
+    if (open) {
+      fetchBatches();
+    }
+  }, [token, tenantSlug, open]);
 
   useEffect(() => {
     if (student) {
       form.reset({
         name: student.name,
         email: student.email,
-        batch: student.batch || "",
+        batch_id: student.batch?.id || "",
         status: (student.status as StudentFormValues["status"]) || "active",
       });
     } else {
       form.reset({
         name: "",
         email: "",
-        batch: "",
+        batch_id: "",
         status: "active",
       });
     }
@@ -143,13 +168,25 @@ export function StudentForm({ open, onOpenChange, student, onSuccess }: StudentF
               />
               <FormField
                 control={form.control}
-                name="batch"
+                name="batch_id"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Batch (Optional)</FormLabel>
-                    <FormControl>
-                      <Input placeholder="JEE-2026-A" {...field} />
-                    </FormControl>
+                    <FormLabel>Academic Batch (Optional)</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a batch" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="none">No Batch (Unassigned)</SelectItem>
+                        {batches.map((batch: Batch) => (
+                          <SelectItem key={batch.id} value={batch.id}>
+                            {batch.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}

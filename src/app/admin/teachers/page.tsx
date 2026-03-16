@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import useSWR from "swr";
 import { api } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
+import { useDebounce } from "@/hooks/use-debounce";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
@@ -69,11 +70,12 @@ interface Teacher {
 export default function TeachersPage() {
   const { token, tenantSlug } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const [currentPage, setCurrentPage] = useState(1);
   const [entriesPerPage, setEntriesPerPage] = useState(5);
 
   const { data, error: swrError, isLoading: swrLoading, mutate } = useSWR(
-    token ? [`/admin/teachers`, currentPage, entriesPerPage, searchTerm] : null,
+    token ? [`/admin/teachers`, currentPage, entriesPerPage, debouncedSearchTerm] : null,
     ([url, page, limit, search]) => api(url, { 
       token: token || undefined, 
       tenant: tenantSlug || undefined,
@@ -90,7 +92,22 @@ export default function TeachersPage() {
     }
   );
   
-  const teachers = useMemo(() => data?.data || [], [data]);
+  const teachers: Teacher[] = useMemo(() => {
+    const rawData = data?.data || [];
+    if (!searchTerm) return rawData;
+    
+    // Instant local filtering
+    const filtered = rawData.filter((t: Teacher) => 
+      (t.name?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+      (t.email?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+      (t.subjects || []).some((s: string) => s.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+
+    // If we have local matches, use them. 
+    // If not, and we are searching (debouncedSearchTerm is set), 
+    // we might want to wait for server results.
+    return filtered;
+  }, [data, searchTerm]);
   const pagination = data?.meta || { current_page: 1, last_page: 1, total: 0 };
   const loading = swrLoading;
   const error = swrError?.message || null;
@@ -204,7 +221,10 @@ export default function TeachersPage() {
                 placeholder="Search by name, email, or subject..." 
                 className="pl-9 h-11 border-zinc-200 bg-white shadow-sm focus:ring-2 focus:ring-zinc-900 transition-all"
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setCurrentPage(1);
+                }}
               />
             </div>
             <div className="flex gap-2 w-full md:w-auto">
