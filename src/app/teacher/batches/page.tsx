@@ -3,31 +3,26 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { 
-  Users, 
-  GraduationCap, 
-  Search,
-  Filter,
-  Plus,
-  ArrowRight
-} from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Users, BookOpen, Search, GraduationCap, ArrowRight } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { api } from "@/lib/api";
-import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 
 interface Batch {
   id: string;
   name: string;
-  student_count: number;
+  students_count: number;
   subject: string;
-  last_test?: string;
 }
 
 export default function TeacherBatchesPage() {
   const { user, token, tenantSlug } = useAuth();
   const [batches, setBatches] = useState<Batch[]>([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     const fetchBatches = async () => {
@@ -40,8 +35,8 @@ export default function TeacherBatchesPage() {
         if (response.success) {
           setBatches(response.data || []);
         }
-      } catch (error) {
-        console.error("Failed to fetch batches:", error);
+      } catch {
+        // ignore
       } finally {
         setLoading(false);
       }
@@ -49,80 +44,75 @@ export default function TeacherBatchesPage() {
     fetchBatches();
   }, [user, token, tenantSlug]);
 
-  if (loading) return <div className="p-8 text-zinc-600 animate-pulse">Loading assigned batches...</div>;
+  const filtered = batches.filter((b) =>
+    b.name.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500 pb-20">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div className="p-6 space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold tracking-tight">My Classes</h1>
-          <p className="text-zinc-600">Manage students and monitor progress across your assigned batches.</p>
+          <h1 className="text-2xl font-bold">My Classes</h1>
+          <p className="text-sm text-muted-foreground">
+            Manage students and monitor progress across your assigned batches.
+          </p>
         </div>
-        <div className="flex gap-2">
-           <div className="relative w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-600" />
-              <input 
-                type="text" 
-                placeholder="Search batches..." 
-                className="w-full pl-9 pr-4 py-2 border rounded-xl bg-white focus:ring-2 ring-primary/20 outline-none transition-all"
-              />
-           </div>
-           <Button variant="outline" size="icon" className="rounded-xl">
-             <Filter className="h-4 w-4" />
-           </Button>
+        <div className="relative w-full sm:w-64">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search batches..."
+            className="pl-9"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {batches.map((batch) => (
-          <Card key={batch.id} className="group border shadow-md hover:shadow-lg transition-all duration-300 bg-white overflow-hidden">
-            <div className="h-2 bg-primary w-full" />
-            <CardHeader className="p-6">
-              <div className="flex justify-between items-start">
-                <div className="bg-primary/5 p-3 rounded-2xl group-hover:scale-110 transition-transform">
-                   <Users className="h-6 w-6 text-zinc-600" />
+      {loading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-48" />
+          ))}
+        </div>
+      ) : filtered.length === 0 ? (
+        <div className="flex flex-col items-center justify-center gap-3 py-20 border-2 border-dashed rounded-lg text-muted-foreground">
+          <GraduationCap className="h-10 w-10" />
+          <p className="font-medium">
+            {search ? "No batches match your search." : "No batches assigned yet."}
+          </p>
+          {!search && (
+            <p className="text-sm">Contact your coordinator to assign classes.</p>
+          )}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filtered.map((batch) => (
+            <Card key={batch.id}>
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  {batch.name}
+                  <Badge variant="secondary">Active</Badge>
+                </CardTitle>
+                <CardDescription className="flex items-center gap-1">
+                  <BookOpen className="h-3.5 w-3.5" />
+                  {batch.subject || "Multi-Subject"}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Users className="h-4 w-4" />
+                  <span>{batch.students_count ?? 0} Students</span>
                 </div>
-                <Badge variant="outline" className="rounded-full border-zinc-100 font-bold uppercase tracking-widest text-[8px]">Active</Badge>
-              </div>
-              <CardTitle className="mt-4 text-zinc-600 font-black tracking-tight">{batch.name}</CardTitle>
-              <CardDescription className="text-zinc-600 font-medium text-zinc-600">{batch.subject}</CardDescription>
-            </CardHeader>
-            <CardContent className="p-6 pt-0 space-y-6">
-              <div className="grid grid-cols-2 gap-4">
-                 <div className="bg-zinc-50 p-3 rounded-2xl border">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-zinc-600 mb-1">Students</p>
-                    <p className="text-zinc-600 font-black">{batch.student_count}</p>
-                 </div>
-                 <div className="bg-zinc-50 p-3 rounded-2xl border">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-zinc-600 mb-1">Last Activity</p>
-                    <p className="text-zinc-600 font-black">{batch.last_test ? new Date(batch.last_test).toLocaleDateString() : 'No activity'}</p>
-                 </div>
-              </div>
-
-
-
-              <div className="pt-4 flex gap-2">
-                 <Link href={`/teacher/batches/${batch.id}`} className="flex-1">
-                    <Button className="w-full gap-2 rounded-xl group-hover:bg-primary/90">
-                       Details
-                       <ArrowRight className="h-4 w-4" />
-                    </Button>
-                 </Link>
-                 <Button variant="outline" size="icon" className="rounded-xl">
-                    <Plus className="h-4 w-4" />
-                 </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-        {batches.length === 0 && (
-          <div className="col-span-full py-20 text-zinc-600 border-2 border-dashed rounded-3xl bg-zinc-50/50">
-             <GraduationCap className="h-12 w-12 text-zinc-600 mx-auto mb-4" />
-             <p className="font-bold text-zinc-600">No batches assigned yet.</p>
-             <p className="text-zinc-600">Contact coordinator to assign classes to your profile.</p>
-          </div>
-        )}
-      </div>
+                <Link href={`/teacher/batches/${batch.id}`}>
+                  <Button className="w-full gap-2" variant="outline">
+                    View Details <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

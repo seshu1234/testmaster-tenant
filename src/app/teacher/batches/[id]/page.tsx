@@ -1,36 +1,48 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useState, useEffect, useCallback } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
 import { api } from "@/lib/api";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { 
-  Users, 
-  BookOpen, 
-  TrendingUp, 
-  Calendar,
-  Search,
-  MoreVertical,
-  Mail,
-  GraduationCap,
-  Download,
-  ArrowRight,
-  Loader2
-} from "lucide-react";
+import {
+  Card, CardContent, CardHeader, CardTitle, CardDescription,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { cn } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+} from "@/components/ui/table";
+import {
+  Users, Search, AlertTriangle, TrendingUp, FileText, ChevronLeft,
+  Mail, Star, Trophy, CheckCircle, PlusCircle, MinusCircle, Loader2,
+} from "lucide-react";
 
+// ─── Types ──────────────────────────────────────────────────────────────────
 interface Student {
   id: string;
   name: string;
   email: string;
-  attendance: number;
   avg_score: number;
-  status: 'active' | 'at-risk' | 'outstanding';
-  last_test: string;
+  status: "active" | "at-risk" | "outstanding";
+}
+
+interface LeaderboardEntry {
+  id: string;
+  name: string;
+  avg_score: number;
+  tests_taken: number;
+}
+
+interface BatchTest {
+  id: string;
+  title: string;
+  test_type: string;
+  test_pattern: string;
+  is_assigned: boolean;
+  created_at: string;
 }
 
 interface BatchData {
@@ -49,230 +61,403 @@ interface BatchData {
   };
 }
 
+const statusVariant = (status: Student["status"]) => {
+  if (status === "outstanding") return "default" as const;
+  if (status === "at-risk") return "destructive" as const;
+  return "secondary" as const;
+};
+
+const patternLabel: Record<string, string> = {
+  nta: "NTA", tcs: "TCS iON", ssc: "SSC", custom: "Standard",
+};
+
+// ─── Component ───────────────────────────────────────────────────────────────
 export default function BatchDetailsPage() {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
+  const router = useRouter();
   const { token, tenantSlug } = useAuth();
+
   const [data, setData] = useState<BatchData | null>(null);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [tests, setTests] = useState<BatchTest[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [togglingId, setTogglingId] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function fetchBatchDetails() {
-      if (!token || !id) return;
-      try {
-        const response = await api(`/teacher/batches/${id}`, {
-          token,
-          tenant: tenantSlug || undefined
-        });
-        if (response.success) {
-          setData(response.data);
-        }
-      } catch (error) {
-        console.error("Batch fetch error:", error);
-      } finally {
-        setLoading(false);
-      }
+  const tenant = tenantSlug ?? undefined;
+
+  const loadAll = useCallback(async () => {
+    if (!token || !id) return;
+    try {
+      const [batchRes, leaderRes, testsRes] = await Promise.all([
+        api(`/teacher/batches/${id}`, { token, tenant }),
+        api(`/teacher/batches/${id}/leaderboard`, { token, tenant }),
+        api(`/teacher/batches/${id}/tests`, { token, tenant }),
+      ]);
+      if (batchRes.success) setData(batchRes.data);
+      if (leaderRes.success) setLeaderboard(leaderRes.data ?? []);
+      if (testsRes.success) setTests(testsRes.data ?? []);
+    } catch {
+      // ignore
+    } finally {
+      setLoading(false);
     }
-    fetchBatchDetails();
-  }, [token, id, tenantSlug]);
+  }, [token, id, tenant]);
+
+  useEffect(() => { loadAll(); }, [loadAll]);
+
+  const toggleAssign = async (test: BatchTest) => {
+    setTogglingId(test.id);
+    try {
+      if (test.is_assigned) {
+        await api(`/teacher/batches/${id}/tests/${test.id}`, { method: "DELETE", token: token ?? undefined, tenant: tenantSlug ?? undefined });
+      } else {
+        await api(`/teacher/batches/${id}/tests/${test.id}`, { method: "POST", token: token ?? undefined, tenant: tenantSlug ?? undefined });
+      }
+      setTests((prev) =>
+        prev.map((t) => t.id === test.id ? { ...t, is_assigned: !t.is_assigned } : t)
+      );
+    } catch {
+      // ignore
+    } finally {
+      setTogglingId(null);
+    }
+  };
+
+  const filteredStudents = (data?.students ?? []).filter(
+    (s) =>
+      s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      s.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  const atRisk = (data?.students ?? []).filter((s) => s.status === "at-risk");
+  const outstanding = (data?.students ?? []).filter((s) => s.status === "outstanding");
+  const assignedTests = tests.filter((t) => t.is_assigned);
 
   if (loading) {
-     return (
-        <div className="flex items-center justify-center min-h-screen">
-           <div className="flex flex-col items-center gap-4">
-              <Loader2 className="h-10 w-10 text-zinc-600 animate-spin" />
-              <p className="text-xl font-bold text-zinc-600 uppercase tracking-widest">Loading batch details...</p>
-           </div>
+    return (
+      <div className="p-6 space-y-4">
+        <Skeleton className="h-8 w-48" />
+        <Skeleton className="h-4 w-72" />
+        <div className="grid grid-cols-3 gap-4 mt-4">
+          {[1, 2, 3].map((i) => <Skeleton key={i} className="h-24" />)}
         </div>
-     );
+        <Skeleton className="h-64 mt-4" />
+      </div>
+    );
   }
 
-  if (!data) return <div className="p-12 text-xl font-bold text-zinc-600">Batch details unavailable.</div>;
-
-  const filteredStudents = data.students.filter(s => 
-    s.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    s.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  if (!data) {
+    return (
+      <div className="p-6">
+        <Card>
+          <CardContent className="py-12 text-center text-muted-foreground">
+            Batch not found or you don&apos;t have access.
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 pb-20 p-6">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-zinc-900 text-white p-8 rounded-3xl shadow-2xl relative overflow-hidden">
-        <div className="relative z-10">
-            <Badge className="bg-primary/20 text-zinc-600 border-none mb-4 px-3 py-1 text-[10px] font-bold uppercase tracking-widest">
-              Batch Performance
-            </Badge>
-          <h1 className="text-zinc-600 font-black tracking-tight mb-2">{data.batch.name}</h1>
-          <div className="flex items-center gap-6 text-zinc-600 font-medium">
-             <div className="flex items-center gap-2"><Users className="h-4 w-4" /> {data.metrics.total_students} Students</div>
-             <div className="flex items-center gap-2"><BookOpen className="h-4 w-4" /> {data.batch.subject || 'Multi-Subject'}</div>
-             <div className="flex items-center gap-2"><Calendar className="h-4 w-4" /> Created {new Date(data.batch.created_at).toLocaleDateString()}</div>
-          </div>
+    <div className="p-6 space-y-6">
+      {/* Header */}
+      <div className="flex items-center gap-3">
+        <Button variant="ghost" size="icon" onClick={() => router.back()}>
+          <ChevronLeft className="h-4 w-4" />
+        </Button>
+        <div>
+          <h1 className="text-2xl font-bold">{data.batch.name}</h1>
+          <p className="text-sm text-muted-foreground">
+            {data.batch.subject || "Multi-Subject"} · {data.metrics.total_students} students ·{" "}
+            {assignedTests.length} tests assigned
+          </p>
         </div>
-        <div className="relative z-10 flex gap-3">
-            <Button className="rounded-xl font-bold bg-white text-zinc-600 hover:bg-zinc-100">SEND MESSAGE</Button>
-           <Button variant="outline" className="rounded-xl font-bold border-zinc-700 text-zinc-600 hover:bg-zinc-800">EXPORT DATA</Button>
-        </div>
-        <CardDescription className="absolute -bottom-10 -right-10 opacity-5">
-           <GraduationCap className="h-64 w-64 text-zinc-600" />
-        </CardDescription>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-         <Card className="border-none shadow-xl bg-white p-6 rounded-3xl">
-            <h3 className="text-xl font-bold text-zinc-600 uppercase tracking-widest text-[10px] mb-4">Batch Average</h3>
-            <div className="flex items-baseline gap-2">
-                <span className="text-zinc-600 font-black">{data.metrics.avg_score}%</span>
-               <TrendingUp className="h-5 w-5 text-zinc-600" />
-            </div>
-            <p className="text-[10px] font-bold text-zinc-600 mt-2">Center Average Comparison: Stable</p>
-         </Card>
-         <Card className="border-none shadow-xl bg-white p-6 rounded-3xl">
-            <h3 className="text-xl font-bold text-zinc-600 uppercase tracking-widest text-[10px] mb-4">Syllabus Progress</h3>
-            <div className="space-y-2">
-               <div className="flex justify-between text-[10px] font-black">
-                  <span>Units Completed</span>
-                  <span>--/--</span>
-               </div>
-               <Progress value={0} className="h-1.5 bg-zinc-100" />
-            </div>
-         </Card>
-         <Card className={cn(
-            "border-none shadow-xl bg-white p-6 rounded-3xl border-l-4",
-            data.metrics.critical_students > 0 ? "border-l-rose-500" : "border-l-emerald-500"
-         )}>
-            <h3 className="text-xl font-bold text-zinc-600 uppercase tracking-widest text-[10px] mb-4">Critical Students</h3>
-            <div className="flex items-baseline gap-2">
-               <span className={cn(
-                   "text-zinc-600 font-black",
-                  data.metrics.critical_students > 0 ? "text-rose-600" : "text-emerald-600"
-               )}>{data.metrics.critical_students.toString().padStart(2, '0')}</span>
-               <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest leading-none">Underperforming</span>
-            </div>
-         </Card>
-         <Card className="border-none shadow-xl bg-white p-6 rounded-3xl">
-            <h3 className="text-xl font-bold text-zinc-600 uppercase tracking-widest text-[10px] mb-4">Batch Status</h3>
-            <div className="space-y-1">
-               <p className="font-bold text-zinc-600 uppercase">Active Enrollment</p>
-               <p className="text-[10px] text-xl font-bold uppercase tracking-widest">Normal Operations</p>
-            </div>
-         </Card>
-      </div>
-
-      <Card className="border-none shadow-2xl rounded-3xl overflow-hidden bg-white">
-         <CardHeader className="p-8 border-b bg-zinc-50/50">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-               <div>
-                  <CardTitle className="text-zinc-600 font-black tracking-tighter uppercase">Student Roster</CardTitle>
-                  <CardDescription className="font-bold text-[10px] uppercase tracking-widest">Manage enrollment and track individual progress</CardDescription>
-               </div>
-               <div className="relative w-full md:w-96">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-600" />
-                  <input 
-                     type="text" 
-                     placeholder="Search by name or email..." 
-                     className="w-full pl-11 pr-4 py-3 bg-white border rounded-2xl text-zinc-600 outline-none ring-primary/10 focus:ring-4 transition-all"
-                     value={searchTerm}
-                     onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-               </div>
-            </div>
-         </CardHeader>
-         <CardContent className="p-0">
-            <div className="overflow-x-auto">
-               <table className="w-full text-zinc-600 border-collapse">
-                  <thead>
-                     <tr className="bg-zinc-50 border-b">
-                        <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-zinc-600">Student Name</th>
-                        <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-zinc-600">Attendance</th>
-                        <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-zinc-600">Avg Score</th>
-                        <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-zinc-600">Status</th>
-                        <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-zinc-600">Actions</th>
-                     </tr>
-                  </thead>
-                  <tbody className="divide-y">
-                     {filteredStudents.map((student) => (
-                        <tr key={student.id} className="hover:bg-zinc-50/50 transition-colors group">
-                           <td className="px-8 py-6">
-                              <div className="flex items-center gap-4">
-                                 <div className="h-10 w-10 rounded-full bg-zinc-100 flex items-center justify-center font-black">
-                                    {student.name.charAt(0)}
-                                 </div>
-                                 <div className="flex flex-col">
-                                    <span className="font-bold text-zinc-600">{student.name}</span>
-                                    <span className="text-[10px] text-zinc-600 font-medium">{student.email}</span>
-                                 </div>
-                              </div>
-                           </td>
-                           <td className="px-8 py-6">
-                              <div className="space-y-1.5 min-w-[120px]">
-                                 <div className="flex justify-between text-[10px] font-bold">
-                                    <span>{student.attendance}%</span>
-                                 </div>
-                                 <Progress value={student.attendance} className="h-1 rounded-full overflow-hidden" />
-                              </div>
-                           </td>
-                           <td className="px-8 py-6">
-                               <span className="text-zinc-600 font-black">{student.avg_score}%</span>
-                           </td>
-                           <td className="px-8 py-6">
-                              <Badge className={cn(
-                                 "text-[8px] font-black uppercase tracking-widest px-3 py-1 rounded-full border-none",
-                                 student.status === 'outstanding' ? "bg-emerald-100 text-zinc-600" :
-                                 student.status === 'at-risk' ? "bg-rose-100 text-zinc-600" :
-                                 "bg-blue-100 text-zinc-600"
-                              )}>
-                                 {student.status.replace('-', ' ')}
-                              </Badge>
-                           </td>
-                           <td className="px-8 py-6">
-                              <div className="flex items-center gap-2">
-                                 <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full"><Mail className="h-4 w-4" /></Button>
-                                 <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full"><Download className="h-4 w-4" /></Button>
-                                 <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full"><MoreVertical className="h-4 w-4" /></Button>
-                              </div>
-                           </td>
-                        </tr>
-                     ))}
-                     {filteredStudents.length === 0 && (
-                        <tr>
-                            <td colSpan={5} className="px-8 py-12 text-zinc-600 font-medium">No students found matching your search.</td>
-                        </tr>
-                     )}
-                  </tbody>
-               </table>
-            </div>
-         </CardContent>
-      </Card>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-         <Card className="border-none shadow-xl p-8 rounded-3xl bg-zinc-950 text-zinc-600">
-            <div className="flex items-center justify-between mb-8">
-               <h3 className="text-zinc-600 font-black tracking-tight uppercase">Batch Transfers</h3>
-               <ArrowRight className="h-6 w-6 text-zinc-600" />
-            </div>
-            <p className="text-zinc-600 leading-relaxed mb-8">
-               Moving students between batches allows for dynamic leveling based on performance.
-               All test history and analytics will be preserved during the transfer.
+      {/* Stat cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <Card>
+          <CardHeader className="pb-1">
+            <CardDescription className="flex items-center gap-1">
+              <Users className="h-3.5 w-3.5" /> Total Students
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold">{data.metrics.total_students}</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-1">
+            <CardDescription className="flex items-center gap-1">
+              <TrendingUp className="h-3.5 w-3.5" /> Batch Average
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold">{data.metrics.avg_score}%</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-1">
+            <CardDescription className="flex items-center gap-1 text-destructive">
+              <AlertTriangle className="h-3.5 w-3.5" /> At-Risk Students
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className={`text-3xl font-bold ${data.metrics.critical_students > 0 ? "text-destructive" : ""}`}>
+              {data.metrics.critical_students}
             </p>
-            <Button className="w-full h-14 rounded-2xl bg-primary text-white font-black hover:scale-[1.02] transform transition-all shadow-xl">
-               OPEN TRANSFER PORTAL
-            </Button>
-         </Card>
-
-         <Card className="border-none shadow-xl p-8 rounded-3xl bg-white border border-zinc-100">
-            <div className="flex items-center justify-between mb-8">
-               <h3 className="text-zinc-600 font-black tracking-tight uppercase">Bulk Parent Comms</h3>
-               <Mail className="h-6 w-6 text-zinc-600" />
-            </div>
-            <p className="text-zinc-600 leading-relaxed mb-8">
-               Send automated performance summaries to all parents in this batch. 
-               Includes detailed scorecards and attendance logs.
-            </p>
-            <Button variant="outline" className="w-full h-14 rounded-2xl border-2 font-black">
-               SCHEDULE ANNOUNCEMENT
-            </Button>
-         </Card>
+          </CardContent>
+        </Card>
       </div>
+
+      {/* Tabs */}
+      <Tabs defaultValue="students">
+        <TabsList className="flex-wrap h-auto gap-1">
+          <TabsTrigger value="students" className="gap-1.5">
+            <Users className="h-3.5 w-3.5" /> Students ({data.metrics.total_students})
+          </TabsTrigger>
+          <TabsTrigger value="leaderboard" className="gap-1.5">
+            <Trophy className="h-3.5 w-3.5" /> Leaderboard
+          </TabsTrigger>
+          <TabsTrigger value="at-risk" className="gap-1.5">
+            <AlertTriangle className="h-3.5 w-3.5" /> At-Risk ({atRisk.length})
+          </TabsTrigger>
+          <TabsTrigger value="outstanding" className="gap-1.5">
+            <Star className="h-3.5 w-3.5" /> Outstanding ({outstanding.length})
+          </TabsTrigger>
+          <TabsTrigger value="tests" className="gap-1.5">
+            <FileText className="h-3.5 w-3.5" /> Tests ({assignedTests.length}/{tests.length})
+          </TabsTrigger>
+        </TabsList>
+
+        {/* ─── All Students ─── */}
+        <TabsContent value="students">
+          <Card>
+            <CardHeader>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <CardTitle>Student Roster</CardTitle>
+                <div className="relative w-full sm:w-72">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input className="pl-9" placeholder="Search..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="p-0">
+              <StudentTable students={filteredStudents} />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* ─── Leaderboard ─── */}
+        <TabsContent value="leaderboard">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2"><Trophy className="h-5 w-5 text-yellow-500" /> Batch Leaderboard</CardTitle>
+              <CardDescription>Students ranked by average score across all tests taken.</CardDescription>
+            </CardHeader>
+            <CardContent className="p-0">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-12">Rank</TableHead>
+                    <TableHead>Student</TableHead>
+                    <TableHead>Tests Taken</TableHead>
+                    <TableHead>Avg Score</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {leaderboard.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={4} className="py-12 text-center text-muted-foreground">
+                        No test results yet to build a leaderboard.
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    leaderboard.map((entry, i) => (
+                      <TableRow key={entry.id} className={i < 3 ? "font-medium" : ""}>
+                        <TableCell>
+                          <span className={`font-bold ${i === 0 ? "text-yellow-500" : i === 1 ? "text-zinc-400" : i === 2 ? "text-amber-600" : "text-muted-foreground"}`}>
+                            {i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `#${i + 1}`}
+                          </span>
+                        </TableCell>
+                        <TableCell>{entry.name}</TableCell>
+                        <TableCell className="text-muted-foreground">{entry.tests_taken}</TableCell>
+                        <TableCell>
+                          <Badge variant={entry.avg_score >= 75 ? "default" : entry.avg_score < 40 ? "destructive" : "secondary"}>
+                            {entry.avg_score}%
+                          </Badge>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* ─── At-Risk ─── */}
+        <TabsContent value="at-risk">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-destructive">Students Needing Attention</CardTitle>
+              <CardDescription>Scoring below 40%. Consider reaching out directly.</CardDescription>
+            </CardHeader>
+            <CardContent className="p-0">
+              {atRisk.length === 0 ? (
+                <div className="py-12 text-center text-muted-foreground">🎉 No at-risk students in this batch.</div>
+              ) : (
+                <StudentTable students={atRisk} showEmail />
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* ─── Outstanding ─── */}
+        <TabsContent value="outstanding">
+          <Card>
+            <CardHeader>
+              <CardTitle>Top Performers</CardTitle>
+              <CardDescription>Students scoring 75% or above across all tests.</CardDescription>
+            </CardHeader>
+            <CardContent className="p-0">
+              {outstanding.length === 0 ? (
+                <div className="py-12 text-center text-muted-foreground">No outstanding students yet.</div>
+              ) : (
+                <StudentTable students={outstanding} />
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* ─── Tests ─── */}
+        <TabsContent value="tests">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Test Assignment</CardTitle>
+                  <CardDescription>
+                    Toggle which tests are visible to students in this batch.{" "}
+                    <span className="font-medium text-foreground">{assignedTests.length} assigned</span> of {tests.length} total.
+                  </CardDescription>
+                </div>
+                <Button size="sm" variant="outline" onClick={() => router.push("/teacher/tests")}>
+                  Manage Tests
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="p-0">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Test Name</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Pattern</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead className="text-right">Assign</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {tests.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={5} className="py-12 text-center text-muted-foreground">
+                        No tests created yet.{" "}
+                        <Button variant="link" className="p-0 h-auto" onClick={() => router.push("/teacher/tests/new")}>
+                          Create your first test →
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    tests.map((t) => (
+                      <TableRow key={t.id}>
+                        <TableCell className="font-medium">{t.title}</TableCell>
+                        <TableCell>
+                          <Badge variant="outline" className="capitalize">{t.test_type || "full"}</Badge>
+                        </TableCell>
+                        <TableCell className="text-muted-foreground text-sm">
+                          {patternLabel[t.test_pattern] ?? t.test_pattern ?? "Standard"}
+                        </TableCell>
+                        <TableCell>
+                          {t.is_assigned ? (
+                            <span className="flex items-center gap-1 text-sm text-green-600 font-medium">
+                              <CheckCircle className="h-3.5 w-3.5" /> Assigned
+                            </span>
+                          ) : (
+                            <span className="text-sm text-muted-foreground">Not assigned</span>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            size="sm"
+                            variant={t.is_assigned ? "destructive" : "default"}
+                            className="gap-1.5"
+                            disabled={togglingId === t.id}
+                            onClick={() => toggleAssign(t)}
+                          >
+                            {togglingId === t.id ? (
+                              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                            ) : t.is_assigned ? (
+                              <><MinusCircle className="h-3.5 w-3.5" /> Remove</>
+                            ) : (
+                              <><PlusCircle className="h-3.5 w-3.5" /> Assign</>
+                            )}
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
+  );
+}
+
+// ─── Shared Student Table ──────────────────────────────────────────────────
+function StudentTable({ students, showEmail = false }: { students: Student[]; showEmail?: boolean }) {
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Name</TableHead>
+          {showEmail && <TableHead>Email</TableHead>}
+          <TableHead>Avg Score</TableHead>
+          <TableHead>Status</TableHead>
+          <TableHead className="text-right">Contact</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {students.length === 0 ? (
+          <TableRow>
+            <TableCell colSpan={5} className="py-12 text-center text-muted-foreground">No students to show.</TableCell>
+          </TableRow>
+        ) : (
+          students.map((s) => (
+            <TableRow key={s.id}>
+              <TableCell>
+                <div>
+                  <p className="font-medium">{s.name}</p>
+                  {!showEmail && <p className="text-xs text-muted-foreground">{s.email}</p>}
+                </div>
+              </TableCell>
+              {showEmail && <TableCell className="text-muted-foreground">{s.email}</TableCell>}
+              <TableCell>{s.avg_score}%</TableCell>
+              <TableCell>
+                <Badge variant={statusVariant(s.status)}>{s.status.replace("-", " ")}</Badge>
+              </TableCell>
+              <TableCell className="text-right">
+                <Button size="sm" variant="ghost" className="gap-1" onClick={() => window.open(`mailto:${s.email}`)}>
+                  <Mail className="h-3.5 w-3.5" /> Email
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))
+        )}
+      </TableBody>
+    </Table>
   );
 }
