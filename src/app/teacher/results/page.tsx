@@ -53,6 +53,10 @@ const bar = (p: number) => (p >= 75 ? "bg-emerald-500" : p >= 40 ? "bg-amber-400
 function StudentView({ studentId }: { studentId: string }) {
   const { token, tenantSlug } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const urlName  = decodeURIComponent(searchParams.get("name")  ?? "");
+  const urlEmail = decodeURIComponent(searchParams.get("email") ?? "");
+
   const [profile, setProfile] = useState<StudentProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -66,15 +70,29 @@ function StudentView({ studentId }: { studentId: string }) {
     }).finally(() => setLoading(false));
   }, [token, tenantSlug, studentId]);
 
+  const displayName  = profile?.student.name  ?? urlName  ?? "Student";
+  const displayEmail = profile?.student.email ?? urlEmail ?? "";
+  const initials = (name: string) =>
+    name.split(" ").slice(0, 2).map((n) => n[0]).join("").toUpperCase();
+
+  const headerJSX = (
+    <div className="flex items-center gap-3">
+      <Button variant="ghost" size="icon" onClick={() => router.back()}>
+        <ChevronLeft className="h-4 w-4" />
+      </Button>
+      <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+        <span className="text-sm font-bold text-primary">{initials(displayName)}</span>
+      </div>
+      <div>
+        <h1 className="text-xl font-bold">{displayName}</h1>
+        {displayEmail && <p className="text-sm text-muted-foreground">{displayEmail}</p>}
+      </div>
+    </div>
+  );
+
   if (loading) return (
     <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <Skeleton className="h-9 w-9 rounded-full" />
-        <div className="space-y-1.5">
-          <Skeleton className="h-5 w-48" />
-          <Skeleton className="h-3.5 w-32" />
-        </div>
-      </div>
+      {headerJSX}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[1, 2, 3].map((i) => <Skeleton key={i} className="h-28 rounded-xl" />)}
       </div>
@@ -85,22 +103,26 @@ function StudentView({ studentId }: { studentId: string }) {
 
   if (!profile) return (
     <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <Skeleton className="h-9 w-9 rounded-full" />
-        <div className="space-y-1.5">
-          <Skeleton className="h-5 w-48" />
-          <Skeleton className="h-3.5 w-32" />
-        </div>
-      </div>
+      {headerJSX}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {[1, 2, 3].map((i) => (
-          <Card key={i} className="opacity-40">
-            <CardHeader className="pb-2"><Skeleton className="h-3.5 w-20" /></CardHeader>
-            <CardContent><Skeleton className="h-8 w-16" /></CardContent>
+        {[
+          { label: "Avg Score",   icon: <Award className="h-3.5 w-3.5" /> },
+          { label: "Tests Taken", icon: <FileText className="h-3.5 w-3.5" /> },
+          { label: "Best Score",  icon: <TrendingUp className="h-3.5 w-3.5" /> },
+        ].map(({ label, icon }) => (
+          <Card key={label} className="opacity-50">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1.5">
+                {icon} {label}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-3xl font-bold text-muted-foreground/40">—</p>
+            </CardContent>
           </Card>
         ))}
       </div>
-      <Card className="opacity-40">
+      <Card className="opacity-50">
         <CardContent className="py-24 text-center text-sm text-muted-foreground">
           No test history available for this student yet.
         </CardContent>
@@ -112,9 +134,6 @@ function StudentView({ studentId }: { studentId: string }) {
     name: r.test_title.length > 20 ? r.test_title.slice(0, 18) + "…" : r.test_title,
     score: r.percentage,
   })).reverse();
-
-  const initials = (name: string) =>
-    name.split(" ").slice(0, 2).map((n) => n[0]).join("").toUpperCase();
 
   return (
     <div className="space-y-6">

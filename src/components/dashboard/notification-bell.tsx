@@ -24,6 +24,16 @@ interface Notification {
   read: boolean;
 }
 
+interface RawNotification {
+  id?: string;
+  title?: string;
+  body?: string;
+  description?: string;
+  time?: string;
+  type?: string;
+  unread?: boolean;
+}
+
 export function NotificationBell() {
   const { user, token, tenantSlug } = useAuth();
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -42,8 +52,7 @@ export function NotificationBell() {
           tenant: tenantSlug || undefined
         });
         if (response.success && Array.isArray(response.data) && isMounted) {
-          // eslint-disable-ne @typescript-eslint/no-explicit-any
-          setNotifications(response.data.map((n: any) => ({
+          setNotifications(response.data.map((n: RawNotification) => ({
             id: n.id || String(Math.random()),
             title: n.title || 'System Alert',
             description: n.body || n.description || '',
@@ -52,8 +61,8 @@ export function NotificationBell() {
             read: n.unread === false
           })));
         }
-      } catch (err) {
-        console.error("Failed to fetch notifications:", err);
+      } catch {
+        // Notifications endpoint may not exist for all roles — fail silently
       } finally {
         if (isMounted) setLoading(false);
       }

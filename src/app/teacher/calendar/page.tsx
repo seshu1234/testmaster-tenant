@@ -36,7 +36,8 @@ export default function TeacherCalendarPage() {
           tenant: tenantSlug || undefined,
         });
         if (response.success) {
-          setTests(response.data || []);
+          const raw = response.data;
+          setTests(Array.isArray(raw) ? raw : Array.isArray(raw?.data) ? raw.data : []);
         }
       } catch (error) {
         console.error("Failed to fetch tests:", error);
@@ -201,7 +202,7 @@ export default function TeacherCalendarPage() {
                        </div>
                        <span className="text-zinc-600 font-medium">{test.title}</span>
                     </div>
-                    <span className="text-[10px] font-bold text-zinc-600">{new Date(test.scheduled_at || "").toLocaleDateString()}</span>
+                    <span className="text-[10px] font-bold text-zinc-600">{test.scheduled_at ? new Date(test.scheduled_at).toLocaleDateString() : "Not scheduled"}</span>
                  </div>
                ))}
             </CardContent>

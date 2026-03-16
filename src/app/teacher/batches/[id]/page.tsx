@@ -659,7 +659,7 @@ function StudentTable({
                 size="sm"
                 variant="outline"
                 className="gap-1.5 h-8"
-                onClick={() => { window.location.href = `/teacher/results?student=${s.id}`; }}
+                onClick={() => { window.location.href = `/teacher/results?student=${s.id}&name=${encodeURIComponent(s.name)}&email=${encodeURIComponent(s.email)}`; }}
               >
                 <FileText className="h-3 w-3" /> Results
               </Button>

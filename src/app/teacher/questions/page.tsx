@@ -32,9 +32,19 @@ interface Question {
   type: string;
   subject: string;
   topic: string;
+  chapter: string;
   difficulty: string;
   title: string;
+  content: string | Record<string, unknown> | null;
+  content_text: string;
   created_at: string;
+}
+
+function extractText(content: Question["content"]): string {
+  if (!content) return "";
+  if (typeof content === "string") return content;
+  const obj = content as Record<string, unknown>;
+  return String(obj.text ?? obj.question ?? obj.body ?? obj.stem ?? Object.values(obj).join(" "));
 }
 
 export default function QuestionsPage() {
@@ -257,16 +267,20 @@ export default function QuestionsPage() {
             ) : (
               questions.map((q) => (
                 <TableRow key={q.id}>
-                  <TableCell>
-                    <div className="space-y-1">
-                      <div className="font-medium line-clamp-1">{q.title}</div>
-                      <div className="text-zinc-600">ID: {q.id.split('-')[0]}...</div>
+                  <TableCell className="max-w-sm">
+                    <div className="space-y-0.5">
+                      <div className="font-medium text-sm text-foreground line-clamp-2">
+                        {extractText(q.content) || q.title || <span className="text-muted-foreground italic">No content</span>}
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        {q.topic || q.chapter || q.subject || "Untagged"}
+                      </div>
                     </div>
                   </TableCell>
                   <TableCell>
-                    <div className="flex flex-col gap-1">
-                      <span className="text-zinc-600">{q.subject || 'N/A'}</span>
-                      <span className="text-zinc-600">{q.topic || 'N/A'}</span>
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-sm font-medium">{q.subject || '—'}</span>
+                      {q.topic && <span className="text-xs text-muted-foreground">{q.topic}</span>}
                     </div>
                   </TableCell>
                   <TableCell>
