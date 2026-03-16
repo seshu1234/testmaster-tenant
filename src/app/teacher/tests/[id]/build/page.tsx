@@ -46,6 +46,11 @@ interface TestData {
   subject: string;
   language?: string;
   duration_seconds: number;
+  test_type: string;
+  test_pattern: string;
+  has_sectional_timers: boolean;
+  section_time_limits?: Record<string, number>;
+  chapter_name?: string;
   start_at?: string;
   end_at?: string;
   batch_ids?: string[];
@@ -70,6 +75,9 @@ export default function TestBuilderPage() {
     description: "",
     subject: "",
     duration_seconds: 3600,
+    test_type: "full",
+    test_pattern: "nta",
+    has_sectional_timers: false,
     settings: {
       passing_percentage: 33,
       shuffle_questions: false,

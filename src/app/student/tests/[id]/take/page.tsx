@@ -1,21 +1,18 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { Card } from "@/components/ui/card";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { 
   ChevronRight, 
-  Flag, 
   Clock, 
-  Maximize,
-  CheckCircle2,
-  AlertCircle,
   Save,
-  Menu
+  ChevronLeft,
+  HelpCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
+import Image from "next/image";
 import "katex/dist/katex.min.css";
 import { InlineMath } from "react-katex";
 import { useAuth } from "@/hooks/use-auth";
@@ -27,24 +24,37 @@ interface Question {
   type: 'MCQ' | 'TF' | 'FIB' | 'SUBJECTIVE';
   options?: string[];
   marks: number;
+  subject?: string;
+  section?: string;
+}
+
+type QuestionStatus = 'not-visited' | 'not-answered' | 'answered' | 'marked' | 'answered-marked';
+
+interface Test {
+  id: string;
+  title: string;
+  test_pattern: string;
+  has_sectional_timers: boolean;
+  section_time_limits?: Record<string, number>;
+  settings: Record<string, unknown>;
 }
 
 export default function StudentTestTakingPage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const attemptId = searchParams.get("attempt");
-  const { token, tenantSlug } = useAuth();
+  const { token, tenantSlug, user } = useAuth();
   
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [timeLeft, setTimeLeft] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string | boolean>>({});
-  const [flagged, setFlagged] = useState<Set<string>>(new Set());
+  const [statusMap, setStatusMap] = useState<Record<string, QuestionStatus>>({});
   const [isSyncing, setIsSyncing] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [testTitle, setTestTitle] = useState("ASSESSMENT IN PROGRESS");
+  const [test, setTest] = useState<Test | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Initialize status map when questions load
   useEffect(() => {
     async function fetchAttempt() {
       if (!token || !attemptId) return;
@@ -54,24 +64,34 @@ export default function StudentTestTakingPage({ params }: { params: { id: string
           tenant: tenantSlug || undefined
         });
         if (response.success) {
-          setQuestions(response.data.questions);
+          const qData = response.data.questions || [];
+          setQuestions(qData);
           setTimeLeft(response.data.time_left_seconds);
           setAnswers(response.data.existing_answers || {});
-          if (response.data.test?.title) {
-            setTestTitle(response.data.test.title);
-          }
+          setTest(response.data.test);
+          
+          // Initial status logic
+          const initialStatus: Record<string, QuestionStatus> = {};
+          qData.forEach((q: Question, idx: number) => {
+             if (idx === 0) initialStatus[q.id] = 'not-answered';
+             else initialStatus[q.id] = 'not-visited';
+             
+             if (response.data.existing_answers?.[q.id]) {
+                initialStatus[q.id] = 'answered';
+             }
+          });
+          setStatusMap(initialStatus);
         }
-      } catch (error) {
-        console.error("Attempt fetch error:", error);
-      } finally {
+      } catch {
         setLoading(false);
       }
     }
     fetchAttempt();
   }, [token, attemptId, tenantSlug]);
 
-  const questionsPool = questions;
-  const currentQuestion = questionsPool[currentIdx];
+  const currentQuestion = questions[currentIdx];
+  const activeSubject = useMemo(() => currentQuestion?.subject || 'General', [currentQuestion]);
+  const subjects = useMemo(() => Array.from(new Set(questions.map(q => q.subject || 'General'))), [questions]);
 
   const handleSubmit = useCallback(async () => {
     if (!token || !attemptId) return;
@@ -83,12 +103,15 @@ export default function StudentTestTakingPage({ params }: { params: { id: string
         body: JSON.stringify({ answers })
       });
       router.push(`/student/tests/${params.id}/result?attempt=${attemptId}`);
-    } catch (error) {
-      console.error("Submit error:", error);
-      // Fallback redirect
+    } catch {
       router.push(`/student/tests/${params.id}/result?attempt=${attemptId}`);
     }
   }, [router, params.id, attemptId, token, tenantSlug, answers]);
+
+  // Sectional Timer Logic (Banking Style)
+  const isSectionLocked = useMemo(() => {
+    return test?.has_sectional_timers ?? false;
+  }, [test]);
 
   // Timer
   useEffect(() => {
@@ -105,25 +128,24 @@ export default function StudentTestTakingPage({ params }: { params: { id: string
     return () => clearInterval(timer);
   }, [handleSubmit]);
 
-  // Auto-save & Sync
+  // Sync Answers
   useEffect(() => {
     const saveTimer = setInterval(async () => {
       if (!token || !attemptId || Object.keys(answers).length === 0) return;
-      
       setIsSyncing(true);
       try {
         await api(`/student/attempts/${attemptId}/answers`, {
-          method: "POST",
-          token,
-          tenant: tenantSlug || undefined,
-          body: JSON.stringify({ answers })
+           method: "POST",
+           token,
+           tenant: tenantSlug || undefined,
+           body: JSON.stringify({ answers })
         });
-      } catch (error) {
-        console.error("Sync error:", error);
+      } catch {
+        // Fail silently
       } finally {
         setTimeout(() => setIsSyncing(false), 800);
       }
-    }, 300);
+    }, 10000);
     return () => clearInterval(saveTimer);
   }, [token, attemptId, tenantSlug, answers]);
 
@@ -135,236 +157,339 @@ export default function StudentTestTakingPage({ params }: { params: { id: string
   };
 
   const handleSelect = (idx: number) => {
+    const q = questions[idx];
+    if (isSectionLocked && q.subject !== activeSubject) {
+      // In strict sectional timers, you can't jump subjects manually
+      // This is common in Bank exams (IBPS/TCS iON Banking Pattern)
+      return;
+    }
+    if (statusMap[q.id] === 'not-visited') {
+       setStatusMap(prev => ({ ...prev, [q.id]: 'not-answered' }));
+    }
     setCurrentIdx(idx);
-    if (window.innerWidth < 1024) setSidebarOpen(false);
   };
 
-  const setAnswer = (val: string | boolean) => {
-    setAnswers(prev => ({ ...prev, [currentQuestion.id]: val }));
+  const handleAction = (action: 'save-next' | 'clear' | 'mark-review' | 'mark-review-next') => {
+     if (!currentQuestion) return;
+
+     const id = currentQuestion.id;
+     let nextIdx = currentIdx;
+
+     setStatusMap(prev => {
+        const nextMap = { ...prev };
+        const hasAnswer = answers[id] !== undefined && answers[id] !== '';
+
+        if (action === 'save-next') {
+           if (hasAnswer) nextMap[id] = 'answered';
+           else nextMap[id] = 'not-answered';
+           nextIdx = Math.min(questions.length - 1, currentIdx + 1);
+        } else if (action === 'clear') {
+           setAnswers(prevAns => {
+              const next = { ...prevAns };
+              delete next[id];
+              return next;
+           });
+           nextMap[id] = 'not-answered';
+        } else if (action === 'mark-review') {
+           if (hasAnswer) nextMap[id] = 'answered-marked';
+           else nextMap[id] = 'marked';
+        } else if (action === 'mark-review-next') {
+           if (hasAnswer) nextMap[id] = 'answered-marked';
+           else nextMap[id] = 'marked';
+           nextIdx = Math.min(questions.length - 1, currentIdx + 1);
+        }
+
+        const nextQ = questions[nextIdx];
+        if (nextMap[nextQ.id] === 'not-visited') {
+           nextMap[nextQ.id] = 'not-answered';
+        }
+
+        return nextMap;
+     });
+
+     if (nextIdx !== currentIdx) {
+        setCurrentIdx(nextIdx);
+     }
   };
 
-  const toggleFlag = () => {
-    setFlagged(prev => {
-      const next = new Set(prev);
-      if (next.has(currentQuestion.id)) next.delete(currentQuestion.id);
-      else next.add(currentQuestion.id);
-      return next;
-    });
-  };
-
+  // Stats for summary
+  const stats = useMemo(() => {
+     const counts = { answered: 0, not_answered: 0, not_visited: 0, marked: 0, marked_answered: 0 };
+     Object.values(statusMap).forEach(s => {
+        if (s === 'answered') counts.answered++;
+        if (s === 'not-answered') counts.not_answered++;
+        if (s === 'not-visited') counts.not_visited++;
+        if (s === 'marked') counts.marked++;
+        if (s === 'answered-marked') counts.marked_answered++;
+     });
+     return counts;
+  }, [statusMap]);
 
   if (loading) return <div className="p-12 text-zinc-600 animate-pulse font-black uppercase tracking-widest text-zinc-600">Arming assessment environment...</div>;
   if (!currentQuestion) return <div className="p-12 text-zinc-600 font-black uppercase tracking-widest text-zinc-600">Assessment questions not synchronized.</div>;
 
+  const patterns: Record<string, { color: string; label: string; footer: string }> = {
+     nta: { color: "#004b91", label: "NTA (JEE Mains)", footer: "© NTA | TestMaster Proctoring Enabled" },
+     tcs: { color: "#1e3a8a", label: "TCS iON (Banking)", footer: "© TCS iON | IBPS Pattern Enabled" },
+     ssc: { color: "#b91c1c", label: "SSC (TCS-2 Pattern)", footer: "© Staff Selection Commission | TestMaster" },
+     custom: { color: "#27272a", label: "Institutional Assessment", footer: "Professional Assessment Engine" }
+  };
+
+  const patternConfig = patterns[test?.test_pattern as keyof typeof patterns] || patterns.nta;
+
   return (
-    <div className="flex h-screen w-full bg-zinc-50 overflow-hidden select-none">
-      {/* Main Container */}
+    <div className="flex h-screen w-full bg-zinc-50 overflow-hidden select-none font-sans">
       <div className="flex flex-col flex-1 h-full min-w-0">
-        {/* Top bar */}
-        <header className="h-16 border-b bg-white px-6 flex items-center justify-between z-20">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setSidebarOpen(true)}>
-              <Menu className="h-5 w-5" />
-            </Button>
-            <div className="hidden md:block">
-               <h2 className="text-zinc-600 font-black tracking-tight uppercase">{testTitle}</h2>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-6">
-             <div className={cn(
-                "flex items-center gap-2 px-4 py-1.5 rounded-full font-black tabular-nums transition-colors",
-                timeLeft < 600 ? "bg-rose-500 text-zinc-600 animate-pulse" : "bg-zinc-100 border"
-             )}>
-                <Clock className="h-4 w-4" />
-                {formatTime(timeLeft)}
-             </div>
-             
-             <div className="flex items-center gap-2">
-                {isSyncing ? (
-                   <span className="text-[10px] font-black uppercase text-zinc-600 flex items-center gap-2">
-                      <Save className="h-3 w-3 animate-bounce" /> SYNCING...
-                   </span>
-                ) : (
-                   <span className="text-[10px] font-black uppercase text-zinc-600 flex items-center gap-2">
-                      <CheckCircle2 className="h-3 w-3" /> SECURE
-                   </span>
-                )}
-             </div>
-
-             <Button className="bg-rose-500 hover:bg-rose-600 text-zinc-600 font-black text-zinc-600 px-6 rounded-xl" onClick={handleSubmit}>
-                FINISH TEST
-             </Button>
-          </div>
+        
+        {/* DYNAMIC PATTERN HEADER */}
+        <header className="h-14 text-white flex items-center justify-between px-4 shrink-0 shadow-lg z-20" style={{ backgroundColor: patternConfig.color }}>
+           <div className="flex items-center gap-4">
+              <span className="text-sm font-black tracking-widest uppercase">{test?.title}</span>
+              <div className="h-4 w-px bg-white/30 hidden md:block" />
+              <div className="hidden md:flex items-center gap-2">
+                 <Badge className="bg-white/10 text-white border-white/20 text-[9px] font-black uppercase">{patternConfig.label}</Badge>
+              </div>
+           </div>
+           <div className="flex items-center gap-6">
+              <div className="hidden sm:flex items-center gap-2 text-xs font-bold text-white/90">
+                 <HelpCircle className="h-3.5 w-3.5" />
+                 <span>Help & Instructions</span>
+              </div>
+              <Button size="sm" variant="outline" className="h-8 bg-transparent border-white/30 text-white hover:bg-white/10 text-[10px] uppercase font-black">
+                 Question Paper
+              </Button>
+           </div>
         </header>
 
-        {/* Content */}
-        <main className="flex-1 relative overflow-y-auto p-8 md:p-12 lg:p-20 flex justify-center">
-           <div className="w-full max-w-4xl space-y-12 pb-32">
-              <div className="flex justify-between items-start">
-                 <div className="space-y-4 flex-1">
-                    <div className="flex items-center gap-3">
-                       <Badge className="bg-primary/10 text-zinc-600 border-none text-[10px] font-black uppercase px-3 py-1">Q {currentIdx + 1}</Badge>
-                       <span className="text-[10px] font-black text-zinc-600 uppercase tracking-widest">{currentQuestion.type} • {currentQuestion.marks} MARKS</span>
-                    </div>
-                    <div className="text-xl font-bold leading-relaxed text-zinc-600">
-                       {currentQuestion.text.split('$').map((part, i) => 
-                          i % 2 === 0 ? part : <InlineMath key={i} math={part} />
-                       )}
+        <div className="h-10 bg-zinc-100 border-b flex items-center px-4 gap-1 shrink-0 overflow-x-auto no-scrollbar">
+           {subjects.map((subject) => (
+              <Button 
+                key={subject}
+                variant="ghost"
+                className={cn(
+                   "h-full px-6 rounded-none border-b-2 text-[10px] font-black uppercase tracking-widest transition-all",
+                   activeSubject === subject 
+                      ? "border-current bg-white shadow-sm" 
+                      : "border-transparent text-zinc-500 hover:text-zinc-900",
+                   isSectionLocked && activeSubject !== subject ? "opacity-30 cursor-not-allowed" : ""
+                )}
+                style={{ borderBottomColor: activeSubject === subject ? patternConfig.color : 'transparent', color: activeSubject === subject ? patternConfig.color : undefined }}
+                onClick={() => handleSelect(questions.findIndex(q => (q.subject || 'General') === subject))}
+              >
+                {subject} {isSectionLocked && activeSubject === subject && <Clock className="ml-2 h-3 w-3 animate-pulse" />}
+              </Button>
+           ))}
+        </div>
+
+        {/* Action Panel for Section */}
+        <div className="h-8 bg-zinc-50 border-b flex items-center px-4 justify-between shrink-0">
+           <div className="flex items-center gap-2">
+              <span className="text-[10px] font-black uppercase text-zinc-400">Sections:</span>
+              <Badge className="bg-[#004b91] text-white border-none text-[8px] font-black uppercase px-2 py-0.5">MCQ Section</Badge>
+           </div>
+           <div className="text-[10px] font-black uppercase text-zinc-400">Time Left: <span className="text-zinc-900">{formatTime(timeLeft)}</span></div>
+        </div>
+
+        {/* Main Content Area */}
+        <div className="flex-1 flex overflow-hidden">
+           {/* Question display */}
+           <div className="flex-1 flex flex-col bg-white border-r min-w-0">
+              <div className="p-4 border-b flex items-center justify-between shrink-0 bg-zinc-50/50">
+                 <h4 className="text-xs font-black uppercase text-zinc-900">Question No. {currentIdx + 1}</h4>
+                 <div className="flex items-center gap-4">
+                    <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-tighter">Marks: <span className="text-green-600">+{currentQuestion.marks}</span> / <span className="text-red-500">0.0</span></span>
+                 </div>
+              </div>
+              
+              <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-8 select-text">
+                 {/* Question Text */}
+                 <div className="text-base font-bold text-zinc-800 leading-relaxed">
+                    {currentQuestion.text.split('$').map((part, i) => 
+                       i % 2 === 0 ? part : <InlineMath key={i} math={part} />
+                    )}
+                 </div>
+
+                 <div className="h-px bg-zinc-100" />
+
+                 {/* Options Area */}
+                 <div className="space-y-4">
+                    {currentQuestion.type === 'MCQ' && (
+                       <div className="grid gap-3">
+                          {currentQuestion.options?.map((opt, i) => (
+                             <button 
+                                key={i}
+                                className={cn(
+                                   "w-full text-left p-4 rounded-lg border-2 flex items-center gap-4 transition-all group",
+                                   answers[currentQuestion.id] === opt 
+                                      ? "bg-blue-50/50 border-[#004b91]" 
+                                      : "bg-white border-zinc-100 hover:border-zinc-200"
+                                )}
+                                onClick={() => setAnswers(prev => ({ ...prev, [currentQuestion.id]: opt }))}
+                             >
+                                <div className={cn(
+                                   "h-6 w-6 rounded-full border-2 flex items-center justify-center text-[10px] font-black transition-all",
+                                   answers[currentQuestion.id] === opt ? "bg-[#004b91] border-[#004b91] text-white" : "border-zinc-300 text-zinc-400"
+                                )}>
+                                   {i + 1}
+                                </div>
+                                <span className="text-sm font-semibold">{opt}</span>
+                             </button>
+                          ))}
+                       </div>
+                    )}
+
+                    {currentQuestion.type === 'FIB' && (
+                       <div className="max-w-md">
+                          <label className="text-[10px] font-black uppercase text-zinc-400 mb-2 block">Enter Numerical Value</label>
+                          <input 
+                             type="text"
+                             className="w-full p-4 rounded-lg border-2 bg-zinc-50 border-zinc-200 focus:border-[#004b91] outline-none text-lg font-bold"
+                             placeholder="0.00"
+                             value={typeof answers[currentQuestion.id] === 'string' ? answers[currentQuestion.id] as string : ''}
+                             onChange={(e) => setAnswers(prev => ({ ...prev, [currentQuestion.id]: e.target.value }))}
+                          />
+                       </div>
+                    )}
+                 </div>
+              </div>
+
+              {/* NTA STYLE BUTTON FOOTER */}
+              <footer className="h-16 border-t px-4 flex items-center justify-between shrink-0 bg-white">
+                 <div className="flex gap-2">
+                    <Button 
+                       className="bg-[#004b91] hover:bg-blue-800 text-white text-[10px] font-black uppercase h-9 px-6 rounded-md"
+                       onClick={() => handleAction('save-next')}
+                    >
+                       Save & Next
+                    </Button>
+                    <Button 
+                       variant="outline" 
+                       className="border-zinc-200 text-zinc-600 text-[10px] font-black uppercase h-9 px-6 rounded-md hover:bg-zinc-50"
+                       onClick={() => handleAction('clear')}
+                    >
+                       Clear
+                    </Button>
+                    <Button 
+                       variant="outline"
+                       className="border-zinc-200 text-zinc-600 text-[10px] font-black uppercase h-9 px-6 rounded-md hover:bg-zinc-50"
+                       onClick={() => handleAction('mark-review-next')}
+                    >
+                       Mark for Review & Next
+                    </Button>
+                 </div>
+                 <div className="flex gap-2">
+                    <Button 
+                       variant="ghost" 
+                       className="text-zinc-600 text-[10px] font-black h-9 px-4 uppercase"
+                       onClick={() => setCurrentIdx(prev => Math.max(0, prev - 1))}
+                       disabled={currentIdx === 0}
+                    >
+                       <ChevronLeft className="h-4 w-4 mr-1" /> Previous
+                    </Button>
+                    <Button 
+                       variant="ghost" 
+                       className="text-zinc-600 text-[10px] font-black h-9 px-4 uppercase"
+                       onClick={() => setCurrentIdx(prev => Math.min(questions.length - 1, prev + 1))}
+                       disabled={currentIdx === questions.length - 1}
+                    >
+                       Next <ChevronRight className="h-4 w-4 ml-1" />
+                    </Button>
+                 </div>
+              </footer>
+           </div>
+
+           {/* NTA STYLE RIGHT PANEL */}
+           <aside className="w-80 bg-[#f9f9f9] border-l flex flex-col shrink-0 hidden lg:flex">
+              {/* Profile Card */}
+              <div className="p-4 bg-white border-b flex gap-4 items-center">
+                 <div className="h-16 w-16 bg-zinc-100 rounded-md flex items-center justify-center border-2 border-zinc-200 overflow-hidden relative">
+                    <Image 
+                      src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.name || 'student'}`} 
+                      alt="Avatar" 
+                      width={64}
+                      height={64}
+                      className="object-cover" 
+                    />
+                 </div>
+                 <div>
+                    <h5 className="text-xs font-black uppercase text-[#004b91] leading-tight">{user?.name || "Candidate"}</h5>
+                    <p className="text-[9px] font-bold text-zinc-400 uppercase mt-1">Roll No: 2024MS091</p>
+                    <div className="flex items-center gap-1 mt-2">
+                       <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                       <span className="text-[8px] font-black text-green-600 uppercase tracking-widest">Secured Proctoring</span>
                     </div>
                  </div>
-                 <Button 
-                    variant="ghost" 
-                    className={cn(
-                       "h-12 w-12 rounded-2xl transition-all",
-                       flagged.has(currentQuestion.id) ? "bg-amber-500 text-zinc-600" : "bg-zinc-100"
-                    )}
-                    onClick={toggleFlag}
-                 >
-                    <Flag className="h-5 w-5" />
+              </div>
+
+              {/* Status Counters */}
+              <div className="grid grid-cols-2 gap-px bg-zinc-200">
+                 {[
+                    { label: 'Answered', value: stats.answered, color: 'bg-emerald-500' },
+                    { label: 'Not Answered', value: stats.not_answered, color: 'bg-rose-500' },
+                    { label: 'Not Visited', value: stats.not_visited, color: 'bg-zinc-300' },
+                    { label: 'Marked', value: stats.marked, color: 'bg-purple-600' },
+                 ].map((s, i) => (
+                    <div key={i} className="bg-white p-3 flex flex-col items-center justify-center border-b border-r">
+                       <div className={cn("h-6 w-8 rounded flex items-center justify-center text-white font-black text-[10px]", s.color)}>
+                          {s.value}
+                       </div>
+                       <span className="text-[9px] font-bold text-zinc-500 uppercase mt-1">{s.label}</span>
+                    </div>
+                 ))}
+                 <div className="bg-white p-3 flex flex-col items-center justify-center col-span-2">
+                    <div className="flex items-center gap-2">
+                       <div className="h-6 w-8 rounded-full bg-purple-600 flex items-center justify-center relative shadow-md">
+                          <div className="absolute top-0 right-0 h-2 w-2 bg-green-500 rounded-full border border-white" />
+                          <span className="text-[10px] font-black text-white">{stats.marked_answered}</span>
+                       </div>
+                       <span className="text-[9px] font-bold text-zinc-500 uppercase">Answered & Marked for Review (will be considered for evaluation)</span>
+                    </div>
+                 </div>
+              </div>
+
+              {/* Question Palette */}
+              <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
+                 <div className="grid grid-cols-5 gap-2">
+                    {questions.map((q, i) => {
+                       const status = statusMap[q.id] || 'not-visited';
+                       return (
+                          <button 
+                             key={q.id}
+                             className={cn(
+                                "h-9 w-9 text-white font-black text-[12px] flex items-center justify-center transition-all transform hover:scale-105",
+                                currentIdx === i ? "ring-2 ring-[#004b91] ring-offset-1 z-1" : "",
+                                status === 'not-visited' && "bg-white border-2 border-zinc-200 text-zinc-400 rounded",
+                                status === 'not-answered' && "bg-[#ef4444] rounded-t-3xl rounded-b-lg",
+                                status === 'answered' && "bg-[#22c55e] rounded-b-3xl rounded-t-lg",
+                                status === 'marked' && "bg-[#9333ea] rounded-full",
+                                status === 'answered-marked' && "bg-[#9333ea] rounded-full relative"
+                             )}
+                             onClick={() => handleSelect(i)}
+                          >
+                             {status === 'answered-marked' && <div className="absolute top-0 right-0 h-2.5 w-2.5 bg-green-500 rounded-full border-2 border-white" />}
+                             {i + 1}
+                          </button>
+                       );
+                    })}
+                 </div>
+              </div>
+
+              <div className="p-4 bg-white border-t space-y-3">
+                 <Button className="w-full bg-[#004b91] text-white font-black uppercase text-xs h-10 tracking-widest hover:bg-blue-800" onClick={handleSubmit}>
+                    Submit Test
                  </Button>
               </div>
+           </aside>
+        </div>
 
-              {/* Options */}
-              <div className="grid gap-4">
-                 {currentQuestion.type === 'MCQ' && currentQuestion.options?.map((opt, i) => (
-                    <button 
-                       key={i}
-                       className={cn(
-                          "w-full text-zinc-600 p-6 rounded-2xl border-2 transition-all flex items-center gap-6 group",
-                          answers[currentQuestion.id] === opt 
-                             ? "bg-primary/5 border-primary shadow-xl ring-2 ring-primary/10" 
-                             : "bg-white border-zinc-100 hover:border-zinc-200"
-                       )}
-                       onClick={() => setAnswer(opt)}
-                    >
-                       <div className={cn(
-                          "h-10 w-10 rounded-xl border-2 flex items-center justify-center font-black transition-all",
-                          answers[currentQuestion.id] === opt ? "bg-primary border-primary text-zinc-600" : "border-zinc-200 text-zinc-600 group-hover:border-zinc-400"
-                       )}>
-                          {String.fromCharCode(65 + i)}
-                       </div>
-                       <span className="text-xl font-bold">{opt}</span>
-                    </button>
-                 ))}
-
-                 {currentQuestion.type === 'TF' && [true, false].map((val) => (
-                    <button 
-                       key={val.toString()}
-                       className={cn(
-                          "w-full text-zinc-600 p-6 rounded-2xl border-2 transition-all flex items-center gap-6",
-                          answers[currentQuestion.id] === val 
-                             ? "bg-primary/5 border-primary shadow-xl" 
-                             : "bg-white border-zinc-100 hover:border-zinc-200"
-                       )}
-                       onClick={() => setAnswer(val.toString())}
-                    >
-                       <div className={cn(
-                          "h-10 w-10 rounded-xl border-2 flex items-center justify-center font-black transition-all",
-                          answers[currentQuestion.id] === val ? "bg-primary border-primary text-zinc-600" : "border-zinc-200 text-zinc-600"
-                       )}>
-                          {val ? 'TRUE' : 'FALSE'}
-                       </div>
-                       <span className="text-xl font-bold uppercase">{val ? 'Correct Statement' : 'Incorrect Statement'}</span>
-                    </button>
-                 ))}
-
-                 {currentQuestion.type === 'FIB' && (
-                    <textarea 
-                       className="w-full p-8 rounded-2xl border-2 bg-white border-zinc-100 focus:border-primary outline-none text-xl font-bold min-h-[200px]"
-                       placeholder="Enter your calculation steps and final result..."
-                       value={typeof answers[currentQuestion.id] === 'string' ? answers[currentQuestion.id] as string : ''}
-                       onChange={(e) => setAnswer(e.target.value)}
-                    />
-                 )}
-              </div>
+        {/* NTA STYLE FOOTER LEGEND */}
+        <footer className="h-6 bg-[#eeeeee] border-t px-4 flex items-center justify-between shrink-0">
+           <div className="flex items-center gap-4 text-[9px] font-bold text-zinc-500 uppercase tracking-tighter">
+              <span>© NTA | TestMaster Proctoring Enabled</span>
            </div>
-        </main>
-
-        {/* Bottom Nav */}
-        <footer className="h-20 bg-white border-t px-8 flex items-center justify-between z-20">
-           <Button 
-              variant="outline" 
-              className="rounded-xl font-black text-zinc-600 uppercase h-12 px-8"
-              onClick={() => setCurrentIdx(prev => Math.max(0, prev - 1))}
-              disabled={currentIdx === 0}
-           >
-              PREVIOUS
-           </Button>
-
-           <div className="flex items-center gap-2">
-              <span className="text-[10px] font-black uppercase text-zinc-600 mr-2">SECURED PROCTORING ACTIVE</span>
-              <Maximize className="h-4 w-4 text-zinc-600" />
-           </div>
-
-           <Button 
-              className="bg-black text-zinc-600 rounded-xl font-black text-zinc-600 uppercase h-12 px-8"
-              onClick={() => setCurrentIdx(prev => Math.min(questionsPool.length - 1, prev + 1))}
-              disabled={currentIdx === questionsPool.length - 1}
-            >
-              NEXT QUESTION
-           </Button>
+           {isSyncing && <div className="flex items-center gap-1 text-[8px] font-black text-orange-600 animate-pulse"><Save className="h-2 w-2" /> Syncing responses with central server...</div>}
         </footer>
       </div>
-
-      {/* Sidebar Palette */}
-      <aside className={cn(
-         "fixed inset-y-0 right-0 w-80 bg-white border-l shadow-2xl transition-transform transform z-30",
-         sidebarOpen ? "translate-x-0" : "translate-x-full",
-         "lg:relative lg:translate-x-0"
-      )}>
-         <div className="h-16 flex items-center justify-between px-6 border-b">
-            <h3 className="text-zinc-600 font-black uppercase tracking-widest">Question Palette</h3>
-            <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setSidebarOpen(false)}>
-               <ChevronRight className="h-5 w-5" />
-            </Button>
-         </div>
-
-         <div className="p-6 overflow-y-auto h-[calc(100%-4rem)] space-y-8">
-            <div className="grid grid-cols-4 gap-3">
-               {questionsPool.map((q, i) => (
-                  <button 
-                     key={q.id}
-                     className={cn(
-                        "h-12 w-12 rounded-xl border flex items-center justify-center text-zinc-600 font-black transition-all",
-                        currentIdx === i ? "ring-2 ring-primary ring-offset-2" : "",
-                        flagged.has(q.id) ? "bg-amber-500 text-zinc-600 border-amber-600" : 
-                        answers[q.id] !== undefined ? "bg-emerald-500 text-zinc-600 border-emerald-600" : 
-                        "bg-zinc-100 text-zinc-600 border-zinc-200"
-                     )}
-                     onClick={() => handleSelect(i)}
-                  >
-                     {i + 1}
-                  </button>
-               ))}
-            </div>
-
-            <div className="space-y-4 pt-4 border-t border-zinc-100">
-               <h4 className="text-[9px] font-black uppercase tracking-widest text-zinc-600">Legend</h4>
-               <div className="grid grid-cols-2 gap-4">
-                  {[
-                     { label: 'Answered', color: 'bg-emerald-500' },
-                     { label: 'Flagged', color: 'bg-amber-500' },
-                     { label: 'Unvisited', color: 'bg-zinc-100 border' }
-                  ].map((l, i) => (
-                     <div key={i} className="flex items-center gap-2">
-                        <div className={cn("h-3 w-3 rounded-md", l.color)} />
-                        <span className="text-[10px] font-bold text-zinc-600">{l.label}</span>
-                     </div>
-                  ))}
-               </div>
-            </div>
-
-            <Card className="bg-primary/5 border-primary/10 rounded-2xl p-4">
-               <div className="flex gap-3">
-                  <AlertCircle className="h-4 w-4 text-zinc-600 shrink-0" />
-                  <p className="text-[10px] font-bold text-zinc-600 leading-tight uppercase tracking-tight">
-                     TAB SWITCHING OR EXITING FULLSCREEN WILL RESULT IN AUTO-SUBMISSION.
-                  </p>
-               </div>
-            </Card>
-         </div>
-      </aside>
     </div>
   );
 }

@@ -56,7 +56,9 @@ export default function TestsOversightPage() {
         token,
         tenant: tenantSlug || undefined,
       });
-      setTests(response.data);
+      // Extract data from pagination object if present
+      const testData = response.data?.data || response.data || [];
+      setTests(Array.isArray(testData) ? testData : []);
     } catch {
       setTests([]);
       toast.error("Error", {
@@ -71,11 +73,11 @@ export default function TestsOversightPage() {
     fetchTests();
   }, [fetchTests]);
 
-  const filteredTests = tests.filter(t => 
+  const filteredTests = Array.isArray(tests) ? tests.filter(t => 
     t.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
     t.teacher_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     t.subject.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  ) : [];
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">

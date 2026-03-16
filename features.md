@@ -2600,20 +2600,422 @@ Feedback: Share suggestions
 
 Onboarding Guide: How to use parent portal
 
-Feature Distribution Summary
-Feature Category Super Admin Centre Admin Teacher Student Parent
-Dashboard & KPIs ✅ ✅ ✅ ✅ ✅
-User Management ✅ ✅ Limited Limited ❌
-Test Creation ❌ Oversight ✅ ❌ ❌
-Test Taking ❌ ❌ Monitor ✅ ❌
-Results & Analytics Platform Centre Class Personal Child
-AI Features Cost Mgmt Oversight Create Consume Insights
-Billing/Finance Platform Centre ❌ ❌ Optional
-Communication Broadcast Centre-wide Class Limited With teacher
-Gamification ❌ ❌ ❌ ✅ ❌
-Parent Features ❌ Manage Limited Connect ✅
-Security/Admin Platform Centre Basic Basic Basic
-Branding Platform Centre ❌ ❌ ❌
-This comprehensive feature set ensures each role has exactly what they need to fulfill their responsibilities while maintaining appropriate boundaries and data access levels.
+🎯 AI-Powered Question Generation & Enhancement
 
-This response is AI-generated, for reference only.
+1. Smart Question Variant Generator
+   Generate multiple versions of the same question to prevent cheating
+
+text
+Original: "What is the capital of France?"
+Variants:
+
+- "Paris is the capital of which country?"
+- "The city of lights is the capital of \_\_\_"
+- "Which European capital is known for the Eiffel Tower?"
+
+2. Difficulty Calibration Engine
+   Automatically adjust question difficulty based on student performance patterns
+
+Create adaptive tests where next question difficulty depends on previous answers
+
+Generate medium-difficulty questions by modifying easy/hard ones
+
+3. Question Distractor Analysis & Improvement
+   Analyze wrong answer patterns for MCQs
+
+Suggest better distractors (wrong options) that target common misconceptions
+
+Identify questions where students guess correctly vs actually know
+
+4. Bloom's Taxonomy Classifier
+   Auto-tag questions by cognitive level (Remember → Understand → Apply → Analyze → Evaluate → Create)
+
+Generate questions at specific Bloom levels
+
+Ensure balanced question papers across all cognitive domains
+
+📊 Advanced Student Analytics & Personalization 5. Knowledge Gap Mapping
+Create visual knowledge graphs showing:
+
+text
+Topic: Quadratic Equations
+├── Factorisation (85% mastery)
+├── Quadratic Formula (72% mastery)
+├── Discriminant Analysis (45% mastery) ← GAP
+├── Nature of Roots (38% mastery) ← GAP
+└── Word Problems (22% mastery) ← CRITICAL GAP 6. Learning Style Adaptation
+Analyze test-taking patterns to determine learning style (visual/verbal/analytical)
+
+Recommend study materials matching student's learning preference
+
+Adjust question presentation based on style (diagrams for visual learners, text for verbal)
+
+7. Predictive Performance Modeling
+   text
+   Next Test Prediction: 78% (±5%)
+   Risk Factors:
+
+- Declining trend in Algebra (-8% last 3 tests)
+- Low attendance (missed 2 practice tests)
+- High difficulty questions attempted first (time management issue)
+
+Recommended Actions:
+
+- Review Algebra module
+- Take 2 practice quizzes before main test
+- Start with medium questions, save hard for last
+
+8. Anomaly Detection Engine
+   Flag sudden performance drops for investigation
+
+Detect potential cheating patterns (unusual answer patterns)
+
+Identify if someone else took the test (typing speed, answer time patterns)
+
+9. Concept Mastery Timeline
+   text
+   Concept Progression Timeline:
+   Week 1: Introduction → 40%
+   Week 2: Practice → 65%
+   Week 3: Application → 82%
+   Week 4: Mastery Achieved! 🎉
+   👨‍🏫 Teacher Empowerment Features
+10. Automated Test Paper Generation
+    Input: "Create a 50-mark JEE-level test on Thermodynamics with 40% easy, 35% medium, 25% hard questions in 2 sections"
+
+AI Output:
+
+Balanced question paper with specifications
+
+Expected time per question
+
+Difficulty distribution graph
+
+Sample answer key with step-by-step solutions
+
+Common mistakes to watch for
+
+11. Plagiarism Detection in Subjective Answers
+    Compare student answers against each other and internet sources
+
+Highlight copied passages
+
+Generate originality reports
+
+12. AI Teaching Assistant
+    24/7 chatbot that can:
+
+Answer student doubts based on syllabus
+
+Generate practice problems on demand
+
+Explain concepts in multiple ways
+
+Provide hints without giving full answers
+
+13. Lesson Plan Generator
+    Input: "Chapter: Photosynthesis, Class: 10th, Duration: 5 classes"
+
+Output:
+
+text
+Day 1: Introduction + Basic concepts (with 3 demo videos)
+Day 2: Detailed process (with 2 activities)
+Day 3: Factors affecting (with 5 practice Qs)
+Day 4: Applications + advanced topics
+Day 5: Review + quiz (10 questions)
+
+Recommended Resources:
+
+- YouTube: "Photosynthesis in 5 mins" (link)
+- Interactive simulation: (link)
+- Practice worksheet: (generated PDF)
+
+14. Question Paper Quality Analyzer
+    Before publishing a test, AI analyzes:
+
+Difficulty distribution (too hard/easy?)
+
+Time allocation (too rushed/too slow?)
+
+Topic coverage (any chapters missing?)
+
+Question uniqueness (not repetitive)
+
+Expected score distribution curve
+
+🏫 Centre Admin Intelligence 15. Teacher Effectiveness Score
+AI-generated insights on each teacher:
+
+text
+Teacher: Mr. Sharma
+Overall Effectiveness: 87/100
+
+Strengths:
+
+- Students show deep understanding (conceptual)
+- Excellent engagement (95% attendance)
+- Above-average scores in applied questions
+
+Areas for Improvement:
+
+- Slower topic completion rate
+- Less practice with numerical problems
+
+Comparison: Top 15% among all teachers 16. Centre Performance Benchmarking
+text
+Your Centre vs Similar Centres (50-100 students):
+📊 Overall: +8% above average
+📈 Growth Rate: +12% (vs avg +5%)
+⚠️ Weak Areas vs Peers:
+
+- Chemistry practical application (-15%)
+- Mathematics speed (-8%)
+
+Recommendations:
+
+1. Add 2 more chemistry practice tests
+2. Implement weekly speed drills
+3. Top-performing centres use video tutorials for organic chemistry
+4. Retention Risk Prediction
+   Identify students likely to leave the coaching centre:
+
+text
+Students at Risk (next 30 days):
+
+- Rajesh K. (declining scores, 3 missed tests)
+- Priya S. (payment pending, low engagement)
+- Amit P. (exploring competitor ads)
+
+Suggested Interventions:
+
+- Schedule parent meeting for Rajesh
+- Send payment reminder + offer
+- Share success stories with Amit
+
+18. Resource Optimization AI
+    text
+    Optimal Class Sizes Based on Performance:
+    Mathematics: 25 students/teacher (current: 30) → +2 teachers needed
+    Physics: 35 students/teacher (current: 32) → optimal
+    Chemistry: 20 students/teacher (current: 25) → combine 2 batches
+
+Cost Savings if Optimized: ₹45,000/month
+Projected Score Improvement: +5-8%
+🎓 Student Experience Enhancements 19. AI Study Coach
+Personalized daily/weekly plans:
+
+text
+Your Study Plan for This Week:
+🎯 Focus: Organic Chemistry (58% current → 75% target)
+
+Monday:
+
+- Review SN1/SN2 reactions (20 min)
+- Practice 10 questions (30 min)
+- Watch tutorial video (10 min)
+
+Tuesday:
+
+- Take mini-test (20 min)
+- Review mistakes with AI explanations
+- 5 bonus questions on weak areas
+
+Wednesday:
+... and so on
+
+Progress tracking: [==== ] 40% toward weekly goal 20. Doubt Resolution Engine
+Students can ask doubts in natural language:
+Student: "I don't understand why the answer is 4 and not 6"
+
+AI Response:
+
+text
+Let me explain step-by-step:
+
+1. The formula used is n = m/M
+2. Given: mass = 24g, molar mass = 6g/mol
+3. n = 24/6 = 4 moles
+
+Common Mistake Alert: Many students forget to convert units or use wrong formula.
+You might have used n = m×M (multiply instead of divide).
+
+Want to practice similar problems? [Generate 5 practice questions] 21. Competency-Based Skill Badges
+text
+Earned Badges:
+🧪 Lab Expert (Chemistry practicals)
+📐 Geometry Master (90%+ in geometry)
+⚡ Speed Demon (completed tests 20% faster)
+🎯 Accuracy King (95%+ accuracy last 10 tests)
+
+In Progress:
+🔬 Advanced Chemistry (3/5 modules)
+🧮 Calculus Crusher (2/4 topics)
+📚 Consistent Performer (12/30 day streak)
+
+Next Level: Unlock "Subject Topper" at 95%+ in all topics 22. Peer Comparison Intelligence
+text
+You vs Students with Similar Starting Point:
+You started at 65%, now at 82% (+17%)
+Peer average: 65% → 78% (+13%)
+
+You're ahead by 4%!
+Secrets of top improvers:
+✅ Daily practice (you do this!)
+✅ Mistake log maintenance (you haven't started)
+✅ Group study sessions (join Wednesday's session)
+
+Recommended: Start mistake log to gain +5% more 23. Exam Stress Prediction
+Analyze patterns to predict and prevent burnout:
+
+text
+Stress Indicators Detected:
+⚠️ Decreasing sleep (based on test times)
+⚠️ More careless mistakes in last 3 tests
+⚠️ Skipping breaks between questions
+
+Recommendations:
+
+- Take a 1-day break (suggested: Saturday)
+- Light review only, no new topics
+- Meditation: 5-min guided session (link)
+- Reset with fresh start Monday
+
+Your optimal performance zone: 6-8 tests/week
+Current: 10 tests/week (above threshold)
+👪 Parent Engagement AI 24. Parent-Friendly Progress Reports
+Natural language summaries:
+
+text
+Dear Parent,
+
+Great news! Rahul has improved 12% in Mathematics this month.
+He's now in the top 20% of his class.
+
+What's working:
+
+- Daily practice (20 min/day)
+- Focus on Algebra (now at 88%)
+
+What needs attention:
+
+- Geometry dropped to 65%
+- Missed 2 practice tests
+
+Simple ways to help:
+
+1. Ask him to explain Pythagoras theorem to you
+2. Encourage 15 min geometry practice daily
+3. Celebrate his Algebra improvement!
+
+Next milestone: Top 15% by month end (very likely) 25. Career Path Prediction
+Based on performance patterns:
+
+text
+Rahul's Performance Suggests Strong Aptitude In:
+
+1. Engineering (85% match) - Maths/Physics strength
+2. Data Science (78% match) - Analytical thinking
+3. Research (72% match) - Deep understanding
+
+Growth Areas for Engineering:
+
+- Need to improve Chemistry (currently 68%)
+- Speed in problem-solving (20% slower than peers)
+
+Recommended Engineering Colleges by Current Trajectory:
+✅ Achievable: NITs, IIITs (with current trend)
+🚀 Stretch: Top NITs (with +8% improvement)
+🎯 Dream: IITs (needs +15% and consistent 90%+)
+
+Personalized Roadmap Available [View]
+🛠️ Platform Operations AI 26. Auto Content Moderation
+Scan teacher-created questions for inappropriate content
+
+Flag potential errors in questions
+
+Verify answer keys for accuracy
+
+27. Question Bank Health Monitor
+    text
+    Question Bank Health Score: 92/100
+
+Strengths:
+
+- Good coverage (95% topics covered)
+- Balanced difficulty (30-40-30 distribution)
+- Low duplicates (2% only)
+
+Issues Detected:
+
+- 15 questions marked as "too easy" by students
+- 8 questions have high guess rate (>60%)
+- 3 chapters have <5 questions
+
+Recommended Actions:
+
+- Review/replace high-guess questions
+- Add questions for under-covered chapters
+- Archive 23 unused questions (>1 year)
+
+28. Fraud Detection System
+    Detect multiple accounts from same IP
+
+Identify suspicious answer patterns across tests
+
+Flag potential impersonation during tests
+
+Detect AI-generated answer submissions
+
+29. Content Recommendation Engine
+    For each user role:
+
+text
+For Student: "Based on your weak areas, try these 3 questions"
+For Teacher: "Students struggling with this topic, here's a ready quiz"
+For Admin: "Similar centres improved with this feature, enable it?"
+For Parent: "Other parents found this report helpful" 30. Intelligent Notifications
+Smart timing and content:
+
+text
+Not now: "Test tomorrow" (sent at 8 AM)
+Better: "Your test is in 24 hours. Last minute tips for you:
+
+- Review these 3 key formulas
+- Get good sleep (8+ hours)
+- Have breakfast with protein for sustained energy"
+  🚀 Advanced AI Features Roadmap
+  Phase 4 Enhancement (Weeks 13-15)
+  ✅ AI Question Generator
+
+✅ AI Explanation Generator
+
+✅ Auto-difficulty tagging
+
+✅ Credit tracking
+
+- Add: Question variant generator
+
+- Add: Distractor analysis
+
+Phase 5 Enhancement (Weeks 16-18)
+✅ Performance insights
+
+✅ Weak area identification
+
+- Add: Knowledge gap mapping
+
+- Add: Personalized recommendations
+
+- Add: Anomaly detection
+
+Phase 6 (Months 5-6)
+✅ Parent portal
+
+- Add: Parent-friendly AI reports
+
+- Add: Learning style adaptation
+
+- Add: AI teaching assistant (basic)
+
+- Add: Predictive modeling

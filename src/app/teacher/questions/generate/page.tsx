@@ -29,6 +29,8 @@ interface GeneratedQuestion {
   marks: number;
   subject: string;
   topic: string;
+  bloom_level?: string;
+  variants?: string[];
 }
 
 export default function AiGeneratePage() {
@@ -250,8 +252,24 @@ export default function AiGeneratePage() {
                         <div className="flex items-center gap-2">
                           <CardTitle className="text-zinc-600">{q.title}</CardTitle>
                           <Badge variant="secondary" className="text-[10px] h-5">{q.difficulty}</Badge>
+                          {q.bloom_level && (
+                            <Badge variant="outline" className="text-[10px] h-5 border-purple-200 text-zinc-600">
+                              {q.bloom_level}
+                            </Badge>
+                          )}
                         </div>
                         <div className="text-zinc-600" dangerouslySetInnerHTML={{ __html: q.content }} />
+                        
+                        {q.variants && q.variants.length > 0 && (
+                          <div className="mt-4 p-3 bg-zinc-50 rounded-lg border border-zinc-100 space-y-2">
+                            <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">Question Variants (Reduced Cheating):</p>
+                            <ul className="list-disc list-inside space-y-1 text-[11px] text-zinc-600">
+                              {q.variants.map((v, vi) => (
+                                <li key={vi} className="leading-relaxed opacity-80">{v}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
                       </div>
                       <div className={`h-6 w-6 rounded-full border-2 flex items-center justify-center shrink-0 ${
                         selectedIndices.includes(i) ? 'bg-primary border-primary text-white' : 'border-zinc-300'

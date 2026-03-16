@@ -5,10 +5,12 @@ import { useState, useEffect, useCallback } from "react";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Search, Plus, HelpCircle, Trash2 } from "lucide-react";
+import { Search, Plus, HelpCircle, Trash2, Sparkles } from "lucide-react";
 import { api } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
+
+import { AiQuestionGeneratorDialog } from "@/components/teacher/AiQuestionGeneratorDialog";
 
 interface Section {
   id: string;
@@ -36,12 +38,13 @@ interface Step4Props {
 }
 
 export function Step4Questions({ testId, sections }: Step4Props) {
-  const { user, token } = useAuth();
+  const { user, token, tenantSlug } = useAuth();
   const [bankQuestions, setBankQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [assignedQuestions, setAssignedQuestions] = useState<SectionQuestion[]>([]);
   const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
+  const [isAiDialogOpen, setIsAiDialogOpen] = useState(false);
 
   useEffect(() => {
     if (sections.length > 0 && !activeSectionId) {
@@ -57,7 +60,7 @@ export function Step4Questions({ testId, sections }: Step4Props) {
       
       const response = await api(`/teacher/questions?${queryParams.toString()}`, {
         token,
-        tenant: user.tenant_id,
+        tenant: tenantSlug || undefined,
       });
       if (response.success) {
         setBankQuestions(response.data.data || []);
@@ -67,14 +70,14 @@ export function Step4Questions({ testId, sections }: Step4Props) {
     } finally {
       setLoading(false);
     }
-  }, [user, token, search]);
+  }, [user, token, tenantSlug, search]);
 
   const fetchAssigned = useCallback(async () => {
     if (!user || !token || !testId || !activeSectionId) return;
     try {
       const response = await api(`/teacher/tests/${testId}/sections/${activeSectionId}/questions`, {
         token,
-        tenant: user.tenant_id,
+        tenant: tenantSlug || undefined,
       });
       if (response.success) {
         setAssignedQuestions(response.data || []);
@@ -82,7 +85,7 @@ export function Step4Questions({ testId, sections }: Step4Props) {
     } catch (error) {
       console.error("Failed to fetch assigned questions:", error);
     }
-  }, [user, token, testId, activeSectionId]);
+  }, [user, token, testId, tenantSlug, activeSectionId]);
 
   useEffect(() => {
     const timer = setTimeout(fetchBank, 300);
@@ -115,14 +118,14 @@ export function Step4Questions({ testId, sections }: Step4Props) {
         await api(`/teacher/tests/${testId}/sections/${activeSectionId}/questions/${question.id}`, {
           method: "DELETE",
           token,
-          tenant: user.tenant_id,
+          tenant: tenantSlug || undefined,
         });
         setAssignedQuestions(prev => prev.filter(q => q.question_id !== question.id));
       } else {
         await api(`/teacher/tests/${testId}/questions`, {
           method: "POST",
           token,
-          tenant: user.tenant_id,
+          tenant: tenantSlug || undefined,
           body: JSON.stringify({
             question_id: question.id,
             section_id: activeSectionId,
@@ -137,8 +140,62 @@ export function Step4Questions({ testId, sections }: Step4Props) {
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleAiGenerated = async (generated: any[]) => {
+     if (!token || !activeSectionId) return;
+     
+     try {
+        // Bulk save to question bank first
+        const saveResponse = await api("/teacher/questions/bulk", {
+           method: "POST",
+           token,
+           tenant: tenantSlug || undefined,
+           body: JSON.stringify({
+              questions: generated.map(q => ({ ...q, content: { text: q.content } }))
+           }),
+        });
+
+        if (saveResponse.success) {
+           // Assign these new questions to the current section
+           const newQuestions = saveResponse.data;
+           for (const nq of newQuestions) {
+              await api(`/teacher/tests/${testId}/questions`, {
+                 method: "POST",
+                 token,
+                 tenant: tenantSlug || undefined,
+                 body: JSON.stringify({
+                   question_id: nq.id,
+                   section_id: activeSectionId,
+                   marks: nq.marks || 4,
+                   order: assignedQuestions.length,
+                 }),
+              });
+           }
+           fetchAssigned();
+           fetchBank();
+        }
+     } catch (err) {
+        console.error("Failed to handle AI questions:", err);
+     }
+  };
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-12 gap-6 animate-in fade-in duration-500">
+    <div className="space-y-6">
+       <div className="flex items-center justify-between">
+          <Label className="text-[10px] font-bold uppercase tracking-wider text-zinc-600">Question Selection</Label>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="h-8 gap-2 border-purple-200 bg-purple-50 text-purple-700 hover:bg-purple-100 font-bold text-[10px] uppercase tracking-widest"
+            onClick={() => setIsAiDialogOpen(true)}
+            disabled={!activeSectionId}
+          >
+             <Sparkles className="h-3 w-3" />
+             Generate with AI
+          </Button>
+       </div>
+
+       <div className="grid grid-cols-1 md:grid-cols-12 gap-6 animate-in fade-in duration-500">
       <div className="md:col-span-2 space-y-4">
         <Label className="text-[10px] font-bold uppercase tracking-wider text-zinc-600">Sections</Label>
         <div className="space-y-1">
@@ -260,5 +317,12 @@ export function Step4Questions({ testId, sections }: Step4Props) {
         </div>
       </div>
     </div>
+    
+    <AiQuestionGeneratorDialog 
+        open={isAiDialogOpen}
+        onOpenChange={setIsAiDialogOpen}
+        onQuestionsGenerated={handleAiGenerated}
+    />
+  </div>
   );
 }
