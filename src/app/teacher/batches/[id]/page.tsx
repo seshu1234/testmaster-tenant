@@ -16,11 +16,22 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
+} from "@/components/ui/dialog";
+import {
   Users, Search, AlertTriangle, TrendingUp, FileText, ChevronLeft,
-  Mail, Star, Trophy, CheckCircle, PlusCircle, MinusCircle, Loader2,
+  Star, Trophy, CheckCircle, PlusCircle, MinusCircle, Loader2, UserPlus, UserMinus,
 } from "lucide-react";
 
-// ─── Types ──────────────────────────────────────────────────────────────────
+interface StudentSearch {
+  id: string;
+  name: string;
+  email: string;
+  in_batch: boolean;
+  batch_id: string | null;
+  current_batch_name: string | null;
+}
+
 interface Student {
   id: string;
   name: string;
@@ -61,11 +72,6 @@ interface BatchData {
   };
 }
 
-const statusVariant = (status: Student["status"]) => {
-  if (status === "outstanding") return "default" as const;
-  if (status === "at-risk") return "destructive" as const;
-  return "secondary" as const;
-};
 
 const patternLabel: Record<string, string> = {
   nta: "NTA", tcs: "TCS iON", ssc: "SSC", custom: "Standard",
@@ -84,15 +90,22 @@ export default function BatchDetailsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [togglingId, setTogglingId] = useState<string | null>(null);
 
+  // Enrollment dialog state
+  const [enrollOpen, setEnrollOpen] = useState(false);
+  const [enrollSearch, setEnrollSearch] = useState("");
+  const [enrollResults, setEnrollResults] = useState<StudentSearch[]>([]);
+  const [enrollSearching, setEnrollSearching] = useState(false);
+  const [enrollingId, setEnrollingId] = useState<string | null>(null);
+
   const tenant = tenantSlug ?? undefined;
 
   const loadAll = useCallback(async () => {
     if (!token || !id) return;
     try {
       const [batchRes, leaderRes, testsRes] = await Promise.all([
-        api(`/teacher/batches/${id}`, { token, tenant }),
-        api(`/teacher/batches/${id}/leaderboard`, { token, tenant }),
-        api(`/teacher/batches/${id}/tests`, { token, tenant }),
+        api(`/teacher/batches/${id}`, { token: token ?? undefined, tenant }),
+        api(`/teacher/batches/${id}/leaderboard`, { token: token ?? undefined, tenant }),
+        api(`/teacher/batches/${id}/tests`, { token: token ?? undefined, tenant }),
       ]);
       if (batchRes.success) setData(batchRes.data);
       if (leaderRes.success) setLeaderboard(leaderRes.data ?? []);
@@ -105,6 +118,50 @@ export default function BatchDetailsPage() {
   }, [token, id, tenant]);
 
   useEffect(() => { loadAll(); }, [loadAll]);
+
+  // Student enrollment search
+  const searchEnrollStudents = useCallback(async (q: string) => {
+    if (!token || !id) return;
+    setEnrollSearching(true);
+    try {
+      const res = await api(`/teacher/batches/${id}/students/search?q=${encodeURIComponent(q)}`, {
+        token: token ?? undefined, tenant,
+      });
+      if (res.success) setEnrollResults(res.data ?? []);
+    } catch {
+      // ignore
+    } finally {
+      setEnrollSearching(false);
+    }
+  }, [token, id, tenant]);
+
+  useEffect(() => {
+    if (enrollOpen) searchEnrollStudents(enrollSearch);
+  }, [enrollSearch, enrollOpen, searchEnrollStudents]);
+
+  const toggleEnroll = async (student: StudentSearch) => {
+    setEnrollingId(student.id);
+    try {
+      if (student.in_batch) {
+        await api(`/teacher/batches/${id}/students/${student.id}`, {
+          method: "DELETE", token: token ?? undefined, tenant,
+        });
+      } else {
+        await api(`/teacher/batches/${id}/students/${student.id}`, {
+          method: "POST", token: token ?? undefined, tenant,
+        });
+      }
+      setEnrollResults((prev) =>
+        prev.map((s) => s.id === student.id ? { ...s, in_batch: !s.in_batch } : s)
+      );
+      // Reload batch data to update student count
+      loadAll();
+    } catch {
+      // ignore
+    } finally {
+      setEnrollingId(null);
+    }
+  };
 
   const toggleAssign = async (test: BatchTest) => {
     setTogglingId(test.id);
@@ -161,18 +218,90 @@ export default function BatchDetailsPage() {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center gap-3">
-        <Button variant="ghost" size="icon" onClick={() => router.back()}>
-          <ChevronLeft className="h-4 w-4" />
-        </Button>
-        <div>
-          <h1 className="text-2xl font-bold">{data.batch.name}</h1>
-          <p className="text-sm text-muted-foreground">
-            {data.batch.subject || "Multi-Subject"} · {data.metrics.total_students} students ·{" "}
-            {assignedTests.length} tests assigned
-          </p>
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="icon" onClick={() => router.back()}>
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <div>
+            <h1 className="text-2xl font-bold">{data.batch.name}</h1>
+            <p className="text-sm text-muted-foreground">
+              {data.batch.subject || "Multi-Subject"} · {data.metrics.total_students} students ·{" "}
+              {assignedTests.length} tests assigned
+            </p>
+          </div>
         </div>
+        <Button variant="outline" size="sm" className="gap-2" onClick={() => { setEnrollSearch(""); setEnrollOpen(true); }}>
+          <UserPlus className="h-3.5 w-3.5" /> Manage Students
+        </Button>
       </div>
+
+      {/* Student Enrollment Dialog */}
+      <Dialog open={enrollOpen} onOpenChange={setEnrollOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Manage Students</DialogTitle>
+            <DialogDescription>
+              Search for students in your institution and add them to <strong>{data.batch.name}</strong>.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                className="pl-9"
+                placeholder="Search by name or email..."
+                value={enrollSearch}
+                onChange={(e) => setEnrollSearch(e.target.value)}
+                autoFocus
+              />
+            </div>
+            <div className="space-y-2 max-h-80 overflow-y-auto">
+              {enrollSearching ? (
+                <div className="text-center py-8"><Loader2 className="h-5 w-5 animate-spin mx-auto text-muted-foreground" /></div>
+              ) : enrollResults.length === 0 ? (
+                <p className="text-center text-sm text-muted-foreground py-8">
+                  {enrollSearch ? "No students found." : "Start typing to search students."}
+                </p>
+              ) : (
+                enrollResults.map((s) => (
+                  <div key={s.id} className="flex items-center justify-between gap-3 p-3 rounded-lg border bg-background">
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <p className="text-sm font-medium text-foreground">{s.name}</p>
+                        {s.in_batch && (
+                          <Badge variant="secondary" className="text-xs h-4 px-1.5">In this batch</Badge>
+                        )}
+                        {s.batch_id && !s.in_batch && (
+                          <Badge variant="outline" className="text-xs h-4 px-1.5 text-amber-700 border-amber-300 bg-amber-50">
+                            In: {s.current_batch_name ?? "Another batch"}
+                          </Badge>
+                        )}
+                      </div>
+                      <p className="text-xs text-muted-foreground truncate">{s.email}</p>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant={s.in_batch ? "destructive" : "default"}
+                      disabled={enrollingId === s.id}
+                      onClick={() => toggleEnroll(s)}
+                      className="gap-1.5 shrink-0"
+                    >
+                      {enrollingId === s.id ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      ) : s.in_batch ? (
+                        <><UserMinus className="h-3.5 w-3.5" /> Remove</>
+                      ) : (
+                        <><UserPlus className="h-3.5 w-3.5" /> Add</>
+                      )}
+                    </Button>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Stat cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -243,7 +372,13 @@ export default function BatchDetailsPage() {
               </div>
             </CardHeader>
             <CardContent className="p-0">
-              <StudentTable students={filteredStudents} />
+              <StudentTable
+                students={filteredStudents}
+                batchId={id as string}
+                token={token}
+                tenant={tenantSlug ?? undefined}
+                onRemoved={(sid) => setData((d) => d ? { ...d, students: d.students.filter((s) => s.id !== sid), metrics: { ...d.metrics, total_students: d.metrics.total_students - 1, at_risk: d.students.filter(s => s.id !== sid && s.status === 'at-risk').length } } : d)}
+              />
             </CardContent>
           </Card>
         </TabsContent>
@@ -307,7 +442,13 @@ export default function BatchDetailsPage() {
               {atRisk.length === 0 ? (
                 <div className="py-12 text-center text-muted-foreground">🎉 No at-risk students in this batch.</div>
               ) : (
-                <StudentTable students={atRisk} showEmail />
+                <StudentTable
+                  students={atRisk}
+                  batchId={id as string}
+                  token={token}
+                  tenant={tenantSlug ?? undefined}
+                  onRemoved={(sid) => setData((d) => d ? { ...d, students: d.students.filter((s) => s.id !== sid) } : d)}
+                />
               )}
             </CardContent>
           </Card>
@@ -324,7 +465,13 @@ export default function BatchDetailsPage() {
               {outstanding.length === 0 ? (
                 <div className="py-12 text-center text-muted-foreground">No outstanding students yet.</div>
               ) : (
-                <StudentTable students={outstanding} />
+                <StudentTable
+                  students={outstanding}
+                  batchId={id as string}
+                  token={token}
+                  tenant={tenantSlug ?? undefined}
+                  onRemoved={(sid) => setData((d) => d ? { ...d, students: d.students.filter((s) => s.id !== sid) } : d)}
+                />
               )}
             </CardContent>
           </Card>
@@ -355,7 +502,7 @@ export default function BatchDetailsPage() {
                     <TableHead>Type</TableHead>
                     <TableHead>Pattern</TableHead>
                     <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Assign</TableHead>
+                    <TableHead className="font-semibold text-xs uppercase tracking-wide">Assign</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -387,7 +534,7 @@ export default function BatchDetailsPage() {
                             <span className="text-sm text-muted-foreground">Not assigned</span>
                           )}
                         </TableCell>
-                        <TableCell className="text-right">
+                        <TableCell>
                           <Button
                             size="sm"
                             variant={t.is_assigned ? "destructive" : "default"}
@@ -418,46 +565,120 @@ export default function BatchDetailsPage() {
 }
 
 // ─── Shared Student Table ──────────────────────────────────────────────────
-function StudentTable({ students, showEmail = false }: { students: Student[]; showEmail?: boolean }) {
+function StudentTable({
+  students,
+  batchId,
+  token,
+  tenant,
+  onRemoved,
+}: {
+  students: Student[];
+  batchId: string;
+  token: string | null;
+  tenant: string | undefined;
+  onRemoved?: (id: string) => void;
+}) {
+  const [removingId, setRemovingId] = useState<string | null>(null);
+
+  const initials = (name: string) =>
+    name.split(" ").slice(0, 2).map((n) => n[0]).join("").toUpperCase();
+
+  const scoreColor = (score: number) =>
+    score >= 75 ? "text-emerald-600" : score >= 40 ? "text-amber-600" : "text-red-500";
+
+  const barColor = (score: number) =>
+    score >= 75 ? "bg-emerald-500" : score >= 40 ? "bg-amber-400" : "bg-red-400";
+
+  const statusConfig: Record<string, { label: string; class: string }> = {
+    "outstanding": { label: "Outstanding ⭐", class: "bg-emerald-50 text-emerald-700 border-emerald-200" },
+    "active":      { label: "Active",          class: "bg-blue-50 text-blue-700 border-blue-200" },
+    "at-risk":     { label: "At Risk ⚠️",      class: "bg-red-50 text-red-700 border-red-200" },
+  };
+
+  const handleRemove = async (s: Student) => {
+    if (!confirm(`Remove ${s.name} from this batch?`)) return;
+    setRemovingId(s.id);
+    try {
+      await api(`/teacher/batches/${batchId}/students/${s.id}`, {
+        method: "DELETE", token: token ?? undefined, tenant,
+      });
+      onRemoved?.(s.id);
+    } catch { /* ignore */ } finally {
+      setRemovingId(null);
+    }
+  };
+
+  if (students.length === 0) {
+    return (
+      <div className="flex flex-col items-center gap-3 py-16 text-muted-foreground">
+        <Users className="h-10 w-10 text-muted-foreground/30" />
+        <p className="text-sm">No students to show.</p>
+      </div>
+    );
+  }
+
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Name</TableHead>
-          {showEmail && <TableHead>Email</TableHead>}
-          <TableHead>Avg Score</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead className="text-right">Contact</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {students.length === 0 ? (
-          <TableRow>
-            <TableCell colSpan={5} className="py-12 text-center text-muted-foreground">No students to show.</TableCell>
-          </TableRow>
-        ) : (
-          students.map((s) => (
-            <TableRow key={s.id}>
-              <TableCell>
-                <div>
-                  <p className="font-medium">{s.name}</p>
-                  {!showEmail && <p className="text-xs text-muted-foreground">{s.email}</p>}
-                </div>
-              </TableCell>
-              {showEmail && <TableCell className="text-muted-foreground">{s.email}</TableCell>}
-              <TableCell>{s.avg_score}%</TableCell>
-              <TableCell>
-                <Badge variant={statusVariant(s.status)}>{s.status.replace("-", " ")}</Badge>
-              </TableCell>
-              <TableCell className="text-right">
-                <Button size="sm" variant="ghost" className="gap-1" onClick={() => window.open(`mailto:${s.email}`)}>
-                  <Mail className="h-3.5 w-3.5" /> Email
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))
-        )}
-      </TableBody>
-    </Table>
+    <div className="divide-y">
+      {students.map((s) => {
+        const cfg = statusConfig[s.status] ?? statusConfig["active"];
+        return (
+          <div key={s.id} className="flex items-center gap-4 px-6 py-4 hover:bg-muted/20 transition-colors">
+            {/* Avatar */}
+            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+              <span className="text-sm font-bold text-primary">{initials(s.name)}</span>
+            </div>
+
+            {/* Name + email + status */}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <p className="font-medium text-sm text-foreground">{s.name}</p>
+                <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full border ${cfg.class}`}>
+                  {cfg.label}
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground truncate">{s.email}</p>
+            </div>
+
+            {/* Score */}
+            <div className="flex flex-col items-end gap-1 shrink-0 w-28">
+              <span className={`text-sm font-bold tabular-nums ${scoreColor(s.avg_score)}`}>
+                {s.avg_score}%
+              </span>
+              <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                <div
+                  className={`h-full rounded-full ${barColor(s.avg_score)}`}
+                  style={{ width: `${s.avg_score}%` }}
+                />
+              </div>
+              <span className="text-[10px] text-muted-foreground">Avg Score</span>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center gap-2 shrink-0">
+              <Button
+                size="sm"
+                variant="outline"
+                className="gap-1.5 h-8"
+                onClick={() => { window.location.href = `/teacher/results?student=${s.id}`; }}
+              >
+                <FileText className="h-3 w-3" /> Results
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="gap-1.5 h-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                disabled={removingId === s.id}
+                onClick={() => handleRemove(s)}
+              >
+                {removingId === s.id
+                  ? <Loader2 className="h-3 w-3 animate-spin" />
+                  : <MinusCircle className="h-3 w-3" />}
+                Remove
+              </Button>
+            </div>
+          </div>
+        );
+      })}
+    </div>
   );
 }
