@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { 
   Table, 
   TableBody, 
@@ -21,11 +22,18 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/use-auth";
 import { api } from "@/lib/api";
-import Link from "next/link";
 import { ExcelImportDialog } from "@/components/teacher/excel-import-dialog";
 import { AiExplainDialog } from "@/components/teacher/questions/ai-explain-dialog";
-import { FileSpreadsheet } from "lucide-react";
+import { 
+  FileSpreadsheet, 
+  ChevronLeft, 
+  ChevronRight, 
+  ChevronsLeft, 
+  ChevronsRight 
+} from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 interface Question {
   id: string;
@@ -58,21 +66,32 @@ export default function QuestionsPage() {
   const [selectedQuestion, setSelectedQuestion] = useState<{id: string, title: string} | null>(null);
   const { user, token, tenantSlug } = useAuth();
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(15);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+
   useEffect(() => {
     const fetchQuestions = async () => {
       if (!user || !token) return;
+      setLoading(true);
       try {
         const queryParams = new URLSearchParams();
         if (search) queryParams.append("search", search);
         if (subjectFilter) queryParams.append("subject", subjectFilter);
         if (topicFilter) queryParams.append("topic", topicFilter);
+        queryParams.append("page", currentPage.toString());
+        queryParams.append("per_page", pageSize.toString());
 
         const response = await api(`/teacher/questions?${queryParams.toString()}`, {
           token,
           tenant: tenantSlug || undefined,
         });
-        if (response.success) {
+        
+        if (response.success && response.data) {
           setQuestions(response.data.data || []);
+          setTotalPages(response.data.last_page || 1);
+          setTotalItems(response.data.total || 0);
         }
       } catch (error) {
         console.error("Failed to fetch questions:", error);
@@ -83,10 +102,14 @@ export default function QuestionsPage() {
 
     const debounceTimer = setTimeout(() => {
       fetchQuestions();
-    }, 300);
+    }, 400);
 
     return () => clearTimeout(debounceTimer);
-  }, [user, token, tenantSlug, search, subjectFilter, topicFilter]);
+  }, [user, token, tenantSlug, search, subjectFilter, topicFilter, currentPage, pageSize]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, subjectFilter, topicFilter]);
 
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this question?") || !token || !user) return;
@@ -114,7 +137,6 @@ export default function QuestionsPage() {
         tenant: tenantSlug || undefined,
       });
       if (response.success) {
-        // Refresh the list after duplication
         const listResponse = await api(`/teacher/questions`, {
           token,
           tenant: tenantSlug || undefined,
@@ -169,7 +191,6 @@ export default function QuestionsPage() {
         open={importOpen} 
         onOpenChange={setImportOpen}
         onImportSuccess={() => {
-            // Refresh list
             window.location.reload();
         }}
       />
@@ -247,83 +268,108 @@ export default function QuestionsPage() {
       <div className="rounded-xl border bg-white/50 backdrop-blur-sm overflow-hidden shadow-sm">
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead className="w-[400px]">Question Title / Content</TableHead>
-              <TableHead>Subject / Topic</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Difficulty</TableHead>
-              <TableHead className="text-zinc-600">Actions</TableHead>
+            <TableRow className="bg-zinc-50/50 border-y">
+              <TableHead className="w-[400px] text-left text-[10px] font-bold uppercase tracking-widest text-zinc-500 py-4">Question Title / Content</TableHead>
+              <TableHead className="text-left text-[10px] font-bold uppercase tracking-widest text-zinc-500 py-4">Subject / Topic</TableHead>
+              <TableHead className="text-left text-[10px] font-bold uppercase tracking-widest text-zinc-500 py-4">Type</TableHead>
+              <TableHead className="text-left text-[10px] font-bold uppercase tracking-widest text-zinc-500 py-4">Difficulty</TableHead>
+              <TableHead className="text-left text-[10px] font-bold uppercase tracking-widest text-zinc-500 py-4">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading ? (
-              <TableRow>
-                <TableCell colSpan={5} className="h-24 text-zinc-600">Loading questions...</TableCell>
-              </TableRow>
+              Array.from({ length: 5 }).map((_, i) => (
+                <TableRow key={i}>
+                  <TableCell>
+                    <div className="space-y-2">
+                       <Skeleton className="h-4 w-[250px]" />
+                       <Skeleton className="h-3 w-[100px]" />
+                    </div>
+                  </TableCell>
+                  <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
+                  <TableCell><Skeleton className="h-6 w-[80px]" /></TableCell>
+                  <TableCell><Skeleton className="h-6 w-[60px]" /></TableCell>
+                  <TableCell><Skeleton className="h-8 w-8 rounded-full" /></TableCell>
+                </TableRow>
+              ))
             ) : questions.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="h-24 text-zinc-600">No questions found. Create your first one!</TableCell>
+                <TableCell colSpan={5} className="h-32 text-center text-zinc-600">
+                  <div className="flex flex-col items-center justify-center gap-2">
+                    <Search className="h-8 w-8 text-zinc-200" />
+                    <p>No questions found matching your criteria.</p>
+                    <Button variant="link" size="sm" onClick={() => {
+                       setSearch("");
+                       setSubjectFilter(null);
+                    }}>Clear all filters</Button>
+                  </div>
+                </TableCell>
               </TableRow>
             ) : (
               questions.map((q) => (
-                <TableRow key={q.id}>
-                  <TableCell className="max-w-sm">
-                    <div className="space-y-0.5">
-                      <div className="font-medium text-sm text-foreground line-clamp-2">
-                        {extractText(q.content) || q.title || <span className="text-muted-foreground italic">No content</span>}
+                <TableRow key={q.id} className="hover:bg-zinc-50/50 transition-colors group">
+                  <TableCell className="py-4 text-left">
+                    <div className="space-y-1">
+                      <div className="font-semibold text-xs leading-relaxed text-zinc-900 whitespace-normal break-words">
+                        {extractText(q.content) || q.title || <span className="text-zinc-400 italic">No content</span>}
                       </div>
-                      <div className="text-xs text-muted-foreground">
-                        {q.topic || q.chapter || q.subject || "Untagged"}
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-medium text-zinc-500 bg-zinc-100 px-1.5 py-0.5 rounded">
+                          {q.id.split('-')[0].toUpperCase()}
+                        </span>
+                        <span className="text-[10px] text-zinc-400">
+                          Added {new Date(q.created_at).toLocaleDateString()}
+                        </span>
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell>
-                    <div className="flex flex-col gap-0.5">
-                      <span className="text-sm font-medium">{q.subject || '—'}</span>
-                      {q.topic && <span className="text-xs text-muted-foreground">{q.topic}</span>}
+                  <TableCell className="text-left">
+                    <div className="flex flex-col gap-1">
+                      <span className="text-xs font-bold text-zinc-700 uppercase tracking-tight">{q.subject || 'GENERAL'}</span>
+                      {q.topic && <span className="text-[10px] text-zinc-500 font-medium whitespace-normal break-words">{q.topic}</span>}
                     </div>
                   </TableCell>
-                  <TableCell>
-                    <Badge variant="outline" className="capitalize">
+                  <TableCell className="text-left">
+                    <Badge variant="outline" className="text-[10px] font-bold uppercase py-0 px-2 h-5 border-zinc-200 text-zinc-600 bg-zinc-50">
                       {q.type.replace('_', ' ')}
                     </Badge>
                   </TableCell>
-                  <TableCell>
-                    <Badge className={getDifficultyColor(q.difficulty)}>
+                  <TableCell className="text-left">
+                    <Badge className={cn("text-[10px] font-black uppercase py-0 px-2 h-5 tracking-widest", getDifficultyColor(q.difficulty))}>
                       {q.difficulty}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-zinc-600">
+                  <TableCell className="text-left text-zinc-600">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-zinc-400 hover:text-zinc-900 transition-colors">
                           <MoreVertical className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-48">
+                      <DropdownMenuContent align="end" className="w-56 p-1">
                         <DropdownMenuItem 
-                          className="gap-2 text-zinc-600"
+                          className="gap-2 text-xs font-medium py-2"
                           onClick={() => {
-                            setSelectedQuestion({ id: q.id, title: q.title });
+                            setSelectedQuestion({ id: q.id, title: extractText(q.content) });
                             setExplainOpen(true);
                           }}
                         >
-                          <Sparkles className="h-4 w-4" /> AI Explain
+                          <Sparkles className="h-4 w-4 text-purple-600" /> AI Content Explain
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="gap-2">
-                          <Edit2 className="h-4 w-4" /> Edit
+                        <DropdownMenuItem className="gap-2 text-xs font-medium py-2">
+                          <Edit2 className="h-4 w-4 text-zinc-500" /> Edit Details
                         </DropdownMenuItem>
                         <DropdownMenuItem 
-                          className="gap-2"
+                          className="gap-2 text-xs font-medium py-2"
                           onClick={() => handleDuplicate(q.id)}
                         >
-                          <Copy className="h-4 w-4" /> Duplicate
+                          <Copy className="h-4 w-4 text-zinc-500" /> Duplicate Item
                         </DropdownMenuItem>
                         <DropdownMenuItem 
-                          className="gap-2 text-zinc-600"
+                          className="gap-2 text-xs font-medium py-2 text-red-600 focus:text-red-600"
                           onClick={() => handleDelete(q.id)}
                         >
-                          <Trash2 className="h-4 w-4" /> Delete
+                          <Trash2 className="h-4 w-4" /> Delete Question
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -333,6 +379,71 @@ export default function QuestionsPage() {
             )}
           </TableBody>
         </Table>
+      </div>
+
+      <div className="flex items-center justify-between border-t bg-white px-4 py-3 sm:px-6 mt-4 rounded-xl shadow-sm border">
+        <div className="flex flex-1 justify-between sm:hidden">
+          <Button
+            variant="outline"
+            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+            disabled={currentPage === 1 || loading}
+          >
+            Previous
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+            disabled={currentPage === totalPages || loading}
+          >
+            Next
+          </Button>
+        </div>
+        <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+          <div>
+            <p className="text-xs text-zinc-500 uppercase font-bold tracking-widest">
+              Showing <span className="text-zinc-900">{(currentPage - 1) * pageSize + 1}</span> to <span className="text-zinc-900">{Math.min(currentPage * pageSize, totalItems)}</span> of <span className="text-zinc-900">{totalItems}</span> results
+            </p>
+          </div>
+          <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+            <Button
+              variant="outline"
+              size="icon"
+              className="rounded-l-md"
+              onClick={() => setCurrentPage(1)}
+              disabled={currentPage === 1 || loading}
+            >
+              <ChevronsLeft className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              disabled={currentPage === 1 || loading}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <div className="flex items-center px-4 text-xs font-bold text-zinc-600 border-y h-10 bg-zinc-50/50">
+              Page {currentPage} of {totalPages}
+            </div>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages || loading}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              className="rounded-r-md"
+              onClick={() => setCurrentPage(totalPages)}
+              disabled={currentPage === totalPages || loading}
+            >
+              <ChevronsRight className="h-4 w-4" />
+            </Button>
+          </nav>
+        </div>
       </div>
     </div>
   );

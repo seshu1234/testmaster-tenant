@@ -45,6 +45,8 @@ export default function AiGeneratePage() {
   const [difficulty, setDifficulty] = useState("medium");
   const [count, setCount] = useState(5);
   const [type, setType] = useState("mcq_single");
+  const [targetExam, setTargetExam] = useState("");
+  const [targetPool, setTargetPool] = useState<"assessment" | "practice">("assessment");
 
   // Results
   const [generatedQuestions, setGeneratedQuestions] = useState<GeneratedQuestion[]>([]);
@@ -67,6 +69,7 @@ export default function AiGeneratePage() {
           difficulty,
           count,
           type,
+          target_exam: targetExam,
         }),
       });
 
@@ -97,20 +100,25 @@ export default function AiGeneratePage() {
     try {
       const questionsToSave = selectedIndices.map(i => generatedQuestions[i]);
       
-      const response = await api("/teacher/questions/bulk", {
+      const response = await api("/teacher/ai/batch/save-questions", {
         method: "POST",
         token,
         tenant: tenantSlug || undefined,
         body: JSON.stringify({
+          target: targetPool,
+          target_exam: targetExam,
           questions: questionsToSave.map(q => ({
             ...q,
             content: { text: q.content }, // Format for API
+            marks: q.marks || 1,
+            subject: subject || q.subject,
+            topic: topic || q.topic
           }))
         }),
       });
 
       if (response.success) {
-        router.push("/teacher/questions");
+        router.push(targetPool === 'practice' ? "/student/practice" : "/teacher/questions");
       }
     } catch (error) {
       console.error("Failed to save questions:", error);
@@ -199,6 +207,31 @@ export default function AiGeneratePage() {
                     <SelectItem value="fill_blank">Fill in Blank</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Target Exam (Categorization)</Label>
+                <Input 
+                  placeholder="e.g. JEE Mains, NEET" 
+                  value={targetExam}
+                  onChange={(e) => setTargetExam(e.target.value)}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Target Banking Pool</Label>
+                <Select value={targetPool} onValueChange={(v: "assessment" | "practice") => setTargetPool(v)}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="assessment">Assessment Bank (Tests)</SelectItem>
+                    <SelectItem value="practice">Practice Bank (Self-Study)</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-[10px] text-zinc-500 italic px-1">
+                  Practice Pool questions have no timers and include immediate AI explanations.
+                </p>
               </div>
 
               <Button 

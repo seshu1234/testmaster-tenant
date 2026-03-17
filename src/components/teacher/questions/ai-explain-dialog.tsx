@@ -10,11 +10,12 @@ import {
   DialogFooter
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Loader2, Save, FileText } from "lucide-react";
+import { Sparkles, FileText } from "lucide-react";
 import { api } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
 import "katex/dist/katex.min.css";
 import { InlineMath, BlockMath } from "react-katex";
+import { toast } from "sonner";
 
 interface AiExplainDialogProps {
   open: boolean;
@@ -27,8 +28,8 @@ interface AiExplainDialogProps {
 export function AiExplainDialog({ open, onOpenChange, questionId, questionTitle, onSuccess }: AiExplainDialogProps) {
   const { token, tenantSlug } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [explanation, setExplanation] = useState("");
   const [saving, setSaving] = useState(false);
+  const [explanation, setExplanation] = useState("");
 
   const handleGenerate = async () => {
     if (!token) return;
@@ -41,9 +42,15 @@ export function AiExplainDialog({ open, onOpenChange, questionId, questionTitle,
       });
       if (response.success) {
         setExplanation(response.data.explanation || "");
+        toast.success("Explanation Generated", {
+          description: "Click Save Solution to persist it."
+        });
       }
     } catch (error) {
       console.error("AI Explanation failed:", error);
+      toast.error("Generation Failed", {
+        description: error instanceof Error ? error.message : "Could not generate explanation."
+      });
     } finally {
       setLoading(false);
     }
@@ -62,11 +69,17 @@ export function AiExplainDialog({ open, onOpenChange, questionId, questionTitle,
         })
       });
       if (response.success) {
+        toast.success("Solution Saved", {
+          description: "The AI explanation has been updated successfully."
+        });
         if (onSuccess) onSuccess();
         onOpenChange(false);
       }
     } catch (error) {
       console.error("Save explanation failed:", error);
+      toast.error("Save Failed", {
+        description: error instanceof Error ? error.message : "Could not save the explanation."
+      });
     } finally {
       setSaving(false);
     }
@@ -80,7 +93,7 @@ export function AiExplainDialog({ open, onOpenChange, questionId, questionTitle,
             <Sparkles className="h-5 w-5 text-zinc-600" />
             AI Explanation Generator
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-zinc-600 leading-relaxed break-words">
             Generate a detailed, step-by-step solution for &quot;{questionTitle}&quot;
           </DialogDescription>
         </DialogHeader>
@@ -101,9 +114,9 @@ export function AiExplainDialog({ open, onOpenChange, questionId, questionTitle,
               </Button>
             </div>
           ) : loading ? (
-            <div className="flex flex-col items-center justify-center py-20 gap-3">
-              <Loader2 className="h-8 w-8 animate-spin text-zinc-600" />
-              <p className="text-zinc-600">AI is thinking...</p>
+            <div className="flex flex-col items-center justify-center py-20 space-y-4">
+              <div className="h-8 w-8 border-4 border-zinc-200 border-t-purple-600 rounded-full animate-spin" />
+              <p className="text-zinc-500 text-sm animate-pulse">Generating your solution...</p>
             </div>
           ) : (
             <div className="prose prose-sm max-w-none">
@@ -138,13 +151,15 @@ export function AiExplainDialog({ open, onOpenChange, questionId, questionTitle,
             </Button>
           )}
           <div className="flex-1" />
-          <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={saving}>
-            Cancel
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            Close
           </Button>
           {explanation && (
             <Button onClick={handleSave} disabled={saving} className="gap-2">
-              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-              Save Solution
+              {saving ? (
+                <div className="h-4 w-4 border-2 border-zinc-200 border-t-zinc-600 rounded-full animate-spin" />
+              ) : null}
+              {saving ? "Saving..." : "Save Solution"}
             </Button>
           )}
         </DialogFooter>

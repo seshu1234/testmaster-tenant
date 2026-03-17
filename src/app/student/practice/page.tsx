@@ -103,18 +103,18 @@ export default function StudentPracticePage() {
       <Card className="bg-primary text-white p-8">
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="space-y-4">
-            <Badge variant="secondary" className="bg-primary-foreground/20 text-zinc-600">Growth Engine</Badge>
-            <h1 className="text-xl font-bold uppercase tracking-tight">Precision Practice</h1>
-            <p className="opacity-80">
-              AI-curated drills designed to eliminate your weak spots and maximize score velocity.
+            <Badge variant="secondary" className="bg-primary-foreground/20 text-white">Learning Hub</Badge>
+            <h1 className="text-xl font-black uppercase tracking-tight">Practice Arena</h1>
+            <p className="opacity-80 font-medium">
+              Timer-less sessions with instant AI explanations to bridge your knowledge gaps.
             </p>
           </div>
 
-          <div className="bg-primary-foreground/10 p-6 rounded-lg flex items-center gap-4">
-            <Gem className="h-8 w-8 text-zinc-600" />
+          <div className="bg-primary-foreground/10 p-6 rounded-2xl flex items-center gap-4">
+            <Gem className="h-8 w-8 text-white" />
             <div>
-              <p className="text-zinc-600 opacity-60 uppercase font-bold tracking-wider">Practice Multiplier</p>
-               <p className="text-zinc-600 font-black uppercase tracking-tight">1.5x Rewards Active</p>
+              <p className="text-white opacity-60 uppercase font-black text-[10px] tracking-wider">Practice Mode</p>
+               <p className="text-white font-black uppercase tracking-tight">Active Learning enabled</p>
             </div>
           </div>
         </div>
@@ -125,22 +125,25 @@ export default function StudentPracticePage() {
         <div className="lg:col-span-8 space-y-6">
           <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
             <div className="relative w-full md:w-auto flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-600" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
               <Input 
                 type="text" 
-                placeholder="Search topics, chapters, or concepts..." 
-                className="pl-10"
+                placeholder="Search practice modules..." 
+                className="pl-10 h-11 rounded-xl"
               />
             </div>
             
-            <div className="flex gap-2">
+            <div className="flex gap-2 bg-zinc-100 p-1 rounded-xl">
               {['recommended', 'popular', 'topic'].map((tab) => (
                 <Button
                   key={tab}
-                  variant={activeTab === tab ? "default" : "outline"}
+                  variant={activeTab === tab ? "default" : "ghost"}
                   size="sm"
                   onClick={() => setActiveTab(tab as 'recommended' | 'popular' | 'topic')}
-                  className="capitalize font-bold"
+                  className={cn(
+                    "capitalize font-black text-[10px] tracking-widest px-4 h-9 rounded-lg",
+                    activeTab === tab ? "bg-white text-primary shadow-sm" : "text-zinc-500"
+                  )}
                 >
                   {tab}
                 </Button>
@@ -151,52 +154,49 @@ export default function StudentPracticePage() {
           <div className="grid gap-4">
             {loading ? (
               <div className="flex flex-col items-center justify-center py-20 gap-4">
-                <Loader2 className="h-8 w-8 animate-spin text-zinc-600" />
-                <p className="text-zinc-600 text-xl font-bold uppercase tracking-widest">Loading Practice Drills...</p>
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                <p className="text-zinc-500 text-[10px] font-black uppercase tracking-widest font-black">Loading your learning path...</p>
               </div>
             ) : error ? (
-              <Card className="p-12 text-zinc-600 border-dashed">
-                <p className="text-xl font-bold uppercase tracking-widest">{error}</p>
+              <Card className="p-12 text-center border-dashed">
+                <p className="text-zinc-500 font-black uppercase tracking-widest">{error}</p>
               </Card>
             ) : practiceSets.length === 0 ? (
-              <Card className="p-12 text-zinc-600 border-dashed">
-                <p className="text-xl font-bold uppercase tracking-widest">No practice drills available for your batch.</p>
+              <Card className="p-12 text-center border-dashed">
+                <p className="text-zinc-500 font-black uppercase tracking-widest">No practice modules available</p>
               </Card>
             ) : (
               practiceSets.map((set) => (
-                 <Card key={set.id} className="p-6 transition-all border shadow-sm rounded-2xl group">
+                 <Card key={set.id} className="p-6 transition-all hover:border-primary/30 shadow-sm hover:shadow-md border rounded-2xl group border-zinc-100">
                   <div className="flex items-center gap-6">
-                    <div className="h-20 w-20 bg-muted rounded-lg flex flex-col items-center justify-center transition-transform group-hover:scale-105">
+                    <div className="h-16 w-16 bg-zinc-50 rounded-2xl flex flex-col items-center justify-center transition-transform group-hover:scale-105 border">
                       <Zap className={cn(
-                        "h-6 w-6",
+                        "h-5 w-5",
                         set.settings?.difficulty?.toLowerCase() === 'hard' ? 'text-rose-600' : 
                         set.settings?.difficulty?.toLowerCase() === 'medium' ? 'text-amber-600' : 
                         'text-emerald-600'
                       )} />
-                      <span className="text-[10px] font-black uppercase tracking-widest text-zinc-600 mt-1">
-                        {Math.floor(set.duration_seconds / 60)} min
+                      <span className="text-[8px] font-black uppercase tracking-widest text-zinc-400 mt-1">
+                        UNLIMITED
                       </span>
                     </div>
                     
-                    <div className="flex-1 space-y-2">
+                    <div className="flex-1 space-y-1">
                       <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="text-[9px] font-black uppercase tracking-widest h-5">
-                          {set.category || 'Practice'}
-                        </Badge>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-zinc-600">
+                        <Badge variant="secondary" className="bg-primary/5 text-primary border-none text-[8px] font-black uppercase tracking-widest h-5 px-3">
                           {set.subject}
-                        </span>
+                        </Badge>
                       </div>
-                       <h3 className="text-zinc-600 font-black uppercase tracking-tight">{set.title}</h3>
-                      <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-zinc-600">
-                        <div className="flex items-center gap-1"><Clock className="h-3 w-3" /> {set.settings?.questions_count || 10} Questions</div>
-                        <div className="flex items-center gap-1"><Star className="h-3 w-3 text-zinc-600" /> {set.settings?.points || 100} Points</div>
+                       <h3 className="text-zinc-800 font-black uppercase tracking-tight text-lg">{set.title}</h3>
+                      <div className="flex items-center gap-4 text-[9px] font-black uppercase tracking-widest text-zinc-400">
+                        <div className="flex items-center gap-1"><Clock className="h-3 w-3" /> {set.settings?.questions_count || 0} Questions</div>
+                        <div className="flex items-center gap-1.5"><Zap className="h-3 w-3" /> {set.settings?.difficulty || 'General'}</div>
                       </div>
                     </div>
 
-                    <Link href={`/student/tests/${set.id}/lobby`}>
-                       <Button className="font-black uppercase tracking-tighter hover:scale-105 transition-transform px-8">
-                        START DRILL
+                    <Link href={`/student/practice/${set.id}/take`}>
+                       <Button className="font-black uppercase tracking-widest text-[10px] h-11 px-8 rounded-xl shadow-[0_4px_14px_rgba(var(--primary),0.2)]">
+                        START PRACTICE
                       </Button>
                     </Link>
                   </div>
@@ -208,41 +208,42 @@ export default function StudentPracticePage() {
 
         {/* Sidebar */}
         <div className="lg:col-span-4 space-y-6">
-          <Card className="p-6 border-primary/20 bg-primary/5">
-            {sidebarLoading ? (
-               <div className="flex justify-center p-4"><Loader2 className="h-6 w-6 animate-spin" /></div>
-            ) : (
-              <div className="space-y-4">
-                <TrendingUp className="h-8 w-8 text-zinc-600" />
-                <h3 className="text-zinc-600 font-black uppercase tracking-tight leading-none">Growth Forecast</h3>
-                <p className="text-zinc-600 font-medium text-zinc-600 leading-relaxed">
-                  Based on your recent practice of <span className="font-black text-zinc-600 uppercase tracking-tight">Focus Areas</span>, 
-                  your upcoming score is expected to improve.
-                </p>
+           <Card className="p-6 border-none bg-zinc-950 text-white rounded-3xl overflow-hidden relative">
+            <div className="relative z-10 space-y-4">
+              <TrendingUp className="h-8 w-8 text-primary" />
+              <h3 className="font-black uppercase tracking-tight text-xl leading-none">Learning AI</h3>
+              <p className="text-zinc-400 font-medium text-sm leading-relaxed">
+                Your mastery index is improving based on recent practice attempts.
+              </p>
+              <div className="space-y-2">
                 <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
-                  <span>Score Velocity</span>
-                  <span className="text-zinc-600">{insightData?.performance_trend || 0}%</span>
+                  <span>Progress Velocity</span>
+                  <span className="text-primary">{insightData?.performance_trend || 0}%</span>
                 </div>
-                <Progress value={insightData?.performance_trend || 0} className="h-1.5" />
+                <Progress value={insightData?.performance_trend || 0} className="h-1 bg-zinc-800" />
               </div>
-            )}
+            </div>
+            <div className="absolute -bottom-6 -right-6 h-32 w-32 bg-primary/20 rounded-full blur-3xl" />
           </Card>
 
-          <Card className="p-6 text-zinc-600">
+          <Card className="p-8 border shadow-sm rounded-3xl">
              {sidebarLoading ? (
                <div className="flex justify-center p-4"><Loader2 className="h-6 w-6 animate-spin" /></div>
             ) : (
-              <div className="space-y-4">
-                <div className="flex justify-center">
-                  <Flame className="h-8 w-8 text-zinc-600 animate-pulse" />
+              <div className="space-y-6">
+                <div className="flex justify-between items-center">
+                   <h4 className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Streak Status</h4>
+                   <Flame className="h-5 w-5 text-orange-500 animate-pulse" />
                 </div>
-                <h4 className="text-zinc-600 font-black uppercase tracking-tight leading-none">Practice Streak</h4>
-                <p className="text-[10px] font-black uppercase tracking-widest text-zinc-600">{dashboardData?.student?.streak} Day Streak</p>
-                <div className="flex justify-center gap-1">
+                <div className="text-center space-y-1">
+                   <p className="text-4xl font-black">{dashboardData?.student?.streak}</p>
+                   <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Active Learning Days</p>
+                </div>
+                <div className="flex justify-between gap-1">
                   {(dashboardData?.streak_history || [0,0,0,0,0,0,0]).map((s: number, i: number) => (
                     <div key={i} className={cn(
-                      "h-1.5 w-6 rounded-full transition-all",
-                      s ? "bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.4)]" : "bg-muted"
+                      "h-1.5 flex-1 rounded-full transition-all",
+                      s ? "bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.4)]" : "bg-zinc-100"
                     )} />
                   ))}
                 </div>
@@ -250,24 +251,21 @@ export default function StudentPracticePage() {
             )}
           </Card>
 
-          <Card className="p-6">
-            <h4 className="text-[10px] font-black uppercase tracking-widest text-zinc-600 mb-6">Mastery Targets</h4>
+          <Card className="p-8 border shadow-sm rounded-3xl">
+            <h4 className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-6">Subject Mastery</h4>
             {sidebarLoading ? (
                <div className="flex justify-center p-4"><Loader2 className="h-6 w-6 animate-spin" /></div>
             ) : (
-              <div className="space-y-5">
+              <div className="space-y-6">
                 {(insightData?.subject_averages || []).slice(0, 3).map((target: { subject: string; avg_percentage: number }, i: number) => (
-                  <div key={i} className="space-y-2.5">
+                  <div key={i} className="space-y-3">
                     <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
-                      <span>{target.subject}</span>
-                      <span className="text-zinc-600">{Math.round(target.avg_percentage)}%</span>
+                      <span className="text-zinc-600">{target.subject}</span>
+                      <span className="font-black">{Math.round(target.avg_percentage)}%</span>
                     </div>
-                    <Progress value={target.avg_percentage} className="h-1 bg-muted" />
+                    <Progress value={target.avg_percentage} className="h-1 bg-zinc-100" />
                   </div>
                 ))}
-                {(!insightData?.subject_averages || insightData.subject_averages.length === 0) && (
-                   <p className="text-[10px] font-black uppercase tracking-widest text-zinc-600">No data yet</p>
-                )}
               </div>
             )}
           </Card>
