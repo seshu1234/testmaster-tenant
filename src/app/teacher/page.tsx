@@ -194,12 +194,20 @@ export default function TeacherDashboard() {
                   &ldquo;{dashboard.ai_insight || "Analyzing class performance..."}&rdquo;
                 </p>
               </div>
-              <Link href="/teacher/questions/generate">
-                <Button className="w-full bg-white text-zinc-600 hover:bg-zinc-100 gap-2 text-zinc-600 h-9 mt-2">
-                  <Zap className="h-3 w-3" />
-                  Generate Questions
-                </Button>
-              </Link>
+              <div className="flex flex-col gap-2">
+                <Link href="/teacher/questions/generate?pool=assessment">
+                  <Button className="w-full bg-white text-zinc-600 hover:bg-zinc-100 gap-2 text-zinc-600 h-9">
+                    <Zap className="h-3 w-3" />
+                    Generate Questions
+                  </Button>
+                </Link>
+                <Link href="/teacher/questions/generate?pool=practice">
+                  <Button className="w-full bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 gap-2 h-9">
+                    <Sparkles className="h-3 w-3" />
+                    Generate Practice Drills
+                  </Button>
+                </Link>
+              </div>
             </CardContent>
           </Card>
 
@@ -223,10 +231,16 @@ export default function TeacherDashboard() {
                   <CheckCircle2 className="h-3 w-3 text-zinc-600" />
                 </Button>
               </Link>
-              <Link href="/teacher/questions">
+               <Link href="/teacher/questions">
                 <Button variant="ghost" className="w-full justify-between text-zinc-600 font-medium h-9 hover:bg-zinc-50 border border-transparent hover:border-zinc-100">
                   Manage Bank
                   <BookOpen className="h-3 w-3 text-zinc-600" />
+                </Button>
+              </Link>
+              <Link href="/teacher/questions?bank=practice">
+                <Button variant="ghost" className="w-full justify-between text-primary font-medium h-9 hover:bg-primary/5 border border-transparent hover:border-primary/10">
+                  Review Practice Pool
+                  <Sparkles className="h-3 w-3" />
                 </Button>
               </Link>
             </CardContent>

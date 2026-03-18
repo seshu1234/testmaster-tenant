@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,7 +9,10 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { 
   Select, 
   SelectContent, 
+  SelectGroup,
   SelectItem, 
+  SelectLabel,
+  SelectSeparator,
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
@@ -18,6 +21,17 @@ import Link from "next/link";
 import { useAuth } from "@/hooks/use-auth";
 import { api } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
+
+const EXAM_CATEGORIES = [
+  { group: "School-Level (K-12)", items: ["CBSE", "ICSE", "IB", "IGCSE", "State Board (Maharashtra)", "State Board (Tamil Nadu)", "NTSE", "KVPY"] },
+  { group: "Engineering Entrance (JEE)", items: ["JEE Main", "JEE Advanced", "MHT-CET", "KCET", "WBJEE", "AP EAMCET", "TS EAMCET"] },
+  { group: "Medical Entrance (NEET)", items: ["NEET-UG", "AIIMS", "JIPMER"] },
+  { group: "Commerce/Management", items: ["CA Foundation", "CA Intermediate", "CMA Foundation", "CS Executive", "CUET (UG)", "CUET (PG)", "CAT", "XAT", "GMAT"] },
+  { group: "Law Entrance", items: ["CLAT", "AILET", "MH-CET Law"] },
+  { group: "Post-Graduate/Science", items: ["GATE", "IIT JAM", "MBA (CMAT/MAT/SNAP)"] },
+  { group: "Government Job/Defence", items: ["SSC CGL", "SSC CHSL", "Banking (IBPS/SBI)", "RBI Grade B", "RRB NTPC", "NDA", "CDS"] },
+  { group: "Olympiads", items: ["SOF NSO", "SOF IMO", "SilverZone", "Unified Council"] },
+];
 
 interface GeneratedQuestion {
   title: string;
@@ -48,6 +62,14 @@ export default function AiGeneratePage() {
   const [targetExam, setTargetExam] = useState("");
   const [targetPool, setTargetPool] = useState<"assessment" | "practice">("assessment");
 
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const poolParam = searchParams.get('pool');
+    if (poolParam === 'practice' || poolParam === 'assessment') {
+      setTargetPool(poolParam as "practice" | "assessment");
+    }
+  }, []);
+
   // Results
   const [generatedQuestions, setGeneratedQuestions] = useState<GeneratedQuestion[]>([]);
   const [selectedIndices, setSelectedIndices] = useState<number[]>([]);
@@ -57,6 +79,12 @@ export default function AiGeneratePage() {
     setLoading(true);
     setGeneratedQuestions([]);
     setSelectedIndices([]);
+
+    if (count < 1) {
+      alert("Please select at least 1 question to generate.");
+      setLoading(false);
+      return;
+    }
 
     try {
       const response = await api("/teacher/ai/generate-questions", {
@@ -77,9 +105,20 @@ export default function AiGeneratePage() {
         setGeneratedQuestions(response.data);
         // Select all by default
         setSelectedIndices(response.data.map((_: GeneratedQuestion, i: number) => i));
+      } else {
+        alert(response.error || "Failed to generate questions. The AI service might be busy, please try again in a moment.");
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("AI Generation failed:", error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      const isTimeout = errorMessage.includes('timeout') || (error instanceof Error && error.name === 'AbortError');
+      
+      if (isTimeout) {
+        alert("AI Generation timed out. The provider might be slow or you requested too many questions. Please try with a smaller count (e.g. 5).");
+      } else {
+        // Show actual error message to help debugging
+        alert(`AI Generation failed: ${errorMessage}\n\nIf this is a "Failed to fetch" error, please ensure your backend server (php artisan serve) is running and your frontend was restarted after config changes.`);
+      }
     } finally {
       setLoading(false);
     }
@@ -189,8 +228,11 @@ export default function AiGeneratePage() {
                     type="number" 
                     min={1} 
                     max={10} 
-                    value={count}
-                    onChange={(e) => setCount(parseInt(e.target.value))}
+                    value={isNaN(count) ? "" : count}
+                    onChange={(e) => {
+                      const val = parseInt(e.target.value);
+                      setCount(isNaN(val) ? 0 : val);
+                    }}
                   />
                 </div>
               </div>
@@ -211,11 +253,27 @@ export default function AiGeneratePage() {
 
               <div className="space-y-2">
                 <Label>Target Exam (Categorization)</Label>
-                <Input 
-                  placeholder="e.g. JEE Mains, NEET" 
-                  value={targetExam}
-                  onChange={(e) => setTargetExam(e.target.value)}
-                />
+                <Select value={targetExam} onValueChange={setTargetExam}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Target Exam..." />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[300px]">
+                    {EXAM_CATEGORIES.map((group) => (
+                      <SelectGroup key={group.group}>
+                        <SelectLabel className="bg-zinc-50/50 text-[10px] uppercase tracking-wider font-bold py-1">
+                          {group.group}
+                        </SelectLabel>
+                        {group.items.map((item) => (
+                          <SelectItem key={item} value={item}>
+                            {item}
+                          </SelectItem>
+                        ))}
+                        <SelectSeparator />
+                      </SelectGroup>
+                    ))}
+                    <SelectItem value="Other">Other / General</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="space-y-2">
@@ -236,7 +294,7 @@ export default function AiGeneratePage() {
 
               <Button 
                 onClick={handleGenerate} 
-                className="w-full gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-zinc-600 border-none h-11"
+                className="w-full gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white border-none h-11"
                 disabled={loading || !subject || !topic}
               >
                 {loading ? (

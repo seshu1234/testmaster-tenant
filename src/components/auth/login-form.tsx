@@ -124,14 +124,14 @@ export function LoginForm() {
               )}
             />
             {error && (
-              <div className="text-zinc-600 font-medium text-zinc-600 bg-destructive/10 p-3 rounded-md animate-in fade-in slide-in-from-top-1 duration-300">
+              <div className="font-medium text-zinc-600 bg-destructive/10 p-3 rounded-md animate-in fade-in slide-in-from-top-1 duration-300">
                 {error}
               </div>
             )}
             <Button 
               type="submit" 
               variant="default"
-              className="w-full py-6 text-zinc-600 font-semibold bg-black text-zinc-600 hover:bg-black/90 transition-all hover:scale-[1.02] hover:shadow-lg active:scale-[0.98] active:shadow-md disabled:hover:scale-100 disabled:active:scale-100" 
+              className="w-full py-6 text-white font-semibold bg-black hover:bg-black/90 transition-all hover:scale-[1.02] hover:shadow-lg active:scale-[0.98] active:shadow-md disabled:hover:scale-100 disabled:active:scale-100" 
               disabled={isLoading}
             >
               {isLoading ? "Authenticating..." : "Sign In"}

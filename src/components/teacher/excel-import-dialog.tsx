@@ -56,7 +56,7 @@ export function ExcelImportDialog({ open, onOpenChange, onImportSuccess }: Excel
         headers["X-Tenant"] = user.tenant_id;
       }
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1'}/teacher/questions/bulk`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api/v1'}/teacher/questions/bulk`, {
         method: "POST",
         headers,
         body: formData,

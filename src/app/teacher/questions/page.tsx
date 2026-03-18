@@ -13,7 +13,18 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Search, Filter, MoreVertical, Edit2, Trash2, Copy, Sparkles, AlertTriangle } from "lucide-react";
+import { 
+  Plus, 
+  Search, 
+  Filter, 
+  MoreVertical, 
+  Edit2, 
+  Trash2, 
+  Copy, 
+  Sparkles, 
+  AlertTriangle,
+  BookOpen 
+} from "lucide-react";
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
@@ -56,6 +67,8 @@ function extractText(content: Question["content"]): string {
 }
 
 export default function QuestionsPage() {
+  const { user, token, tenantSlug } = useAuth();
+  const [bank, setBank] = useState<"assessment" | "practice">("assessment");
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -64,12 +77,19 @@ export default function QuestionsPage() {
   const [importOpen, setImportOpen] = useState(false);
   const [explainOpen, setExplainOpen] = useState(false);
   const [selectedQuestion, setSelectedQuestion] = useState<{id: string, title: string} | null>(null);
-  const { user, token, tenantSlug } = useAuth();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(15);
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const bankParam = searchParams.get('bank');
+    if (bankParam === 'practice' || bankParam === 'assessment') {
+      setBank(bankParam as "practice" | "assessment");
+    }
+  }, []);
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -80,6 +100,7 @@ export default function QuestionsPage() {
         if (search) queryParams.append("search", search);
         if (subjectFilter) queryParams.append("subject", subjectFilter);
         if (topicFilter) queryParams.append("topic", topicFilter);
+        queryParams.append("bank", bank);
         queryParams.append("page", currentPage.toString());
         queryParams.append("per_page", pageSize.toString());
 
@@ -105,7 +126,7 @@ export default function QuestionsPage() {
     }, 400);
 
     return () => clearTimeout(debounceTimer);
-  }, [user, token, tenantSlug, search, subjectFilter, topicFilter, currentPage, pageSize]);
+  }, [user, token, tenantSlug, search, subjectFilter, topicFilter, currentPage, pageSize, bank]);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -201,6 +222,33 @@ export default function QuestionsPage() {
         questionId={selectedQuestion?.id || ""}
         questionTitle={selectedQuestion?.title || ""}
       />
+
+      <div className="flex gap-2 p-1 bg-zinc-100 rounded-xl w-fit">
+        <Button 
+          variant={bank === 'assessment' ? "default" : "ghost"} 
+          size="sm"
+          onClick={() => setBank('assessment')}
+          className={cn(
+            "h-10 px-6 rounded-lg font-bold uppercase tracking-widest text-[10px]",
+            bank === 'assessment' ? "bg-white text-zinc-900 shadow-sm" : "text-zinc-500"
+          )}
+        >
+          <BookOpen className="h-3 w-3 mr-2" />
+          Assessment Bank
+        </Button>
+        <Button 
+          variant={bank === 'practice' ? "default" : "ghost"} 
+          size="sm"
+          onClick={() => setBank('practice')}
+          className={cn(
+            "h-10 px-6 rounded-lg font-bold uppercase tracking-widest text-[10px]",
+            bank === 'practice' ? "bg-white text-primary shadow-sm" : "text-zinc-500"
+          )}
+        >
+          <Sparkles className="h-3 w-3 mr-2 text-primary" />
+          Practice Bank
+        </Button>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
          <Card className="md:col-span-3 border-amber-200 bg-amber-50/30 border-dashed">
